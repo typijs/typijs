@@ -1,6 +1,5 @@
 import 'reflect-metadata';
 
-export const PAGE_TYPES = Symbol("PAGE_TYPES");
 export const PAGE_TYPE_ANNOTATIONS = Symbol("PAGE_TYPE_ANNOTATIONS");
 
 export function specialDecorator(item: any) {
@@ -9,6 +8,7 @@ export function specialDecorator(item: any) {
 
 interface PageTypeMetadata {
     displayName?: string;
+    description?: string;
     component?: any;
 }
 

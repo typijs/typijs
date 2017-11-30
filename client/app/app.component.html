@@ -11,6 +11,11 @@
     <li *ngFor="let page of pages">
       <h2>
         <a target="_blank" rel="noopener" href="https://angular.io/tutorial">{{page.metadata.displayName}}</a>
+        <ul>
+          <li *ngFor="let p of page.properties">
+            <h4>{{p.displayName}}</h4>
+          </li>
+        </ul>
       </h2>
     </li>
   </ul>

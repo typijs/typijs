@@ -1,18 +1,20 @@
 import "reflect-metadata";
 
-const formatMetadataKey = Symbol("format");
+export const PROPERTY_ANNOTATIONS = Symbol("PROPERTY_ANNOTATIONS");
+export const PROPERTIES = Symbol("PROPERTIES");
 
 interface PropertyMetadata {
     displayName?: string;
     required?: boolean;
     order?: number;
-    formDisplayType: any;
+    formDisplayType?: any;
   }
 
-function format(formatString: string) {
-    return Reflect.metadata(formatMetadataKey, formatString);
-}
-
-function getFormat(target: any, propertyKey: string) {
-    return Reflect.getMetadata(formatMetadataKey, target, propertyKey);
+export function Property(metadata: PropertyMetadata) {
+    return function (target: object, propertyKey: string) {
+        let columns: string[] = Reflect.getMetadata(PROPERTIES, target.constructor) || [];
+        columns.push(propertyKey);
+        Reflect.defineMetadata(PROPERTIES, columns, target.constructor);
+        return Reflect.defineMetadata(PROPERTY_ANNOTATIONS, metadata, target.constructor, propertyKey);
+    }
 }
