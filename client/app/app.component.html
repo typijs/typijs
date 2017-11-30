@@ -8,19 +8,9 @@
   </div>
   <h2>Here are some links to help you start: </h2>
   <ul>
-    <li>
+    <li *ngFor="let page of pages">
       <h2>
-        <a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a>
-      </h2>
-    </li>
-    <li>
-      <h2>
-        <a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a>
-      </h2>
-    </li>
-    <li>
-      <h2>
-        <a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a>
+        <a target="_blank" rel="noopener" href="https://angular.io/tutorial">{{page.metadata.displayName}}</a>
       </h2>
     </li>
   </ul>
