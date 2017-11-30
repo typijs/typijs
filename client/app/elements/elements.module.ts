@@ -9,6 +9,12 @@ import { StringComponent } from './string/string.component';
         CommonModule,
         FormsModule,
     ],
+    entryComponents: [
+        StringComponent
+    ],
+    exports: [
+        StringComponent
+    ],
     declarations: [
         StringComponent
     ]

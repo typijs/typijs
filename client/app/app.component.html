@@ -11,6 +11,7 @@
     <li *ngFor="let page of pages">
       <h2>
         <a target="_blank" rel="noopener" href="https://angular.io/tutorial">{{page.metadata.displayName}}</a>
+        <a href="javascript:void(0)" (click)="setSelectedPage(page)">Edit</a>
         <ul>
           <li *ngFor="let p of page.properties">
             <h4>{{p.displayName}}</h4>
@@ -19,4 +20,7 @@
       </h2>
     </li>
   </ul>
+  <div *ngIf="selectedPage">
+    <app-page-edit [pageInfo]="selectedPage"></app-page-edit>
+  </div>
 </div>

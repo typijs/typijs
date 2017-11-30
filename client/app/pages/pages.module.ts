@@ -9,6 +9,8 @@ import { BlogComponent } from './blog/blog.component';
         CommonModule,
         FormsModule,
     ],
+    entryComponents: [BlogComponent],
+    exports: [BlogComponent],
     declarations: [
         BlogComponent
     ]

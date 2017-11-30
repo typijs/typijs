@@ -11,7 +11,12 @@ import { PROPERTY_ANNOTATIONS, PROPERTIES } from './core/property.metadata'
 export class AppComponent {
 
   title = 'app';
+  selectedPage: any;
   pages: Array<any> = [];
+
+  setSelectedPage(page) {
+    this.selectedPage = page;
+  }
 
   ngOnInit() {
     PAGES.forEach(pageType => {

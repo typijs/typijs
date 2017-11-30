@@ -1,6 +1,6 @@
-import { String } from '../../elements/string/string.type';
 import { PageType } from '../../core/page-type.metadata';
 import { Property } from './../../core/property.metadata';
+import { Elements } from './../../elements/register';
 
 @PageType({
     displayName: "Blog List Page Type",
@@ -8,7 +8,8 @@ import { Property } from './../../core/property.metadata';
 export class BlogList {
     @Property({
         displayName: "This is Title",
+        formDisplayType: Elements.String
     })
     title: string;
-    content: String;
+    content: string;
 }
