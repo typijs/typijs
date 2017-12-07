@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
-import PAGES from './core/core';
-import { PAGE_TYPE_ANNOTATIONS } from './core/page-type.metadata'
-import { PROPERTY_ANNOTATIONS, PROPERTIES } from './core/property.metadata'
+import CMS from './cms/core';
+import { PAGE_TYPE_METADATA_KEY, PROPERTY_METADATA_KEY, PROPERTIES_METADATA_KEY } from './cms/core/constants';
 
 @Component({
   selector: 'app-root',
@@ -19,16 +18,16 @@ export class AppComponent {
   }
 
   ngOnInit() {
-    PAGES.forEach(pageType => {
-      let metadata = Reflect.getMetadata(PAGE_TYPE_ANNOTATIONS, pageType);
+    CMS.PAGE_TYPES.forEach(pageType => {
+      let metadata = Reflect.getMetadata(PAGE_TYPE_METADATA_KEY, pageType);
       for (var key in pageType) {
         console.log(key);
       }
-      let properties = Reflect.getMetadata(PROPERTIES, pageType);
+      let properties = Reflect.getMetadata(PROPERTIES_METADATA_KEY, pageType);
       let propertiesMetadata = [];
       if (properties)
         properties.forEach(element => {
-          propertiesMetadata.push(Reflect.getMetadata(PROPERTY_ANNOTATIONS, pageType, element))
+          propertiesMetadata.push(Reflect.getMetadata(PROPERTY_METADATA_KEY, pageType, element))
         });
       this.pages.push({
         type: pageType,

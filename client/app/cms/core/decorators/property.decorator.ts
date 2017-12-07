@@ -1,10 +1,11 @@
 import "reflect-metadata";
 import { PROPERTIES_METADATA_KEY, PROPERTY_METADATA_KEY } from './../constants';
+import { BaseElement } from './../form-elements';
 
 interface PropertyMetadata {
     displayName?: string;
     description?: string;
-    displayType?: any;
+    displayType?: typeof BaseElement;
     order?: number;
     groupName?: string;
 }
