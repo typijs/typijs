@@ -1,3 +1,4 @@
+import { BlogTypeSelectionFactory, TestInjectService } from './pages/blog/blog.pagetype';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
@@ -20,7 +21,7 @@ registerPageType(register);
     PagesModule,
     CmsModule
   ],
-  providers: [],
+  providers: [BlogTypeSelectionFactory, TestInjectService],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
 })

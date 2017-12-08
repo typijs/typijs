@@ -6,6 +6,7 @@ interface PropertyMetadata {
     displayName?: string;
     description?: string;
     displayType?: typeof BaseElement;
+    selectionFactory?: any;
     order?: number;
     groupName?: string;
 }

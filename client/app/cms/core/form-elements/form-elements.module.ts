@@ -3,6 +3,8 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 import { InputComponent } from './input/input.component';
+import { TextareaComponent } from './textarea/textarea.component';
+import { SelectComponent } from './select/select.component';
 
 @NgModule({
     imports: [
@@ -10,13 +12,19 @@ import { InputComponent } from './input/input.component';
         FormsModule,
     ],
     declarations: [
-        InputComponent
+        InputComponent,
+        TextareaComponent,
+        SelectComponent
     ],
     entryComponents: [
-        InputComponent
+        InputComponent,
+        TextareaComponent,
+        SelectComponent
     ],
     exports: [
-        InputComponent
+        InputComponent,
+        TextareaComponent,
+        SelectComponent
     ]
 })
 export class FormElementsModule { }
