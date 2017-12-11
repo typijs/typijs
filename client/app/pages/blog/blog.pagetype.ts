@@ -3,14 +3,9 @@ import { BlogComponent } from './blog.component';
 import { Property, PageType } from './../../cms/core/decorators';
 import { Elements } from './../../cms/core/form-elements';
 import { ISelectionFactory, SelectItem } from './../../cms/core/form-elements';
-import { IBrowser } from 'selenium-webdriver';
+import { TestInjectService } from './test.service';
+import { PageBase } from '../../cms/core/base.pagetype';
 
-@Injectable()
-export class TestInjectService {
-    log() {
-        console.log("This is test inject service");
-    }
-}
 
 @Injectable()
 export class BlogTypeSelectionFactory implements ISelectionFactory {
@@ -37,7 +32,7 @@ export class BlogTypeSelectionFactory implements ISelectionFactory {
     displayName: "Blog Page Type",
     componentRef: BlogComponent
 })
-export class Blog {
+export class Blog extends PageBase {
 
     @Property({
         displayName: "Title",
