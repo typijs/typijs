@@ -1,5 +1,6 @@
-import { BlogTypeSelectionFactory, TestInjectService } from './pages/blog/blog.pagetype';
+import { BlogTypeSelectionFactory } from './pages/blog/blog.pagetype';
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpModule } from '@angular/http';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 import { CmsModule } from './cms/cms.module';
@@ -9,19 +10,28 @@ import { PagesModule } from './pages/pages.module';
 import * as register from './pages/register';
 
 import { registerPageType } from './cms/core';
+import { AppRoutingModule } from './app.routing';
+import { HomeComponent } from './home.component';
+import { TestInjectService } from './pages/blog/test.service';
 
 registerPageType(register);
 
 @NgModule({
-  declarations: [
-    AppComponent,
-  ],
   imports: [
     BrowserModule,
+    HttpModule,
+    AppRoutingModule,
     PagesModule,
-    CmsModule
+    CmsModule,
   ],
-  providers: [BlogTypeSelectionFactory, TestInjectService],
+  declarations: [
+    AppComponent,
+    HomeComponent,
+  ],
+  providers:[
+    BlogTypeSelectionFactory,
+    TestInjectService
+  ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
 })
