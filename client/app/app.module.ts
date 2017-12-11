@@ -1,29 +1,37 @@
+import { BlogTypeSelectionFactory } from './pages/blog/blog.pagetype';
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpModule } from '@angular/http';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
-import { ElementsModule } from './elements/elements.module';
-import { PagesModule } from './pages/pages.module';
+import { CmsModule } from './cms/cms.module';
+
 import { AppComponent } from './app.component';
-import { PageEditComponent } from './shared/page-edit.component';
-import { PageEditDirective } from './shared/page-edit-host.directive';
+import { PagesModule } from './pages/pages.module';
 import * as register from './pages/register';
 
-import { scanScope } from './core/core';
+import { registerPageType } from './cms/core';
+import { AppRoutingModule } from './app.routing';
+import { HomeComponent } from './home.component';
+import { TestInjectService } from './pages/blog/test.service';
 
-scanScope(register);
+registerPageType(register);
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    PageEditComponent,
-    PageEditDirective
-  ],
   imports: [
     BrowserModule,
+    HttpModule,
+    AppRoutingModule,
     PagesModule,
-    ElementsModule
+    CmsModule,
   ],
-  providers: [],
+  declarations: [
+    AppComponent,
+    HomeComponent,
+  ],
+  providers:[
+    BlogTypeSelectionFactory,
+    TestInjectService
+  ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
 })
