@@ -5,7 +5,7 @@ function specialDecorator(item: any) {
     item[PAGE_TYPE_INDICATOR] = true;
 }
 
-interface PageTypeMetadata {
+export interface PageTypeMetadata {
     displayName?: string;
     description?: string;
     componentRef?: any;

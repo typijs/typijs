@@ -2,9 +2,36 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CmsComponent } from './cms.component';
+import {
+    EditorLayoutComponent,
+    ContentFormEditComponent,
+    ContentTypeListComponent
+  } from './ui/editor';
 
 const cmsRoutes: Routes = [
-    { path: 'cms', component: CmsComponent }
+    {
+        path: 'cms', component: CmsComponent,
+        children: [
+            {
+                path: '',
+                component: EditorLayoutComponent
+            },
+            {
+                path: 'editor',
+                component: EditorLayoutComponent,
+                children: [
+                    {
+                        path: 'new-page',
+                        component: ContentTypeListComponent
+                    },
+                    {
+                        path: 'content/:id',
+                        component: ContentFormEditComponent
+                    },
+                ]
+            }
+        ]
+    }
 ];
 
 @NgModule({

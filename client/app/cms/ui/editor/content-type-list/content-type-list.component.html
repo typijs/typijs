@@ -1,0 +1,37 @@
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">New page</h1>
+    </div>
+</div>
+<div class="row">
+    <!-- /.col-lg-4 -->
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="form-group row">
+                    <label for="page-name" class="col-sm-1">Name</label>
+                    <div class="col-sm-5">
+                        <input type="text" class="form-control" id="page-name" [(ngModel)]="pageName" required/>
+                    </div>
+                    <div class="col-sm-6">
+                        <button type="button" class="btn btn-default pull-right">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- /.col-lg-4 -->
+    <div class="col-lg-4" *ngFor="let contentType of contentTypes">
+        <div class="panel panel-primary" (click)="createNewPage(contentType)">
+            <div class="panel-heading">
+                {{contentType.metadata.displayName}}
+            </div>
+            <div class="panel-body">
+                <p>{{contentType.metadata.description}}</p>
+            </div>
+        </div>
+    </div>
+</div>
