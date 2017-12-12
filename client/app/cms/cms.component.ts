@@ -1,7 +1,7 @@
 import { Component, Input, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
 
 @Component({
-    templateUrl: './cms.component.html',
+    template: `<router-outlet></router-outlet>`,
     styleUrls: ['./cms.component.scss'],
     encapsulation: ViewEncapsulation.None
 })
