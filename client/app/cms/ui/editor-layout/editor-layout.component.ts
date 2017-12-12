@@ -3,10 +3,10 @@ import CMS from '../../core';
 import { PAGE_TYPE_METADATA_KEY, PROPERTY_METADATA_KEY, PROPERTIES_METADATA_KEY } from './../../core/constants';
 
 @Component({
-    selector: 'cms-layout',
-    templateUrl: './layout.component.html',
+    selector: 'editor-layout',
+    templateUrl: './editor-layout.component.html',
 })
-export class LayoutComponent {
+export class EditorLayoutComponent {
     title = 'app';
     selectedPage: any;
     pages: Array<any> = [];

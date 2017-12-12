@@ -1,0 +1,24 @@
+
+    <div id="page-wrapper">
+        <div class="row">
+            <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
+                <ul class="nav nav-pills flex-column">
+                    <li *ngFor="let page of pages" class="nav-item">
+                        <a class="nav-link" href="javascript:void(0)">
+                            <span>{{page.metadata.displayName}}
+                                <a href="javascript:void(0)" (click)="setSelectedPage(page)">Edit</a>
+                            </span>
+                        </a>
+
+                    </li>
+                </ul>
+            </nav>
+            
+            <main class="col-sm-9 col-md-10 pt-3">
+                <h1>Dashboard</h1>
+                <div>
+                    <content-form-edit [pageInfo]="selectedPage"></content-form-edit>
+                </div>
+            </main>
+        </div>
+    </div>

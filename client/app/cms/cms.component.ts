@@ -1,9 +1,9 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
 
 @Component({
-    template: `
-        <cms-layout></cms-layout>
-    `
+    templateUrl: './cms.component.html',
+    styleUrls: ['./cms.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class CmsComponent{
 }

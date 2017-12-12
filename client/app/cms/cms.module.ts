@@ -6,7 +6,7 @@ import { UIModule } from './ui/ui.module';
 import { InsertPointDirective } from './core/directives';
 import { ContentFormEditComponent } from './ui/content-form-edit/content-form-edit.component';
 import { CmsComponent } from './cms.component';
-import { LayoutComponent } from './ui/layout/layout.component';
+import { EditorLayoutComponent } from './ui/editor-layout/editor-layout.component';
 import { CmsRoutingModule } from './cms.routing';
 
 @NgModule({
@@ -18,7 +18,7 @@ import { CmsRoutingModule } from './cms.routing';
   declarations: [
     InsertPointDirective,
     ContentFormEditComponent,
-    LayoutComponent,
+    EditorLayoutComponent,
     CmsComponent
   ],
   exports: [
