@@ -3,6 +3,7 @@ import { Elements } from './../../cms/core/form-elements';
 
 @PageType({
     displayName: "Blog List Page Type",
+    description: "This is blog list page type"
 })
 export class BlogList {
     @Property({

@@ -1,23 +1,34 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 import { FormElementsModule } from './core/form-elements';
-import { UIModule } from './ui/ui.module';
 import { InsertPointDirective } from './core/directives';
-import { ContentFormEditComponent } from './ui/content-form-edit/content-form-edit.component';
+
+import { ContentService } from './core/services';
+
+import {
+  EditorLayoutComponent,
+  ContentFormEditComponent,
+  ContentTypeListComponent
+} from './ui/editor';
 import { CmsComponent } from './cms.component';
-import { EditorLayoutComponent } from './ui/editor-layout/editor-layout.component';
 import { CmsRoutingModule } from './cms.routing';
 
 @NgModule({
   imports: [
-    BrowserModule,
+    HttpClientModule,
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     FormElementsModule,
     CmsRoutingModule
   ],
   declarations: [
     InsertPointDirective,
     ContentFormEditComponent,
+    ContentTypeListComponent,
     EditorLayoutComponent,
     CmsComponent
   ],
@@ -25,6 +36,6 @@ import { CmsRoutingModule } from './cms.routing';
     ContentFormEditComponent,
     InsertPointDirective,
   ],
-  providers: [],
+  providers: [ContentService],
 })
 export class CmsModule { }

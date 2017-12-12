@@ -30,7 +30,8 @@ export class BlogTypeSelectionFactory implements ISelectionFactory {
 
 @PageType({
     displayName: "Blog Page Type",
-    componentRef: BlogComponent
+    componentRef: BlogComponent,
+    description: "This is blog page type"
 })
 export class Blog extends PageBase {
 
