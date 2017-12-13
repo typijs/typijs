@@ -6,7 +6,10 @@ import { BaseElement } from './../base.element';
     <div class="form-group row">
         <label [attr.for]="id" class="col-sm-4 col-form-label">{{label}}</label>
         <div class="col-sm-8">
-            <input type="text" class="form-control" [id]="id" [placeholder]="label">
+            <input type="text" class="form-control" 
+                    [id]="id" 
+                    [placeholder]="label"
+                    [(ngModel)]="model[propertyName]" [name]="propertyName">
         </div>
     </div>
   `

@@ -6,10 +6,7 @@ const contentSchema = new mongoose.Schema({
   parentId: String,
   nameInUrl: String,
   linkUrl: String,
-  properties: [{
-    name: String,
-    value: String
-  }]
+  properties: mongoose.Schema.Types.Mixed
 });
 
 const Content = mongoose.model('Content', contentSchema);

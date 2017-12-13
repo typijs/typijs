@@ -37,6 +37,7 @@ export class ContentTypeListComponent {
                 parentId: "123",
                 nameInUrl: slugify(this.pageName)
             }
+            //TODO: need to check unique url in parent
             this.contentService.addContent(content).subscribe(
                 res => {
                     console.log(res);
