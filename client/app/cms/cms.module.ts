@@ -15,6 +15,7 @@ import {
 } from './ui/editor';
 import { CmsComponent } from './cms.component';
 import { CmsRoutingModule } from './cms.routing';
+import { CmsTemplateComponent } from './core/cms-template.component';
 
 @NgModule({
   imports: [
@@ -30,11 +31,11 @@ import { CmsRoutingModule } from './cms.routing';
     ContentFormEditComponent,
     ContentTypeListComponent,
     EditorLayoutComponent,
+    CmsTemplateComponent,
     CmsComponent
   ],
   exports: [
-    ContentFormEditComponent,
-    InsertPointDirective,
+    CmsTemplateComponent,
   ],
   providers: [ContentService],
 })

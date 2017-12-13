@@ -1,3 +1,4 @@
+import { LayoutComponent } from './layout.component';
 import { BlogTypeSelectionFactory } from './pages/blog/blog.pagetype';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule } from '@angular/http';
@@ -27,6 +28,7 @@ registerPageType(register);
   declarations: [
     AppComponent,
     HomeComponent,
+    LayoutComponent
   ],
   providers:[
     BlogTypeSelectionFactory,

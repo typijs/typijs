@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { Component, Input, ChangeDetectionStrategy, Inject } from '@angular/core';
 import { Http, Response, URLSearchParams, RequestOptions, Headers } from '@angular/http';
 import { Blog } from './../register';
@@ -9,10 +10,10 @@ import { ComponentBase } from '../../cms/core/base.component';
     selector: 'blog',
     template: `
     <div class="card">
-        <h4 class="card-header">About</h4>
+        <h4 class="card-header">{{currentContent.title}}</h4>
         <div class="card-block">
         <ul>
-            <li><b>Author:</b> <a href="javascript:void(0)" target="_blank" (click)="test()">Davide Violante</a></li>
+            <li><b>Author:</b> <a target="_blank" (click)="test()">Davide Violante</a></li>
             <li><b>GitHub:</b> <a href="https://github.com/DavideViolante/Angular-Full-Stack" target="_blank">project repository</a></li>
             <li><b>This project uses the MEAN stack:</b></li>
             <ul>
@@ -37,12 +38,13 @@ import { ComponentBase } from '../../cms/core/base.component';
 })
 export class BlogComponent extends ComponentBase<Blog> {
 
-    constructor(@Inject(TestInjectService) private testService: TestInjectService) {
+    constructor(@Inject(TestInjectService) private testService: TestInjectService,@Inject(Router) private router: Router) {
         super();
     }
 
     test() {
         this.testService.log()
+        this.router.navigate(["/new-page-12/new-page-1"]);
     }
 
 
