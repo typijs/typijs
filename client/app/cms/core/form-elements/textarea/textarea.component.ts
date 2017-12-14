@@ -3,11 +3,13 @@ import { BaseElement } from './../base.element';
 
 @Component({
     template: `
-        <div class="form-group row">
+        <div class="form-group row" [formGroup]="formGroup">
             <label [attr.for]="id" class="col-sm-4 col-form-label">{{label}}</label>
             <div class="col-sm-8">
-                <textarea class="form-control" [id]="id" rows="4"
-                    [(ngModel)]="model[propertyName]" [name]="propertyName"></textarea>
+                <textarea class="form-control" rows="4" 
+                    [id]="id" 
+                    [name]="propertyName"
+                    [formControlName]="propertyName"></textarea>
             </div>
         </div>
     `

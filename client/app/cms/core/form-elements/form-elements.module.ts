@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 import { InputComponent } from './input/input.component';
@@ -10,6 +10,7 @@ import { SelectComponent } from './select/select.component';
     imports: [
         CommonModule,
         FormsModule,
+        ReactiveFormsModule
     ],
     declarations: [
         InputComponent,
