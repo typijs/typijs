@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BlogComponent } from './blog.component';
-import { Property, PageType } from './../../cms/core/decorators';
+import { Property, PageType, ValidationTypes } from './../../cms/core/decorators';
 import { ISelectionFactory, SelectItem } from './../../cms/core/form-elements';
 import { TestInjectService } from './test.service';
 import { PageData } from '../../cms/core/bases/page-data';
@@ -37,13 +37,18 @@ export class Blog extends PageData {
 
     @Property({
         displayName: "Title",
-        displayType: UIType.Input
+        displayType: UIType.Input,
+        validates: [
+            ValidationTypes.required("This is min required"), 
+            ValidationTypes.minLength(1, "This is min message"), 
+            ValidationTypes.maxLength(10, "This is max message")]
     })
     title: string;
 
     @Property({
         displayName: "This is content",
-        displayType: UIType.Textarea
+        displayType: UIType.Textarea,
+        validates: [ValidationTypes.required("This is min required")]
     })
     content: string;
 

@@ -102,13 +102,14 @@ export class ContentFormEditComponent implements OnInit {
     }
 
     onSubmit() {
-        console.log(this.formModel);
-        if (this.currentContent) {
-            this.currentContent.properties = this.formModel;
-            this.contentService.editContent(this.currentContent).subscribe(res => {
-                console.log(res);
-            })
+        console.log(this.contentForm.valid);
+        if(this.contentForm.valid) {
+            if (this.currentContent) {
+                this.currentContent.properties = this.contentForm.value;
+                this.contentService.editContent(this.currentContent).subscribe(res => {
+                    console.log(res);
+                })
+            }
         }
-
     }
 }
