@@ -4,7 +4,7 @@ import { Property, PageType } from './../../cms/core/decorators';
 import { Elements } from './../../cms/core/form-elements';
 import { ISelectionFactory, SelectItem } from './../../cms/core/form-elements';
 import { TestInjectService } from './test.service';
-import { PageBase } from '../../cms/core/base.pagetype';
+import { PageData } from '../../cms/core/bases/page-data';
 
 
 @Injectable()
@@ -33,7 +33,7 @@ export class BlogTypeSelectionFactory implements ISelectionFactory {
     componentRef: BlogComponent,
     description: "This is blog page type"
 })
-export class Blog extends PageBase {
+export class Blog extends PageData {
 
     @Property({
         displayName: "Title",

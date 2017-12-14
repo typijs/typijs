@@ -3,7 +3,7 @@ import { Component, Input, ChangeDetectionStrategy, Inject } from '@angular/core
 import { Http, Response, URLSearchParams, RequestOptions, Headers } from '@angular/http';
 import { Blog } from './../register';
 import { TestInjectService } from './test.service';
-import { ComponentBase } from '../../cms/core/base.component';
+import { BaseComponent } from '../../cms/core/bases/base-component';
 
 
 @Component({
@@ -36,7 +36,7 @@ import { ComponentBase } from '../../cms/core/base.component';
     </div>
   `
 })
-export class BlogComponent extends ComponentBase<Blog> {
+export class BlogComponent extends BaseComponent<Blog> {
 
     constructor(@Inject(TestInjectService) private testService: TestInjectService,@Inject(Router) private router: Router) {
         super();
