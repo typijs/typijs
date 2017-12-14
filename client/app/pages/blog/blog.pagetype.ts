@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BlogComponent } from './blog.component';
 import { Property, PageType } from './../../cms/core/decorators';
-import { Elements } from './../../cms/core/form-elements';
 import { ISelectionFactory, SelectItem } from './../../cms/core/form-elements';
 import { TestInjectService } from './test.service';
 import { PageData } from '../../cms/core/bases/page-data';
+import { UIType } from '../../cms/core/index';
 
 
 @Injectable()
@@ -37,19 +37,19 @@ export class Blog extends PageData {
 
     @Property({
         displayName: "Title",
-        displayType: Elements.Input
+        displayType: UIType.Input
     })
     title: string;
 
     @Property({
         displayName: "This is content",
-        displayType: Elements.Textarea
+        displayType: UIType.Textarea
     })
     content: string;
 
     @Property({
         displayName: "This is blog type",
-        displayType: Elements.Select,
+        displayType: UIType.Select,
         selectionFactory: BlogTypeSelectionFactory
     })
     blogType: string;

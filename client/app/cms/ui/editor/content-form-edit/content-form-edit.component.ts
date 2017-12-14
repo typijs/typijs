@@ -1,11 +1,10 @@
-import { element } from 'protractor';
 import { Component, Input, AfterViewInit, ViewChild, ComponentFactoryResolver, OnDestroy, Inject, Injector, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
 import { InsertPointDirective } from './../../../core/directives';
-import { BaseElement } from './../../../core/form-elements';
+import { BaseElement, Elements } from './../../../core/form-elements';
 import { SelectComponent } from './../../../core/form-elements/select/select.component';
 import { ISelectionFactory } from './../../../core/form-elements';
 
@@ -64,7 +63,7 @@ export class ContentFormEditComponent implements OnInit {
             if (properties)
                 properties.forEach(property => {
                     console.log(property);
-                    let propertyFactory = this.componentFactoryResolver.resolveComponentFactory(property.metadata.displayType);
+                    let propertyFactory = this.componentFactoryResolver.resolveComponentFactory(Elements[property.metadata.displayType]);
                     let propertyComponent = viewContainerRef.createComponent(propertyFactory);
                     (<BaseElement>propertyComponent.instance).label = property.metadata.displayName;
                     (<BaseElement>propertyComponent.instance).model = this.formModel;

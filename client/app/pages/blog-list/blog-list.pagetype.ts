@@ -1,5 +1,5 @@
 import { Property, PageType } from './../../cms/core/decorators';
-import { Elements } from './../../cms/core/form-elements';
+import { UIType } from '../../cms/core/index';
 
 @PageType({
     displayName: "Blog List Page Type",
@@ -8,7 +8,7 @@ import { Elements } from './../../cms/core/form-elements';
 export class BlogList {
     @Property({
         displayName: "This is Title",
-        displayType: Elements.Input
+        displayType: UIType.Input
     })
     title: string;
     content: string;

@@ -1,10 +1,10 @@
-import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 import { FormElementsModule } from './core/form-elements';
-import { InsertPointDirective } from './core/directives';
 
 import { ContentService } from './core/services';
 
@@ -15,28 +15,25 @@ import {
 } from './ui/editor';
 import { CmsComponent } from './cms.component';
 import { CmsRoutingModule } from './cms.routing';
-import { CmsTemplateComponent } from './core/cms-template.component';
+import { CmsPublicModule } from './cms-public.module';
 
 @NgModule({
   imports: [
-    HttpClientModule,
     CommonModule,
+    HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
     FormElementsModule,
-    CmsRoutingModule
+    CmsRoutingModule,
+    CmsPublicModule
   ],
   declarations: [
-    InsertPointDirective,
     ContentFormEditComponent,
     ContentTypeListComponent,
     EditorLayoutComponent,
-    CmsTemplateComponent,
     CmsComponent
   ],
-  exports: [
-    CmsTemplateComponent,
-  ],
+  exports: [],
   providers: [ContentService],
 })
 export class CmsModule { }
