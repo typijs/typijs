@@ -1,3 +1,11 @@
 @import 'assets/vendor/bootstrap/css/bootstrap.min.css';
 @import 'assets/vendor/font-awesome/css/font-awesome.min.css';
 @import 'assets/css/sb-admin-2.css';
+
+.ng-valid[required], .ng-valid.required  {
+    border-left: 5px solid #42A948; /* green */
+  }
+  
+.ng-invalid:not(form)  {
+border-left: 5px solid #a94442; /* red */
+}

@@ -4,19 +4,22 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
 import { InsertPointDirective } from './../../../core/directives';
-import { BaseElement } from './../../../core/form-elements';
+import { BaseElement, Elements } from './../../../core/form-elements';
 import { SelectComponent } from './../../../core/form-elements/select/select.component';
 import { ISelectionFactory } from './../../../core/form-elements';
 
 import { ContentService } from './../../../core/services';
 import CMS from '../../../core';
 import { PAGE_TYPE_METADATA_KEY, PROPERTY_METADATA_KEY, PROPERTIES_METADATA_KEY } from './../../../core/constants';
+import { Content } from '../../../core/models/content.model';
 
 @Component({
     templateUrl: './content-form-edit.component.html',
 })
 export class ContentFormEditComponent implements OnInit {
     subParams: Subscription;
+    formModel: any = {};
+    private currentContent: Content;
 
     @ViewChild(InsertPointDirective) pageEditHost: InsertPointDirective;
 
@@ -29,14 +32,19 @@ export class ContentFormEditComponent implements OnInit {
             let contentId = params['id'] || '';
             if (contentId)
                 this.contentService.getContent({ _id: contentId }).subscribe(res => {
-                    console.log(res);
-                    let contentType = CMS.PAGE_TYPES.find(x => x.name == res.contentType);
+                    this.currentContent = res;
+                    if(this.currentContent.properties)
+                        this.formModel = this.currentContent.properties;
+
+                    let contentType = CMS.PAGE_TYPES[res.contentType];
                     if (contentType) {
                         let properties = Reflect.getMetadata(PROPERTIES_METADATA_KEY, contentType);
                         let propertiesMetadata = [];
                         if (properties)
                             properties.forEach(element => {
-                                propertiesMetadata.push(Reflect.getMetadata(PROPERTY_METADATA_KEY, contentType, element))
+                                propertiesMetadata.push({
+                                    name: element,
+                                    metadata: Reflect.getMetadata(PROPERTY_METADATA_KEY, contentType, element)})
                             });
 
                         if (propertiesMetadata.length > 0) {
@@ -52,22 +60,30 @@ export class ContentFormEditComponent implements OnInit {
             let viewContainerRef = this.pageEditHost.viewContainerRef;
             viewContainerRef.clear();
 
-            // if (this._pageInfo.metadata.componentRef) {
-            //     let componentFactory = this.componentFactoryResolver.resolveComponentFactory(this._pageInfo.metadata.componentRef);
-            //     let componentRef = viewContainerRef.createComponent(componentFactory);
-            // }
-
             if (properties)
-                properties.forEach(element => {
-                    let propertyFactory = this.componentFactoryResolver.resolveComponentFactory(element.displayType);
+                properties.forEach(property => {
+                    console.log(property);
+                    let propertyFactory = this.componentFactoryResolver.resolveComponentFactory(Elements[property.metadata.displayType]);
                     let propertyComponent = viewContainerRef.createComponent(propertyFactory);
-                    (<BaseElement>propertyComponent.instance).label = element.displayName;
+                    (<BaseElement>propertyComponent.instance).label = property.metadata.displayName;
+                    (<BaseElement>propertyComponent.instance).model = this.formModel;
+                    (<BaseElement>propertyComponent.instance).propertyName = property.name;
 
                     if (propertyComponent.instance instanceof SelectComponent) {
-                        console.log("this is select component");
-                        (<SelectComponent>propertyComponent.instance).selectItems = (<ISelectionFactory>(this.injector.get(element.selectionFactory))).GetSelections();
+                        (<SelectComponent>propertyComponent.instance).selectItems = (<ISelectionFactory>(this.injector.get(property.metadata.selectionFactory))).GetSelections();
                     }
                 });
         }
+    }
+
+    onSubmit() {
+        console.log(this.formModel);
+        if(this.currentContent) {
+            this.currentContent.properties = this.formModel;
+            this.contentService.editContent(this.currentContent).subscribe(res => {
+                console.log(res);
+            })
+        }
+        
     }
 }

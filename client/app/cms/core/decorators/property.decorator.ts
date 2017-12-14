@@ -1,11 +1,11 @@
 import "reflect-metadata";
 import { PROPERTIES_METADATA_KEY, PROPERTY_METADATA_KEY } from './../constants';
-import { BaseElement } from './../form-elements';
+import { UIType } from "../index";
 
 interface PropertyMetadata {
     displayName?: string;
     description?: string;
-    displayType?: typeof BaseElement;
+    displayType?: UIType;
     selectionFactory?: any;
     order?: number;
     groupName?: string;

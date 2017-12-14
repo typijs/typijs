@@ -10,7 +10,7 @@ import {
 
 const cmsRoutes: Routes = [
     {
-        path: 'cms', component: CmsComponent,
+        path: '', component: CmsComponent,
         children: [
             {
                 path: '',
@@ -22,6 +22,10 @@ const cmsRoutes: Routes = [
                 children: [
                     {
                         path: 'new-page',
+                        component: ContentTypeListComponent
+                    },
+                    {
+                        path: 'new-page/:id',
                         component: ContentTypeListComponent
                     },
                     {

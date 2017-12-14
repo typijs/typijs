@@ -5,5 +5,5 @@ export class Content {
     contentType?: string;
     nameInUrl?: string;
     linkUrl?: string;
-    properties?: Array<any>;
+    properties?: object;
 }

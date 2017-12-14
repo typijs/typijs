@@ -7,7 +7,7 @@ import { SelectItem } from './select-item';
         <div class="form-group row">
             <label [attr.for]="id" class="col-sm-4 col-form-label">{{label}}</label>
             <div class="col-sm-8">
-                <select *ngIf="selectItems" class="form-control" [id]="id">
+                <select *ngIf="selectItems" class="form-control" [id]="id" [(ngModel)]="model[propertyName]" [name]="propertyName">
                     <option *ngFor="let selectItem of selectItems" [value]="selectItem.value">{{selectItem.text}}</option>
                 </select>
             </div>

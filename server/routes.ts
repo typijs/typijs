@@ -17,6 +17,7 @@ export default function setRoutes(app) {
   router.route('/content/:id').get(contentCtrl.get);
   router.route('/content/:id').put(contentCtrl.update);
   router.route('/content/:id').delete(contentCtrl.delete);
+  router.route('/content-by-url').get(contentCtrl.getByUrl);
   // Apply the routes to our application with the prefix /api
   app.use('/api', router);
 

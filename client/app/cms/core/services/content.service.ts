@@ -25,6 +25,10 @@ export class ContentService {
     return this.http.get<Content>(`/api/content/${content._id}`);
   }
 
+  getContentByUrl(linkUrl: string): Observable<Content> {
+    return this.http.get<Content>(`/api/content-by-url?url=${linkUrl}`);
+  }
+
   editContent(content: Content): Observable<string> {
     return this.http.put(`/api/content/${content._id}`, content, { responseType: 'text' });
   }
