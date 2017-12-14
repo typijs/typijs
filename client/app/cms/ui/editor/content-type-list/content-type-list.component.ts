@@ -23,9 +23,9 @@ export class ContentTypeListComponent {
     ngOnInit() {
         this.pageName = "New Page";
 
-        CMS.PAGE_TYPES.forEach(pageType => {
+        Object.keys(CMS.PAGE_TYPES).map(key => CMS.PAGE_TYPES[key]).forEach(pageType => {
             let pageTypeMetadata = Reflect.getMetadata(PAGE_TYPE_METADATA_KEY, pageType);
-            
+
             this.contentTypes.push({
                 typeRef: pageType,
                 metadata: pageTypeMetadata,

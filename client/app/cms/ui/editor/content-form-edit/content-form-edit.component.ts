@@ -37,7 +37,7 @@ export class ContentFormEditComponent implements OnInit {
                     if(this.currentContent.properties)
                         this.formModel = this.currentContent.properties;
 
-                    let contentType = CMS.PAGE_TYPES.find(x => x.name == res.contentType);
+                    let contentType = CMS.PAGE_TYPES[res.contentType];
                     if (contentType) {
                         let properties = Reflect.getMetadata(PROPERTIES_METADATA_KEY, contentType);
                         let propertiesMetadata = [];

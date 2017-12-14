@@ -1,19 +1,14 @@
 import 'reflect-metadata';
 import { PAGE_TYPE_METADATA_KEY, PAGE_TYPE_INDICATOR } from './../constants';
+import { ContentTypeMetadata } from './content-type-metadata';
 
-function specialDecorator(item: any) {
+function registerPageTypeDecorator(item: any) {
     item[PAGE_TYPE_INDICATOR] = true;
 }
 
-export interface PageTypeMetadata {
-    displayName?: string;
-    description?: string;
-    componentRef?: any;
-}
-
-export function PageType(metadata: PageTypeMetadata) {
+export function PageType(metadata: ContentTypeMetadata) {
     return function (ctor: Function) {
-        specialDecorator(ctor);
+        registerPageTypeDecorator(ctor);
         Reflect.defineMetadata(PAGE_TYPE_METADATA_KEY, metadata, ctor);
     }
 }
