@@ -9,11 +9,12 @@ import { SelectComponent } from './../../../core/form-elements/select/select.com
 import { ISelectionFactory } from './../../../core/form-elements';
 
 import { ContentService } from './../../../core/services';
-import CMS from '../../../core';
+import CMS, { UIType } from '../../../core';
 import { PAGE_TYPE_METADATA_KEY, PROPERTY_METADATA_KEY, PROPERTIES_METADATA_KEY } from './../../../core/constants';
 import { Content } from '../../../core/models/content.model';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Validators } from '@angular/forms';
+import { PropertyListComponent } from '../../../core/form-elements/property-list/property-list.component';
 
 @Component({
     templateUrl: './content-form-edit.component.html',
@@ -71,12 +72,26 @@ export class ContentFormEditComponent implements OnInit {
             properties.forEach(property => {
                 console.log(property);
                 let validators = [];
-                if(property.metadata.validates) {
-                    property.metadata.validates.forEach(validate=> {
+                if (property.metadata.validates) {
+                    property.metadata.validates.forEach(validate => {
                         validators.push(validate.validateFn);
                     })
                 }
-                group[property.name] = [this.formModel[property.name], validators]
+                if (property.metadata.displayType == UIType.PropertyList) {
+                    group[property.name] = this.formBuilder.array([]);
+                    let arrayObject = this.formModel[property.name];
+                    if (arrayObject instanceof Array) {
+                        arrayObject.forEach(item => {
+                            let childGroup = {};
+                            Object.keys(item).forEach(key => {
+                                childGroup[key] = [item[key]]
+                            })
+                            group[property.name].push(this.formBuilder.group(childGroup));
+                        })
+                    }
+                } else {
+                    group[property.name] = [this.formModel[property.name], validators]
+                }
             });
             this.contentForm = this.formBuilder.group(group)
         }
@@ -96,14 +111,16 @@ export class ContentFormEditComponent implements OnInit {
 
                 if (propertyComponent.instance instanceof SelectComponent) {
                     (<SelectComponent>propertyComponent.instance).selectItems = (<ISelectionFactory>(this.injector.get(property.metadata.selectionFactory))).GetSelections();
+                } else if (propertyComponent.instance instanceof PropertyListComponent) {
+                    (<PropertyListComponent>propertyComponent.instance).itemType = property.metadata.propertyListItemType;
                 }
             });
         }
     }
 
     onSubmit() {
-        console.log(this.contentForm.valid);
-        if(this.contentForm.valid) {
+        console.log(this.contentForm.value);
+        if (this.contentForm.valid) {
             if (this.currentContent) {
                 this.currentContent.properties = this.contentForm.value;
                 this.contentService.editContent(this.currentContent).subscribe(res => {

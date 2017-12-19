@@ -13,6 +13,7 @@ interface PropertyMetadata {
     description?: string;
     displayType?: UIType;
     selectionFactory?: any;
+    propertyListItemType?: any,
     order?: number;
     groupName?: string;
     validates?: Array<ValidateMetadata>;

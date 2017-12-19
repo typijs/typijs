@@ -5,6 +5,7 @@ import { ISelectionFactory, SelectItem } from './../../cms/core/form-elements';
 import { TestInjectService } from './test.service';
 import { PageData } from '../../cms/core/bases/page-data';
 import { UIType } from '../../cms/core/index';
+import { BannerItem } from './banner-item';
 
 
 @Injectable()
@@ -58,4 +59,12 @@ export class Blog extends PageData {
         selectionFactory: BlogTypeSelectionFactory
     })
     blogType: string;
+
+    @Property({
+        displayName: "This is banner",
+        displayType: UIType.PropertyList,
+        propertyListItemType: BannerItem,
+        selectionFactory: BlogTypeSelectionFactory
+    })
+    banners: Array<BannerItem>
 }

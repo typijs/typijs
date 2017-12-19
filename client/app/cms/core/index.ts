@@ -22,5 +22,6 @@ export function registerPageType(theEntryScope: any) {
 export enum UIType {
     Input = "Input",
     Textarea = "Textarea",
-    Select = "Select"
+    Select = "Select",
+    PropertyList = "PropertyList"
 }
