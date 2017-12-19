@@ -2,7 +2,7 @@ import { InputComponent } from './input/input.component';
 import { TextareaComponent } from './textarea/textarea.component';
 import { SelectComponent } from './select/select.component';
 import { PropertyListComponent } from './property-list/property-list.component';
-
+import { TinymceComponent } from './xhtml/tinymce.component';
 export * from './base.element';
 export * from './form-elements.module';
 export * from './select/select-item';
@@ -20,4 +20,7 @@ export namespace Elements {
 
     export const PropertyList = PropertyListComponent;
     export type PropertyList = PropertyListComponent; 
+
+    export const Xhtml = TinymceComponent;
+    export type Xhtml = TinymceComponent; 
 }

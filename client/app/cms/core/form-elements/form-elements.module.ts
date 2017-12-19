@@ -8,6 +8,7 @@ import { SelectComponent } from './select/select.component';
 import { PropertyListComponent } from './property-list/property-list.component';
 import { CmsPublicModule } from '../../cms-public.module';
 import { PropertyListItemComponent } from './property-list/property-list-item.component';
+import { TinymceComponent } from './xhtml/tinymce.component';
 
 @NgModule({
     imports: [
@@ -21,19 +22,22 @@ import { PropertyListItemComponent } from './property-list/property-list-item.co
         TextareaComponent,
         SelectComponent,
         PropertyListComponent,
-        PropertyListItemComponent
+        PropertyListItemComponent,
+        TinymceComponent
     ],
     entryComponents: [
         InputComponent,
         TextareaComponent,
         SelectComponent,
-        PropertyListComponent
+        PropertyListComponent,
+        TinymceComponent
     ],
     exports: [
         InputComponent,
         TextareaComponent,
         SelectComponent,
-        PropertyListComponent
+        PropertyListComponent,
+        TinymceComponent
     ]
 })
 export class FormElementsModule { }

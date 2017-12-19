@@ -54,6 +54,18 @@ export class Blog extends PageData {
     content: string;
 
     @Property({
+        displayName: "This is summary",
+        displayType: UIType.Xhtml
+    })
+    summary: string;
+
+    @Property({
+        displayName: "This is header",
+        displayType: UIType.Xhtml
+    })
+    header: string;
+
+    @Property({
         displayName: "This is blog type",
         displayType: UIType.Select,
         selectionFactory: BlogTypeSelectionFactory
