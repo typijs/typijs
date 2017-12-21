@@ -1,15 +1,21 @@
-import { Component, forwardRef, Input} from '@angular/core';
+import { Component, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { SelectItem } from '../select-item';
 
 @Component({
     selector: 'checkbox-group',
-    template: `<ng-content></ng-content>`,
+    template: `
+    <div class="checkbox" *ngFor="let selectItem of selectItems;">
+        <label>
+            <input type="checkbox" [checked]="selectItem.selected" (change)="toggleCheck(selectItem)">{{selectItem.text}}
+        </label>
+    </div>
+`,
     providers: [
         {
-          provide: NG_VALUE_ACCESSOR,
-          useExisting: forwardRef(() => CheckboxGroupComponent),
-          multi: true
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => CheckboxGroupComponent),
+            multi: true
         }
     ]
 })
@@ -18,11 +24,22 @@ export class CheckboxGroupComponent implements ControlValueAccessor {
     private onChange: (m: any) => void;
     private onTouched: (m: any) => void;
 
+    @Input() selectItems: Array<any>;
+
     get model() {
         return this._model;
     }
 
     writeValue(value: any): void {
+        if(this.selectItems && value instanceof Array) {
+            this.selectItems.forEach(item=>{
+                if(value.indexOf(item.value) > -1) {
+                    item.selected = true;
+                } else {
+                    item.selected = false;
+                }
+            })
+        }
         this._model = value;
     }
 
@@ -33,7 +50,7 @@ export class CheckboxGroupComponent implements ControlValueAccessor {
     registerOnTouched(fn: any): void {
         this.onTouched = fn;
     }
-    
+
     set(value: any) {
         this._model = value;
         this.onChange(this._model);
@@ -43,7 +60,8 @@ export class CheckboxGroupComponent implements ControlValueAccessor {
         if (this.contains(value)) {
             this.remove(value);
         } else {
-            this.add(value);
+            this._model = this.selectItems.filter(item=>item.selected).map(item=> item.value);
+            this.onChange(this._model);
         }
     }
 
@@ -57,17 +75,6 @@ export class CheckboxGroupComponent implements ControlValueAccessor {
         return false;
     }
 
-    private add(value: any) {
-        if (!this.contains(value)) {
-            if (this._model instanceof Array) {
-                this._model.push(value);
-            } else {
-                this._model = [value];
-            }
-            this.onChange(this._model);
-        }
-    }
-
     private remove(value: any) {
         const index = this._model.indexOf(value);
         if (!this._model || index < 0) {
@@ -76,5 +83,10 @@ export class CheckboxGroupComponent implements ControlValueAccessor {
 
         this._model.splice(index, 1);
         this.onChange(this._model);
+    }
+
+    toggleCheck(selectItem) {
+        selectItem.selected = !selectItem.selected;
+        this.addOrRemove(selectItem.value);
     }
 }
