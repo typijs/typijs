@@ -24,5 +24,6 @@ export enum UIType {
     Textarea = "Textarea",
     Select = "Select",
     PropertyList = "PropertyList",
-    Xhtml = "Xhtml"
+    Xhtml = "Xhtml",
+    Checkbox = "Checkbox"
 }

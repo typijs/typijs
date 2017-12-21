@@ -73,6 +73,13 @@ export class Blog extends PageData {
     blogType: string;
 
     @Property({
+        displayName: "This is check type",
+        displayType: UIType.Checkbox,
+        selectionFactory: BlogTypeSelectionFactory
+    })
+    checkType: string;
+
+    @Property({
         displayName: "This is banner",
         displayType: UIType.PropertyList,
         propertyListItemType: BannerItem,

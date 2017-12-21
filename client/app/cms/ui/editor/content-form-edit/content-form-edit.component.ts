@@ -5,7 +5,6 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { InsertPointDirective } from './../../../core/directives';
 import { BaseElement, Elements } from './../../../core/form-elements';
-import { SelectComponent } from './../../../core/form-elements/select/select.component';
 import { ISelectionFactory } from './../../../core/form-elements';
 
 import { ContentService } from './../../../core/services';
@@ -15,6 +14,7 @@ import { Content } from '../../../core/models/content.model';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { PropertyListComponent } from '../../../core/form-elements/property-list/property-list.component';
+import { SelectElement } from '../../../core/form-elements/select/select.element';
 
 @Component({
     templateUrl: './content-form-edit.component.html',
@@ -77,6 +77,7 @@ export class ContentFormEditComponent implements OnInit {
                         validators.push(validate.validateFn);
                     })
                 }
+          
                 if (property.metadata.displayType == UIType.PropertyList) {
                     group[property.name] = this.formBuilder.array([]);
                     let arrayObject = this.formModel[property.name];
@@ -109,8 +110,8 @@ export class ContentFormEditComponent implements OnInit {
                 (<BaseElement>propertyComponent.instance).formGroup = this.contentForm;
                 (<BaseElement>propertyComponent.instance).propertyName = property.name;
 
-                if (propertyComponent.instance instanceof SelectComponent) {
-                    (<SelectComponent>propertyComponent.instance).selectItems = (<ISelectionFactory>(this.injector.get(property.metadata.selectionFactory))).GetSelections();
+                if (propertyComponent.instance instanceof SelectElement) {
+                    (<SelectElement>propertyComponent.instance).selectItems = (<ISelectionFactory>(this.injector.get(property.metadata.selectionFactory))).GetSelections();
                 } else if (propertyComponent.instance instanceof PropertyListComponent) {
                     (<PropertyListComponent>propertyComponent.instance).itemType = property.metadata.propertyListItemType;
                 }

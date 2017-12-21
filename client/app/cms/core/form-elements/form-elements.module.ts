@@ -4,11 +4,14 @@ import { CommonModule } from '@angular/common';
 
 import { InputComponent } from './input/input.component';
 import { TextareaComponent } from './textarea/textarea.component';
-import { SelectComponent } from './select/select.component';
 import { PropertyListComponent } from './property-list/property-list.component';
 import { CmsPublicModule } from '../../cms-public.module';
 import { PropertyListItemComponent } from './property-list/property-list-item.component';
 import { TinymceComponent } from './xhtml/tinymce.component';
+import { DropdownComponent } from './select/dropdown/dropdown.component';
+import { CheckboxComponent } from './select/checkbox/checkbox.component';
+import { CheckboxElement } from './select/checkbox/checkbox.element';
+import { CheckboxGroupComponent } from './select/checkbox/checkbox-group.component';
 
 @NgModule({
     imports: [
@@ -20,7 +23,10 @@ import { TinymceComponent } from './xhtml/tinymce.component';
     declarations: [
         InputComponent,
         TextareaComponent,
-        SelectComponent,
+        DropdownComponent,
+        CheckboxGroupComponent,
+        CheckboxComponent,
+        CheckboxElement,
         PropertyListComponent,
         PropertyListItemComponent,
         TinymceComponent
@@ -28,14 +34,16 @@ import { TinymceComponent } from './xhtml/tinymce.component';
     entryComponents: [
         InputComponent,
         TextareaComponent,
-        SelectComponent,
+        DropdownComponent,
+        CheckboxElement,
         PropertyListComponent,
         TinymceComponent
     ],
     exports: [
         InputComponent,
         TextareaComponent,
-        SelectComponent,
+        DropdownComponent,
+        CheckboxElement,
         PropertyListComponent,
         TinymceComponent
     ]
