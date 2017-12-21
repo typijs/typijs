@@ -9,9 +9,9 @@ import { CmsPublicModule } from '../../cms-public.module';
 import { PropertyListItemComponent } from './property-list/property-list-item.component';
 import { TinymceComponent } from './xhtml/tinymce.component';
 import { DropdownComponent } from './select/dropdown/dropdown.component';
-import { CheckboxComponent } from './select/checkbox/checkbox.component';
 import { CheckboxElement } from './select/checkbox/checkbox.element';
 import { CheckboxGroupComponent } from './select/checkbox/checkbox-group.component';
+import { PropertyGroupComponent } from './property-list/property-group.component';
 
 @NgModule({
     imports: [
@@ -25,8 +25,8 @@ import { CheckboxGroupComponent } from './select/checkbox/checkbox-group.compone
         TextareaComponent,
         DropdownComponent,
         CheckboxGroupComponent,
-        CheckboxComponent,
         CheckboxElement,
+        PropertyGroupComponent,
         PropertyListComponent,
         PropertyListItemComponent,
         TinymceComponent

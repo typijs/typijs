@@ -1,10 +1,14 @@
-import { Component, Input, ChangeDetectionStrategy, ViewChild, Inject, ComponentFactoryResolver } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy, ViewChild, Inject, ComponentFactoryResolver, Injector } from '@angular/core';
 import { BaseElement } from './../base.element';
 import { InsertPointDirective } from './../../../core/directives';
 import { Elements } from '../index';
 import { PROPERTIES_METADATA_KEY, PROPERTY_METADATA_KEY } from '../../constants';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { UIType } from '../../index';
+import { PropertyGroupComponent } from './property-group.component';
+import { SelectElement } from '../select/select.element';
+import { ISelectionFactory } from '../select/selection-factory';
+
 
 @Component({
     template: `
@@ -13,7 +17,7 @@ import { UIType } from '../../index';
         <div class="col-sm-8">
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <property-items [formGroup]="formGroup" [propertyName]="propertyName"></property-items>
+                    <property-group [formControlName]="propertyName"></property-group>
                     
                     <a href="javascript:void(0)" class="btn btn-default btn-block" (click)="openDiglog()">Add item</a>
                 </div>
@@ -53,6 +57,7 @@ export class PropertyListComponent extends BaseElement {
     private _itemType: any;
 
     @ViewChild(InsertPointDirective) modelEditHost: InsertPointDirective;
+    @ViewChild(PropertyGroupComponent) propertyGroup: PropertyGroupComponent;
 
     @Input()
     set itemType(itemType: any) {
@@ -78,7 +83,8 @@ export class PropertyListComponent extends BaseElement {
 
     constructor(
         private formBuilder: FormBuilder,
-        @Inject(ComponentFactoryResolver) private componentFactoryResolver: ComponentFactoryResolver) {
+        @Inject(ComponentFactoryResolver) private componentFactoryResolver: ComponentFactoryResolver,
+        private injector: Injector) {
         super();
     }
 
@@ -102,7 +108,7 @@ export class PropertyListComponent extends BaseElement {
                     })
                 }
                 if (property.metadata.displayType == UIType.PropertyList) {
-                    group[property.name] = this.formBuilder.array([])
+                    group[property.name] = [[], validators]
                 } else {
                     group[property.name] = ['', validators]
                 }
@@ -122,6 +128,12 @@ export class PropertyListComponent extends BaseElement {
                 (<BaseElement>propertyComponent.instance).label = property.metadata.displayName;
                 (<BaseElement>propertyComponent.instance).formGroup = this.modelForm;
                 (<BaseElement>propertyComponent.instance).propertyName = property.name;
+
+                if (propertyComponent.instance instanceof SelectElement) {
+                    (<SelectElement>propertyComponent.instance).selectItems = (<ISelectionFactory>(this.injector.get(property.metadata.selectionFactory))).GetSelections();
+                } else if (propertyComponent.instance instanceof PropertyListComponent) {
+                    (<PropertyListComponent>propertyComponent.instance).itemType = property.metadata.propertyListItemType;
+                }
             });
         }
     }
@@ -129,12 +141,13 @@ export class PropertyListComponent extends BaseElement {
     onSubmit() {
         console.log(this.modelForm.value);
         console.log(this.modelForm.valid);
-        const controls = <FormArray>this.formGroup['controls'][this.propertyName];
-        let group = {};
-        Object.keys(this.modelForm.value).forEach(key => {
-            group[key] = [this.modelForm.value[key]]
-        })
-        controls.push(this.formBuilder.group(group));
+        //const controls = <FormArray>this.formGroup['controls'][this.propertyName];
+        // let group = {};
+        // Object.keys(this.modelForm.value).forEach(key => {
+        //     group[key] = [this.modelForm.value[key]]
+        // })
+        // controls.push(this.formBuilder.group(group));
+        this.propertyGroup.addItem(this.modelForm.value);
         this.closeDialog();
     }
 }

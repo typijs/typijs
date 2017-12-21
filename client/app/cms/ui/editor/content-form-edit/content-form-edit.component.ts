@@ -78,21 +78,7 @@ export class ContentFormEditComponent implements OnInit {
                     })
                 }
           
-                if (property.metadata.displayType == UIType.PropertyList) {
-                    group[property.name] = this.formBuilder.array([]);
-                    let arrayObject = this.formModel[property.name];
-                    if (arrayObject instanceof Array) {
-                        arrayObject.forEach(item => {
-                            let childGroup = {};
-                            Object.keys(item).forEach(key => {
-                                childGroup[key] = [item[key]]
-                            })
-                            group[property.name].push(this.formBuilder.group(childGroup));
-                        })
-                    }
-                } else {
-                    group[property.name] = [this.formModel[property.name], validators]
-                }
+                group[property.name] = [this.formModel[property.name], validators]
             });
             this.contentForm = this.formBuilder.group(group)
         }

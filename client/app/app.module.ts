@@ -1,5 +1,4 @@
 import { LayoutComponent } from './layout.component';
-import { BlogTypeSelectionFactory } from './pages/blog/blog.pagetype';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule } from '@angular/http';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
@@ -11,7 +10,7 @@ import * as register from './pages/register';
 import { registerPageType } from './cms/core';
 import { AppRoutingModule } from './app.routing';
 import { HomeComponent } from './home.component';
-import { TestInjectService } from './pages/blog/test.service';
+import { TestInjectService, BlogTypeSelectionFactory } from './pages/blog/test.service';
 import { CmsPublicModule } from './cms/cms-public.module';
 
 registerPageType(register);
@@ -30,8 +29,8 @@ registerPageType(register);
     LayoutComponent
   ],
   providers:[
-    BlogTypeSelectionFactory,
-    TestInjectService
+    TestInjectService,
+    BlogTypeSelectionFactory
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]

@@ -1,5 +1,6 @@
 import { Property, ValidationTypes } from "../../cms/core/decorators/index";
 import { UIType } from "../../cms/core/index";
+import { BlogTypeSelectionFactory } from "./test.service";
 
 export class BannerItem {
     @Property({
@@ -18,6 +19,26 @@ export class BannerItem {
         validates: [ValidationTypes.required("This is min required")]
     })
     content: string;
+
+    @Property({
+        displayName: "This is header",
+        displayType: UIType.Xhtml
+    })
+    header: string;
+
+    @Property({
+        displayName: "This is blog type",
+        displayType: UIType.Select,
+        selectionFactory: BlogTypeSelectionFactory
+    })
+    blogType: string;
+
+    @Property({
+        displayName: "This is check type",
+        displayType: UIType.Checkbox,
+        selectionFactory: BlogTypeSelectionFactory
+    })
+    checkType: string;
 }
 
 
@@ -36,4 +57,31 @@ export class ImageItem {
         validates: [ValidationTypes.required("This is min required")]
     })
     thumb: string;
+
+    @Property({
+        displayName: "This is header",
+        displayType: UIType.Xhtml
+    })
+    header: string;
+
+    @Property({
+        displayName: "This is blog type",
+        displayType: UIType.Select,
+        selectionFactory: BlogTypeSelectionFactory
+    })
+    blogType: string;
+
+    @Property({
+        displayName: "This is check type",
+        displayType: UIType.Checkbox,
+        selectionFactory: BlogTypeSelectionFactory
+    })
+    checkType: string;
+
+    @Property({
+        displayName: "This is banner",
+        displayType: UIType.PropertyList,
+        propertyListItemType: BannerItem,
+    })
+    banners: Array<BannerItem>
 }
