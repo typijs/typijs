@@ -7,7 +7,7 @@ const appRoutes: Routes = [
   { path: '', component: HomeComponent },
   {
     path: 'cms',
-    loadChildren: 'app/cms/cms.module#CmsModule',
+    loadChildren: 'angular-cms/src/cms.module#CmsModule',
   },
   { path: '**', component: LayoutComponent },
 ];
@@ -19,4 +19,5 @@ const appRoutes: Routes = [
     RouterModule
   ]
 })
+
 export class AppRoutingModule { }

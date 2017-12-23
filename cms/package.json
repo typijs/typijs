@@ -1,11 +1,12 @@
 {
-  "name": "cms",
-  "version": "0.0.0",
+  "name": "angular-cms",
+  "version": "0.0.1",
   "license": "MIT",
   "angular-cli": {},
   "main": "src/index",
   "scripts": {
     "ng": "ng",
+    "build": "ng build",
     "start": "ng serve",
     "test": "ng test",
     "lint": "ng lint",

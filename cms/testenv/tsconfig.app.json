@@ -6,11 +6,6 @@
     "module": "es2015",
     "types": []
   },
-  "include": [
-    "../node_modules/angular-cms/**/*.ts",
-    "main.ts",
-    "polyfills.ts"
-  ],
   "exclude": [
     "test.ts",
     "**/*.spec.ts"

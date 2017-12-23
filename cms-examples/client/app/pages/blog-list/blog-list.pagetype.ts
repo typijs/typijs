@@ -1,5 +1,5 @@
-import { Property, PageType } from './../../cms/core/decorators';
-import { UIType } from '../../cms/core/index';
+import { Property, PageType } from 'angular-cms/src/core/decorators';
+import { UIType } from 'angular-cms/src/core/index';
 
 @PageType({
     displayName: "Blog List Page Type",

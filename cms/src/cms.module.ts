@@ -16,6 +16,7 @@ import {
 import { CmsComponent } from './cms.component';
 import { CmsRoutingModule } from './cms.routing';
 import { CmsPublicModule } from './cms-public.module';
+import {} from "reflect-metadata";
 
 @NgModule({
   imports: [

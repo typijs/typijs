@@ -7,11 +7,11 @@ import { AppComponent } from './app.component';
 import { PagesModule } from './pages/pages.module';
 import * as register from './pages/register';
 
-import { registerPageType } from './cms/core';
+import { registerPageType } from 'angular-cms/src/core';
 import { AppRoutingModule } from './app.routing';
 import { HomeComponent } from './home.component';
 import { TestInjectService, BlogTypeSelectionFactory } from './pages/blog/test.service';
-import { CmsPublicModule } from './cms/cms-public.module';
+import { CmsPublicModule } from 'angular-cms/src';
 
 registerPageType(register);
 

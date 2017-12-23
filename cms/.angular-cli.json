@@ -6,8 +6,8 @@
   },
   "apps": [
     {
-      "root": "client",
-      "outDir": "dist/public",
+      "root": "testenv",
+      "outDir": "dist",
       "assets": [
         "assets",
         "favicon.ico"
@@ -24,7 +24,7 @@
       ],
       "scripts": [
         "../node_modules/jquery/dist/jquery.min.js",
-        "app/cms/assets/js/sb-admin-2.js"
+        "../src/assets/js/sb-admin-2.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {
