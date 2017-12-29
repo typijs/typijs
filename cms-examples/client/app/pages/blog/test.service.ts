@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@angular/core';
-import { ISelectionFactory, SelectItem } from 'angular-cms/src/core/form-elements';
+import { ISelectionFactory, SelectItem } from '@angular-cms/form';
 
 export class TestInjectService {
     log() {

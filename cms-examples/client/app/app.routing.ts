@@ -7,7 +7,7 @@ const appRoutes: Routes = [
   { path: '', component: HomeComponent },
   {
     path: 'cms',
-    loadChildren: 'angular-cms/src/cms.module#CmsModule',
+    loadChildren: '@angular-cms/portal/src/cms.module#CmsModule',
   },
   { path: '**', component: LayoutComponent },
 ];

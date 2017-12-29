@@ -1,10 +1,11 @@
 import { Router } from '@angular/router';
 import { Component, Input, ChangeDetectionStrategy, Inject } from '@angular/core';
 import { Http, Response, URLSearchParams, RequestOptions, Headers } from '@angular/http';
+
+import { BaseComponent } from '@angular-cms/core';
+
 import { Blog } from './../register';
 import { TestInjectService } from './test.service';
-import { BaseComponent } from 'angular-cms/src/core/bases/base-component';
-
 
 @Component({
     selector: 'blog',

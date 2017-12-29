@@ -1,5 +1,4 @@
-import { Property, ValidationTypes } from "angular-cms/src/core/decorators/index";
-import { UIType } from "angular-cms/src/core/index";
+import { Property, ValidationTypes, UIType } from "@angular-cms/core";
 import { BlogTypeSelectionFactory } from "./test.service";
 
 export class BannerItem {

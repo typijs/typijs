@@ -1,13 +1,10 @@
 import { Injectable } from '@angular/core';
 import { BlogComponent } from './blog.component';
-import { Property, PageType, ValidationTypes } from 'angular-cms/src/core/decorators';
+
+import { Property, PageType, UIType, ValidationTypes, PageData } from '@angular-cms/core';
 
 import { TestInjectService, BlogTypeSelectionFactory } from './test.service';
-import { PageData } from 'angular-cms/src/core/bases/page-data';
-import { UIType } from 'angular-cms/src/core/index';
 import { BannerItem, ImageItem } from './banner-item';
-
-
 
 @PageType({
     displayName: "Blog Page Type",

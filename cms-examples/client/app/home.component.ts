@@ -4,11 +4,11 @@ import { TestInjectService } from './pages/blog/test.service';
 
 @Component({
   template: `<h2>This is home component
-    <cms-template></cms-template>
-  </h2>`,
+  <cms-template></cms-template>
+</h2>`,
 })
 export class HomeComponent {
-    constructor(protected http: Http, private testService: TestInjectService) {
-        
-            }
+  constructor(protected http: Http, private testService: TestInjectService) {
+    console.log(this.testService.log());
+  }
 }

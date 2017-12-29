@@ -4,15 +4,25 @@
     "outDir": "../out-tsc/app",
     "baseUrl": "./",
     "module": "es2015",
-    "types": []
+    "types": [],
+    "paths": {
+      "@angular/*": [
+        "../node_modules/@angular/*"
+      ],
+      "rxjs/*": [
+        "../node_modules/rxjs/*"
+      ]
+    }
   },
-  "include": [
-    "../node_modules/angular-cms/**/*.ts",
-    "main.ts",
-    "polyfills.ts"
-  ],
   "exclude": [
     "test.ts",
     "**/*.spec.ts"
+  ],
+  "include": [
+    "./",
+    "../../cms/core/index.ts",
+    "../../cms/portal/src/cms.module.ts",
+    "../../cms/editor/index.ts",
+    "../../cms/form-elements/index.ts"
   ]
 }

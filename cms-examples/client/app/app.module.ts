@@ -1,17 +1,16 @@
 import { LayoutComponent } from './layout.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule } from '@angular/http';
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA, ComponentFactoryResolver } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { PagesModule } from './pages/pages.module';
 import * as register from './pages/register';
 
-import { registerPageType } from 'angular-cms/src/core';
 import { AppRoutingModule } from './app.routing';
 import { HomeComponent } from './home.component';
 import { TestInjectService, BlogTypeSelectionFactory } from './pages/blog/test.service';
-import { CmsPublicModule } from 'angular-cms/src';
+import { registerPageType, CoreModule } from '@angular-cms/core';
 
 registerPageType(register);
 
@@ -21,7 +20,7 @@ registerPageType(register);
     HttpModule,
     AppRoutingModule,
     PagesModule,
-    CmsPublicModule,
+    CoreModule,
   ],
   declarations: [
     AppComponent,
