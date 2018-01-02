@@ -20,9 +20,7 @@ export class CmsTemplateComponent {
     constructor(@Inject(ComponentFactoryResolver) private componentFactoryResolver: ComponentFactoryResolver,
         private contentService: ContentService,
         private route: ActivatedRoute,
-        private router: Router) { 
-            console.log("abc")
-        }
+        private router: Router) { }
 
     ngOnInit() {
         this.router.events.subscribe((event) => {
