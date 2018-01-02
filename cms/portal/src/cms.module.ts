@@ -14,7 +14,7 @@ import {
 
 import { CmsComponent } from './cms.component';
 import { CmsRoutingModule } from './cms.routing';
-import {} from "reflect-metadata";
+import { } from "reflect-metadata";
 
 @NgModule({
   imports: [
@@ -23,8 +23,8 @@ import {} from "reflect-metadata";
     FormsModule,
     ReactiveFormsModule,
     FormElementsModule,
-    CmsRoutingModule,
-    CoreModule
+    CoreModule,
+    CmsRoutingModule
   ],
   declarations: [
     ContentFormEditComponent,
@@ -32,7 +32,6 @@ import {} from "reflect-metadata";
     EditorLayoutComponent,
     CmsComponent
   ],
-  exports: [],
   providers: [ContentService],
 })
 export class CmsModule { }

@@ -18,9 +18,9 @@ registerPageType(register);
   imports: [
     BrowserModule,
     HttpModule,
-    AppRoutingModule,
     PagesModule,
     CoreModule,
+    AppRoutingModule,
   ],
   declarations: [
     AppComponent,

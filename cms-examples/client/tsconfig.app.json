@@ -4,15 +4,7 @@
     "outDir": "../out-tsc/app",
     "baseUrl": "./",
     "module": "es2015",
-    "types": [],
-    "paths": {
-      "@angular/*": [
-        "../node_modules/@angular/*"
-      ],
-      "rxjs/*": [
-        "../node_modules/rxjs/*"
-      ]
-    }
+    "types": []
   },
   "exclude": [
     "test.ts",
@@ -20,9 +12,9 @@
   ],
   "include": [
     "./",
-    "../../cms/core/index.ts",
-    "../../cms/portal/src/cms.module.ts",
-    "../../cms/editor/index.ts",
-    "../../cms/form-elements/index.ts"
+    "../node_modules/@angular-cms/core/index.ts",
+    "../node_modules/@angular-cms/portal/src/cms.module.ts",
+    "../node_modules/@angular-cms/editor/index.ts",
+    "../node_modules/@angular-cms/form/index.ts"
   ]
 }

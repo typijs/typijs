@@ -11,15 +11,7 @@
     "lib": [
       "es2016",
       "dom"
-    ],
-    "paths": {
-      "@angular/*": [
-        "../../cms-examples/node_modules/@angular/*"
-      ],
-      "rxjs/*": [
-        "../../cms-examples/node_modules/rxjs/*"
-      ]
-    }
+    ]
   },
   "include": [
     "src"
