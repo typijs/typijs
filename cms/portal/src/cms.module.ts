@@ -7,9 +7,7 @@ import { FormElementsModule } from '@angular-cms/form';
 import { ContentService, CoreModule } from '@angular-cms/core';
 
 import {
-  EditorLayoutComponent,
-  ContentFormEditComponent,
-  ContentTypeListComponent
+  EditorModule
 } from '@angular-cms/editor';
 
 import { CmsComponent } from './cms.component';
@@ -22,14 +20,12 @@ import { } from "reflect-metadata";
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    FormElementsModule,
     CoreModule,
+    FormElementsModule,
+    EditorModule,
     CmsRoutingModule
   ],
   declarations: [
-    ContentFormEditComponent,
-    ContentTypeListComponent,
-    EditorLayoutComponent,
     CmsComponent
   ],
   providers: [ContentService],

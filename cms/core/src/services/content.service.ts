@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 
 import { Content } from '../models/content.model';
-
+//contents-by-parent/:parentId
 @Injectable()
 export class ContentService {
 
@@ -27,6 +27,10 @@ export class ContentService {
 
   getContentByUrl(linkUrl: string): Observable<Content> {
     return this.http.get<Content>(`/api/content-by-url?url=${linkUrl}`);
+  }
+
+  getContentsByParentId(parentId: string):  Observable<Content[]> {
+    return this.http.get<Content[]>(`/api/contents-by-parent/${parentId}`);
   }
 
   editContent(content: Content): Observable<string> {

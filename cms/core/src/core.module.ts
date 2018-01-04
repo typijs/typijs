@@ -22,10 +22,6 @@ import { CmsTemplateComponent } from './render/cms-template';
   entryComponents: [
     CmsTemplateComponent
   ],
-  providers: [ContentService],
+  providers: [ContentService]
 })
-export class CoreModule {
-  public static forRoot(): ModuleWithProviders {
-    return { ngModule: CoreModule };
-  }
-}
+export class CoreModule {}

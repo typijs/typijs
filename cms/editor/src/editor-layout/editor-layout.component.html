@@ -58,33 +58,8 @@
                             <i class="fa fa-sitemap fa-fw"></i> Pages
                             <span class="fa fa-plus pull-right" [routerLink]="['new-page']"></span>
                         </a>
-                        <ul class="nav nav-second-level">
-                            <li>
-                                <a href="javascript:void(0)">Second Level Item</a>
-                            </li>
-                            <li>
-                                <a href="javascript:void(0)">Second Level Item</a>
-                            </li>
-                            <li>
-                                <a href="javascript:void(0)">Third Level
-                                    <span class="fa arrow"></span>
-                                </a>
-                                <ul class="nav nav-third-level">
-                                    <li>
-                                        <a href="javascript:void(0)">Third Level Item</a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0)">Third Level Item</a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0)">Third Level Item</a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0)">Third Level Item</a>
-                                    </li>
-                                </ul>
-                                <!-- /.nav-third-level -->
-                            </li>
+                        <ul class="nav nav-second-level tree">
+                            <content-tree [root]="root"></content-tree>
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>
