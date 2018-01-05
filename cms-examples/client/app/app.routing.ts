@@ -1,7 +1,8 @@
-import { LayoutComponent } from './layout.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+
 import { HomeComponent } from './home.component';
+import { LayoutComponent } from './pages/shared/layout/layout.component';
 
 const appRoutes: Routes = [
   { path: '', component: HomeComponent },

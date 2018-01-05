@@ -1,4 +1,3 @@
-import { LayoutComponent } from './layout.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule } from '@angular/http';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA, ComponentFactoryResolver } from '@angular/core';
@@ -11,6 +10,7 @@ import { AppRoutingModule } from './app.routing';
 import { HomeComponent } from './home.component';
 import { TestInjectService, BlogTypeSelectionFactory } from './pages/blog/test.service';
 import { registerPageType, CoreModule } from '@angular-cms/core';
+import { LayoutComponent } from './pages/shared/layout/layout.component';
 
 registerPageType(register);
 
