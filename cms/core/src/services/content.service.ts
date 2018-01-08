@@ -9,6 +9,11 @@ export class ContentService {
 
   constructor(private http: HttpClient) { }
 
+  getStartPage(): Observable<Content> {
+    const startPageUrl = '/'
+    return this.http.get<Content>(`/api/content-by-url?url=${startPageUrl}`);
+  } 
+
   getContents(): Observable<Content[]> {
     return this.http.get<Content[]>('/api/contents');
   }

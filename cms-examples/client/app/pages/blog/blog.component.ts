@@ -8,7 +8,6 @@ import { Blog } from './../register';
 import { TestInjectService } from './test.service';
 
 @Component({
-    selector: 'blog',
     template: `
     <div id="about">
         <div class="header">

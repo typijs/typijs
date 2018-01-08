@@ -51,6 +51,7 @@ export class PropertyGroupComponent implements ControlValueAccessor {
     }
     
     addItem(item) {
+        if(!this._model) this._model = [];
         this._model.push(item);
         this.onChange(this._model);
     }

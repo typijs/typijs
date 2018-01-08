@@ -7,7 +7,6 @@ import { PagesModule } from './pages/pages.module';
 import * as register from './pages/register';
 
 import { AppRoutingModule } from './app.routing';
-import { HomeComponent } from './home.component';
 import { TestInjectService, BlogTypeSelectionFactory } from './pages/blog/test.service';
 import { registerPageType, CoreModule } from '@angular-cms/core';
 import { LayoutComponent } from './pages/shared/layout/layout.component';
@@ -24,7 +23,6 @@ registerPageType(register);
   ],
   declarations: [
     AppComponent,
-    HomeComponent,
     LayoutComponent
   ],
   providers:[

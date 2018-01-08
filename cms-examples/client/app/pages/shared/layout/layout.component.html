@@ -35,54 +35,13 @@
     <div id="footer">
         <div class="header">
             <div class="body">
-                <ul>
-                    <li>
-                        <h4>Lorem Ipsum</h4>
-                        <span>&gt;
-                            <a href="#header">Dolor Sit Amet</a>
+                <ul *ngIf="startPage">
+                    <li *ngFor="let item of startPage.footers">
+                        <h4>{{item.header}}</h4>
+                        <span *ngFor="let link of item.linkItems">&gt;
+                            <a href="#header">{{link.linkText}}</a>
                         </span>
-                        <span>&gt;
-                            <a href="#header">Lorem Ipsum</a>
-                        </span>
-                        <span>&gt;
-                            <a href="#header">Nulla Pretium</a>
-                        </span>
-                    </li>
-                    <li>
-                        <h4>Dolor Sit Amet</h4>
-                        <span>&gt;
-                            <a href="#header">Dolor Sit Amet</a>
-                        </span>
-                        <span>&gt;
-                            <a href="#header">Lorem Ipsum</a>
-                        </span>
-                        <span>&gt;
-                            <a href="#header">Nulla Pretium</a>
-                        </span>
-                    </li>
-                    <li>
-                        <h4>Nulla Pretium</h4>
-                        <span>&gt;
-                            <a href="#header">Dolor Sit Amet</a>
-                        </span>
-                        <span>&gt;
-                            <a href="#header">Lorem Ipsum</a>
-                        </span>
-                        <span>&gt;
-                            <a href="#header">Nulla Pretium</a>
-                        </span>
-                    </li>
-                    <li class="last-child">
-                        <h4>Curabitur</h4>
-                        <span>&gt;
-                            <a href="#header">Dolor Sit Amet</a>
-                        </span>
-                        <span>&gt;
-                            <a href="#header">Lorem Ipsum</a>
-                        </span>
-                        <span>&gt;
-                            <a href="#header">Nulla Pretium</a>
-                        </span>
+                        
                     </li>
                 </ul>
             </div>
