@@ -1,0 +1,35 @@
+{
+    "name": "@angular-cms/admin",
+    "version": "1.0.0",
+    "description": "",
+    "main": "dist/index.js",
+    "typings": "dist/index.d.ts",
+    "scripts": {
+      "build": "tsc",
+      "build:aot": "ngc"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+      "@angular/common": "^5.0.0",
+      "@angular/compiler": "^5.0.0",
+      "@angular/core": "^5.0.0",
+      "@angular/forms": "^5.0.0",
+      "@angular/router": "^5.0.0",
+      "core-js": "^2.4.1",
+      "reflect-metadata": "^0.1.10",
+      "rxjs": "^5.1.0",
+      "lodash": "^4.6.0",
+      "zone.js": "^0.8.4"
+    },
+    "devDependencies": {
+      "@angular/compiler-cli": "^5.0.0",
+      "@types/node": "~6.0.60",
+      "@types/lodash": "^4.14.62",
+      "codelyzer": "~2.0.0",
+      "ts-node": "~2.0.0",
+      "tslint": "~4.5.0",
+      "typescript": "~2.4.2"
+    }
+  }
+  

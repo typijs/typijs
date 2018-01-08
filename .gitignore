@@ -6,7 +6,8 @@
 /out-tsc
 
 # dependencies
-/node_modules
+dist
+node_modules
 
 # IDEs and editors
 /.idea
@@ -40,3 +41,4 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+.vscode/
