@@ -32,7 +32,7 @@ export class TinymceComponent extends BaseElement implements AfterViewInit, OnDe
     ngAfterViewInit() {
         tinymce.init({
             selector: '#' + this.id,
-            plugins: ['link', 'table'],
+            plugins: ['link', 'table', 'code'],
             min_height: 180,
             skin_url: '/assets/tinymce/skins/lightgray',
             setup: editor => {
