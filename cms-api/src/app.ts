@@ -33,21 +33,9 @@ console.log('MONGODB_URI: ',process.env.MONGODB_URI);
 mongodb
     .then((db) => {
         console.log('Connected to MongoDB on', db.host + ':' + db.port);
-
-        // setRoutes(app);
-
-        // app.get('/*', function (req, res) {
-        //     res.sendFile(path.join(__dirname, '../public/index.html'));
-        // });
-
-        // if (!module.parent) {
-        //     app.listen(app.get('port'), () => {
-        //         console.log('Angular CMS Prototype listening on port ' + app.get('port'));
-        //     });
-        // }
     })
     .catch((err) => {
-        console.log("MongoDB connection error. Please make sure MongoDB is running. " + err);
+        console.log("MongoDB connection error. Please make sure MongoDB is running." + err);
     });
 
 setRoutes(app);

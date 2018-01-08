@@ -8,7 +8,6 @@ const contentSchema = new mongoose.Schema({
   linkUrl: String,
   properties: mongoose.Schema.Types.Mixed
 });
-
 const Content = mongoose.model('Content', contentSchema);
 
 export default Content;

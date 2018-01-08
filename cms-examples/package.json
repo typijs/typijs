@@ -7,7 +7,7 @@
     "build": "ng build",
     "start": "node dist/server/server.js",
     "predev": "tsc -p server",
-    "dev": "concurrently \"mongod --dbpath D:/ProgramData/MongoDB/data/db\" \"ng serve -pc proxy.conf.json --open\" \"tsc -w -p server\" \"nodemon dist/server/server.js\"",
+    "dev": "concurrently \"mongod --dbpath D:/ProgramData/MongoDB/data/db\" \"ng serve -pc proxy.conf.json --open\" \"tsc -w -p ../cms-api\" \"nodemon --watch ../cms-api/dist dist/server/server.js\"",
     "prod": "concurrently \"mongod\" \"ng build -aot -prod && tsc -p server && node dist/server/server.js\"",
     "test": "ng test",
     "lint": "ng lint",
