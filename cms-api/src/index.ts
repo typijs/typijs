@@ -1,2 +1,2 @@
-export { app } from './app';
-export * from './routes';
+const app = require('./app');
+export = app;

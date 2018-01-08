@@ -2,10 +2,8 @@ import * as express from 'express';
 import ContentCtrl from './modules/content/content.controller';
 
 
-export default function setRoutes(app) {
-
+export function setRoutes(app) {
   const router = express.Router();
-  
   const contentCtrl = new ContentCtrl();
 
   // Cats

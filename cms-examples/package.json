@@ -5,10 +5,10 @@
   "scripts": {
     "ng": "ng",
     "build": "ng build",
-    "start": "node dist/server/app.js",
+    "start": "node dist/server/server.js",
     "predev": "tsc -p server",
-    "dev": "concurrently \"mongod --dbpath D:/ProgramData/MongoDB/data/db\" \"ng serve -pc proxy.conf.json --open\" \"tsc -w -p server\" \"nodemon dist/server/app.js\"",
-    "prod": "concurrently \"mongod\" \"ng build -aot -prod && tsc -p server && node dist/server/app.js\"",
+    "dev": "concurrently \"mongod --dbpath D:/ProgramData/MongoDB/data/db\" \"ng serve -pc proxy.conf.json --open\" \"tsc -w -p server\" \"nodemon dist/server/server.js\"",
+    "prod": "concurrently \"mongod\" \"ng build -aot -prod && tsc -p server && node dist/server/server.js\"",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -27,6 +27,7 @@
     "@angular-cms/form": "../cms/form-elements",
     "@angular-cms/editor": "../cms/editor",
     "@angular-cms/portal": "../cms/portal",
+    "@angular-cms/api": "../cms-api",
     "body-parser": "^1.18.2",
     "bootstrap": "4.0.0-alpha.5",
     "core-js": "^2.4.1",

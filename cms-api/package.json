@@ -6,7 +6,7 @@
   "typings": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "watch-ts": "tsc -w",
+    "watch": "tsc -w",
     "serve": "node dist/app.js"
   },
   "author": "",
