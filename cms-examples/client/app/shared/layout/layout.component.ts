@@ -1,7 +1,6 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { Http, Response, URLSearchParams, RequestOptions, Headers } from '@angular/http';
 import { ContentService } from '@angular-cms/core';
-import { HomePage } from '../../home/home.pagetype';
 
 @Component({
   templateUrl: './layout.component.html',
@@ -10,11 +9,9 @@ import { HomePage } from '../../home/home.pagetype';
 })
 export class LayoutComponent {
   startPage: any;
-  constructor(private contentService: ContentService) {
-  }
+  constructor(private contentService: ContentService) {}
 
   ngOnInit() {
-
     this.contentService.getStartPage().subscribe(res=>{
       console.log(res);
       this.startPage = res.properties;

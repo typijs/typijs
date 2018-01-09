@@ -3,9 +3,7 @@ import { Component, Input, ChangeDetectionStrategy, Inject } from '@angular/core
 import { Http, Response, URLSearchParams, RequestOptions, Headers } from '@angular/http';
 
 import { BaseComponent } from '@angular-cms/core';
-
-import { Blog } from './../register';
-import { TestInjectService } from './test.service';
+import { Blog } from './blog.pagetype';
 
 @Component({
     template: `
@@ -23,14 +21,11 @@ import { TestInjectService } from './test.service';
 })
 export class BlogComponent extends BaseComponent<Blog> {
 
-    constructor( @Inject(TestInjectService) private testService: TestInjectService, @Inject(Router) private router: Router) {
+    constructor(@Inject(Router) private router: Router) {
         super();
     }
 
     test() {
-        this.testService.log()
         this.router.navigate(["/new-page-12/new-page-1"]);
     }
-
-
 }

@@ -1,5 +1,5 @@
 import { Property, ValidationTypes, UIType } from "@angular-cms/core";
-import { BlogTypeSelectionFactory } from "./test.service";
+import { BlogTypeSelectionFactory } from "./blog-type-selection.factory";
 
 export class BannerItem {
     @Property({
@@ -38,49 +38,4 @@ export class BannerItem {
         selectionFactory: BlogTypeSelectionFactory
     })
     checkType: string;
-}
-
-
-export class ImageItem {
-    @Property({
-        displayName: "Image Url",
-        displayType: UIType.Input,
-        validates: [
-            ValidationTypes.required("This is min required")]
-    })
-    url: string;
-
-    @Property({
-        displayName: "Thumbnail",
-        displayType: UIType.Input,
-        validates: [ValidationTypes.required("This is min required")]
-    })
-    thumb: string;
-
-    @Property({
-        displayName: "This is header",
-        displayType: UIType.Xhtml
-    })
-    header: string;
-
-    @Property({
-        displayName: "This is blog type",
-        displayType: UIType.Select,
-        selectionFactory: BlogTypeSelectionFactory
-    })
-    blogType: string;
-
-    @Property({
-        displayName: "This is check type",
-        displayType: UIType.Checkbox,
-        selectionFactory: BlogTypeSelectionFactory
-    })
-    checkType: string;
-
-    @Property({
-        displayName: "This is banner",
-        displayType: UIType.PropertyList,
-        propertyListItemType: BannerItem,
-    })
-    banners: Array<BannerItem>
 }

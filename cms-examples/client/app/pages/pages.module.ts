@@ -9,7 +9,10 @@ import { HomeComponent } from './home/home.component';
         CommonModule,
         FormsModule,
     ],
-    entryComponents: [BlogComponent, HomeComponent],
+    entryComponents: [
+        BlogComponent,
+        HomeComponent
+    ],
     declarations: [
         BlogComponent,
         HomeComponent

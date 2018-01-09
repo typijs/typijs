@@ -1,19 +1,9 @@
 import { Injectable, Inject } from '@angular/core';
 import { ISelectionFactory, SelectItem } from '@angular-cms/form';
 
-export class TestInjectService {
-    log() {
-        console.log("This is test inject service");
-    }
-}
-
 @Injectable()
 export class BlogTypeSelectionFactory implements ISelectionFactory {
-    constructor(@Inject(TestInjectService) private testService: TestInjectService) {
-
-    }
     GetSelections(): SelectItem[] {
-        this.testService.log();
         let blogTypes: SelectItem[] = [];
         blogTypes.push(<SelectItem>{
             text: "text 1",
