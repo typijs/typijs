@@ -139,14 +139,6 @@ export class PropertyListComponent extends BaseElement {
     }
 
     onSubmit() {
-        console.log(this.modelForm.value);
-        console.log(this.modelForm.valid);
-        //const controls = <FormArray>this.formGroup['controls'][this.propertyName];
-        // let group = {};
-        // Object.keys(this.modelForm.value).forEach(key => {
-        //     group[key] = [this.modelForm.value[key]]
-        // })
-        // controls.push(this.formBuilder.group(group));
         this.propertyGroup.addItem(this.modelForm.value);
         this.closeDialog();
     }

@@ -28,7 +28,8 @@ export enum UIType {
     Select = "Select",
     PropertyList = "PropertyList",
     Xhtml = "Xhtml",
-    Checkbox = "Checkbox"
+    Checkbox = "Checkbox",
+    ContentArea = "ContentArea"
 }
 
 export * from './directives';

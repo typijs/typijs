@@ -6,4 +6,5 @@ export * from './select/select.element';
 export * from './select/select-item';
 export * from './select/selection-factory';
 export * from './property-list/property-list.component';
+export * from './content-area/content-area.component'
 
