@@ -9,13 +9,16 @@ import { CMS, UIType, InsertPointDirective, ContentService, Content } from '@ang
 
 import { BaseElement, Elements, ISelectionFactory, PropertyListComponent, SelectElement } from '@angular-cms/form';
 
+import { PAGE_TYPE, BLOCK_TYPE } from './../constants';
 
 @Component({
     templateUrl: './content-form-edit.component.html',
 })
 export class ContentFormEditComponent implements OnInit {
     subParams: Subscription;
-    contentForm: any;
+
+    type: string;
+    contentForm: any; //FormGroup
 
     formModel: any = {};
     private currentContent: Content;
@@ -33,34 +36,49 @@ export class ContentFormEditComponent implements OnInit {
         this.contentForm = new FormGroup({});
         this.subParams = this.route.params.subscribe(params => {
             let contentId = params['id'] || '';
-            if (contentId)
-                this.contentService.getContent({ _id: contentId }).subscribe(res => {
-                    this.currentContent = res;
-                    if (this.currentContent.properties)
-                        this.formModel = this.currentContent.properties;
+            this.type = params['type'];
 
-                    let contentType = CMS.PAGE_TYPES[res.contentType];
-                    if (contentType) {
-                        let properties = Reflect.getMetadata(PROPERTIES_METADATA_KEY, contentType);
-                        let propertiesMetadata = [];
-                        if (properties)
-                            properties.forEach(element => {
-                                propertiesMetadata.push({
-                                    name: element,
-                                    metadata: Reflect.getMetadata(PROPERTY_METADATA_KEY, contentType, element)
-                                })
-                            });
-
-                        if (propertiesMetadata.length > 0) {
-                            this.createFormGroup(propertiesMetadata);
-                            this.createFormControls(propertiesMetadata);
-                        }
-                    }
-                });
+            if (contentId) {
+                switch (this.type) {
+                    case PAGE_TYPE:
+                        this.contentService.getContent({ _id: contentId }).subscribe(res => {
+                            this.bindDataForContentForm(res, CMS.PAGE_TYPES[res.contentType])
+                        });
+                        break;
+                    case BLOCK_TYPE:
+                        this.contentService.getBlockContent({ _id: contentId }).subscribe(res => {
+                            this.bindDataForContentForm(res, CMS.BLOCK_TYPES[res.contentType])
+                        });
+                        break;
+                }
+            }
         });
     }
 
-    createFormGroup(properties) {
+    private bindDataForContentForm(currentContent, contentType) {
+        this.currentContent = currentContent;
+        if (this.currentContent.properties)
+            this.formModel = this.currentContent.properties;
+
+        if (contentType) {
+            let properties = Reflect.getMetadata(PROPERTIES_METADATA_KEY, contentType);
+            let propertiesMetadata = [];
+            if (properties)
+                properties.forEach(element => {
+                    propertiesMetadata.push({
+                        name: element,
+                        metadata: Reflect.getMetadata(PROPERTY_METADATA_KEY, contentType, element)
+                    })
+                });
+
+            if (propertiesMetadata.length > 0) {
+                this.createFormGroup(propertiesMetadata);
+                this.createFormControls(propertiesMetadata);
+            }
+        }
+    }
+
+    private createFormGroup(properties) {
         if (properties) {
             let group = {};
             properties.forEach(property => {
@@ -78,7 +96,7 @@ export class ContentFormEditComponent implements OnInit {
         }
     }
 
-    createFormControls(properties) {
+    private createFormControls(properties) {
         if (properties) {
             let viewContainerRef = this.pageEditHost.viewContainerRef;
             viewContainerRef.clear();
@@ -104,10 +122,25 @@ export class ContentFormEditComponent implements OnInit {
         if (this.contentForm.valid) {
             if (this.currentContent) {
                 this.currentContent.properties = this.contentForm.value;
-                this.contentService.editContent(this.currentContent).subscribe(res => {
-                    console.log(res);
-                })
+                switch (this.type) {
+                    case PAGE_TYPE:
+                        this.contentService.editContent(this.currentContent).subscribe(res => {
+                            console.log(res);
+                        })
+                        break;
+                    case BLOCK_TYPE:
+                        this.contentService.editBlockContent(this.currentContent).subscribe(res => {
+                            console.log(res);
+                        })
+                        break;
+                }
+
             }
         }
+    }
+
+    ngOnDestroy() {
+        this.subParams.unsubscribe();
+        //TODO: Need to destroy all dynamic components which is created before
     }
 }

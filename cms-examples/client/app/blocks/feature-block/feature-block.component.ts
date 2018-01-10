@@ -3,23 +3,19 @@ import { Component, Input, ChangeDetectionStrategy, Inject } from '@angular/core
 import { Http, Response, URLSearchParams, RequestOptions, Headers } from '@angular/http';
 
 import { BaseComponent } from '@angular-cms/core';
-import { Blog } from './blog.pagetype';
+import { FeatureBlock } from './feature-block.blocktype';
 
 @Component({
     template: `
-    <div id="about">
-        <div class="header">
-            <div class="footer">
-                <div class="body">
-                    <h2>{{currentContent.title}}</h2>
-                    <div [innerHTML] ="currentContent.summary"></div>
-                </div>
-            </div>
-        </div>
+    <div class="frame">
+        <img src="assets/images/sushi10.png" alt="Img" height="192" width="189"/>
+        <h2>{{currentContent.title}}</h2>
+        <div [innerHtml]="currentContent.summary"></div>
+        <a href="blog.html" class="more">{{currentContent.linkText}}</a>
     </div>
   `
 })
-export class BlogComponent extends BaseComponent<Blog> {
+export class FeatureBlockComponent extends BaseComponent<FeatureBlock> {
 
     constructor(@Inject(Router) private router: Router) {
         super();

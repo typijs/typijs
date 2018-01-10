@@ -1,34 +1,38 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule } from '@angular/http';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA, ComponentFactoryResolver } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+
+import { registerContentType, CoreModule } from '@angular-cms/core';
+
+import { PagesModule } from './pages/pages.module';
+import { BlocksModule } from './blocks/blocks.module';
+
+import * as contentTypes from './registerContentTypes';
 
 import { AppComponent } from './app.component';
-import { PagesModule } from './pages/pages.module';
-import * as register from './pages/register';
-
 import { AppRoutingModule } from './app.routing';
-import { HomeComponent } from './home.component';
-import { TestInjectService, BlogTypeSelectionFactory } from './pages/blog/test.service';
-import { registerPageType, CoreModule } from '@angular-cms/core';
-import { LayoutComponent } from './pages/shared/layout/layout.component';
 
-registerPageType(register);
+import { LayoutComponent } from './shared/layout/layout.component';
+import { BlogTypeSelectionFactory } from './pages/blog/blog-type-selection.factory';
+
+registerContentType(contentTypes);
 
 @NgModule({
   imports: [
     BrowserModule,
     HttpModule,
+    RouterModule,
     PagesModule,
+    BlocksModule,
     CoreModule,
     AppRoutingModule,
   ],
   declarations: [
     AppComponent,
-    HomeComponent,
     LayoutComponent
   ],
   providers:[
-    TestInjectService,
     BlogTypeSelectionFactory
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

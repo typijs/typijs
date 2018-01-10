@@ -9,6 +9,11 @@ export class ContentService {
 
   constructor(private http: HttpClient) { }
 
+  getStartPage(): Observable<Content> {
+    const startPageUrl = '/'
+    return this.http.get<Content>(`/api/content-by-url?url=${startPageUrl}`);
+  } 
+
   getContents(): Observable<Content[]> {
     return this.http.get<Content[]>('/api/contents');
   }
@@ -41,4 +46,19 @@ export class ContentService {
     return this.http.delete(`/api/content/${content._id}`, { responseType: 'text' });
   }
 
+  getBlockContents(): Observable<Content[]> {
+    return this.http.get<Content[]>('/api/blocks');
+  }
+
+  addBlockContent(blockContent: Content): Observable<Content> {
+    return this.http.post<Content>('/api/block', blockContent);
+  }
+
+  getBlockContent(content: Content): Observable<Content> {
+    return this.http.get<Content>(`/api/block/${content._id}`);
+  }
+
+  editBlockContent(content: Content): Observable<string> {
+    return this.http.put(`/api/block/${content._id}`, content, { responseType: 'text' });
+  }
 }

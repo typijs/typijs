@@ -14,6 +14,9 @@ import { DropdownComponent } from './select/dropdown/dropdown.component';
 import { CheckboxElement } from './select/checkbox/checkbox.element';
 import { CheckboxGroupComponent } from './select/checkbox/checkbox-group.component';
 
+import { ContentGroupComponent } from './content-area/content-group.component';
+import { ContentAreaComponent } from './content-area/content-area.component';
+
 @NgModule({
     imports: [
         CommonModule,
@@ -30,7 +33,9 @@ import { CheckboxGroupComponent } from './select/checkbox/checkbox-group.compone
         PropertyGroupComponent,
         PropertyListComponent,
         PropertyListItemComponent,
-        TinymceComponent
+        TinymceComponent,
+        ContentAreaComponent,
+        ContentGroupComponent
     ],
     entryComponents: [
         InputComponent,
@@ -38,7 +43,8 @@ import { CheckboxGroupComponent } from './select/checkbox/checkbox-group.compone
         DropdownComponent,
         CheckboxElement,
         PropertyListComponent,
-        TinymceComponent
+        TinymceComponent,
+        ContentAreaComponent
     ],
     exports: [
         InputComponent,
@@ -46,7 +52,8 @@ import { CheckboxGroupComponent } from './select/checkbox/checkbox-group.compone
         DropdownComponent,
         CheckboxElement,
         PropertyListComponent,
-        TinymceComponent
+        TinymceComponent,
+        ContentAreaComponent
     ]
 })
 export class FormElementsModule { }

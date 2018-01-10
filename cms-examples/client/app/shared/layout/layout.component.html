@@ -1,16 +1,16 @@
 <div id="page">
     <div id="header">
         <div id="sidebar">
-            <a href="index.html" id="logo">
+            <a id="logo" href="javascript:void(0)" [routerLink]="['/']">
                 <img src="assets/images/logo.png" alt="LOGO">
             </a>
             <div id="navigation">
                 <ul>
                     <li>
-                        <a href="index.html">Home</a>
+                        <a href="javascript:void(0)" [routerLink]="['/new-page-3']">Home</a>
                     </li>
                     <li class="menu">
-                        <a href="menu.html">Menu</a>
+                        <a href="javascript:void(0)" [routerLink]="['/new-page-12/new-page-1']">Menu</a>
                         <div class="sub">
                             <a href="menu.html">Lorem Ipsum</a>
                             <a href="menu.html">Dolor Sit Amet</a>
@@ -20,10 +20,10 @@
                         <span></span>
                     </li>
                     <li>
-                        <a href="blog.html">Blog</a>
+                        <a href="javascript:void(0)" [routerLink]="['/new-page-12/new-page/new-page-1']">Blog</a>
                     </li>
-                    <li class="last selected">
-                        <a href="about.html">About</a>
+                    <li class="last">
+                        <a href="javascript:void(0)" [routerLink]="['/new-page-1']">About</a>
                     </li>
                 </ul>
             </div>
@@ -35,54 +35,13 @@
     <div id="footer">
         <div class="header">
             <div class="body">
-                <ul>
-                    <li>
-                        <h4>Lorem Ipsum</h4>
-                        <span>&gt;
-                            <a href="#header">Dolor Sit Amet</a>
+                <ul *ngIf="startPage">
+                    <li *ngFor="let item of startPage.footers">
+                        <h4>{{item.header}}</h4>
+                        <span *ngFor="let link of item.linkItems">&gt;
+                            <a href="#header">{{link.linkText}}</a>
                         </span>
-                        <span>&gt;
-                            <a href="#header">Lorem Ipsum</a>
-                        </span>
-                        <span>&gt;
-                            <a href="#header">Nulla Pretium</a>
-                        </span>
-                    </li>
-                    <li>
-                        <h4>Dolor Sit Amet</h4>
-                        <span>&gt;
-                            <a href="#header">Dolor Sit Amet</a>
-                        </span>
-                        <span>&gt;
-                            <a href="#header">Lorem Ipsum</a>
-                        </span>
-                        <span>&gt;
-                            <a href="#header">Nulla Pretium</a>
-                        </span>
-                    </li>
-                    <li>
-                        <h4>Nulla Pretium</h4>
-                        <span>&gt;
-                            <a href="#header">Dolor Sit Amet</a>
-                        </span>
-                        <span>&gt;
-                            <a href="#header">Lorem Ipsum</a>
-                        </span>
-                        <span>&gt;
-                            <a href="#header">Nulla Pretium</a>
-                        </span>
-                    </li>
-                    <li class="last-child">
-                        <h4>Curabitur</h4>
-                        <span>&gt;
-                            <a href="#header">Dolor Sit Amet</a>
-                        </span>
-                        <span>&gt;
-                            <a href="#header">Lorem Ipsum</a>
-                        </span>
-                        <span>&gt;
-                            <a href="#header">Nulla Pretium</a>
-                        </span>
+                        
                     </li>
                 </ul>
             </div>

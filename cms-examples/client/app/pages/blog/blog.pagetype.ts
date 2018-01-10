@@ -3,8 +3,8 @@ import { BlogComponent } from './blog.component';
 
 import { Property, PageType, UIType, ValidationTypes, PageData } from '@angular-cms/core';
 
-import { TestInjectService, BlogTypeSelectionFactory } from './test.service';
-import { BannerItem, ImageItem } from './banner-item';
+import { BlogTypeSelectionFactory } from './blog-type-selection.factory';
+import { BannerItem } from './banner-item';
 
 @PageType({
     displayName: "Blog Page Type",
@@ -62,11 +62,4 @@ export class Blog extends PageData {
         propertyListItemType: BannerItem,
     })
     banners: Array<BannerItem>
-
-    @Property({
-        displayName: "Images",
-        displayType: UIType.PropertyList,
-        propertyListItemType: ImageItem,
-    })
-    images: Array<ImageItem>
 }

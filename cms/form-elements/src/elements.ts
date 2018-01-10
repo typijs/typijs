@@ -4,6 +4,7 @@ import { PropertyListComponent } from './property-list/property-list.component';
 import { TinymceComponent } from './xhtml/tinymce.component';
 import { DropdownComponent } from './select/dropdown/dropdown.component';
 import { CheckboxElement } from './select/checkbox/checkbox.element';
+import { ContentAreaComponent } from './content-area/content-area.component';
 
 export namespace Elements {
     export const Input = InputComponent;
@@ -23,4 +24,7 @@ export namespace Elements {
 
     export const Checkbox = CheckboxElement;
     export type Checkbox = CheckboxElement; 
+
+    export const ContentArea = ContentAreaComponent;
+    export type ContentArea = ContentAreaComponent;  
 }

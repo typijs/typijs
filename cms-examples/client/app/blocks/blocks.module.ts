@@ -1,8 +1,7 @@
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { BlogComponent } from './blog/blog.component';
-import { HomeComponent } from './home/home.component';
+import { FeatureBlockComponent } from './feature-block/feature-block.component';
 import { CoreModule } from '@angular-cms/core';
 
 @NgModule({
@@ -12,12 +11,10 @@ import { CoreModule } from '@angular-cms/core';
         CoreModule
     ],
     entryComponents: [
-        BlogComponent,
-        HomeComponent
+        FeatureBlockComponent
     ],
     declarations: [
-        BlogComponent,
-        HomeComponent
+        FeatureBlockComponent
     ]
 })
-export class PagesModule { }
+export class BlocksModule { }
