@@ -4,7 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { InsertPointDirective } from './directives';
 import { ContentService } from './services';
-import { CmsTemplateComponent } from './render/cms-template';
+import { CmsTemplateComponent, CmsContentAreaComponent } from './render';
 
 @NgModule({
   imports: [
@@ -13,14 +13,17 @@ import { CmsTemplateComponent } from './render/cms-template';
   ],
   declarations: [
     InsertPointDirective,
-    CmsTemplateComponent
+    CmsTemplateComponent,
+    CmsContentAreaComponent
   ],
   exports: [
     CmsTemplateComponent,
+    CmsContentAreaComponent,
     InsertPointDirective
   ],
   entryComponents: [
-    CmsTemplateComponent
+    CmsTemplateComponent,
+    CmsContentAreaComponent
   ],
   providers: [ContentService]
 })
