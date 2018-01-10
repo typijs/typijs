@@ -31,6 +31,12 @@ export class HomePage extends PageData {
     summary: string;
 
     @Property({
+        displayName: "Features",
+        displayType: UIType.ContentArea
+    })
+    features: Array<any>
+
+    @Property({
         displayName: "Footer",
         displayType: UIType.PropertyList,
         propertyListItemType: FooterItem,

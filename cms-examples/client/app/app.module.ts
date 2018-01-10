@@ -1,9 +1,13 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule } from '@angular/http';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA, ComponentFactoryResolver } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+
 import { registerContentType, CoreModule } from '@angular-cms/core';
 
 import { PagesModule } from './pages/pages.module';
+import { BlocksModule } from './blocks/blocks.module';
+
 import * as contentTypes from './registerContentTypes';
 
 import { AppComponent } from './app.component';
@@ -18,7 +22,9 @@ registerContentType(contentTypes);
   imports: [
     BrowserModule,
     HttpModule,
+    RouterModule,
     PagesModule,
+    BlocksModule,
     CoreModule,
     AppRoutingModule,
   ],

@@ -7,15 +7,11 @@ import { FeatureBlock } from './feature-block.blocktype';
 
 @Component({
     template: `
-    <div id="about">
-        <div class="header">
-            <div class="footer">
-                <div class="body">
-                    <h2>{{currentContent.title}}</h2>
-                    <div [innerHTML] ="currentContent.summary"></div>
-                </div>
-            </div>
-        </div>
+    <div class="frame">
+        <img src="assets/images/sushi10.png" alt="Img" height="192" width="189"/>
+        <h2>{{currentContent.title}}</h2>
+        <div [innerHtml]="currentContent.summary"></div>
+        <a href="blog.html" class="more">{{currentContent.linkText}}</a>
     </div>
   `
 })

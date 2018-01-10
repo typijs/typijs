@@ -13,22 +13,7 @@
 </div>
 <div id="articles">
     <div>
-        <div class="frame">
-            <img src="assets/images/sushi9.png" alt="Img" height="213" width="218">
-            <h2>Lorem ipsum</h2>
-            <p>
-                Consectetur adipiscing elit. Sed aliquet nulla ac purus iaculis quis fermentum lacus sodales.
-            </p>
-            <a href="blog.html" class="more">Learn More</a>
-        </div>
-        <div class="frame">
-            <img src="assets/images/sushi10.png" alt="Img" height="192" width="189">
-            <h2>Dolor sit amet</h2>
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed aliquet nulla ac purus iaculis quis fermentum lacus.
-            </p>
-            <a href="blog.html" class="more">Learn More</a>
-        </div>
+        <cms-contentarea [value]="currentContent.features"></cms-contentarea>
         <div id="featured">
             <ul>
                 <li>
