@@ -6,7 +6,7 @@ import {
     EditorLayoutComponent,
     ContentFormEditComponent,
     ContentTypeListComponent
-  } from '@angular-cms/editor';
+} from '@angular-cms/editor';
 
 const cmsRoutes: Routes = [
     {
@@ -21,17 +21,18 @@ const cmsRoutes: Routes = [
                 component: EditorLayoutComponent,
                 children: [
                     {
-                        path: 'new-page',
-                        component: ContentTypeListComponent
+                        path: 'new/:type', //type is 'block' or 'page'
+                        component: ContentTypeListComponent,
                     },
                     {
-                        path: 'new-page/:id',
-                        component: ContentTypeListComponent
+                        path: 'new/:type/:parentId', //type is 'block' or 'page'
+                        component: ContentTypeListComponent,
                     },
                     {
-                        path: 'content/:id',
-                        component: ContentFormEditComponent
-                    },
+                        path: 'content/:type/:id', //type is 'block' or 'page'
+                        component: ContentFormEditComponent,
+                        
+                    }
                 ]
             }
         ]

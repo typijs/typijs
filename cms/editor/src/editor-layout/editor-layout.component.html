@@ -56,12 +56,19 @@
                     <li>
                         <a href="javascript:void(0)">
                             <i class="fa fa-sitemap fa-fw"></i> Pages
-                            <span class="fa fa-plus pull-right" [routerLink]="['new-page']"></span>
+                            <span class="fa fa-plus pull-right" [routerLink]="['new/page']"></span>
                         </a>
                         <ul class="nav nav-second-level tree">
                             <content-tree [root]="root"></content-tree>
                         </ul>
                         <!-- /.nav-second-level -->
+                    </li>
+
+                    <li>
+                        <a href="javascript:void(0)">
+                            <i class="fa fa-sitemap fa-fw"></i> Blocks
+                            <span class="fa fa-plus pull-right" [routerLink]="['new/block']"></span>
+                        </a>
                     </li>
                 </ul>
             </div>

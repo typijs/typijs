@@ -9,9 +9,9 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 <div class="form-group row">
-                    <label for="page-name" class="col-sm-1">Name</label>
+                    <label for="content-name" class="col-sm-1">Name</label>
                     <div class="col-sm-5">
-                        <input type="text" class="form-control" id="page-name" [(ngModel)]="pageName" required #name="ngModel"/>
+                        <input type="text" class="form-control" id="content-name" [(ngModel)]="contentName" required #name="ngModel"/>
                         <div [hidden]="name.valid || name.pristine" class="alert alert-danger">
                             Name is required
                         </div>
@@ -28,7 +28,7 @@
 <div class="row">
     <!-- /.col-lg-4 -->
     <div class="col-lg-4" *ngFor="let contentType of contentTypes">
-        <div class="panel panel-primary" (click)="createNewPage(contentType)">
+        <div class="panel panel-primary" (click)="createNewContent(contentType)">
             <div class="panel-heading">
                 {{contentType.metadata.displayName}}
             </div>

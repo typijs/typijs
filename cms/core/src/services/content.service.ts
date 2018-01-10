@@ -46,4 +46,15 @@ export class ContentService {
     return this.http.delete(`/api/content/${content._id}`, { responseType: 'text' });
   }
 
+  addBlockContent(blockContent: Content): Observable<Content> {
+    return this.http.post<Content>('/api/block', blockContent);
+  }
+
+  getBlockContent(content: Content): Observable<Content> {
+    return this.http.get<Content>(`/api/block/${content._id}`);
+  }
+
+  editBlockContent(content: Content): Observable<string> {
+    return this.http.put(`/api/block/${content._id}`, content, { responseType: 'text' });
+  }
 }
