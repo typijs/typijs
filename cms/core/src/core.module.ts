@@ -2,9 +2,9 @@ import { NgModule, ModuleWithProviders, ComponentFactoryResolver } from '@angula
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 
-import { InsertPointDirective } from './directives';
+import { InsertPointDirective, ContentAreaDirective } from './directives';
 import { ContentService } from './services';
-import { CmsTemplateComponent, CmsContentAreaComponent } from './render';
+import { CmsTemplateComponent } from './render';
 
 @NgModule({
   imports: [
@@ -14,16 +14,15 @@ import { CmsTemplateComponent, CmsContentAreaComponent } from './render';
   declarations: [
     InsertPointDirective,
     CmsTemplateComponent,
-    CmsContentAreaComponent
+    ContentAreaDirective
   ],
   exports: [
     CmsTemplateComponent,
-    CmsContentAreaComponent,
-    InsertPointDirective
+    InsertPointDirective,
+    ContentAreaDirective
   ],
   entryComponents: [
-    CmsTemplateComponent,
-    CmsContentAreaComponent
+    CmsTemplateComponent
   ],
   providers: [ContentService]
 })
