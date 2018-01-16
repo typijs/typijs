@@ -2,7 +2,7 @@ import { Input } from '@angular/core';
 import * as _ from 'lodash';
 import { FormGroup } from '@angular/forms';
 
-export class BaseElement {
+export class CmsProperty {
     id: string = this.getId();
     @Input() label: string;
     @Input() propertyName: string;

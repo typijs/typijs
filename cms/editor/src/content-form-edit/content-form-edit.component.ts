@@ -5,9 +5,9 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
 import { PAGE_TYPE_METADATA_KEY, PROPERTY_METADATA_KEY, PROPERTIES_METADATA_KEY } from '@angular-cms/core';
-import { CMS, UIType, InsertPointDirective, ContentService, Content } from '@angular-cms/core';
+import { CMS, UIType, CmsProperty, InsertPointDirective, ContentService, Content, ISelectionFactory } from '@angular-cms/core';
 
-import { BaseElement, Elements, ISelectionFactory, PropertyListComponent, SelectElement } from '@angular-cms/form';
+import { Elements, PropertyListComponent, SelectProperty } from '@angular-cms/properties';
 
 import { PAGE_TYPE, BLOCK_TYPE } from './../constants';
 
@@ -102,14 +102,14 @@ export class ContentFormEditComponent implements OnInit {
             viewContainerRef.clear();
 
             properties.forEach(property => {
-                let propertyFactory = this.componentFactoryResolver.resolveComponentFactory(Elements[property.metadata.displayType]);
+                let propertyFactory = this.componentFactoryResolver.resolveComponentFactory(CMS.PROPERTIES[property.metadata.displayType]);
                 let propertyComponent = viewContainerRef.createComponent(propertyFactory);
-                (<BaseElement>propertyComponent.instance).label = property.metadata.displayName;
-                (<BaseElement>propertyComponent.instance).formGroup = this.contentForm;
-                (<BaseElement>propertyComponent.instance).propertyName = property.name;
+                (<CmsProperty>propertyComponent.instance).label = property.metadata.displayName;
+                (<CmsProperty>propertyComponent.instance).formGroup = this.contentForm;
+                (<CmsProperty>propertyComponent.instance).propertyName = property.name;
 
-                if (propertyComponent.instance instanceof SelectElement) {
-                    (<SelectElement>propertyComponent.instance).selectItems = (<ISelectionFactory>(this.injector.get(property.metadata.selectionFactory))).GetSelections();
+                if (propertyComponent.instance instanceof SelectProperty) {
+                    (<SelectProperty>propertyComponent.instance).selectItems = (<ISelectionFactory>(this.injector.get(property.metadata.selectionFactory))).GetSelections();
                 } else if (propertyComponent.instance instanceof PropertyListComponent) {
                     (<PropertyListComponent>propertyComponent.instance).itemType = property.metadata.propertyListItemType;
                 }

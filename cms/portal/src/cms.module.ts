@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { FormElementsModule } from '@angular-cms/form';
+import { PropertiesModule } from '@angular-cms/properties';
 import { ContentService, CoreModule, CMS } from '@angular-cms/core';
 
 import {
@@ -21,7 +21,7 @@ import { } from "reflect-metadata";
     FormsModule,
     ReactiveFormsModule,
     CoreModule,
-    FormElementsModule,
+    PropertiesModule,
     EditorModule,
     ...CMS.modules,
     CmsRoutingModule

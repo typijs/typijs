@@ -7,7 +7,7 @@ import { InsertPointDirective } from './../directives/insert-point.directive';
 
 import { CMS } from './../cms';
 import { PageData } from './../bases/page-data';
-import { BaseComponent } from './../bases/base-component';
+import { CmsComponent } from './../bases/cms-component';
 
 @Component({
     selector: 'cms-template',
@@ -61,7 +61,7 @@ export class CmsTemplateComponent implements OnDestroy {
 
             let pageFactory = this.componentFactoryResolver.resolveComponentFactory(pageMetadata.componentRef);
             this.pageComponentRef = viewContainerRef.createComponent(pageFactory);
-            (<BaseComponent<PageData>>this.pageComponentRef.instance).currentContent = content;
+            (<CmsComponent<PageData>>this.pageComponentRef.instance).currentContent = content;
         }
     }
 }

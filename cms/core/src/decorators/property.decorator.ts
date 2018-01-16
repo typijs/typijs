@@ -1,7 +1,8 @@
-import "reflect-metadata";
-import { PROPERTIES_METADATA_KEY, PROPERTY_METADATA_KEY } from './../constants';
-import { UIType } from "../index";
 import { Validators } from '@angular/forms';
+import "reflect-metadata";
+
+import { PROPERTIES_METADATA_KEY, PROPERTY_METADATA_KEY } from './../constants';
+import { UIType } from "../ui-type";
 
 interface ValidateMetadata{
     validateFn: Function;

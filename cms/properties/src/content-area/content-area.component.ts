@@ -1,14 +1,10 @@
 import { Component, Input, ChangeDetectionStrategy, ViewChild, Inject, ComponentFactoryResolver, Injector } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 
-import { UIType, PROPERTIES_METADATA_KEY, PROPERTY_METADATA_KEY, InsertPointDirective, ContentService } from '@angular-cms/core';
+import { CmsProperty, UIType, PROPERTIES_METADATA_KEY, PROPERTY_METADATA_KEY, InsertPointDirective, ContentService, ISelectionFactory } from '@angular-cms/core';
 
-import { BaseElement } from './../base.element';
-import { Elements } from './../elements';
-import { SelectElement } from '../select/select.element';
-import { ISelectionFactory } from '../select/selection-factory';
+import { SelectProperty } from '../select/select-property';
 import { ContentGroupComponent } from './content-group.component';
-
 
 @Component({
     template: `
@@ -55,7 +51,7 @@ import { ContentGroupComponent } from './content-group.component';
     `]
 })
 
-export class ContentAreaComponent extends BaseElement {
+export class ContentAreaComponent extends CmsProperty {
     showDialog: boolean = false;
     modelForm: FormGroup = new FormGroup({});
 

@@ -1,5 +1,5 @@
 import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
-import { BaseElement } from './../base.element';
+import { CmsProperty } from '@angular-cms/core';
 
 @Component({
     template: `
@@ -15,5 +15,5 @@ import { BaseElement } from './../base.element';
     </div>
   `
 })
-export class InputComponent extends BaseElement {
+export class InputComponent extends CmsProperty {
 }

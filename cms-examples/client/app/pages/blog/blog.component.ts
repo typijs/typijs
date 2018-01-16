@@ -2,7 +2,7 @@ import { Router } from '@angular/router';
 import { Component, Input, ChangeDetectionStrategy, Inject } from '@angular/core';
 import { Http, Response, URLSearchParams, RequestOptions, Headers } from '@angular/http';
 
-import { BaseComponent } from '@angular-cms/core';
+import { CmsComponent } from '@angular-cms/core';
 import { Blog } from './blog.pagetype';
 
 @Component({
@@ -19,7 +19,7 @@ import { Blog } from './blog.pagetype';
     </div>
   `
 })
-export class BlogComponent extends BaseComponent<Blog> {
+export class BlogComponent extends CmsComponent<Blog> {
 
     constructor(@Inject(Router) private router: Router) {
         super();

@@ -1,14 +1,11 @@
 import { Component, Input, ChangeDetectionStrategy, ViewChild, Inject, ComponentFactoryResolver, Injector } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 
-import { UIType, PROPERTIES_METADATA_KEY, PROPERTY_METADATA_KEY, InsertPointDirective } from '@angular-cms/core';
+import { CMS, CmsProperty, UIType, PROPERTIES_METADATA_KEY, PROPERTY_METADATA_KEY, InsertPointDirective, ISelectionFactory } from '@angular-cms/core';
 
-import { BaseElement } from './../base.element';
 import { Elements } from './../elements';
 import { PropertyGroupComponent } from './property-group.component';
-import { SelectElement } from '../select/select.element';
-import { ISelectionFactory } from '../select/selection-factory';
-
+import { SelectProperty } from '../select/select-property';
 
 @Component({
     template: `
@@ -51,7 +48,7 @@ import { ISelectionFactory } from '../select/selection-factory';
     `]
 })
 
-export class PropertyListComponent extends BaseElement {
+export class PropertyListComponent extends CmsProperty {
     showDialog: boolean = false;
     modelForm: FormGroup = new FormGroup({});
     private _itemType: any;
@@ -123,14 +120,14 @@ export class PropertyListComponent extends BaseElement {
             viewContainerRef.clear();
 
             properties.forEach(property => {
-                let propertyFactory = this.componentFactoryResolver.resolveComponentFactory(Elements[property.metadata.displayType]);
+                let propertyFactory = this.componentFactoryResolver.resolveComponentFactory(CMS.PROPERTIES[property.metadata.displayType]);
                 let propertyComponent = viewContainerRef.createComponent(propertyFactory);
-                (<BaseElement>propertyComponent.instance).label = property.metadata.displayName;
-                (<BaseElement>propertyComponent.instance).formGroup = this.modelForm;
-                (<BaseElement>propertyComponent.instance).propertyName = property.name;
+                (<CmsProperty>propertyComponent.instance).label = property.metadata.displayName;
+                (<CmsProperty>propertyComponent.instance).formGroup = this.modelForm;
+                (<CmsProperty>propertyComponent.instance).propertyName = property.name;
 
-                if (propertyComponent.instance instanceof SelectElement) {
-                    (<SelectElement>propertyComponent.instance).selectItems = (<ISelectionFactory>(this.injector.get(property.metadata.selectionFactory))).GetSelections();
+                if (propertyComponent.instance instanceof SelectProperty) {
+                    (<SelectProperty>propertyComponent.instance).selectItems = (<ISelectionFactory>(this.injector.get(property.metadata.selectionFactory))).GetSelections();
                 } else if (propertyComponent.instance instanceof PropertyListComponent) {
                     (<PropertyListComponent>propertyComponent.instance).itemType = property.metadata.propertyListItemType;
                 }

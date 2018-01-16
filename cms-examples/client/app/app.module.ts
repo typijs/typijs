@@ -3,7 +3,7 @@ import { HttpModule } from '@angular/http';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA, ComponentFactoryResolver } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { registerContentType, CoreModule, CMS } from '@angular-cms/core';
+import { registerContentTypes, CoreModule, CMS } from '@angular-cms/core';
 
 import { PagesModule } from './pages/pages.module';
 import { BlocksModule } from './blocks/blocks.module';
@@ -18,7 +18,7 @@ import { BlogTypeSelectionFactory } from './pages/blog/blog-type-selection.facto
 import { TestComponent } from './test.component';
 import { TestModule } from './test.module';
 
-registerContentType(contentTypes);
+registerContentTypes(contentTypes);
 
 
 @NgModule({

@@ -1,6 +1,5 @@
 import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
-import { SelectElement } from './../select.element';
-import { SelectItem } from './../select-item';
+import { SelectProperty } from './../select-property';
 
 @Component({
     template: `
@@ -14,5 +13,5 @@ import { SelectItem } from './../select-item';
         </div>
     `
 })
-export class DropdownComponent extends SelectElement {
+export class DropdownComponent extends SelectProperty {
 }

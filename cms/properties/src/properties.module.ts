@@ -8,14 +8,16 @@ import { InputComponent } from './input/input.component';
 import { TextareaComponent } from './textarea/textarea.component';
 import { PropertyListComponent } from './property-list/property-list.component';
 import { PropertyGroupComponent } from './property-list/property-group.component';
-import { PropertyListItemComponent } from './property-list/property-list-item.component';
 import { TinymceComponent } from './xhtml/tinymce.component';
 import { DropdownComponent } from './select/dropdown/dropdown.component';
-import { CheckboxElement } from './select/checkbox/checkbox.element';
+import { CheckboxComponent } from './select/checkbox/checkbox.component';
 import { CheckboxGroupComponent } from './select/checkbox/checkbox-group.component';
 
 import { ContentGroupComponent } from './content-area/content-group.component';
 import { ContentAreaComponent } from './content-area/content-area.component';
+import { registerProperties } from './registerProperties';
+
+registerProperties();
 
 @NgModule({
     imports: [
@@ -29,10 +31,9 @@ import { ContentAreaComponent } from './content-area/content-area.component';
         TextareaComponent,
         DropdownComponent,
         CheckboxGroupComponent,
-        CheckboxElement,
+        CheckboxComponent,
         PropertyGroupComponent,
         PropertyListComponent,
-        PropertyListItemComponent,
         TinymceComponent,
         ContentAreaComponent,
         ContentGroupComponent
@@ -41,7 +42,7 @@ import { ContentAreaComponent } from './content-area/content-area.component';
         InputComponent,
         TextareaComponent,
         DropdownComponent,
-        CheckboxElement,
+        CheckboxComponent,
         PropertyListComponent,
         TinymceComponent,
         ContentAreaComponent
@@ -50,12 +51,12 @@ import { ContentAreaComponent } from './content-area/content-area.component';
         InputComponent,
         TextareaComponent,
         DropdownComponent,
-        CheckboxElement,
+        CheckboxComponent,
         PropertyListComponent,
         TinymceComponent,
         ContentAreaComponent
     ]
 })
-export class FormElementsModule { }
+export class PropertiesModule { }
 
 

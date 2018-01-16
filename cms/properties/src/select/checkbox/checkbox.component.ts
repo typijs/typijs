@@ -1,5 +1,5 @@
 import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
-import { SelectElement } from '../select.element';
+import { SelectProperty } from '../select-property';
 
 @Component({
     template: `
@@ -12,5 +12,5 @@ import { SelectElement } from '../select.element';
         </div>
     `
 })
-export class CheckboxElement extends SelectElement {
+export class CheckboxComponent extends SelectProperty {
 }

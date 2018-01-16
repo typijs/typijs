@@ -4,7 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 
-import { FormElementsModule } from '@angular-cms/form';
+import { PropertiesModule } from '@angular-cms/properties';
 import { ContentService, CoreModule } from '@angular-cms/core';
 
 import { ContentTypeListComponent } from './content-type-list/content-type-list.component';
@@ -21,7 +21,7 @@ import { TreeStore } from './content-tree/tree-store';
         HttpClientModule,
         FormsModule,
         ReactiveFormsModule,
-        FormElementsModule,
+        PropertiesModule,
         CoreModule,
         RouterModule
     ],

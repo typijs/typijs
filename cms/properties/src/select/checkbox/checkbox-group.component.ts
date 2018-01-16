@@ -1,6 +1,6 @@
 import { Component, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { SelectItem } from '../select-item';
+import { SelectItem } from '@angular-cms/core';
 
 @Component({
     selector: 'checkbox-group',

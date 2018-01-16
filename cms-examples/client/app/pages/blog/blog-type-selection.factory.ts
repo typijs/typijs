@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@angular/core';
-import { ISelectionFactory, SelectItem } from '@angular-cms/form';
+import { ISelectionFactory, SelectItem } from '@angular-cms/core';
 
 @Injectable()
 export class BlogTypeSelectionFactory implements ISelectionFactory {

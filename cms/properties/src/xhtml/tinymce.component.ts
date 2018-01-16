@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, AfterViewInit, OnDestroy } from '@angular/core';
-import { BaseElement } from './../base.element';
+import { CmsProperty } from '@angular-cms/core';
 
 import 'tinymce/tinymce.min';
 declare var tinymce: any;
@@ -26,7 +26,7 @@ import 'tinymce/plugins/code/plugin.js';
         </div>
     `
 })
-export class TinymceComponent extends BaseElement implements AfterViewInit, OnDestroy {
+export class TinymceComponent extends CmsProperty implements AfterViewInit, OnDestroy {
     editor: any;
 
     ngAfterViewInit() {
