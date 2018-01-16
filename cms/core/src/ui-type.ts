@@ -1,9 +1,9 @@
 export enum UIType {
-    Input = "Input",
-    Textarea = "Textarea",
-    Select = "Select",
-    PropertyList = "PropertyList",
-    Xhtml = "Xhtml",
-    Checkbox = "Checkbox",
-    ContentArea = "ContentArea"
+    Input = "InputComponent",
+    Textarea = "TextareaComponent",
+    Select = "DropdownComponent",
+    PropertyList = "PropertyListComponent",
+    Xhtml = "TinymceComponent",
+    Checkbox = "CheckboxComponent",
+    ContentArea = "ContentAreaComponent"
 }
