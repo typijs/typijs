@@ -32,7 +32,7 @@ import { ISelectionFactory } from '../select/selection-factory';
                     </div>
                     <div class="modal-body">
                         <form (ngSubmit)="onSubmit()" [formGroup]="modelForm">
-                            <ng-template insert-point></ng-template>
+                            <ng-template cmsInsertPoint></ng-template>
                         </form>
                     </div>
                     <div class="modal-footer">

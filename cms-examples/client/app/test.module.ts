@@ -16,38 +16,20 @@ import { AppRoutingModule } from './app.routing';
 import { LayoutComponent } from './shared/layout/layout.component';
 import { BlogTypeSelectionFactory } from './pages/blog/blog-type-selection.factory';
 import { TestComponent } from './test.component';
-import { TestModule } from './test.module';
-
-registerContentType(contentTypes);
+import { CommonModule } from '@angular/common';
 
 
 @NgModule({
-  imports: [
-    BrowserModule,
-    HttpModule,
-    RouterModule,
-    PagesModule,
-    BlocksModule,
-    CoreModule,
-    AppRoutingModule,
-  ],
-  declarations: [
-    AppComponent,
-    LayoutComponent
-  ],
-  providers:[
-    BlogTypeSelectionFactory
-  ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  bootstrap: [AppComponent]
-})
-export class AppModule {
-  
-  constructor() {
-    CMS.EDITOR_ROUTES.push({
-      path: 'test', //type is 'block' or 'page'
-      component: TestComponent
-    });
-    CMS.modules.push(TestModule);
-  }
+    imports: [
+        CommonModule
+    ],
+    declarations: [
+        TestComponent
+    ],
+    exports: [
+        TestComponent
+    ]
+  })
+export class TestModule {
+
  }

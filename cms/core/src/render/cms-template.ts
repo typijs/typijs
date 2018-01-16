@@ -1,25 +1,27 @@
-import { Component, Input, ChangeDetectionStrategy, ComponentFactoryResolver, Inject, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router, NavigationStart } from '@angular/router';
+import { Component, Input, ComponentFactoryResolver, Inject, ViewChild, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { PAGE_TYPE_METADATA_KEY } from './../constants';
 import { ContentService } from './../services/content.service';
 import { InsertPointDirective } from './../directives/insert-point.directive';
 
-import { CMS } from './../index';
+import { CMS } from './../cms';
 import { PageData } from './../bases/page-data';
 import { BaseComponent } from './../bases/base-component';
 
 @Component({
     selector: 'cms-template',
-    template: `<ng-template insert-point></ng-template>`
+    template: `<ng-template cmsInsertPoint></ng-template>`
 })
-export class CmsTemplateComponent {
+export class CmsTemplateComponent implements OnDestroy {
+
+    private pageComponentRef: any;
 
     @ViewChild(InsertPointDirective) pageEditHost: InsertPointDirective;
 
-    constructor(@Inject(ComponentFactoryResolver) private componentFactoryResolver: ComponentFactoryResolver,
+    constructor(
+        @Inject(ComponentFactoryResolver) private componentFactoryResolver: ComponentFactoryResolver,
         private contentService: ContentService,
-        private route: ActivatedRoute,
         private router: Router) { }
 
     ngOnInit() {
@@ -33,6 +35,12 @@ export class CmsTemplateComponent {
         this.resolveContentDataByUrl();
     }
 
+    ngOnDestroy() {
+        if(this.pageComponentRef) {
+            this.pageComponentRef.destroy();
+        }
+    }
+
     private resolveContentDataByUrl() {
         let pathUrl = window.location.pathname;
         this.contentService.getContentByUrl(pathUrl).subscribe(res => {
@@ -41,20 +49,19 @@ export class CmsTemplateComponent {
                 let contentType = CMS.PAGE_TYPES[res.contentType];
                 let metadata = Reflect.getMetadata(PAGE_TYPE_METADATA_KEY, contentType);
 
-                this.loadPageComponent(res.properties, metadata);
+                this.createPageComponent(res.properties, metadata);
             }
         })
     }
 
-    private loadPageComponent(content, pageMetadata) {
+    private createPageComponent(content, pageMetadata) {
         if (pageMetadata) {
             let viewContainerRef = this.pageEditHost.viewContainerRef;
             viewContainerRef.clear();
 
             let pageFactory = this.componentFactoryResolver.resolveComponentFactory(pageMetadata.componentRef);
-            let pageComponent = viewContainerRef.createComponent(pageFactory);
-            (<BaseComponent<PageData>>pageComponent.instance).currentContent = content;
+            this.pageComponentRef = viewContainerRef.createComponent(pageFactory);
+            (<BaseComponent<PageData>>this.pageComponentRef.instance).currentContent = content;
         }
     }
-
 }

@@ -4,7 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { FormElementsModule } from '@angular-cms/form';
-import { ContentService, CoreModule } from '@angular-cms/core';
+import { ContentService, CoreModule, CMS } from '@angular-cms/core';
 
 import {
   EditorModule
@@ -23,11 +23,10 @@ import { } from "reflect-metadata";
     CoreModule,
     FormElementsModule,
     EditorModule,
+    ...CMS.modules,
     CmsRoutingModule
   ],
-  declarations: [
-    CmsComponent
-  ],
+  declarations: [CmsComponent],
   providers: [ContentService],
 })
 export class CmsModule { }
