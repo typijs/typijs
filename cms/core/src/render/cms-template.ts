@@ -44,7 +44,6 @@ export class CmsTemplateComponent implements OnDestroy {
     private resolveContentDataByUrl() {
         let pathUrl = window.location.pathname;
         this.contentService.getContentByUrl(pathUrl).subscribe(res => {
-            console.log(res);
             if (res) {
                 let contentType = CMS.PAGE_TYPES[res.contentType];
                 let metadata = Reflect.getMetadata(PAGE_TYPE_METADATA_KEY, contentType);

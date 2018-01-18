@@ -1,7 +1,7 @@
 import { Component, Input, ChangeDetectionStrategy, ViewChild, Inject, ComponentFactoryResolver, Injector } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 
-import { CmsProperty, UIType, PROPERTIES_METADATA_KEY, PROPERTY_METADATA_KEY, InsertPointDirective, ContentService, ISelectionFactory } from '@angular-cms/core';
+import { CmsProperty, UIHint, PROPERTIES_METADATA_KEY, PROPERTY_METADATA_KEY, InsertPointDirective, ContentService, ISelectionFactory } from '@angular-cms/core';
 
 import { SelectProperty } from '../select/select-property';
 import { ContentGroupComponent } from './content-group.component';

@@ -1,7 +1,7 @@
 import { Component, Input, ChangeDetectionStrategy, ViewChild, Inject, ComponentFactoryResolver, Injector } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 
-import { CMS, CmsProperty, UIType, PROPERTIES_METADATA_KEY, PROPERTY_METADATA_KEY, InsertPointDirective, ISelectionFactory } from '@angular-cms/core';
+import { CMS, CmsProperty, UIHint, PROPERTIES_METADATA_KEY, PROPERTY_METADATA_KEY, InsertPointDirective, ISelectionFactory } from '@angular-cms/core';
 
 import { Elements } from './../elements';
 import { PropertyGroupComponent } from './property-group.component';
@@ -104,7 +104,7 @@ export class PropertyListComponent extends CmsProperty {
                         validators.push(validate.validateFn);
                     })
                 }
-                if (property.metadata.displayType == UIType.PropertyList) {
+                if (property.metadata.displayType == UIHint.PropertyList) {
                     group[property.name] = [[], validators]
                 } else {
                     group[property.name] = ['', validators]

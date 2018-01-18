@@ -1,4 +1,4 @@
-import { Property, PageType, UIType } from '@angular-cms/core';
+import { Property, PageType, UIHint } from '@angular-cms/core';
 
 @PageType({
     displayName: "Blog List Page Type",
@@ -7,7 +7,7 @@ import { Property, PageType, UIType } from '@angular-cms/core';
 export class BlogList {
     @Property({
         displayName: "This is Title",
-        displayType: UIType.Input
+        displayType: UIHint.Input
     })
     title: string;
     content: string;

@@ -48,7 +48,6 @@ export default class ContentCtrl extends BaseCtrl {
   private generateNameInUrl = (index: number, orignalUrl: string, parentId: string, generatedNameInUrl?: string): any =>
     this.model.count({ 'nameInUrl': generatedNameInUrl ? generatedNameInUrl : orignalUrl, 'parentId': parentId })
       .then(count => {
-        console.log(count);
         if (count > 0) {
           return this.generateNameInUrl(index + 1, orignalUrl, parentId, `${orignalUrl}-${index + 1}`);
         }

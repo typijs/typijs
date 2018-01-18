@@ -2,7 +2,6 @@ import { Validators } from '@angular/forms';
 import "reflect-metadata";
 
 import { PROPERTIES_METADATA_KEY, PROPERTY_METADATA_KEY } from './../constants';
-import { UIType } from "../ui-type";
 
 interface ValidateMetadata{
     validateFn: Function;
@@ -12,7 +11,7 @@ interface ValidateMetadata{
 interface PropertyMetadata {
     displayName?: string;
     description?: string;
-    displayType?: UIType;
+    displayType?: string;
     selectionFactory?: any;
     propertyListItemType?: any,
     order?: number;
