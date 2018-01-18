@@ -15,9 +15,9 @@ import { CheckboxGroupComponent } from './select/checkbox/checkbox-group.compone
 
 import { ContentGroupComponent } from './content-area/content-group.component';
 import { ContentAreaComponent } from './content-area/content-area.component';
-import { registerProperties } from './registerProperties';
+import { registerCmsProperties } from './registerCmsProperties';
 
-registerProperties();
+registerCmsProperties();
 
 @NgModule({
     imports: [
