@@ -9,18 +9,20 @@ import {
 } from '@angular-cms/editor';
 import { CMS } from '@angular-cms/core';
 
-CMS.EDITOR_ROUTES.push({
-    path: 'new/:type', //type is 'block' or 'page'
-    component: ContentTypeListComponent
+let childrenRoutes = [];
+childrenRoutes.push({
+        path: 'new/:type', //type is 'block' or 'page'
+        component: ContentTypeListComponent
 });
-CMS.EDITOR_ROUTES.push({
+childrenRoutes.push( {
     path: 'new/:type/:parentId', //type is 'block' or 'page'
     component: ContentTypeListComponent
 });
-CMS.EDITOR_ROUTES.push({
+childrenRoutes.push( {
     path: 'content/:type/:id', //type is 'block' or 'page'
     component: ContentFormEditComponent
 });
+childrenRoutes = childrenRoutes.concat(CMS.EDITOR_ROUTES());
 
 const cmsRoutes: Routes = [
     {
@@ -33,7 +35,7 @@ const cmsRoutes: Routes = [
             {
                 path: 'editor',
                 component: EditorLayoutComponent,
-                children: CMS.EDITOR_ROUTES
+                children: childrenRoutes
             }
         ]
     }

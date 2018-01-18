@@ -23,7 +23,7 @@ import { } from "reflect-metadata";
     CoreModule,
     PropertiesModule,
     EditorModule,
-    ...CMS.modules,
+    ...CMS.EDITOR_MODULES(),
     CmsRoutingModule
   ],
   declarations: [CmsComponent],
