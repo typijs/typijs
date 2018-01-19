@@ -97,7 +97,6 @@ export class PropertyListComponent extends CmsProperty {
         if (properties) {
             let group = {};
             properties.forEach(property => {
-                console.log('Model form ', property);
                 let validators = [];
                 if (property.metadata.validates) {
                     property.metadata.validates.forEach(validate => {

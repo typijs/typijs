@@ -15,7 +15,7 @@ export enum CmsWidgetPosition {
 export interface CmsComponentConfig {
     component: any,
     position: CmsWidgetPosition,
-    group: string
+    group?: string
 }
 
 export interface CmsModuleConfig {
