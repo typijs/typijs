@@ -11,7 +11,7 @@ import {
 
 import { CMS, ContentService, Content, slugify } from '@angular-cms/core';
 
-import { PAGE_TYPE, BLOCK_TYPE } from './../constants';
+import { PAGE_TYPE, BLOCK_TYPE } from './../../constants';
 
 @Component({
     templateUrl: './content-type-list.component.html',

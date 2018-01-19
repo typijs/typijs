@@ -9,7 +9,7 @@ import { CMS, UIHint, CmsProperty, InsertPointDirective, ContentService, Content
 
 import { Elements, PropertyListComponent, SelectProperty } from '@angular-cms/properties';
 
-import { PAGE_TYPE, BLOCK_TYPE } from './../constants';
+import { PAGE_TYPE, BLOCK_TYPE } from './../../constants';
 
 @Component({
     templateUrl: './content-form-edit.component.html',
@@ -57,8 +57,11 @@ export class ContentFormEditComponent implements OnInit {
 
     private bindDataForContentForm(currentContent, contentType) {
         this.currentContent = currentContent;
-        if (this.currentContent.properties)
+        if (this.currentContent.properties) {
             this.formModel = this.currentContent.properties;
+        } else {
+            this.formModel = {};
+        }
 
         if (contentType) {
             let properties = Reflect.getMetadata(PROPERTIES_METADATA_KEY, contentType);

@@ -1,7 +1,7 @@
 <ul class="nav">
     <li *ngFor="let node of items">
         <i class="indicator glyphicon" [ngClass]="{'glyphicon-plus-sign': !node.expanded, 'glyphicon-minus-sign': node.expanded}" (click)="node.expand()"></i>
-        <span>{{ node.name }}</span>
+        <span [routerLink]="['content/page', node.key]">{{ node.name }}</span>
         <div *ngIf="node.expanded">
             <content-tree [root]="node"></content-tree>
         </div>
