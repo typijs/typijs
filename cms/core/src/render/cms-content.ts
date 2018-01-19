@@ -10,10 +10,10 @@ import { PageData } from './../bases/page-data';
 import { CmsComponent } from './../bases/cms-component';
 
 @Component({
-    selector: 'cms-template',
+    selector: 'cms-content',
     template: `<ng-template cmsInsertPoint></ng-template>`
 })
-export class CmsTemplateComponent implements OnDestroy {
+export class CmsRenderContentComponent implements OnDestroy {
 
     private pageComponentRef: any;
 
