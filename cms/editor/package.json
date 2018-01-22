@@ -21,6 +21,7 @@
       "@angular/router": "^5.0.0",
       "@angular-cms/core": "1.0.0",
       "@angular-cms/properties": "1.0.0",
+      "@angular-cms/modules": "1.0.0",
       "core-js": "^2.4.1",
       "reflect-metadata": "^0.1.10",
       "rxjs": "^5.1.0",
