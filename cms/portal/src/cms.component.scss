@@ -1,4 +1,8 @@
-@import 'scss/style';
+
+// Import Bootstrap source files
+@import "assets/vendors/font-awesome/css/font-awesome.css";
+@import "assets/vendors/simple-line-icons/css/simple-line-icons.css";
+@import 'assets/scss/style';
 
 select, textarea, input{
   &.ng-valid[required]{

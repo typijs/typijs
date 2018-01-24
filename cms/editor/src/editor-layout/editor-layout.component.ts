@@ -25,7 +25,7 @@ export class EditorLayoutComponent {
     }
 
     initCreatingWidget() {
-        let leftViewContainerRef = this.insertPoints.find(x => x.name == 1).viewContainerRef;
+        let leftViewContainerRef = this.insertPoints.find(x => x.name == "1").viewContainerRef;
         leftViewContainerRef.clear();
 
         CMS.EDITOR_WIDGETS().filter(x => x.position == 1).forEach(widget => {
@@ -33,7 +33,7 @@ export class EditorLayoutComponent {
         })
 
 
-        let rightViewContainerRef = this.insertPoints.find(x => x.name == 2).viewContainerRef;
+        let rightViewContainerRef = this.insertPoints.find(x => x.name == "2").viewContainerRef;
         rightViewContainerRef.clear();
 
         CMS.EDITOR_WIDGETS().filter(x => x.position == 2).forEach(widget => {

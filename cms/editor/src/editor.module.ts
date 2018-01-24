@@ -6,6 +6,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { PropertiesModule } from '@angular-cms/properties';
 import { ContentService, CoreModule } from '@angular-cms/core';
+import { LayoutModule } from '@angular-cms/modules';
 
 import { EditorLayoutComponent } from './editor-layout/editor-layout.component';
 
@@ -17,9 +18,10 @@ import { } from "reflect-metadata";
         HttpClientModule,
         FormsModule,
         ReactiveFormsModule,
-        PropertiesModule,
+        RouterModule,
         CoreModule,
-        RouterModule
+        PropertiesModule,
+        LayoutModule
     ],
     declarations: [
         EditorLayoutComponent

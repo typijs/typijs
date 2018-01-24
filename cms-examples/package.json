@@ -29,7 +29,7 @@
     "@angular-cms/portal": "../cms/portal",
     "@angular-cms/api": "../cms-api",
     "body-parser": "^1.18.2",
-    "bootstrap": "4.0.0-alpha.5",
+    "bootstrap": "4.0.0",
     "core-js": "^2.4.1",
     "angular-cms": "../cms",
     "dotenv": "^4.0.0",
