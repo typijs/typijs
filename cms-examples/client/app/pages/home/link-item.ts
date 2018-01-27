@@ -1,9 +1,9 @@
-import { Property, ValidationTypes, UIType } from "@angular-cms/core";
+import { Property, ValidationTypes, UIHint } from "@angular-cms/core";
 
 export class LinkItem {
     @Property({
         displayName: "Link Text",
-        displayType: UIType.Input,
+        displayType: UIHint.Input,
         validates: [
             ValidationTypes.required("Link text is required")]
     })
@@ -11,7 +11,7 @@ export class LinkItem {
 
     @Property({
         displayName: "Link Url",
-        displayType: UIType.Input,
+        displayType: UIHint.Input,
         validates: [
             ValidationTypes.required("Link url is required")]
     })

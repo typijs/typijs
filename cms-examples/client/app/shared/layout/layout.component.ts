@@ -13,7 +13,6 @@ export class LayoutComponent {
 
   ngOnInit() {
     this.contentService.getStartPage().subscribe(res=>{
-      console.log(res);
       this.startPage = res.properties;
     })
   }

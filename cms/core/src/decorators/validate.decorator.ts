@@ -5,7 +5,7 @@ interface ValidateMetadata {
     require?: boolean;
     length?: any;
     min?: number;
-    max?: number;
+    max?: [string, number];
     email?: boolean;
 }
 

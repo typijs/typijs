@@ -2,25 +2,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CmsComponent } from './cms.component';
-import {
-    EditorLayoutComponent,
-    ContentFormEditComponent,
-    ContentTypeListComponent
-} from '@angular-cms/editor';
+import { EditorLayoutComponent } from '@angular-cms/editor';
 import { CMS } from '@angular-cms/core';
+import { registerPageModule, registerBlockModule } from '@angular-cms/modules';
 
-CMS.EDITOR_ROUTES.push({
-    path: 'new/:type', //type is 'block' or 'page'
-    component: ContentTypeListComponent
-});
-CMS.EDITOR_ROUTES.push({
-    path: 'new/:type/:parentId', //type is 'block' or 'page'
-    component: ContentTypeListComponent
-});
-CMS.EDITOR_ROUTES.push({
-    path: 'content/:type/:id', //type is 'block' or 'page'
-    component: ContentFormEditComponent
-});
+registerPageModule();
+registerBlockModule();
 
 const cmsRoutes: Routes = [
     {
@@ -33,7 +20,7 @@ const cmsRoutes: Routes = [
             {
                 path: 'editor',
                 component: EditorLayoutComponent,
-                children: CMS.EDITOR_ROUTES
+                children: CMS.EDITOR_ROUTES()
             }
         ]
     }

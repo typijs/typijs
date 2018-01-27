@@ -1,82 +1,37 @@
-<div id="wrapper">
-    <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/">SB Admin v2.0</a>
-        </div>
-        <!-- /.navbar-header -->
-
-        <ul class="nav navbar-top-links navbar-right">
-            <!-- /.dropdown -->
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:void(0)" aria-expanded="false">
-                    <i class="fa fa-user fa-fw"></i>
-                    <i class="fa fa-caret-down"></i>
-                </a>
-                <ul class="dropdown-menu dropdown-user">
-                    <li>
-                        <a href="javascript:void(0)">
-                            <i class="fa fa-user fa-fw"></i> User Profile</a>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0)">
-                            <i class="fa fa-gear fa-fw"></i> Settings</a>
-                    </li>
-                    <li class="divider"></li>
-                    <li>
-                        <a href="login.html">
-                            <i class="fa fa-sign-out fa-fw"></i> Logout</a>
-                    </li>
-                </ul>
-                <!-- /.dropdown-user -->
-            </li>
-            <!-- /.dropdown -->
-        </ul>
-        <!-- /.navbar-top-links -->
-
-        <div class="navbar-default sidebar" role="navigation">
-            <div class="sidebar-nav navbar-collapse">
-                <ul class="nav in" id="side-menu">
-                    <li class="sidebar-search">
-                        <div class="input-group custom-search-form">
-                            <input type="text" class="form-control" placeholder="Search..." />
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="button">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </span>
-                        </div>
-                        <!-- /input-group -->
-                    </li>
-                    <li>
-                        <a href="javascript:void(0)">
-                            <i class="fa fa-sitemap fa-fw"></i> Pages
-                            <span class="fa fa-plus pull-right" [routerLink]="['new/page']"></span>
-                        </a>
-                        <ul class="nav nav-second-level tree">
-                            <content-tree [root]="root"></content-tree>
-                        </ul>
-                        <!-- /.nav-second-level -->
-                    </li>
-
-                    <li>
-                        <a href="javascript:void(0)">
-                            <i class="fa fa-sitemap fa-fw"></i> Blocks
-                            <span class="fa fa-plus pull-right" [routerLink]="['new/block']"></span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <!-- /.sidebar-collapse -->
-        </div>
-        <!-- /.navbar-static-side -->
-    </nav>
-    <div id="page-wrapper">
+<div class="cms-layout app header-fixed sidebar-fixed aside-menu-fixed aside-menu-hidden">
+  <app-header>
+    <ng-template [cmsInsertPoint]="0"></ng-template>
+  </app-header>
+  <div class="app-body">
+    <app-sidebar>
+      <ng-template [cmsInsertPoint]="1"></ng-template>
+    </app-sidebar>
+    <!-- Main content -->
+    <main class="main">
+      <!-- Breadcrumb -->
+      <ol class="breadcrumb">
+        <app-breadcrumbs></app-breadcrumbs>
+        <!-- Breadcrumb Menu-->
+        <li class="breadcrumb-menu d-md-down-none">
+          <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+            <a class="btn" href="#">
+              <i class="icon-speech"></i>
+            </a>
+            <a class="btn" [routerLink]="['/dashboard']">
+              <i class="icon-graph"></i> &nbsp;Dashboard</a>
+            <a class="btn" href="#">
+              <i class="icon-settings"></i> &nbsp;Settings</a>
+          </div>
+        </li>
+      </ol>
+      <div class="container-fluid">
         <router-outlet></router-outlet>
-    </div>
+      </div>
+      <!-- /.conainer-fluid -->
+    </main>
+    <app-aside>
+      <ng-template [cmsInsertPoint]="2"></ng-template>
+    </app-aside>
+  </div>
+  <app-footer></app-footer>
 </div>

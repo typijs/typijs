@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Property, PageType, UIType, ValidationTypes, PageData } from '@angular-cms/core';
+import { Property, PageType, UIHint, ValidationTypes, PageData } from '@angular-cms/core';
 import { FooterItem } from './footer-item';
 import { HomeComponent } from './home.component';
 
@@ -12,7 +12,7 @@ export class HomePage extends PageData {
 
     @Property({
         displayName: "Title",
-        displayType: UIType.Input,
+        displayType: UIHint.Input,
         validates: [
             ValidationTypes.required("This is min required")]
     })
@@ -20,25 +20,25 @@ export class HomePage extends PageData {
 
     @Property({
         displayName: "Banner Image",
-        displayType: UIType.Input
+        displayType: UIHint.Input
     })
     bannerImage: string;
 
     @Property({
         displayName: "Banner Summary",
-        displayType: UIType.Xhtml
+        displayType: UIHint.Xhtml
     })
     summary: string;
 
     @Property({
         displayName: "Features",
-        displayType: UIType.ContentArea
+        displayType: UIHint.ContentArea
     })
     features: Array<any>
 
     @Property({
         displayName: "Footer",
-        displayType: UIType.PropertyList,
+        displayType: UIHint.PropertyList,
         propertyListItemType: FooterItem,
     })
     footers: Array<FooterItem>

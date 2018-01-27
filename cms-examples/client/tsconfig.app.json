@@ -22,7 +22,8 @@
     "./",
     "../../cms/core/index.ts",
     "../../cms/editor/index.ts",
-    "../../cms/form-elements/index.ts",
+    "../../cms/properties/index.ts",
+    "../../cms/modules/index.ts",
     "../node_modules/@angular-cms/portal/src/cms.module.ts"
   ]
 }

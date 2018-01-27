@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Property, BlockType, UIType, ValidationTypes, ContentData } from '@angular-cms/core';
+import { Property, BlockType, UIHint, ValidationTypes, ContentData } from '@angular-cms/core';
 import { FeatureBlockComponent } from './feature-block.component';
 
 
@@ -13,20 +13,20 @@ export class FeatureBlock extends ContentData {
 
     @Property({
         displayName: "Title",
-        displayType: UIType.Input,
+        displayType: UIHint.Input,
         validates: [ValidationTypes.required("This is min required")]
     })
     title: string;
 
     @Property({
         displayName: "Summary",
-        displayType: UIType.Xhtml
+        displayType: UIHint.Xhtml
     })
     summary: string;
     
     @Property({
         displayName: "Link Text",
-        displayType: UIType.Input,
+        displayType: UIHint.Input,
         validates: [ValidationTypes.required("This is min required")]
     })
     linkText: string;

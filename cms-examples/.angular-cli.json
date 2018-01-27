@@ -22,8 +22,7 @@
         "styles.css"
       ],
       "scripts": [
-        "../node_modules/jquery/dist/jquery.min.js",
-        "../node_modules/@angular-cms/portal/src/assets/js/sb-admin-2.js"
+        "../node_modules/jquery/dist/jquery.min.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

@@ -8,6 +8,8 @@ export * from './models';
 export * from './render';
 export * from './services';
 export * from './util';
-export * from './ui-type';
+export * from './ui-hint';
 export * from './cms';
+export * from './module-config';
+export { ServiceLocator, setAppInjector } from './service-locator';
 

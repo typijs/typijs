@@ -1,10 +1,10 @@
-import { Property, ValidationTypes, UIType } from "@angular-cms/core";
+import { Property, ValidationTypes, UIHint } from "@angular-cms/core";
 import { BlogTypeSelectionFactory } from "./blog-type-selection.factory";
 
 export class BannerItem {
     @Property({
         displayName: "Title",
-        displayType: UIType.Input,
+        displayType: UIHint.Input,
         validates: [
             ValidationTypes.required("This is min required"),
             ValidationTypes.minLength(1, "This is min message"),
@@ -14,27 +14,27 @@ export class BannerItem {
 
     @Property({
         displayName: "This is content",
-        displayType: UIType.Textarea,
+        displayType: UIHint.Textarea,
         validates: [ValidationTypes.required("This is min required")]
     })
     content: string;
 
     @Property({
         displayName: "This is header",
-        displayType: UIType.Xhtml
+        displayType: UIHint.Xhtml
     })
     header: string;
 
     @Property({
         displayName: "This is blog type",
-        displayType: UIType.Select,
+        displayType: UIHint.Select,
         selectionFactory: BlogTypeSelectionFactory
     })
     blogType: string;
 
     @Property({
         displayName: "This is check type",
-        displayType: UIType.Checkbox,
+        displayType: UIHint.Checkbox,
         selectionFactory: BlogTypeSelectionFactory
     })
     checkType: string;

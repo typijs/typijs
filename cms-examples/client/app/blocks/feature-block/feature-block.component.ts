@@ -2,7 +2,7 @@ import { Router } from '@angular/router';
 import { Component, Input, ChangeDetectionStrategy, Inject } from '@angular/core';
 import { Http, Response, URLSearchParams, RequestOptions, Headers } from '@angular/http';
 
-import { BaseComponent } from '@angular-cms/core';
+import { CmsComponent } from '@angular-cms/core';
 import { FeatureBlock } from './feature-block.blocktype';
 
 @Component({
@@ -15,7 +15,7 @@ import { FeatureBlock } from './feature-block.blocktype';
     </div>
   `
 })
-export class FeatureBlockComponent extends BaseComponent<FeatureBlock> {
+export class FeatureBlockComponent extends CmsComponent<FeatureBlock> {
 
     constructor(@Inject(Router) private router: Router) {
         super();
