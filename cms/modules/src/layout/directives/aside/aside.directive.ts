@@ -1,4 +1,5 @@
 import { Directive, HostListener } from '@angular/core';
+import { LAYOUT_CLASS } from './../../../constants';
 
 /**
 * Allows the aside to be toggled via click.
@@ -12,6 +13,6 @@ export class AsideToggleDirective {
   @HostListener('click', ['$event'])
   toggleOpen($event: any) {
     $event.preventDefault();
-    document.querySelector('body').classList.toggle('aside-menu-hidden');
+    document.querySelector(LAYOUT_CLASS).classList.toggle('aside-menu-hidden');
   }
 }

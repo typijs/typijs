@@ -8,15 +8,7 @@ import { navigation } from './../../_nav';
   template: `
     <nav class="sidebar-nav">
       <ul class="nav">
-        <ng-template ngFor let-navitem [ngForOf]="navigation">
-          <li *ngIf="isDivider(navitem)" class="nav-divider"></li>
-          <ng-template [ngIf]="isTitle(navitem)">
-            <app-sidebar-nav-title [title]='navitem'></app-sidebar-nav-title>
-          </ng-template>
-          <ng-template [ngIf]="!isDivider(navitem)&&!isTitle(navitem)">
-            <app-sidebar-nav-item [item]='navitem'></app-sidebar-nav-item>
-          </ng-template>
-        </ng-template>
+        <ng-content></ng-content>
       </ul>
     </nav>`
 })

@@ -1,4 +1,5 @@
 import { Directive, HostListener } from '@angular/core';
+import { LAYOUT_CLASS } from './../../../constants';
 
 /**
 * Allows the sidebar to be toggled via click.
@@ -12,7 +13,7 @@ export class SidebarToggleDirective {
   @HostListener('click', ['$event'])
   toggleOpen($event: any) {
     $event.preventDefault();
-    document.querySelector('body').classList.toggle('sidebar-hidden');
+    document.querySelector(LAYOUT_CLASS).classList.toggle('sidebar-hidden');
   }
 }
 
@@ -25,7 +26,7 @@ export class SidebarMinimizeDirective {
   @HostListener('click', ['$event'])
   toggleOpen($event: any) {
     $event.preventDefault();
-    document.querySelector('body').classList.toggle('sidebar-minimized');
+    document.querySelector(LAYOUT_CLASS).classList.toggle('sidebar-minimized');
   }
 }
 
@@ -38,7 +39,7 @@ export class BrandMinimizeDirective {
   @HostListener('click', ['$event'])
   toggleOpen($event: any) {
     $event.preventDefault();
-    document.querySelector('body').classList.toggle('brand-minimized');
+    document.querySelector(LAYOUT_CLASS).classList.toggle('brand-minimized');
   }
 }
 
@@ -56,7 +57,7 @@ export class MobileSidebarToggleDirective {
   @HostListener('click', ['$event'])
   toggleOpen($event: any) {
     $event.preventDefault();
-    document.querySelector('body').classList.toggle('sidebar-mobile-show');
+    document.querySelector(LAYOUT_CLASS).classList.toggle('sidebar-mobile-show');
   }
 }
 
@@ -76,10 +77,10 @@ export class SidebarOffCanvasCloseDirective {
 
   // Toggle element class
   private toggleClass(elem: any, elementClassName: string) {
-    let newClass = ' ' + elem.className.replace( /[\t\r\n]/g, ' ' ) + ' ';
+    let newClass = ' ' + elem.className.replace(/[\t\r\n]/g, ' ') + ' ';
     if (this.hasClass(elem, elementClassName)) {
-      while (newClass.indexOf(' ' + elementClassName + ' ') >= 0 ) {
-        newClass = newClass.replace( ' ' + elementClassName + ' ' , ' ' );
+      while (newClass.indexOf(' ' + elementClassName + ' ') >= 0) {
+        newClass = newClass.replace(' ' + elementClassName + ' ', ' ');
       }
       elem.className = newClass.replace(/^\s+|\s+$/g, '');
     } else {
@@ -91,16 +92,16 @@ export class SidebarOffCanvasCloseDirective {
   toggleOpen($event: any) {
     $event.preventDefault();
 
-    if (this.hasClass(document.querySelector('body'), 'sidebar-off-canvas')) {
-      this.toggleClass(document.querySelector('body'), 'sidebar-opened');
+    if (this.hasClass(document.querySelector(LAYOUT_CLASS), 'sidebar-off-canvas')) {
+      this.toggleClass(document.querySelector(LAYOUT_CLASS), 'sidebar-opened');
     }
   }
 }
 
 export const SIDEBAR_TOGGLE_DIRECTIVES = [
-    SidebarToggleDirective,
-    SidebarMinimizeDirective,
-    BrandMinimizeDirective,
-    SidebarOffCanvasCloseDirective,
-    MobileSidebarToggleDirective
+  SidebarToggleDirective,
+  SidebarMinimizeDirective,
+  BrandMinimizeDirective,
+  SidebarOffCanvasCloseDirective,
+  MobileSidebarToggleDirective
 ];

@@ -4,6 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 
 // Import components
@@ -55,6 +56,7 @@ const APP_DIRECTIVES = [
         FormsModule,
         ReactiveFormsModule,
         RouterModule,
+        BsDropdownModule.forRoot(),
         TabsModule.forRoot()
     ],
     declarations: [
