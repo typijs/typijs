@@ -6,8 +6,8 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { CoreModule } from '@angular-cms/core';
 
-import { TreeStore } from './content-tree/tree-store';
-import { ContentTreeComponent } from './content-tree/content-tree.component';
+import { TreeStore } from './tree/tree-store';
+import { TreeComponent } from './tree/tree.component';
 
 @NgModule({
     imports: [
@@ -19,10 +19,10 @@ import { ContentTreeComponent } from './content-tree/content-tree.component';
         RouterModule
     ],
     declarations: [
-        ContentTreeComponent
+        TreeComponent
     ],
     exports: [
-        ContentTreeComponent
+        TreeComponent
     ],
     providers: [TreeStore]
 })

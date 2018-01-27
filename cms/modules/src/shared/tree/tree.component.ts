@@ -4,11 +4,11 @@ import { TreeNode } from './tree-node';
 import { TreeService } from './tree-service';
 
 @Component({
-    selector: 'content-tree',
-    templateUrl: './content-tree.component.html',
-    styleUrls: ['./content-tree.component.scss']
+    selector: 'cms-tree',
+    templateUrl: './tree.component.html',
+    styleUrls: ['./tree.component.scss']
 })
-export class ContentTreeComponent implements OnInit {
+export class TreeComponent implements OnInit {
     @Input() treeService: TreeService;
     @Input() root: TreeNode;
     @Input() loadChildren: any;

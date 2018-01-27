@@ -1,24 +1,29 @@
 import { Component, Input, ComponentFactoryResolver, Inject, ViewChild, OnDestroy } from '@angular/core';
 import { ContentService, ServiceLocator } from '@angular-cms/core';
-import { TreeNode } from '../shared/content-tree/tree-node';
-import { TreeService } from '../shared/content-tree/tree-service';
+import { TreeNode } from '../shared/tree/tree-node';
+import { TreeService } from '../shared/tree/tree-service';
 import { PageService } from './page.service';
 
 @Component({
     template: `
-        <li class="nav-item">
+        <li class="nav-item nav-dropdown open">
             <a class="nav-link">
-                <i class="fa fa-sitemap fa-fw"></i> Pages <span class="badge badge-info" [routerLink]="['new/page']">NEW</span>
+                <i class="fa fa-sitemap fa-fw"></i>
+                Pages
+                <span class="badge badge-info" [routerLink]="['new/page']">NEW</span>
             </a>
-        </li>
-        <li class="nav-item nav-dropdown open tree">
-            <content-tree [root]="root" [treeService]="pageService"></content-tree>
+            <ul class="nav-dropdown-items">
+                <li class="nav-item">
+                    <cms-tree class="tree-root" [root]="root" [treeService]="pageService"></cms-tree>
+                </li>
+            </ul>
         </li>
         `,
     styles: [`
-        .tree li {
-            color:#fff;
-          }
+        .tree-root {
+            margin-left: 10px;
+            display:block;
+        }
         `]
 })
 export class PageTreeComponent {

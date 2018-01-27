@@ -1,0 +1,8 @@
+<ul class="tree">
+    <li *ngFor="let node of items">
+        <i class="indicator fa " [ngClass]="{'fa-caret-right': !node.expanded, 'fa-caret-down': node.expanded}"
+            (click)="node.expand()"></i>
+        <a [routerLink]="['content/page', node.key]">{{ node.name }}</a>
+        <cms-tree *ngIf="node.expanded" [root]="node" [treeService]="treeService"></cms-tree>
+    </li>
+</ul>

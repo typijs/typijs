@@ -1,1 +1,22 @@
 // Here you can add other styles
+@include media-breakpoint-up(lg) {
+ // Minimized Sidebar
+ .sidebar-minimized {
+    .nav .nav-dropdown {
+        > .nav-dropdown-items {
+          display: none;
+          max-height: 1000px;
+          background: $sidebar-bg;
+        }
+
+        &:hover {
+          background: $sidebar-nav-link-hover-bg;
+          > .nav-dropdown-items {
+            position: absolute;
+            left: $sidebar-minimized-width;
+            display: inline;
+          }
+        }
+      }
+ }
+}
