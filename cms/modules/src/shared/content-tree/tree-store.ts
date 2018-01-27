@@ -11,17 +11,22 @@ export class TreeStore {
 
     private nodes = {};
 
-    constructor(private _http: Http, private _contentService: ContentService) {}
+    constructor(private _http: Http, private _contentService: ContentService) { }
 
-    loadNodes(key) {
+    loadNodes(callback, key) {
         if (this.nodes[key]) {
             this.treeNodes[key].next(this.nodes[key]);
         }
         else {
-            this._contentService
-                .getContentsByParentId(key)
+            // this._contentService
+            //     .getContentsByParentId(key)
+            //     .subscribe(res => {
+            //         this.nodes[key] = res.map(x=> new TreeNode(x._id, "", x.name));
+            //         this.treeNodes[key].next(this.nodes[key]);
+            //     });
+            callback(key)
                 .subscribe(res => {
-                    this.nodes[key] = res.map(x=> new TreeNode(x._id, "", x.name));
+                    this.nodes[key] = res.map(x => new TreeNode(x._id, "", x.name));
                     this.treeNodes[key].next(this.nodes[key]);
                 });
         }
