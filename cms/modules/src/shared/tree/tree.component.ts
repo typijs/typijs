@@ -1,4 +1,6 @@
-import { Component, Input, ChangeDetectionStrategy, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs/Subscription';
+
 import { TreeStore } from './tree-store';
 import { TreeNode } from './tree-node';
 import { TreeService } from './tree-service';
@@ -12,24 +14,36 @@ export class TreeComponent implements OnInit {
     @Input() treeService: TreeService;
     @Input() root: TreeNode;
     @Input() loadChildren: any;
-    children: any;
-    items = [];
-    subscription;
+
+    @Output()
+    public nodeSelected: EventEmitter<any> = new EventEmitter();
+
+    public children = [];
+    private subscriptions: Subscription[] = [];
+
 
     constructor(private _store: TreeStore) {
     }
 
     ngOnInit() {
-        this.subscription = this._store.getTreeNodes(this.root.key).subscribe(res => {
-            this.items = res;
-        });
-        if(this.treeService) {
-            this._store.loadNodes(this.treeService.loadChildren, this.root.key);
+        if (this.treeService) {
+            this._store.loadNodes(this.treeService.loadChildren, this.root.id);
         }
+
+        this.subscriptions.push(this._store.getTreeNodes(this.root.id).subscribe(res => {
+            this.children = res;
+        }));
+
+        this.subscriptions.push(this._store.nodeSelected$.subscribe(node => {
+            this.nodeSelected.emit(node);
+        }));
     }
 
-    ngOnDestroy() {
-        this.subscription.unsubscribe();
+    selectNode(node: TreeNode) {
+        this._store.fireNodeSelected(node);
     }
 
+    ngOnDestroy(): void {
+        this.subscriptions.forEach(sub => sub && sub.unsubscribe());
+    }
 }

@@ -5,8 +5,9 @@ import { TreeNode } from './tree-node';
 
 @Injectable()
 export class TreeStore {
-    private treeNodes = {};
+    public nodeSelected$: Subject<TreeNode> = new Subject<TreeNode>();
 
+    private treeNodes = {};
     private nodes = {};
 
     constructor() { }
@@ -18,10 +19,14 @@ export class TreeStore {
         else {
             callback(key)
                 .subscribe(res => {
-                    this.nodes[key] = res.map(x => new TreeNode(x._id, "", x.name));
+                    this.nodes[key] = res.map(x => new TreeNode(x._id, x.name));
                     this.treeNodes[key].next(this.nodes[key]);
                 });
         }
+    }
+
+    fireNodeSelected(node) {
+        this.nodeSelected$.next(node);
     }
 
     getTreeNodes(key) {

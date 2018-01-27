@@ -1,28 +1,22 @@
-export class TreeNode{
-    showIcon = false;
-    expanded = false;
-    icon = null;
-  
-    constructor(public key, public url, public name){
-      if(url){
-        this.showIcon = true;
-        this.icon = this.getIcon();
-      }
-    }
-  
-    expand(){
-      this.expanded = !this.expanded;
-      this.icon = this.getIcon();
-    }
-  
-    private getIcon(){
-      if (this.showIcon === true) {
-        if(this.expanded){
-          return '- ';
-        }
-        return '+ ';
-  
-      }
-      return null;
-    }
+export class TreeNode {
+  id: string;
+  parentId: string;
+  name: string;
+  icon: string;
+  url: string;
+
+  isExpanded: boolean = false;;
+  isSelected: boolean = false;
+  isEditing: boolean = false;
+  isLoading: boolean = false;
+  hasChildren: boolean = true;
+
+  constructor(id, name) {
+    this.id = id;
+    this.name = name;
   }
+
+  expand() {
+    this.isExpanded = !this.isExpanded;
+  }
+}
