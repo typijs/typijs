@@ -4,6 +4,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+
 import { CoreModule } from '@angular-cms/core';
 
 import { TreeStore } from './tree/tree-store';
@@ -16,6 +18,7 @@ import { TreeComponent } from './tree/tree.component';
         FormsModule,
         ReactiveFormsModule,
         CoreModule,
+        BsDropdownModule.forRoot(),
         RouterModule
     ],
     declarations: [

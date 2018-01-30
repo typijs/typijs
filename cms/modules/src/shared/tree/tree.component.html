@@ -1,8 +1,26 @@
 <ul class="tree">
     <li *ngFor="let node of children">
-        <i class="indicator fa " [ngClass]="{'fa-caret-right': !node.isExpanded, 'fa-caret-down': node.isExpanded}"
-            (click)="node.expand()"></i>
-        <a href="javascript:void(0)" (click)="selectNode(node)">{{ node.name }}</a>
+        <div class="node-value">
+            <i class="indicator fa " [ngClass]="{'fa-caret-right': !node.isExpanded, 'fa-caret-down': node.isExpanded}" (click)="node.expand()"></i>
+            <a href="javascript:void(0)" (click)="selectNode(node)">{{ node.name }}</a>
+            <div class="node-menu" dropdown>
+                <i class="fa fa-bars" dropdownToggle></i>
+                <div class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
+                    <a class="dropdown-item" href="#">
+                        <i class="fa fa-bell-o"></i> New Page
+                    </a>
+                    <a class="dropdown-item" href="#">
+                        <i class="fa fa-envelope-o"></i> Cut
+                    </a>
+                    <a class="dropdown-item" href="#">
+                        <i class="fa fa-tasks"></i> Copy
+                    </a>
+                    <a class="dropdown-item" href="#">
+                        <i class="fa fa-comments"></i> Delete
+                    </a>
+                </div>
+            </div>
+        </div>
         <cms-tree *ngIf="node.isExpanded" [root]="node" [treeService]="treeService"></cms-tree>
     </li>
 </ul>

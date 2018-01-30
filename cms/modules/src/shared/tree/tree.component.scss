@@ -7,15 +7,35 @@
     }
     > li {
         margin: 0;
-        a {
-            text-decoration: none;
+
+        .node-menu {
+            display: none;
+            float: right;
             padding: 5px;
-            display: inline-block;
-        }
-    
-        .indicator{
+            position: relative;
             cursor: pointer;
-            padding: 5px 5px 5px 10px;
+
+            .dropdown-menu {
+                margin: 0;
+            }
+        }
+
+        .node-value {
+            &:hover {
+                .node-menu {
+                    display: inline-block;
+                }
+            }
+            a {
+                text-decoration: none;
+                padding: 5px;
+                display: inline-block;
+            }
+        
+            .indicator{
+                cursor: pointer;
+                padding: 5px 5px 5px 10px;
+            }
         }
     }
 }
