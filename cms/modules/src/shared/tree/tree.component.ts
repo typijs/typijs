@@ -4,30 +4,35 @@ import { Subscription } from 'rxjs/Subscription';
 import { TreeStore } from './tree-store';
 import { TreeNode } from './tree-node';
 import { TreeService } from './tree-service';
+import { TreeModel } from './tree-model';
 
 @Component({
     selector: 'cms-tree',
     templateUrl: './tree.component.html',
-    styleUrls: ['./tree.component.scss']
+    styleUrls: ['./tree.component.scss'],
+    providers: [TreeStore]
 })
 export class TreeComponent implements OnInit {
-    @Input() treeService: TreeService;
-    @Input() root: TreeNode;
-    @Input() loadChildren: any;
+    @Input() tree: TreeModel;
 
     @Output()
     public nodeSelected: EventEmitter<any> = new EventEmitter();
 
     public children = [];
+
+    private treeService: TreeService;
+    private root: TreeNode;
     private subscriptions: Subscription[] = [];
 
-
-    constructor(private _store: TreeStore) {
-    }
+    constructor(private _store: TreeStore) {}
 
     ngOnInit() {
-        if (this.treeService) {
-            this._store.loadNodes(this.treeService.loadChildren, this.root.id);
+        if(this.tree) {
+            this.treeService = this.tree.service;
+            this.root = this.tree.root;
+            if (this.treeService) {
+                this._store.loadNodes(this.treeService.loadChildren, this.root.id);
+            }
         }
 
         this.subscriptions.push(this._store.getTreeNodes(this.root.id).subscribe(res => {

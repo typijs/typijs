@@ -8,7 +8,6 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
 import { CoreModule } from '@angular-cms/core';
 
-import { TreeStore } from './tree/tree-store';
 import { TreeComponent } from './tree/tree.component';
 
 @NgModule({
@@ -26,7 +25,6 @@ import { TreeComponent } from './tree/tree.component';
     ],
     exports: [
         TreeComponent
-    ],
-    providers: [TreeStore]
+    ]
 })
 export class SharedModule { }

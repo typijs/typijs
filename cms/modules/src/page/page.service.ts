@@ -10,8 +10,6 @@ import { TreeNode } from '../shared/tree/tree-node';
 
 @Injectable()
 export class PageService implements TreeService {
-    root: TreeNode;
-
     constructor(private _contentService: ContentService) { }
 
     loadChildren: (key: string) => any = (key: string): any => {
