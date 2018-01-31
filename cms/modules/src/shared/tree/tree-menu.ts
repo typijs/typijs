@@ -1,9 +1,14 @@
-export interface TreeMenu {
-    newNodeMenuItem?: string;
-    newNodeInlineMenuItem?: string;
-    renameNodeMenuItem?: string;
-    cutNodeMenuItem?: string;
-    copyNodeMenuItem?: string;
-    pasteNodeMenuItem?: string;
-    deleteNodeMenuItem?: string;
+export enum NodeMenuItemAction {
+    NewNode,
+    NewNodeInline,
+    Rename,
+    Cut,
+    Copy,
+    Paste,
+    Delete
+}
+
+export interface TreeMenuItem {
+    action: NodeMenuItemAction;
+    name: string;
 }

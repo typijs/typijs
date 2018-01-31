@@ -3,33 +3,15 @@
         <div class="node-value">
             <i class="indicator fa " [ngClass]="{'fa-caret-right': !node.isExpanded, 'fa-caret-down': node.isExpanded}" (click)="node.expand()"></i>
             <a href="javascript:void(0)" (click)="selectNode(node)">{{ node.name }}</a>
-            <div class="node-menu" dropdown>
+            <div *ngIf="menuItems" class="node-menu" dropdown>
                 <i class="fa fa-bars" dropdownToggle></i>
                 <div class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
-                    <a class="dropdown-item" href="javascript:void(0)">
-                        New Node
-                    </a>
-                    <a class="dropdown-item" href="javascript:void(0)">
-                        New Inline Node
-                    </a>
-                    <a class="dropdown-item" href="javascript:void(0)">
-                        Edit Inline Node
-                    </a>
-                    <a class="dropdown-item" href="javascript:void(0)">
-                        Cut
-                    </a>
-                    <a class="dropdown-item" href="javascript:void(0)">
-                        Copy
-                    </a>
-                    <a class="dropdown-item" href="javascript:void(0)">
-                        Paste
-                    </a>
-                    <a class="dropdown-item" href="javascript:void(0)">
-                        Delete
+                    <a *ngFor="let menuItem of menuItems" class="dropdown-item" href="javascript:void(0)" (click)="menuItemSelected(menuItem.action, node)">
+                        {{menuItem.name}}
                     </a>
                 </div>
             </div>
         </div>
-        <cms-tree *ngIf="node.isExpanded" [root]="node" [treeService]="treeService"></cms-tree>
+        <cms-tree *ngIf="node.isExpanded" [config]="config" [root]="node"></cms-tree>
     </li>
 </ul>

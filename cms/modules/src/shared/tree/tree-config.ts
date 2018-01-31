@@ -1,9 +1,8 @@
 import { TreeNode } from "./tree-node";
 import { TreeService } from "./tree-service";
-import { TreeMenu } from "./tree-menu";
+import { TreeMenuItem } from "./tree-menu";
 
-export interface TreeModel {
-    root: TreeNode;
+export interface TreeConfig {
     service: TreeService;
-    menu?: TreeMenu;
+    menuItems?: TreeMenuItem[];
 }
