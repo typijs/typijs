@@ -17,6 +17,8 @@ export class TreeStore {
     private treeNodes = {};
     private nodes = {};
 
+    private selectedNode: TreeNode;
+
     constructor() { }
 
     loadNodes(callback, key) {
@@ -33,6 +35,7 @@ export class TreeStore {
     }
 
     fireNodeSelected(node) {
+        this.selectedNode = node;
         this.nodeSelected$.next(node);
     }
 

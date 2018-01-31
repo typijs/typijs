@@ -49,6 +49,11 @@ export class TreeComponent implements OnInit {
             }));
 
             this.subscriptions.push(this._store.nodeSelected$.subscribe(node => {
+                if(node.id == this.root.id) {
+                    this.root.isSelected = true
+                } else {
+                    this.root.isSelected = false;
+                }
                 this.nodeSelected.emit(node);
             }));
 
@@ -83,6 +88,7 @@ export class TreeComponent implements OnInit {
     }
 
     selectNode(node: TreeNode) {
+        node.isSelected = true;
         this._store.fireNodeSelected(node);
     }
 
