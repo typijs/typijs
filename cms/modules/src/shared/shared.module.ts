@@ -9,6 +9,7 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { CoreModule } from '@angular-cms/core';
 
 import { TreeComponent } from './tree/tree.component';
+import { TreeChildrenComponent } from './tree/tree-children.component';
 
 @NgModule({
     imports: [
@@ -21,6 +22,7 @@ import { TreeComponent } from './tree/tree.component';
         RouterModule
     ],
     declarations: [
+        TreeChildrenComponent,
         TreeComponent
     ],
     exports: [

@@ -12,6 +12,6 @@
                 </div>
             </div>
         </div>
-        <cms-tree *ngIf="node.isExpanded" [config]="config" [root]="node"></cms-tree>
+        <tree-children *ngIf="node.isExpanded" [config]="config" [root]="node"></tree-children>
     </li>
 </ul>
