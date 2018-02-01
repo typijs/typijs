@@ -10,8 +10,7 @@ import { TreeMenuItem, NodeMenuItemAction } from './tree-menu';
 @Component({
     selector: 'tree-children',
     templateUrl: './tree-children.component.html',
-    styleUrls: ['./tree-children.component.scss'],
-    providers: [TreeStore]
+    styleUrls: ['./tree-children.component.scss']
 })
 export class TreeChildrenComponent implements OnInit {
     @Input() config: TreeConfig;
@@ -39,6 +38,14 @@ export class TreeChildrenComponent implements OnInit {
                 this.children = res;
             }));
         }
+
+        this.subscriptions.push(this._store.nodeSelected$.subscribe(node => {
+            this.children.forEach(child=> {
+                if(node.id != child.id) {
+                    child.isSelected = false;
+                }
+            })
+        }));
     }
 
     selectNode(node: TreeNode) {

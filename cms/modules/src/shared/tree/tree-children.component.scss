@@ -20,6 +20,12 @@
             }
         }
 
+        .node-selected {
+            .node-menu {
+                display: inline-block;
+            }
+        }
+
         .node-value {
             &:hover {
                 .node-menu {
