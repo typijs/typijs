@@ -28,7 +28,7 @@ export class ContentTypeListComponent implements OnDestroy {
 
     ngOnInit() {
         this.subParams = this.route.params.subscribe(params => {
-            this.parentId = params['id'] || undefined;
+            this.parentId = params['parentId'] || undefined;
             this.type = params['type'];
 
             switch (this.type) {

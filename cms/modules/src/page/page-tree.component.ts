@@ -17,9 +17,10 @@ import { PageService } from './page.service';
                 <li class="nav-item">
                     <cms-tree 
                         class="tree-root" 
-                        [root] = "root"
-                        [config] = "treeConfig"
-                        (nodeSelected)="nodeSelected($event)"></cms-tree>
+                        [root]="root"
+                        [config]="treeConfig"
+                        (nodeSelected)="nodeSelected($event)"
+                        (nodeCreated)="nodeCreated($event)"></cms-tree>
                 </li>
             </ul>
         </li>
@@ -67,5 +68,9 @@ export class PageTreeComponent {
 
     nodeSelected(node) {
         this.router.navigate(["content/page", node.id], { relativeTo: this.route })
+    }
+
+    nodeCreated(parentNode) {
+        this.router.navigate(["new/page", parentNode.id], { relativeTo: this.route })
     }
 }

@@ -30,13 +30,13 @@ export class TreeChildrenComponent implements OnInit {
             this.treeService = this.config.service;
             this.menuItems = this.config.menuItems;
 
-            if (this.treeService) {
-                this._store.loadNodes(this.treeService.loadChildren, this.root.id);
-            }
-
             this.subscriptions.push(this._store.getTreeNodes(this.root.id).subscribe(res => {
                 this.children = res;
             }));
+
+            if (this.treeService) {
+                this._store.loadNodes(this.treeService.loadChildren, this.root.id);
+            }
         }
 
         this.subscriptions.push(this._store.nodeSelected$.subscribe(node => {
