@@ -2,36 +2,37 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 import { TreeNode } from './tree-node';
+import { TreeService } from './index';
 
 @Injectable()
 export class TreeStore {
-    public nodeSelected$: Subject<TreeNode> = new Subject<TreeNode>();
-    public nodeCreated$: Subject<TreeNode> = new Subject<TreeNode>();
-    public nodeInlineCreated$: Subject<TreeNode> = new Subject<TreeNode>();
-    public nodeRenamed$: Subject<TreeNode> = new Subject<TreeNode>();
-    public nodeCut$: Subject<TreeNode> = new Subject<TreeNode>();
-    public nodeCopied$: Subject<TreeNode> = new Subject<TreeNode>();
-    public nodePasted$: Subject<TreeNode> = new Subject<TreeNode>();
-    public nodeDeleted$: Subject<TreeNode> = new Subject<TreeNode>();
+    nodeSelected$: Subject<TreeNode> = new Subject<TreeNode>();
+    nodeCreated$: Subject<TreeNode> = new Subject<TreeNode>();
+    nodeInlineCreated$: Subject<TreeNode> = new Subject<TreeNode>();
+    nodeRenamed$: Subject<TreeNode> = new Subject<TreeNode>();
+    nodeCut$: Subject<TreeNode> = new Subject<TreeNode>();
+    nodeCopied$: Subject<TreeNode> = new Subject<TreeNode>();
+    nodePasted$: Subject<TreeNode> = new Subject<TreeNode>();
+    nodeDeleted$: Subject<TreeNode> = new Subject<TreeNode>();
+
+    treeService: TreeService;
 
     private treeNodes = {};
     private nodes = {};
 
     private selectedNode: TreeNode;
 
-    constructor() { }
-
-    loadNodes(callback, key) {
+    loadNodes(key) {
         if (this.nodes[key]) {
-            this.treeNodes[key].next(this.nodes[key]);
+            this.getTreeNodes(key).next(this.nodes[key]);
         }
         else {
-            callback(key)
-                .subscribe(res => {
-                    this.nodes[key] = res.map(x => new TreeNode(x._id, x.name));
-                    this.treeNodes[key].next(this.nodes[key]);
-                });
+            this.getNodeChildren(key);
         }
+    }
+
+    reloadNode(nodeId) {
+        this.getNodeChildren(nodeId);
     }
 
     fireNodeSelected(node) {
@@ -71,6 +72,16 @@ export class TreeStore {
         if (!this.treeNodes.hasOwnProperty(key)) {
             this.treeNodes[key] = new Subject<Array<TreeNode>>();
         }
-        return this.treeNodes[key].asObservable();
+        return this.treeNodes[key];
+    }
+
+    private getNodeChildren(parentId) {
+        if (this.treeService) {
+            this.treeService.loadChildren(parentId)
+                .subscribe(res => {
+                    this.nodes[parentId] = res.map(x => new TreeNode(x._id, x.name));
+                    this.getTreeNodes(parentId).next(this.nodes[parentId]);
+                });
+        }
     }
 }

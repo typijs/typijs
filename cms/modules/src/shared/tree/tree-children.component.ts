@@ -23,23 +23,23 @@ export class TreeChildrenComponent implements OnInit {
 
     private subscriptions: Subscription[] = [];
 
-    constructor(private _store: TreeStore) { }
+    constructor(private store: TreeStore) { }
 
     ngOnInit() {
         if (this.config) {
             this.treeService = this.config.service;
             this.menuItems = this.config.menuItems;
 
-            this.subscriptions.push(this._store.getTreeNodes(this.root.id).subscribe(res => {
+            this.subscriptions.push(this.store.getTreeNodes(this.root.id).subscribe(res => {
                 this.children = res;
             }));
 
             if (this.treeService) {
-                this._store.loadNodes(this.treeService.loadChildren, this.root.id);
+                this.store.loadNodes(this.root.id);
             }
         }
 
-        this.subscriptions.push(this._store.nodeSelected$.subscribe(node => {
+        this.subscriptions.push(this.store.nodeSelected$.subscribe(node => {
             this.children.forEach(child=> {
                 if(node.id != child.id) {
                     child.isSelected = false;
@@ -50,31 +50,31 @@ export class TreeChildrenComponent implements OnInit {
 
     selectNode(node: TreeNode) {
         node.isSelected = true;
-        this._store.fireNodeSelected(node);
+        this.store.fireNodeSelected(node);
     }
 
     menuItemSelected(action: NodeMenuItemAction, node: TreeNode) {
         switch (action) {
             case NodeMenuItemAction.NewNode:
-                this._store.fireNodeCreated(node);
+                this.store.fireNodeCreated(node);
                 break;
             case NodeMenuItemAction.NewNodeInline:
-                this._store.fireNodeInlineCreated(node);
+                this.store.fireNodeInlineCreated(node);
                 break;
             case NodeMenuItemAction.Rename:
-                this._store.fireNodeRenamed(node);
+                this.store.fireNodeRenamed(node);
                 break;
             case NodeMenuItemAction.Cut:
-                this._store.fireNodeCut(node);
+                this.store.fireNodeCut(node);
                 break;
             case NodeMenuItemAction.Copy:
-                this._store.fireNodeCopied(node);
+                this.store.fireNodeCopied(node);
                 break;
             case NodeMenuItemAction.Paste:
-                this._store.fireNodePasted(node);
+                this.store.fireNodePasted(node);
                 break;
             case NodeMenuItemAction.Delete:
-                this._store.fireNodeDeleted(node);
+                this.store.fireNodeDeleted(node);
                 break;
             default:
                 throw new Error(`Chosen menu item doesn't exist`);

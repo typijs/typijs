@@ -92,6 +92,7 @@ export class ContentTypeListComponent implements OnDestroy {
         this.contentService.addContent(content).subscribe(
             res => {
                 console.log(res);
+                this.contentService.fireContentCreated(content);
                 this.router.navigate(["/cms/editor/content/", PAGE_TYPE, res._id])
             },
             error => console.log(error)

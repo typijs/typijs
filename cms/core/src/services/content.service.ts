@@ -2,12 +2,19 @@ import { Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 
+import { Subject } from 'rxjs/Subject';
+
 import { Content } from '../models/content.model';
 //contents-by-parent/:parentId
 @Injectable()
 export class ContentService {
-
   constructor(private http: HttpClient) { }
+
+  contentCreated$: Subject<Content> = new Subject<Content>();
+
+  fireContentCreated(content) {
+    this.contentCreated$.next(content);
+  }
 
   getStartPage(): Observable<Content> {
     const startPageUrl = '/'

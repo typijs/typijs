@@ -26,39 +26,45 @@ export class TreeComponent {
     @Output() nodeDeleted: EventEmitter<any> = new EventEmitter();
 
     private subscriptions: Subscription[] = [];
-    constructor(private _store: TreeStore) { }
+    constructor(private store: TreeStore) { }
 
     ngOnInit() {
         if (this.config) {
-            this.subscriptions.push(this._store.nodeSelected$.subscribe(node => {
+            this.store.treeService = this.config.service;
+
+            this.subscriptions.push(this.config.service.reloadNode$.subscribe(nodeId=> {
+                this.store.reloadNode(nodeId);
+            }));
+
+            this.subscriptions.push(this.store.nodeSelected$.subscribe(node => {
                 this.nodeSelected.emit(node);
             }));
 
-            this.subscriptions.push(this._store.nodeCreated$.subscribe(node => {
+            this.subscriptions.push(this.store.nodeCreated$.subscribe(node => {
                 this.nodeCreated.emit(node);
             }));
 
-            this.subscriptions.push(this._store.nodeInlineCreated$.subscribe(node => {
+            this.subscriptions.push(this.store.nodeInlineCreated$.subscribe(node => {
                 this.nodeInlineCreated.emit(node);
             }));
 
-            this.subscriptions.push(this._store.nodeCut$.subscribe(node => {
+            this.subscriptions.push(this.store.nodeCut$.subscribe(node => {
                 this.nodeCut.emit(node);
             }));
 
-            this.subscriptions.push(this._store.nodeCopied$.subscribe(node => {
+            this.subscriptions.push(this.store.nodeCopied$.subscribe(node => {
                 this.nodeCopied.emit(node);
             }));
 
-            this.subscriptions.push(this._store.nodeRenamed$.subscribe(node => {
+            this.subscriptions.push(this.store.nodeRenamed$.subscribe(node => {
                 this.nodeRenamed.emit(node);
             }));
 
-            this.subscriptions.push(this._store.nodePasted$.subscribe(node => {
+            this.subscriptions.push(this.store.nodePasted$.subscribe(node => {
                 this.nodePasted.emit(node);
             }));
 
-            this.subscriptions.push(this._store.nodeDeleted$.subscribe(node => {
+            this.subscriptions.push(this.store.nodeDeleted$.subscribe(node => {
                 this.nodeDeleted.emit(node);
             }));
         }
