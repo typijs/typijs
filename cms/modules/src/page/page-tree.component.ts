@@ -2,8 +2,7 @@ import { Component, Input, ComponentFactoryResolver, Inject, ViewChild, OnDestro
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ContentService, ServiceLocator } from '@angular-cms/core';
-import { TreeNode } from '../shared/tree/tree-node';
-import { TreeService } from '../shared/tree/tree-service';
+import { TreeNode, TreeService, TreeConfig, NodeMenuItemAction } from '../shared/tree';
 import { PageService } from './page.service';
 
 @Component({
@@ -18,9 +17,10 @@ import { PageService } from './page.service';
                 <li class="nav-item">
                     <cms-tree 
                         class="tree-root" 
-                        [root]="root" 
-                        [treeService]="pageService"
-                        (nodeSelected)="nodeSelected($event)"></cms-tree>
+                        [root]="root"
+                        [config]="treeConfig"
+                        (nodeSelected)="nodeSelected($event)"
+                        (nodeCreated)="nodeCreated($event)"></cms-tree>
                 </li>
             </ul>
         </li>
@@ -33,18 +33,44 @@ import { PageService } from './page.service';
         `]
 })
 export class PageTreeComponent {
-    root: TreeNode = null;
-    pageService = ServiceLocator.Instance.get(PageService);
+    root: TreeNode = new TreeNode('000000000000000000000000', "");
+    treeConfig: TreeConfig = {
+        service: ServiceLocator.Instance.get(PageService),
+        menuItems: [
+            {
+                action: NodeMenuItemAction.NewNode,
+                name: "New Page"
+            },
+            {
+                action: NodeMenuItemAction.Cut,
+                name: "Cut"
+            },
+            {
+                action: NodeMenuItemAction.Copy,
+                name: "Copy"
+            },
+            {
+                action: NodeMenuItemAction.Paste,
+                name: "Paste"
+            },
+            {
+                action: NodeMenuItemAction.Delete,
+                name: "Delete"
+            },
+        ]
+    }
 
     constructor(private router: Router, private route: ActivatedRoute) {
-
     }
 
     ngOnInit() {
-        this.root = new TreeNode('000000000000000000000000', "");
     }
 
     nodeSelected(node) {
-        this.router.navigate(["content/page", node.id], {relativeTo: this.route})
+        this.router.navigate(["content/page", node.id], { relativeTo: this.route })
+    }
+
+    nodeCreated(parentNode) {
+        this.router.navigate(["new/page", parentNode.id], { relativeTo: this.route })
     }
 }

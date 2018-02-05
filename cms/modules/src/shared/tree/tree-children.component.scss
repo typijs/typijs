@@ -1,0 +1,47 @@
+.tree {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    .tree {
+        padding-left: 20px;
+    }
+    > li {
+        margin: 0;
+
+        .node-menu {
+            display: none;
+            float: right;
+            padding: 5px;
+            position: relative;
+            cursor: pointer;
+
+            .dropdown-menu {
+                margin: 0;
+            }
+        }
+
+        .node-selected {
+            .node-menu {
+                display: inline-block;
+            }
+        }
+
+        .node-value {
+            &:hover {
+                .node-menu {
+                    display: inline-block;
+                }
+            }
+            a {
+                text-decoration: none;
+                padding: 5px;
+                display: inline-block;
+            }
+        
+            .indicator{
+                cursor: pointer;
+                padding: 5px 5px 5px 10px;
+            }
+        }
+    }
+}

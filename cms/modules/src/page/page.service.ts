@@ -10,11 +10,15 @@ import { TreeNode } from '../shared/tree/tree-node';
 
 @Injectable()
 export class PageService implements TreeService {
-    root: TreeNode;
+    reloadNode$: Subject<string> = new Subject<string>();
 
-    constructor(private _contentService: ContentService) { }
+    constructor(private contentService: ContentService) { 
+        this.contentService.contentCreated$.subscribe(content=>{
+            this.reloadNode$.next(content.parentId);
+        });
+    }
 
-    loadChildren: (key: string) => any = (key: string): any => {
-        return this._contentService.getContentsByParentId(key);
+    loadChildren(key: string): any {
+        return this.contentService.getContentsByParentId(key);
     }
 }

@@ -4,10 +4,12 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+
 import { CoreModule } from '@angular-cms/core';
 
-import { TreeStore } from './tree/tree-store';
 import { TreeComponent } from './tree/tree.component';
+import { TreeChildrenComponent } from './tree/tree-children.component';
 
 @NgModule({
     imports: [
@@ -16,14 +18,15 @@ import { TreeComponent } from './tree/tree.component';
         FormsModule,
         ReactiveFormsModule,
         CoreModule,
+        BsDropdownModule.forRoot(),
         RouterModule
     ],
     declarations: [
+        TreeChildrenComponent,
         TreeComponent
     ],
     exports: [
         TreeComponent
-    ],
-    providers: [TreeStore]
+    ]
 })
 export class SharedModule { }
