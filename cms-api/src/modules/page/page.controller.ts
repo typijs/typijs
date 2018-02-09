@@ -73,7 +73,7 @@ export default class PageCtrl extends BaseCtrl {
           matchPage.save((error, result) => {
 
           });
-        } else if(matchPage.isPublished == false && saveAsPublish) {
+        } else if (matchPage.isPublished == false && saveAsPublish) {
           matchPage.isPublished = true;
           //save without update 'changed' field
           matchPage.save((error, result) => {
@@ -101,7 +101,8 @@ export default class PageCtrl extends BaseCtrl {
   }
 
   getByUrl = (req, res) => {
-    this.model.findOne({ linkUrl: req.query.url }, (err, item) => {
+    //need to check isDeleted = false
+    this.pageVersion.findOne({ linkUrl: req.query.url, isLastPublished: true }, (err, item) => {
       if (err) { return this.handleError(err); }
       res.status(200).json(item);
     });
