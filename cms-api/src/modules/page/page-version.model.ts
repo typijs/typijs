@@ -11,7 +11,7 @@ const pageVersionSchema = new mongoose.Schema({
     contentType: { type: String, required: true },
     parentId: { type: mongoose.Schema.Types.ObjectId, ref: 'cmsPage' },
 
-    published: { type: Date, default: Date.now },
+    published: { type: Date, required: true, default: Date.now },
     publishedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'cmsUser' },
 
     isLastPublished: { type: Boolean, required: true, default: true },

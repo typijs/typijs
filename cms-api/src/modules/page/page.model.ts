@@ -2,10 +2,10 @@ import * as mongoose from 'mongoose';
 
 const pageSchema = new mongoose.Schema({
   created: { type: Date, default: Date.now },
-  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'cmsUser', required: true },
+  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'cmsUser', required: false },
 
   changed: { type: Date, default: Date.now },
-  changedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'cmsUser', required: true },
+  changedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'cmsUser', required: false },
 
   published: Date,
   publishedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'cmsUser' },
