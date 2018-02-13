@@ -30,10 +30,12 @@ export default class PageCtrl extends BaseCtrl {
           //create linkUrl and parent path ids
           if (parentPage) {
             pageObj.linkUrl = parentPage.linkUrl == '/' ? `/${urlSegment}` : `${parentPage.linkUrl}/${urlSegment}`;
-            pageObj.parentPath = parentPage.parentPath != '' ? `${parentPage.parentPath},${parentPage._id}` : `${parentPage._id}`;
+            pageObj.parentPath = parentPage.parentPath ? `${parentPage.parentPath}${parentPage._id},` : `,${parentPage._id},`;
+            pageObj.ancestors = parentPage.ancestors.push(parentPage._id);
           } else {
             pageObj.linkUrl = `/${urlSegment}`;
-            pageObj.parentPath = '';
+            pageObj.parentPath = null;
+            pageObj.ancestors = [];
           }
 
           pageObj.save((err, item) => {
@@ -167,6 +169,8 @@ export default class PageCtrl extends BaseCtrl {
         });
     });
   }
+
+  
 
   private handleError = (error: any): any => console.error(error);
 }

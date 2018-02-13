@@ -15,11 +15,12 @@ const pageSchema = new mongoose.Schema({
 
   name: { type: String, required: true },
   urlSegment: { type: String, required: true },
-  linkUrl: { type: String, required: true },
+  linkUrl: { type: String, required: true, index: true },
 
   contentType: { type: String, required: true },
   parentId: { type: mongoose.Schema.Types.ObjectId, ref: 'cmsPage' },
-  parentPath: { type: String, required: true },
+  parentPath: { type: String, required: true, index: true },
+  ancestors: { type: [String], required: true },
   hasChildren: { type: Boolean, required: true, default: false },
 
   isPublished: { type: Boolean, required: true, default: false },
