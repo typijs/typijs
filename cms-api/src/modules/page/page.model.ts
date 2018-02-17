@@ -22,6 +22,8 @@ const pageSchema = new mongoose.Schema({
   parentPath: { type: String, required: true, index: true },
   ancestors: { type: [String], required: true },
   hasChildren: { type: Boolean, required: true, default: false },
+  //containt all reference Ids of all assets which be used in page such as block, media, page
+  childItems: { type: [{path: String, itemId: {type: mongoose.Schema.Types.ObjectId, refPath: 'childItems.path'}}], required: true },
 
   isPublished: { type: Boolean, required: true, default: false },
   isDeleted: { type: Boolean, required: true, default: false },

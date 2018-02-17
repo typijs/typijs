@@ -10,6 +10,9 @@ const pageVersionSchema = new mongoose.Schema({
 
     contentType: { type: String, required: true },
     parentId: { type: mongoose.Schema.Types.ObjectId, ref: 'cmsPage' },
+    //containt all reference Ids of all assets which be used in page such as block, media, page
+    childItems: { type: [{path: String, itemId: {type: mongoose.Schema.Types.ObjectId, refPath: 'childItems.path'}}], required: true },
+
 
     published: { type: Date, required: true, default: Date.now },
     publishedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'cmsUser' },

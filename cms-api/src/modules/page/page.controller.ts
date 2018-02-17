@@ -104,10 +104,13 @@ export default class PageCtrl extends BaseCtrl {
 
   getByUrl = (req, res) => {
     //need to check isDeleted = false
-    this.pageVersion.findOne({ linkUrl: req.query.url, isLastPublished: true }, (err, item) => {
-      if (err) { return this.handleError(err); }
-      res.status(200).json(item);
-    });
+    this.pageVersion.
+      findOne({ linkUrl: req.query.url, isLastPublished: true }).
+      populate('childItems.itemId').
+      exec((err, item) => {
+        if (err) { return this.handleError(err); }
+        res.status(200).json(item);
+      });
   }
 
   getAllByParentId = (req, res) => {
@@ -170,7 +173,7 @@ export default class PageCtrl extends BaseCtrl {
     });
   }
 
-  
+
 
   private handleError = (error: any): any => console.error(error);
 }
