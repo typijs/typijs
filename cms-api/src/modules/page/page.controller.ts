@@ -31,7 +31,7 @@ export default class PageCtrl extends BaseCtrl {
           if (parentPage) {
             pageObj.linkUrl = parentPage.linkUrl == '/' ? `/${urlSegment}` : `${parentPage.linkUrl}/${urlSegment}`;
             pageObj.parentPath = parentPage.parentPath ? `${parentPage.parentPath}${parentPage._id},` : `,${parentPage._id},`;
-            pageObj.ancestors = parentPage.ancestors.push(parentPage._id);
+            pageObj.ancestors = parentPage.ancestors.slice().push(parentPage._id);
           } else {
             pageObj.linkUrl = `/${urlSegment}`;
             pageObj.parentPath = null;

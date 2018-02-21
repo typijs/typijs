@@ -3,10 +3,24 @@ import Page from './page.model';
 import PageVersion from './page-version.model';
 
 const batchSize = 100;
+const timeout = 100;
 
-export function updateLinkUrl(parentPage, parentLinkUrl) {
+export function bulkUpdateLinkUrl(parentPage, finishCallback) {
+    asyncBulkUpdateChildrenPage(parentPage, asyncUpdateLinkUrl, finishCallback);
+}
 
-    var itemCursor = Page.collection.find({ parentPath: `/${parentPage._id}/` });
+export function bulkUpdateParentPath(parentPage, finishCallback) {
+    asyncBulkUpdateChildrenPage(parentPage, asyncUpdateParentPath, finishCallback);
+}
+
+export function bulkUpdateDeletedStatus(parentPage, finishCallback) {
+    asyncBulkUpdateChildrenPage(parentPage, asyncUpdateDeletedStatus, finishCallback);
+}
+
+//parentPage is page was updated
+function asyncBulkUpdateChildrenPage(parentPage,asyncUpdateChildPage, finishCallback) {
+
+    var itemCursor = Page.collection.find({ parentPath: /,${parentPage._id},/ });
     var itemBulk = Page.collection.initializeUnorderedBulkOp();
 
     var pageVersionBulk = PageVersion.collection.initializeUnorderedBulkOp();
@@ -20,7 +34,7 @@ export function updateLinkUrl(parentPage, parentLinkUrl) {
     itemCursor.batchSize(batchSize).forEach(item => {
         totalResults++;
 
-        asyncUpdateChildrenParentPath(parentPage, item, itemUpdated => {
+        asyncUpdateChildPage(parentPage, item, itemUpdated => {
             itemBulk.find({ _id: item._id }).update({ $set: itemUpdated });
             totalUpdated++;
 
@@ -29,7 +43,7 @@ export function updateLinkUrl(parentPage, parentLinkUrl) {
                     totalWritten += res.nModified;
 
                     if (endStream && totalWritten == totalUpdated) {
-                        //callback({ updated: totalUpdated });
+                        finishCallback({ updated: totalUpdated });
                     }
                 });
                 itemBulk = Page.collection.initializeUnorderedBulkOp();
@@ -41,7 +55,7 @@ export function updateLinkUrl(parentPage, parentLinkUrl) {
                         totalWritten += res.nModified;
 
                         if (totalWritten == totalUpdated) {
-                            //callback({ updated: totalUpdated });
+                            finishCallback({ updated: totalUpdated });
                         }
                     });
                 }
@@ -49,38 +63,83 @@ export function updateLinkUrl(parentPage, parentLinkUrl) {
         });
 
     }, function (res) {
-
         // note: if not using an async update, you need to put the itemBulk.execute() if statement here as well
-
         endStream = true;
-
         if (!totalResults) {
-            //callback({ updated: 0 });
+            finishCallback({ updated: 0 });
         }
-
     });
-
 }
 
+function asyncUpdateDeletedStatus(parentPage, page, callback) {
+    page.isDeleted = parentPage.isDeleted;
+    if (page.isDeleted) {
+        page.deleted = Date.now;
+        //page.deletedBy = user
+    }
+    setTimeout(() => {
+        callback(page);
+    }, timeout);
+}
+
+function asyncUpdateLinkUrl(parentPage, page, callback) {
+    let parentId = parentPage._id;
+    let index = page.ancestors.findIndex(p => p == parentId)
+
+    let paths = page.parentPath.split(',').filter(x => x);
+
+    //update link url
+    let segments = page.linkUrl.split('/').filter(x => x);
+    let newLinkUrl = parentPage.linkUrl;
+
+    for (var j = segments.length - 1, k = 1; k <= page.ancestors.length - index; j-- , k++) {
+        newLinkUrl = newLinkUrl == '/' ? `/${segments[j]}` : `${newLinkUrl}/${segments[j]}`;
+    }
+
+    page.isDeleted = parentPage.isDeleted;
+    if (page.isDeleted) {
+        page.deleted = Date.now;
+        //page.deletedBy = user
+    }
+    page.linkUrl = newLinkUrl;
+
+    setTimeout(() => {
+        callback(page);
+    }, timeout);
+}
 
 // check for duplicates, run calculations, compare items, etc
-function asyncUpdateChildrenParentPath(parentPage, page, callback) {
+function asyncUpdateParentPath(parentPage, page, callback) {
     let parentId = parentPage._id;
     let index = page.ancestors.findIndex(p => p == parentId)
     //update parent path, ancestors and link url
-    let paths = page.parentPath.split(',').filter(x=>x);
+
+    let paths = page.parentPath.split(',').filter(x => x);
+    let newPath = parentPage.parentPath ? parentPage.parentPath : ',';
+    let newAncestors = parentPage.ancestors.slice();
+
+    for (var i = index; i < page.ancestors.length; i++) {
+        newPath = `${newPath}${paths[i]},`;
+        newAncestors.push(page.ancestors[i]);
+    }
+
+    //update link url
+    let segments = page.linkUrl.split('/').filter(x => x);
+    let newLinkUrl = parentPage.linkUrl;
+    for (var j = segments.length - 1, k = 1; k <= page.ancestors.length - index; j-- , k++) {
+        newLinkUrl = newLinkUrl == '/' ? `/${segments[j]}` : `${newLinkUrl}/${segments[j]}`;
+    }
+
+    page.isDeleted = parentPage.isDeleted;
+    if (page.isDeleted) {
+        page.deleted = Date.now;
+        //page.deletedBy = user
+    }
+    page.parentPath = newPath;
+    page.ancestors = newAncestors;
+    page.linkUrl = newLinkUrl;
 
     setTimeout(() => {
         callback(page);
-    }, 100);
-}
-
-function asyncUpdateChildrenLinkUrl(parentPage, page, callback) {
-    let parentId = parentPage._id;
-    let index = page.ancestors.findIndex(p => p == parentId)
-    //update parent path, ancestors and link url
-    let paths = 
-    setTimeout(() => {
-        callback(page);
-    }, 100);
+    }, timeout);
 }
