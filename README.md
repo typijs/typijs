@@ -1,4 +1,4 @@
-# Wellcome all contributors and pull requests
+# Welcome all contributors and pull requests
 # Form Validation Message
 http://plnkr.co/edit/Aa8O6lAh9lsOo3qk8gYZ?p=preview
 
