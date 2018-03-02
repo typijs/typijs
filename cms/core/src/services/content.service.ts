@@ -5,7 +5,6 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
 import { Content } from '../models/content.model';
-//contents-by-parent/:parentId
 @Injectable()
 export class ContentService {
   constructor(private http: HttpClient) { }
