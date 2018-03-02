@@ -58,6 +58,7 @@ export default class PageCtrl extends BaseCtrl {
 
   update = (req, res) => {
     const pageObj = req.body;
+    //isDirty is param which is passed via body request
     const isDirty = pageObj.isDirty;
     const saveAsPublish = req.query.published; //true or false
 
