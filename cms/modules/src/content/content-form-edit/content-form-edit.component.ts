@@ -5,23 +5,24 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
 import { PAGE_TYPE_METADATA_KEY, PROPERTY_METADATA_KEY, PROPERTIES_METADATA_KEY } from '@angular-cms/core';
-import { CMS, UIHint, CmsProperty, InsertPointDirective, ContentService, Content, ISelectionFactory } from '@angular-cms/core';
+import { CMS, UIHint, CmsProperty, InsertPointDirective, Content, ISelectionFactory } from '@angular-cms/core';
+import { ContentService, PageService, BlockService } from '@angular-cms/core';
 
 import { Elements, PropertyListComponent, SelectProperty } from '@angular-cms/properties';
 
 import { PAGE_TYPE, BLOCK_TYPE } from './../../constants';
 
 @Component({
-    templateUrl: './content-form-edit.component.html',
+    templateUrl: './content-form-edit.component.html'
 })
 export class ContentFormEditComponent implements OnInit {
     subParams: Subscription;
 
     type: string;
     contentForm: any; //FormGroup
-
     formModel: any = {};
-    private currentContent: Content;
+
+    private currentContent: any;
 
     @ViewChild(InsertPointDirective) pageEditHost: InsertPointDirective;
 
@@ -29,8 +30,11 @@ export class ContentFormEditComponent implements OnInit {
         @Inject(ComponentFactoryResolver) private componentFactoryResolver: ComponentFactoryResolver,
         private injector: Injector,
         private formBuilder: FormBuilder,
+        private route: ActivatedRoute,
         private contentService: ContentService,
-        private route: ActivatedRoute) { }
+        private pageService: PageService,
+        private blockService: BlockService
+        ) { }
 
     ngOnInit() {
         this.contentForm = new FormGroup({});
@@ -41,12 +45,12 @@ export class ContentFormEditComponent implements OnInit {
             if (contentId) {
                 switch (this.type) {
                     case PAGE_TYPE:
-                        this.contentService.getContent({ _id: contentId }).subscribe(res => {
+                        this.pageService.getPageContent(contentId).subscribe(res => {
                             this.bindDataForContentForm(res, CMS.PAGE_TYPES[res.contentType])
                         });
                         break;
                     case BLOCK_TYPE:
-                        this.contentService.getBlockContent({ _id: contentId }).subscribe(res => {
+                        this.blockService.getBlockContent({ _id: contentId }).subscribe(res => {
                             this.bindDataForContentForm(res, CMS.BLOCK_TYPES[res.contentType])
                         });
                         break;
@@ -128,12 +132,12 @@ export class ContentFormEditComponent implements OnInit {
                 this.currentContent.properties = this.contentForm.value;
                 switch (this.type) {
                     case PAGE_TYPE:
-                        this.contentService.editContent(this.currentContent).subscribe(res => {
+                        this.pageService.editPage(this.currentContent).subscribe(res => {
                             console.log(res);
                         })
                         break;
                     case BLOCK_TYPE:
-                        this.contentService.editBlockContent(this.currentContent).subscribe(res => {
+                        this.blockService.editBlockContent(this.currentContent).subscribe(res => {
                             console.log(res);
                         })
                         break;

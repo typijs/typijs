@@ -15,11 +15,11 @@ export class PageService {
     this.pageCreated$.next(pageData);
   }
 
-  addContent(pageData: Page): Observable<Page> {
+  createPage(pageData: Page): Observable<Page> {
     return this.http.post<Page>('/api/page', pageData);
   }
 
-  editContent(pageData: Page): Observable<string> {
+  editPage(pageData: Page): Observable<string> {
     return this.http.put(`/api/page/${pageData._id}`, pageData, { responseType: 'text' });
   }
 
@@ -28,7 +28,7 @@ export class PageService {
     return this.http.get<Page>(`/api/page/get-data?url=${startPageUrl}`);
   } 
 
-  getPage(pageId: string): Observable<Page> {
+  getPageContent(pageId: string): Observable<Page> {
     return this.http.get<Page>(`/api/page/${pageId}`);
   }
 

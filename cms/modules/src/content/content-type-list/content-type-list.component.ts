@@ -9,7 +9,8 @@ import {
     PROPERTIES_METADATA_KEY
 } from '@angular-cms/core';
 
-import { CMS, ContentService, Content, slugify } from '@angular-cms/core';
+import { ContentService, PageService, BlockService } from '@angular-cms/core';
+import { CMS, Content, slugify } from '@angular-cms/core';
 
 import { PAGE_TYPE, BLOCK_TYPE } from './../../constants';
 
@@ -24,7 +25,11 @@ export class ContentTypeListComponent implements OnDestroy {
     contentTypes: Array<any> = [];
     parentId: string;
 
-    constructor(private contentService: ContentService, private router: Router, private route: ActivatedRoute) { }
+    constructor(
+        private contentService: ContentService, 
+        private pageService: PageService, 
+        private blockService: BlockService,
+        private router: Router, private route: ActivatedRoute) { }
 
     ngOnInit() {
         this.subParams = this.route.params.subscribe(params => {
@@ -46,7 +51,7 @@ export class ContentTypeListComponent implements OnDestroy {
 
     createNewContent(contentType) {
         if (this.contentName) {
-            let content: Content = {
+            let content: any = {
                 name: this.contentName,
                 contentType: contentType.typeRef.name,
                 parentId: this.parentId,
@@ -88,11 +93,11 @@ export class ContentTypeListComponent implements OnDestroy {
         });
     }
 
-    private savePage(content: Content) {
-        this.contentService.addContent(content).subscribe(
+    private savePage(content: any) {
+        this.pageService.createPage(content).subscribe(
             res => {
                 console.log(res);
-                this.contentService.fireContentCreated(content);
+                this.pageService.firePageCreated(content);
                 this.router.navigate(["/cms/editor/content/", PAGE_TYPE, res._id])
             },
             error => console.log(error)
@@ -100,7 +105,7 @@ export class ContentTypeListComponent implements OnDestroy {
     }
 
     private saveBlock(content: Content) {
-        this.contentService.addBlockContent(content).subscribe(
+        this.blockService.addBlockContent(content).subscribe(
             res => {
                 console.log(res);
                 this.router.navigate(["/cms/editor/content/", BLOCK_TYPE, res._id])
