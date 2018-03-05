@@ -12,7 +12,7 @@ export default class PageCtrl extends BaseCtrl {
   insert = (req, res) => {
     const pageObj = new this.model(req.body);
 
-    let urlSegment = pageObj.nameInUrl;
+    let urlSegment = pageObj.urlSegment;
     //get page parent
     this.model.findOne({
       _id: pageObj.parentId ? mongoose.Schema.Types.ObjectId(pageObj.parentId) : null

@@ -55,7 +55,7 @@ export class ContentTypeListComponent implements OnDestroy {
                 name: this.contentName,
                 contentType: contentType.typeRef.name,
                 parentId: this.parentId,
-                nameInUrl: slugify(this.contentName)
+                urlSegment: slugify(this.contentName)
             }
 
             switch (this.type) {
