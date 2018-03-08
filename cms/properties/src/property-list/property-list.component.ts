@@ -12,20 +12,22 @@ import { SelectProperty } from '../select/select-property';
     <div class="form-group row" [formGroup]="formGroup">
         <label [attr.for]="id" class="col-sm-4 col-form-label">{{label}}</label>
         <div class="col-sm-8">
-            <div class="panel panel-default">
-                <div class="panel-body">
+            <div class="card">
+                <div class="card-body">
                     <property-group [formControlName]="propertyName"></property-group>
                     
                     <a href="javascript:void(0)" class="btn btn-default btn-block" (click)="openDiglog()">Add item</a>
                 </div>
             </div>
         </div>
-        <div class="modal fade in" tabindex="-1" role="dialog" [class.show]="showDialog">
+        <div class="modal fade" tabindex="-1" role="dialog" [class.show]="showDialog">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" (click)="closeDialog()">×</button>
-                        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                        <h4 class="modal-title">Modal title</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeDialog()">
+                            <span aria-hidden="true">×</span>
+                        </button>
                     </div>
                     <div class="modal-body">
                         <form (ngSubmit)="onSubmit()" [formGroup]="modelForm">
@@ -42,7 +44,7 @@ import { SelectProperty } from '../select/select-property';
     </div>
   `,
     styles: [`
-        modal.show {
+        .show {
             display: block;
         }
     `]

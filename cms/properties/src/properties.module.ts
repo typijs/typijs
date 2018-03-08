@@ -8,6 +8,7 @@ import { InputComponent } from './input/input.component';
 import { TextareaComponent } from './textarea/textarea.component';
 import { PropertyListComponent } from './property-list/property-list.component';
 import { PropertyGroupComponent } from './property-list/property-group.component';
+import { HiddenInputControl } from './xhtml/hidden-input';
 import { TinymceComponent } from './xhtml/tinymce.component';
 import { DropdownComponent } from './select/dropdown/dropdown.component';
 import { CheckboxComponent } from './select/checkbox/checkbox.component';
@@ -34,6 +35,7 @@ registerCmsProperties();
         CheckboxComponent,
         PropertyGroupComponent,
         PropertyListComponent,
+        HiddenInputControl,
         TinymceComponent,
         ContentAreaComponent,
         ContentGroupComponent

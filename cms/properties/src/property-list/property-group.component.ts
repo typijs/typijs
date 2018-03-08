@@ -4,17 +4,15 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 @Component({
     selector: 'property-group',
     template: `
-            <div class="list-group">
-                <div *ngFor="let control of model;">
-                    <a href="javascript:void(0)" class="list-group-item">
-                        <div *ngFor="let item of getItems(control)">
-                            <i class="fa fa-comment fa-fw"></i> {{item.key}}
-                            <span class="pull-right text-muted small"><em>{{item.value}}</em>
-                            </span>
-                        </div>
-                    </a>
-                </div>
-            </div>
+            <ul class="list-group">
+                <li *ngFor="let control of model;" class="list-group-item d-flex list-group-item-action justify-content-between align-items-center">
+                    <div *ngFor="let item of getItems(control)">
+                        <i class="fa fa-comment fa-fw"></i> {{item.key}}
+                        <span class="pull-right text-muted small"><em>{{item.value}}</em>
+                        </span>
+                    </div>
+                </li>
+            </ul>
 `,
     providers: [
         {
@@ -45,20 +43,15 @@ export class PropertyGroupComponent implements ControlValueAccessor {
         this.onTouched = fn;
     }
 
-    set(value: any) {
-        this._model = value;
-        this.onChange(this._model);
-    }
-    
     addItem(item) {
-        if(!this._model) this._model = [];
+        if (!this._model) this._model = [];
         this._model.push(item);
         this.onChange(this._model);
     }
 
-    getItems(control):  Array<any> {
-        let items=[]
-        Object.keys(control).forEach(key=>{
+    getItems(control): Array<any> {
+        let items = []
+        Object.keys(control).forEach(key => {
             items.push({
                 key: key,
                 value: control[key]

@@ -5,23 +5,24 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
 import { PAGE_TYPE_METADATA_KEY, PROPERTY_METADATA_KEY, PROPERTIES_METADATA_KEY } from '@angular-cms/core';
-import { CMS, UIHint, CmsProperty, InsertPointDirective, ContentService, Content, ISelectionFactory } from '@angular-cms/core';
+import { CMS, UIHint, CmsProperty, InsertPointDirective, Content, ISelectionFactory } from '@angular-cms/core';
+import { ContentService, PageService, BlockService } from '@angular-cms/core';
 
 import { Elements, PropertyListComponent, SelectProperty } from '@angular-cms/properties';
 
 import { PAGE_TYPE, BLOCK_TYPE } from './../../constants';
 
 @Component({
-    templateUrl: './content-form-edit.component.html',
+    templateUrl: './content-form-edit.component.html'
 })
 export class ContentFormEditComponent implements OnInit {
     subParams: Subscription;
 
     type: string;
     contentForm: any; //FormGroup
-
     formModel: any = {};
-    private currentContent: Content;
+
+    private currentContent: any;
 
     @ViewChild(InsertPointDirective) pageEditHost: InsertPointDirective;
 
@@ -29,8 +30,11 @@ export class ContentFormEditComponent implements OnInit {
         @Inject(ComponentFactoryResolver) private componentFactoryResolver: ComponentFactoryResolver,
         private injector: Injector,
         private formBuilder: FormBuilder,
+        private route: ActivatedRoute,
         private contentService: ContentService,
-        private route: ActivatedRoute) { }
+        private pageService: PageService,
+        private blockService: BlockService
+    ) { }
 
     ngOnInit() {
         this.contentForm = new FormGroup({});
@@ -41,12 +45,12 @@ export class ContentFormEditComponent implements OnInit {
             if (contentId) {
                 switch (this.type) {
                     case PAGE_TYPE:
-                        this.contentService.getContent({ _id: contentId }).subscribe(res => {
+                        this.pageService.getPageContent(contentId).subscribe(res => {
                             this.bindDataForContentForm(res, CMS.PAGE_TYPES[res.contentType])
                         });
                         break;
                     case BLOCK_TYPE:
-                        this.contentService.getBlockContent({ _id: contentId }).subscribe(res => {
+                        this.blockService.getBlockContent({ _id: contentId }).subscribe(res => {
                             this.bindDataForContentForm(res, CMS.BLOCK_TYPES[res.contentType])
                         });
                         break;
@@ -104,13 +108,13 @@ export class ContentFormEditComponent implements OnInit {
             viewContainerRef.clear();
 
             properties.forEach(property => {
-                if(CMS.PROPERTIES[property.metadata.displayType]) {
+                if (CMS.PROPERTIES[property.metadata.displayType]) {
                     let propertyFactory = this.componentFactoryResolver.resolveComponentFactory(CMS.PROPERTIES[property.metadata.displayType]);
                     let propertyComponent = viewContainerRef.createComponent(propertyFactory);
                     (<CmsProperty>propertyComponent.instance).label = property.metadata.displayName;
                     (<CmsProperty>propertyComponent.instance).formGroup = this.contentForm;
                     (<CmsProperty>propertyComponent.instance).propertyName = property.name;
-    
+
                     if (propertyComponent.instance instanceof SelectProperty) {
                         (<SelectProperty>propertyComponent.instance).selectItems = (<ISelectionFactory>(this.injector.get(property.metadata.selectionFactory))).GetSelections();
                     } else if (propertyComponent.instance instanceof PropertyListComponent) {
@@ -121,21 +125,31 @@ export class ContentFormEditComponent implements OnInit {
         }
     }
 
-    onSubmit() {
+    onSubmit(isPublished: boolean, formId: any) {
         console.log(this.contentForm.value);
+        console.log(formId);
         if (this.contentForm.valid) {
             if (this.currentContent) {
                 this.currentContent.properties = this.contentForm.value;
+                this.currentContent.isDirty = formId.dirty;
+                this.currentContent.isPublished = isPublished;
+
                 switch (this.type) {
                     case PAGE_TYPE:
-                        this.contentService.editContent(this.currentContent).subscribe(res => {
-                            console.log(res);
-                        })
+                        if (this.currentContent.isDirty || this.currentContent.isPublished) {
+                            this.pageService.editPage(this.currentContent).subscribe(res => {
+                                console.log(res);
+                                formId.control.markAsPristine();
+                            })
+                        }
                         break;
                     case BLOCK_TYPE:
-                        this.contentService.editBlockContent(this.currentContent).subscribe(res => {
-                            console.log(res);
-                        })
+                        if (this.currentContent.isDirty) {
+                            this.blockService.editBlockContent(this.currentContent).subscribe(res => {
+                                console.log(res);
+                                formId.control.markAsPristine();
+                            })
+                        }
                         break;
                 }
 

@@ -1,7 +1,7 @@
 import * as express from 'express';
 import ContentCtrl from './modules/content/content.controller';
 import BlockCtrl from './modules/block/block.controller';
-
+import PageCtrl from './modules/page/page.controller';
 
 export function setRoutes(app) {
   const router = express.Router();
@@ -17,6 +17,14 @@ export function setRoutes(app) {
   router.route('/content-by-url').get(contentCtrl.getByUrl);
   router.route('/contents-by-parent/:parentId').get(contentCtrl.getAllByParentId);
 
+  // Pages
+  const pageCtrl = new PageCtrl();
+  router.route('/page').post(pageCtrl.insert);
+  router.route('/page/:id').get(pageCtrl.get);
+  router.route('/page/:id').put(pageCtrl.update);
+  router.route('/page/get-data').get(pageCtrl.getByUrl);
+  router.route('/page/get-children/:parentId').get(pageCtrl.getAllByParentId);
+
   // Blocks
   const blockCtrl = new BlockCtrl();
   router.route('/blocks').get(blockCtrl.getAll);
@@ -28,5 +36,4 @@ export function setRoutes(app) {
 
   // Apply the routes to our application with the prefix /api
   app.use('/api', router);
-
 }

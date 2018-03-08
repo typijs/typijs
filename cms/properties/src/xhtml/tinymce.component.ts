@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, AfterViewInit, OnDestroy, ViewChild } from '@angular/core';
 import { CmsProperty } from '@angular-cms/core';
 
 import 'tinymce/tinymce.min';
@@ -14,19 +14,23 @@ import 'tinymce/plugins/autoresize/plugin.js';
 import 'tinymce/plugins/lists/plugin.js';
 import 'tinymce/plugins/code/plugin.js';
 
+import { HiddenInputControl } from './hidden-input';
+
 @Component({
     template: `
         <div class="form-group row" [formGroup]="formGroup">
             <label [attr.for]="id" class="col-sm-4 col-form-label">{{label}}</label>
             <div class="col-sm-8">
-                <input type="hidden" [formControlName]="propertyName" [name]="propertyName"/>
-                <textarea class="form-control" rows="4" 
-                    [id]="id"></textarea>
+                <hidden-input [formControlName]="propertyName"></hidden-input>
+                <textarea class="form-control" rows="4" [id]="id"></textarea>
             </div>
         </div>
     `
 })
 export class TinymceComponent extends CmsProperty implements AfterViewInit, OnDestroy {
+
+    @ViewChild(HiddenInputControl) hiddenControl: HiddenInputControl;
+
     editor: any;
 
     ngAfterViewInit() {
@@ -39,11 +43,11 @@ export class TinymceComponent extends CmsProperty implements AfterViewInit, OnDe
                 this.editor = editor;
                 editor.on('keyup change', () => {
                     const content = editor.getContent();
-                    this.formGroup.controls[this.propertyName].patchValue(content);
+                    this.hiddenControl.set(content);
                 });
-            }, 
+            },
             init_instance_callback: editor => {
-                if(this.formGroup.controls[this.propertyName].value)
+                if (this.formGroup.controls[this.propertyName].value)
                     this.editor.setContent(this.formGroup.controls[this.propertyName].value);
             }
         });

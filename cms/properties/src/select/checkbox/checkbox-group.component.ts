@@ -20,16 +20,19 @@ import { SelectItem } from '@angular-cms/core';
     ]
 })
 export class CheckboxGroupComponent implements ControlValueAccessor {
-    private _model: any;
     private onChange: (m: any) => void;
     private onTouched: (m: any) => void;
 
     @Input() selectItems: Array<any>;
 
+    //Typescript uses getter/setter syntax that is like ActionScript3.
+    //userd to store internal value
+    private _model: any;
     get model() {
         return this._model;
     }
 
+    //Implement of the ControlValueAccessor interface
     writeValue(value: any): void {
         if(this.selectItems && value instanceof Array) {
             this.selectItems.forEach(item=>{
@@ -51,11 +54,7 @@ export class CheckboxGroupComponent implements ControlValueAccessor {
         this.onTouched = fn;
     }
 
-    set(value: any) {
-        this._model = value;
-        this.onChange(this._model);
-    }
-
+    //methods depend on control business
     addOrRemove(value: any) {
         if (this.contains(value)) {
             this.remove(value);
@@ -75,6 +74,11 @@ export class CheckboxGroupComponent implements ControlValueAccessor {
         return false;
     }
 
+    toggleCheck(selectItem) {
+        selectItem.selected = !selectItem.selected;
+        this.addOrRemove(selectItem.value);
+    }
+
     private remove(value: any) {
         const index = this._model.indexOf(value);
         if (!this._model || index < 0) {
@@ -83,10 +87,5 @@ export class CheckboxGroupComponent implements ControlValueAccessor {
 
         this._model.splice(index, 1);
         this.onChange(this._model);
-    }
-
-    toggleCheck(selectItem) {
-        selectItem.selected = !selectItem.selected;
-        this.addOrRemove(selectItem.value);
     }
 }

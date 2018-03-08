@@ -1,18 +1,29 @@
 <div class="row">
     <div class="col-lg-12">
-        <h1 class="page-header">New page</h1>
-    </div>
-</div>
-<div class="row">
-    <!-- /.col-lg-4 -->
-    <div class="col-lg-12">
-        <div class="panel panel-default">
-            <div class="panel-body">
-                <form (ngSubmit)="onSubmit()" [formGroup]="contentForm">
+        <form (ngSubmit)="onSubmit($event, formId)" [formGroup]="contentForm" #formId="ngForm">
+            <div class="card ">
+                <div class="card-header ">
+                    <dl class="row" *ngIf="currentContent">
+                        <dt class="col-sm-3">Name</dt>
+                        <dd class="col-sm-9">{{currentContent.name}}</dd>
+                        <dt class="col-sm-3">Name in url</dt>
+                        <dd class="col-sm-9">{{currentContent.urlSegment}}</dd>
+                        <dt class="col-sm-3">Link url</dt>
+                        <dd class="col-sm-9">{{currentContent.linkUrl}}</dd>
+                        <dt class="col-sm-3">Type</dt>
+                        <dd class="col-sm-9">{{currentContent.contentType}}</dd>
+                    </dl>
+                </div>
+                <div class="card-body">
                     <ng-template cmsInsertPoint></ng-template>
-                    <button type="submit" class="btn btn-success">Submit</button>
-                </form>
+                </div>
+                <div class="card-footer ">
+                    <button type="button" class="btn btn-sm btn-primary" (click)="formId.ngSubmit.emit(false)">
+                        <i class="fa fa-dot-circle-o "></i> Save as draft</button>
+                    <button type="button" class="btn btn-sm btn-success" (click)="formId.ngSubmit.emit(true)">
+                        <i class="fa fa-ban "></i> Publish</button>
+                </div>
             </div>
-        </div>
+        </form>
     </div>
 </div>

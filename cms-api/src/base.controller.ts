@@ -56,6 +56,8 @@ abstract class BaseCtrl {
         res.sendStatus(200);
       });
     }
+
+    handleError = (error: any): any => console.error(error);
   }
   
   export default BaseCtrl;
