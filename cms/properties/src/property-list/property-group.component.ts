@@ -43,11 +43,6 @@ export class PropertyGroupComponent implements ControlValueAccessor {
         this.onTouched = fn;
     }
 
-    set(value: any) {
-        this._model = value;
-        this.onChange(this._model);
-    }
-
     addItem(item) {
         if (!this._model) this._model = [];
         this._model.push(item);

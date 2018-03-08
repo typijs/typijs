@@ -1,7 +1,7 @@
 import { Component, Input, ChangeDetectionStrategy, ViewChild, Inject, ComponentFactoryResolver, Injector } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 
-import { CmsProperty, UIHint, PROPERTIES_METADATA_KEY, PROPERTY_METADATA_KEY, InsertPointDirective, ContentService, ISelectionFactory } from '@angular-cms/core';
+import { CmsProperty, UIHint, PROPERTIES_METADATA_KEY, PROPERTY_METADATA_KEY, InsertPointDirective, BlockService, ISelectionFactory } from '@angular-cms/core';
 
 import { SelectProperty } from '../select/select-property';
 import { ContentGroupComponent } from './content-group.component';
@@ -11,29 +11,31 @@ import { ContentGroupComponent } from './content-group.component';
     <div class="form-group row" [formGroup]="formGroup">
         <label [attr.for]="id" class="col-sm-4 col-form-label">{{label}}</label>
         <div class="col-sm-8">
-            <div class="panel panel-default">
-                <div class="panel-body">
+            <div class="card">
+                <div class="card-body">
                     <content-group [formControlName]="propertyName"></content-group>
                     
                     <a href="javascript:void(0)" class="btn btn-default btn-block" (click)="openDiglog()">Add item</a>
                 </div>
             </div>
         </div>
-        <div class="modal fade in" tabindex="-1" role="dialog" [class.show]="showDialog">
+        <div class="modal fade" tabindex="-1" role="dialog" [class.show]="showDialog">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" (click)="closeDialog()">×</button>
                         <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeDialog()">
+                            <span aria-hidden="true">×</span>
+                        </button>
                     </div>
                     <div class="modal-body">
-                        <div class="list-group">
-                            <div *ngFor="let item of contents;">
-                                <a href="javascript:void(0)" class="list-group-item">
+                        <ul class="list-group">
+                            <li *ngFor="let item of contents;" class="list-group-item d-flex list-group-item-action justify-content-between align-items-center">
+                                <div>
                                     <i class="fa fa-comment fa-fw"></i> {{item.name}}
-                                </a>
-                            </div>
-                        </div>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" (click)="closeDialog()">Close</button>
@@ -45,7 +47,7 @@ import { ContentGroupComponent } from './content-group.component';
     </div>
   `,
     styles: [`
-        modal.show {
+        .show {
             display: block;
         }
     `]
@@ -63,12 +65,12 @@ export class ContentAreaComponent extends CmsProperty {
         private formBuilder: FormBuilder,
         private componentFactoryResolver: ComponentFactoryResolver,
         private injector: Injector,
-        private contentService: ContentService) {
+        private blockService: BlockService) {
         super();
     }
 
     ngOnInit() {
-        this.contentService.getBlockContents().subscribe(res => {
+        this.blockService.getBlockContents().subscribe(res => {
             this.contents = res;
         })
     }
@@ -82,7 +84,7 @@ export class ContentAreaComponent extends CmsProperty {
     }
 
     onSubmit() {
-        this.contents.forEach(item=> {
+        this.contents.forEach(item => {
             this.contentGroup.addItem(item);
         })
         this.closeDialog();
