@@ -34,7 +34,7 @@ export class ContentFormEditComponent implements OnInit {
         private contentService: ContentService,
         private pageService: PageService,
         private blockService: BlockService
-        ) { }
+    ) { }
 
     ngOnInit() {
         this.contentForm = new FormGroup({});
@@ -108,13 +108,13 @@ export class ContentFormEditComponent implements OnInit {
             viewContainerRef.clear();
 
             properties.forEach(property => {
-                if(CMS.PROPERTIES[property.metadata.displayType]) {
+                if (CMS.PROPERTIES[property.metadata.displayType]) {
                     let propertyFactory = this.componentFactoryResolver.resolveComponentFactory(CMS.PROPERTIES[property.metadata.displayType]);
                     let propertyComponent = viewContainerRef.createComponent(propertyFactory);
                     (<CmsProperty>propertyComponent.instance).label = property.metadata.displayName;
                     (<CmsProperty>propertyComponent.instance).formGroup = this.contentForm;
                     (<CmsProperty>propertyComponent.instance).propertyName = property.name;
-    
+
                     if (propertyComponent.instance instanceof SelectProperty) {
                         (<SelectProperty>propertyComponent.instance).selectItems = (<ISelectionFactory>(this.injector.get(property.metadata.selectionFactory))).GetSelections();
                     } else if (propertyComponent.instance instanceof PropertyListComponent) {
@@ -125,21 +125,31 @@ export class ContentFormEditComponent implements OnInit {
         }
     }
 
-    onSubmit() {
+    onSubmit(isPublished: boolean, formId: any) {
         console.log(this.contentForm.value);
+        console.log(formId);
         if (this.contentForm.valid) {
             if (this.currentContent) {
                 this.currentContent.properties = this.contentForm.value;
+                this.currentContent.isDirty = formId.dirty;
+                this.currentContent.isPublished = isPublished;
+
                 switch (this.type) {
                     case PAGE_TYPE:
-                        this.pageService.editPage(this.currentContent).subscribe(res => {
-                            console.log(res);
-                        })
+                        if (this.currentContent.isDirty || this.currentContent.isPublished) {
+                            this.pageService.editPage(this.currentContent).subscribe(res => {
+                                console.log(res);
+                                formId.control.markAsPristine();
+                            })
+                        }
                         break;
                     case BLOCK_TYPE:
-                        this.blockService.editBlockContent(this.currentContent).subscribe(res => {
-                            console.log(res);
-                        })
+                        if (this.currentContent.isDirty) {
+                            this.blockService.editBlockContent(this.currentContent).subscribe(res => {
+                                console.log(res);
+                                formId.control.markAsPristine();
+                            })
+                        }
                         break;
                 }
 

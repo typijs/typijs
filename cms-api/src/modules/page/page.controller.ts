@@ -60,7 +60,7 @@ export default class PageCtrl extends BaseCtrl {
     const pageObj = req.body;
     //isDirty is param which is passed via body request
     const isDirty = pageObj.isDirty;
-    const saveAsPublish = req.query.published; //true or false
+    const saveAsPublish = pageObj.isPublished; //true or false
 
     this.model.findOne({ _id: req.params.id })
       .then(matchPage => {
@@ -89,7 +89,7 @@ export default class PageCtrl extends BaseCtrl {
           //get lastest published page
           this.pageVersion.findOne({ originPageId: matchPage._id, isLastPublished: true })
             .then(publishedPage => {
-              if (isDirty || (!isDirty && matchPage.changed > publishedPage.published)) {
+              if (isDirty || !publishedPage || (!isDirty && matchPage.changed > publishedPage.published)) {
                 //create new version
                 this.createPublishedPage(matchPage._id);
               }
@@ -173,8 +173,5 @@ export default class PageCtrl extends BaseCtrl {
         });
     });
   }
-
-
-
-  private handleError = (error: any): any => console.error(error);
+  
 }

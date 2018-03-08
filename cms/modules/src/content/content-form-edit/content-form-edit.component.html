@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-lg-12">
-        <form (ngSubmit)="onSubmit()" [formGroup]="contentForm">
+        <form (ngSubmit)="onSubmit($event, formId)" [formGroup]="contentForm" #formId="ngForm">
             <div class="card ">
                 <div class="card-header ">
                     <dl class="row" *ngIf="currentContent">
@@ -18,9 +18,9 @@
                     <ng-template cmsInsertPoint></ng-template>
                 </div>
                 <div class="card-footer ">
-                    <button type="submit " class="btn btn-sm btn-primary">
+                    <button type="button" class="btn btn-sm btn-primary" (click)="formId.ngSubmit.emit(false)">
                         <i class="fa fa-dot-circle-o "></i> Save as draft</button>
-                    <button type="reset " class="btn btn-sm btn-success">
+                    <button type="button" class="btn btn-sm btn-success" (click)="formId.ngSubmit.emit(true)">
                         <i class="fa fa-ban "></i> Publish</button>
                 </div>
             </div>
