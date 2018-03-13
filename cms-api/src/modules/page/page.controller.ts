@@ -8,6 +8,15 @@ export default class PageCtrl extends BaseCtrl {
   model = Page;
   pageVersion = PageVersion;
 
+  get = (req, res) => {
+    this.model.findOne({ _id: req.params.id })
+      .populate('childItems.itemId')
+      .exec((err, item) => {
+        if (err) { return console.error(err); }
+        res.status(200).json(item);
+      });
+  }
+
   //Override insert base
   insert = (req, res) => {
     const pageObj = new this.model(req.body);
@@ -71,6 +80,7 @@ export default class PageCtrl extends BaseCtrl {
           matchPage.changed = Date.now();
           //matchPage.changedBy = userId
           matchPage.name = pageObj.name;
+          matchPage.childItems = pageObj.childItems;
           matchPage.properties = pageObj.properties;
           if (saveAsPublish) { matchPage.isPublished = true; }
           matchPage.save((error, result) => {
@@ -160,6 +170,7 @@ export default class PageCtrl extends BaseCtrl {
               parentId: page.parentId,
 
               isLastPublished: true,
+              childItems: page.childItems,
               properties: page.properties
             });
 
@@ -173,5 +184,5 @@ export default class PageCtrl extends BaseCtrl {
         });
     });
   }
-  
+
 }
