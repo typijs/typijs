@@ -125,7 +125,8 @@ export default class PageCtrl extends BaseCtrl {
   }
 
   getAllByParentId = (req, res) => {
-    this.model.find({ parentId: req.params.parentId }, (err, items) => {
+    let parentId = req.params.parentId != 'null' ? req.params.parentId : null;
+    this.model.find({ parentId: parentId }, (err, items) => {
       if (err) { return this.handleError(err); }
       res.status(200).json(items);
     });

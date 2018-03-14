@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { ContentService, ServiceLocator } from '@angular-cms/core';
 import { TreeNode, TreeService, TreeConfig, NodeMenuItemAction } from '../shared/tree';
-import { PageService } from './page.service';
+import { PageTreeService } from './page-tree.service';
 
 @Component({
     template: `
@@ -33,9 +33,9 @@ import { PageService } from './page.service';
         `]
 })
 export class PageTreeComponent {
-    root: TreeNode = new TreeNode('000000000000000000000000', "");
+    root: TreeNode = new TreeNode('null', '');
     treeConfig: TreeConfig = {
-        service: ServiceLocator.Instance.get(PageService),
+        service: ServiceLocator.Instance.get(PageTreeService),
         menuItems: [
             {
                 action: NodeMenuItemAction.NewNode,

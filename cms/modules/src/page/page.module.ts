@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, Injector } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -9,9 +9,7 @@ import { CoreModule, setAppInjector } from '@angular-cms/core';
 import { SharedModule } from '../shared/shared.module';
 import { PageTreeComponent } from './page-tree.component';
 import { ContentModule } from '../content/content.module';
-import { PageService } from './page.service';
-
-import {Injector} from '@angular/core';
+import { PageTreeService } from './page-tree.service';
 
 @NgModule({
     imports: [
@@ -33,9 +31,9 @@ import {Injector} from '@angular/core';
     exports: [
         PageTreeComponent
     ],
-    providers: [PageService]
+    providers: [PageTreeService]
 })
-export class PageModule { 
+export class PageModule {
     constructor(injector: Injector) {
         setAppInjector(injector);
     }
