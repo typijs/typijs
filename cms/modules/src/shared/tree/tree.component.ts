@@ -33,7 +33,7 @@ export class TreeComponent {
             this.store.treeService = this.config.service;
 
             this.subscriptions.push(this.config.service.reloadNode$.subscribe(nodeId=> {
-                this.store.reloadNode(nodeId);
+                this.store.reloadNodeChildren(nodeId);
             }));
 
             this.subscriptions.push(this.store.nodeSelected$.subscribe(node => {

@@ -18,7 +18,11 @@ export class PageTreeService implements TreeService {
         });
     }
 
-    loadChildren(key: string): any {
-        return this.pageService.getChildren(key);
+    getNode(nodeId: string): any {
+        return this.pageService.getPageContent(nodeId);
+    }
+
+    loadChildren(parentNodeId: string): any {
+        return this.pageService.getChildren(parentNodeId);
     }
 }

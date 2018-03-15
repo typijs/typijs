@@ -18,8 +18,7 @@ export class TreeStore {
     treeService: TreeService;
 
     private treeNodes = {};
-    private nodes = {};
-
+    private nodes = {}; //store children of node with key = parentid, ex nodes[parentId] = children of parentid
     private selectedNode: TreeNode;
 
     loadNodes(key) {
@@ -31,10 +30,45 @@ export class TreeStore {
         }
     }
 
-    reloadNode(nodeId) {
+    reloadNodeChildren(nodeId) {
+        this.getNode(nodeId);
         this.getNodeChildren(nodeId);
     }
 
+    getTreeNodes(key) {
+        if (!this.treeNodes.hasOwnProperty(key)) {
+            this.treeNodes[key] = new Subject<Array<TreeNode>>();
+        }
+        return this.treeNodes[key];
+    }
+
+    private getNode(nodeId) {
+        if (this.treeService) {
+            this.treeService.getNode(nodeId)
+                .subscribe(nodeData => {
+                    if (nodeData) {
+                        let parentId = nodeData.parentId ? nodeData.parentId : 'null';
+                        if (this.nodes[parentId]) {
+                            let matchIndex = this.nodes[parentId].findIndex(x => x.id == nodeData._id);
+                            if (matchIndex != -1)
+                                this.nodes[nodeData.parentId][matchIndex].hasChildren = nodeData.hasChildren;
+                        }
+                    }
+                });
+        }
+    }
+
+    private getNodeChildren(parentId) {
+        if (this.treeService) {
+            this.treeService.loadChildren(parentId)
+                .subscribe(res => {
+                    this.nodes[parentId] = res.map(x => new TreeNode(x._id, x.name, x.hasChildren));
+                    this.getTreeNodes(parentId).next(this.nodes[parentId]);
+                });
+        }
+    }
+
+    //fire all tree events
     fireNodeSelected(node) {
         this.selectedNode = node;
         this.nodeSelected$.next(node);
@@ -66,22 +100,5 @@ export class TreeStore {
 
     fireNodeDeleted(node) {
         this.nodeDeleted$.next(node);
-    }
-
-    getTreeNodes(key) {
-        if (!this.treeNodes.hasOwnProperty(key)) {
-            this.treeNodes[key] = new Subject<Array<TreeNode>>();
-        }
-        return this.treeNodes[key];
-    }
-
-    private getNodeChildren(parentId) {
-        if (this.treeService) {
-            this.treeService.loadChildren(parentId)
-                .subscribe(res => {
-                    this.nodes[parentId] = res.map(x => new TreeNode(x._id, x.name));
-                    this.getTreeNodes(parentId).next(this.nodes[parentId]);
-                });
-        }
     }
 }

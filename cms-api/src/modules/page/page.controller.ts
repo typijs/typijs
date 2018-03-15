@@ -24,7 +24,7 @@ export default class PageCtrl extends BaseCtrl {
     let urlSegment = pageObj.urlSegment;
     //get page parent
     this.model.findOne({
-      _id: pageObj.parentId ? mongoose.Schema.Types.ObjectId(pageObj.parentId) : null
+      _id: pageObj.parentId ? pageObj.parentId : null
     })
       .then(parentPage => {
         let parentId = parentPage ? parentPage._id : null;
