@@ -26,6 +26,10 @@ export class TreeStore {
     private nodes = {}; //store children of node with key = parentid, ex nodes[parentId] = children of parentid
     private selectedNode: TreeNode;
 
+    getSelectedNode() {
+        return this.selectedNode;
+    }
+
     loadNodes(key) {
         if (this.nodes[key]) {
             this.getTreeNodes(key).next(this.nodes[key]);
@@ -79,7 +83,10 @@ export class TreeStore {
                             if (currentNodeIndex != -1)
                                 this.nodes[parentIds[index - 1]][currentNodeIndex].isExpanded = true;
                         }
-                    }).subscribe();
+                        return index;
+                    }).subscribe(index => {
+                        console.log('pointToSelectedNode: ' + parentIds[index]);
+                    });
 
             }
         }

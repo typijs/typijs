@@ -26,12 +26,20 @@ export class TreeChildrenComponent implements OnInit {
     constructor(private store: TreeStore) { }
 
     ngOnInit() {
+        console.log('ngOnInit: ' + this.root.id);
         if (this.config) {
             this.treeService = this.config.service;
             this.menuItems = this.config.menuItems;
 
-            this.subscriptions.push(this.store.getTreeNodes(this.root.id).subscribe(res => {
-                this.children = res;
+            this.subscriptions.push(this.store.getTreeNodes(this.root.id).subscribe(nodes => {
+                this.children = nodes;
+                let selectedNode = this.store.getSelectedNode();
+                this.children.forEach(child=> {
+                    if(selectedNode && selectedNode.id == child.id) {
+                        child.isSelected = true;
+                        this.store.fireNodeSelected(child);
+                    }
+                })
             }));
 
             if (this.treeService) {
