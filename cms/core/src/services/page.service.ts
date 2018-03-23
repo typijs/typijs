@@ -1,24 +1,13 @@
 import { Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
-
 import { Subject } from 'rxjs/Subject';
 
 import { Page } from '../models/page.model';
+
 @Injectable()
 export class PageService {
   constructor(private http: HttpClient) { }
-
-  pageCreated$: Subject<Page> = new Subject<Page>();
-  pageSelected$: Subject<Page> = new Subject<Page>();
-
-  firePageCreated(pageData) {
-    this.pageCreated$.next(pageData);
-  }
-
-  firePageSelected(pageData) {
-    this.pageSelected$.next(pageData);
-  }
 
   createPage(pageData: Page): Observable<Page> {
     return this.http.post<Page>('/api/page', pageData);

@@ -1,8 +1,8 @@
 import { Component, Input, ComponentFactoryResolver, Inject, ViewChild, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { ContentService, ServiceLocator } from '@angular-cms/core';
-import { TreeNode, TreeService, TreeConfig, NodeMenuItemAction } from '../shared/tree';
+import { SubjectService, ServiceLocator } from '@angular-cms/core';
+import { TreeNode, TreeService, TreeConfig, NodeMenuItemAction, TreeComponent } from '../shared/tree';
 import { PageTreeService } from './page-tree.service';
 
 @Component({
@@ -33,6 +33,8 @@ import { PageTreeService } from './page-tree.service';
         `]
 })
 export class PageTreeComponent {
+    @ViewChild(TreeComponent) cmsTree: TreeComponent;
+
     root: TreeNode = new TreeNode({ id: 'null' });
     treeConfig: TreeConfig = {
         service: ServiceLocator.Instance.get(PageTreeService),
@@ -60,10 +62,26 @@ export class PageTreeComponent {
         ]
     }
 
-    constructor(private router: Router, private route: ActivatedRoute) {
+    constructor(
+        private subjectService: SubjectService,
+        private router: Router, 
+        private route: ActivatedRoute) {
     }
 
     ngOnInit() {
+        this.subjectService.pageCreated$.subscribe(pageData => {
+            this.cmsTree.reloadNode(pageData.parentId);
+        });
+
+        this.subjectService.pageSelected$.subscribe(pageData => {
+            this.cmsTree.locateToSelectedNode(new TreeNode({
+                id: pageData._id,
+                name: pageData.name,
+                hasChildren: pageData.hasChildren,
+                parentId: pageData.parentId,
+                parentPath: pageData.parentPath
+            }));
+        });
     }
 
     nodeSelected(node) {

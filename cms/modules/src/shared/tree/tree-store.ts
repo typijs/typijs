@@ -39,7 +39,7 @@ export class TreeStore {
         }
     }
 
-    reloadNodeChildren(nodeId) {
+    reloadNode(nodeId) {
         this.getNode(nodeId);
         this.getNodeChildren(nodeId);
     }
@@ -51,7 +51,7 @@ export class TreeStore {
         return this.treeNodes[key];
     }
 
-    pointToSelectedNode(newSelectedNode: TreeNode) {
+    locateToSelectedNode(newSelectedNode: TreeNode) {
         if (!this.selectedNode || this.selectedNode.id != newSelectedNode.id) {
             this.selectedNode = newSelectedNode;
             var parentPath = `null${newSelectedNode.parentPath}`;

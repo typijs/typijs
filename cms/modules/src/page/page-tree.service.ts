@@ -10,23 +10,8 @@ import { TreeNode } from '../shared/tree/tree-node';
 
 @Injectable()
 export class PageTreeService implements TreeService {
-    selectedNode$: Subject<TreeNode> = new Subject<TreeNode>();
-    reloadNode$: Subject<string> = new Subject<string>();
 
     constructor(private pageService: PageService) {
-        this.pageService.pageCreated$.subscribe(content => {
-            this.reloadNode$.next(content.parentId);
-        });
-
-        this.pageService.pageSelected$.subscribe(x => {
-            this.selectedNode$.next(new TreeNode({
-                id: x._id,
-                name: x.name,
-                hasChildren: x.hasChildren,
-                parentId: x.parentId,
-                parentPath: x.parentPath
-            }));
-        });
     }
 
     getNode(nodeId: string): any {

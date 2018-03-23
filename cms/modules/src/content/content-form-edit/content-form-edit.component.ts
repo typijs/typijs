@@ -6,7 +6,7 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { PAGE_TYPE_METADATA_KEY, PROPERTY_METADATA_KEY, PROPERTIES_METADATA_KEY } from '@angular-cms/core';
 import { CMS, UIHint, CmsProperty, InsertPointDirective, Content, ISelectionFactory } from '@angular-cms/core';
-import { ContentService, PageService, BlockService } from '@angular-cms/core';
+import { ContentService, PageService, BlockService, SubjectService } from '@angular-cms/core';
 
 import { Elements, PropertyListComponent, SelectProperty } from '@angular-cms/properties';
 
@@ -33,7 +33,8 @@ export class ContentFormEditComponent implements OnInit {
         private route: ActivatedRoute,
         private contentService: ContentService,
         private pageService: PageService,
-        private blockService: BlockService
+        private blockService: BlockService,
+        private subjectService: SubjectService
     ) { }
 
     ngOnInit() {
@@ -45,7 +46,7 @@ export class ContentFormEditComponent implements OnInit {
                 switch (this.typeOfContent) {
                     case PAGE_TYPE:
                         this.pageService.getPageContent(contentId).subscribe(contentData => {
-                            this.pageService.firePageSelected(contentData);
+                            this.subjectService.firePageSelected(contentData);
                             this.bindDataForContentForm(contentData, CMS.PAGE_TYPES[contentData.contentType])
                         });
                         break;

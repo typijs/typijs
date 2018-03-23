@@ -9,7 +9,7 @@ import {
     PROPERTIES_METADATA_KEY
 } from '@angular-cms/core';
 
-import { ContentService, PageService, BlockService } from '@angular-cms/core';
+import { ContentService, PageService, BlockService, SubjectService } from '@angular-cms/core';
 import { CMS, Content, slugify } from '@angular-cms/core';
 
 import { PAGE_TYPE, BLOCK_TYPE } from './../../constants';
@@ -29,7 +29,9 @@ export class ContentTypeListComponent implements OnDestroy {
         private contentService: ContentService, 
         private pageService: PageService, 
         private blockService: BlockService,
-        private router: Router, private route: ActivatedRoute) { }
+        private subjectService: SubjectService,
+        private router: Router, 
+        private route: ActivatedRoute) { }
 
     ngOnInit() {
         this.subParams = this.route.params.subscribe(params => {
@@ -97,7 +99,7 @@ export class ContentTypeListComponent implements OnDestroy {
         this.pageService.createPage(content).subscribe(
             res => {
                 console.log(res);
-                this.pageService.firePageCreated(content);
+                this.subjectService.firePageCreated(content);
                 this.router.navigate(["/cms/editor/content/", PAGE_TYPE, res._id])
             },
             error => console.log(error)

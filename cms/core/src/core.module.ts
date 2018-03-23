@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 
 import { InsertPointDirective, ContentAreaDirective } from './directives';
-import { ContentService, BlockService, PageService } from './services';
+import { ContentService, BlockService, PageService, SubjectService } from './services';
 import { CmsRenderContentComponent } from './render';
 
 @NgModule({
@@ -24,7 +24,8 @@ import { CmsRenderContentComponent } from './render';
   providers: [
     ContentService,
     BlockService,
-    PageService
+    PageService,
+    SubjectService
   ]
 })
 export class CoreModule {}
