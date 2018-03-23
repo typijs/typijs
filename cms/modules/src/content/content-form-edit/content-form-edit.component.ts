@@ -45,6 +45,7 @@ export class ContentFormEditComponent implements OnInit {
                 switch (this.typeOfContent) {
                     case PAGE_TYPE:
                         this.pageService.getPageContent(contentId).subscribe(contentData => {
+                            this.pageService.firePageSelected(contentData);
                             this.bindDataForContentForm(contentData, CMS.PAGE_TYPES[contentData.contentType])
                         });
                         break;

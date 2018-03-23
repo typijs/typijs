@@ -33,7 +33,7 @@ import { PageTreeService } from './page-tree.service';
         `]
 })
 export class PageTreeComponent {
-    root: TreeNode = new TreeNode('null', '');
+    root: TreeNode = new TreeNode({ id: 'null' });
     treeConfig: TreeConfig = {
         service: ServiceLocator.Instance.get(PageTreeService),
         menuItems: [

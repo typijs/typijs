@@ -16,6 +16,16 @@ export class TreeComponent {
     @Input() config: TreeConfig;
     @Input() root: TreeNode;
 
+    private _selectedNode: TreeNode;
+    @Input() 
+    set selectedNode(value: TreeNode) {
+        this._selectedNode = value;
+        this.store.pointToSelectedNode(this._selectedNode);
+    }
+    get selectedNode(): TreeNode {
+        return this._selectedNode;
+    }
+
     @Output() nodeSelected: EventEmitter<any> = new EventEmitter();
     @Output() nodeCreated: EventEmitter<any> = new EventEmitter();
     @Output() nodeInlineCreated: EventEmitter<any> = new EventEmitter();
@@ -34,6 +44,10 @@ export class TreeComponent {
 
             this.subscriptions.push(this.config.service.reloadNode$.subscribe(nodeId=> {
                 this.store.reloadNodeChildren(nodeId);
+            }));
+
+            this.subscriptions.push(this.config.service.selectedNode$.subscribe(node=> {
+                this.store.pointToSelectedNode(node);
             }));
 
             this.subscriptions.push(this.store.nodeSelected$.subscribe(node => {

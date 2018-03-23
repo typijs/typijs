@@ -10,9 +10,14 @@ export class PageService {
   constructor(private http: HttpClient) { }
 
   pageCreated$: Subject<Page> = new Subject<Page>();
+  pageSelected$: Subject<Page> = new Subject<Page>();
 
   firePageCreated(pageData) {
     this.pageCreated$.next(pageData);
+  }
+
+  firePageSelected(pageData) {
+    this.pageSelected$.next(pageData);
   }
 
   createPage(pageData: Page): Observable<Page> {

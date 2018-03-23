@@ -48,6 +48,7 @@ export class TreeChildrenComponent implements OnInit {
         }));
     }
 
+    //handle event when node is clicked
     selectNode(node: TreeNode) {
         node.isSelected = true;
         this.store.fireNodeSelected(node);
