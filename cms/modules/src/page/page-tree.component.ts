@@ -21,6 +21,10 @@ import { PageTreeService } from './page-tree.service';
                         [config]="treeConfig"
                         (nodeSelected)="nodeSelected($event)"
                         (nodeCreated)="nodeCreated($event)">
+                        <ng-template #treeNodeTemplate let-node>
+                            <i class="fa fa-folder-o"></i>
+                            <span>{{node.name}}</span>
+                        </ng-template>
                     </cms-tree>
                 </li>
             </ul>
