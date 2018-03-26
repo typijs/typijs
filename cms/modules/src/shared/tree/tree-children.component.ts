@@ -15,12 +15,12 @@ import { TreeMenuItem, NodeMenuItemAction } from './tree-menu';
 export class TreeChildrenComponent implements OnInit {
     @Input() config: TreeConfig;
     @Input() root: TreeNode;
+    @Input() templates: any = {};
 
     public children = [];
 
     private treeService: TreeService;
     private menuItems: TreeMenuItem[]
-
     private subscriptions: Subscription[] = [];
 
     constructor(private store: TreeStore) { }

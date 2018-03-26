@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, ContentChild, TemplateRef } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
 import { TreeStore } from './tree-store';
@@ -9,10 +9,20 @@ import { TreeMenuItem, NodeMenuItemAction } from './tree-menu';
 
 @Component({
     selector: 'cms-tree',
-    template: `<tree-children [config]="config" [root]="root"></tree-children>`,
+    template: `<tree-children 
+                    [config]="config" 
+                    [root]="root" 
+                    [templates]="{
+                        loadingTemplate: loadingTemplate,
+                        treeNodeTemplate: treeNodeTemplate}">
+                </tree-children>`,
     providers: [TreeStore]
 })
 export class TreeComponent {
+
+    @ContentChild('treeNodeTemplate') treeNodeTemplate: TemplateRef<any>;
+    @ContentChild('loadingTemplate') loadingTemplate: TemplateRef<any>;
+
     @Input() config: TreeConfig;
     @Input() root: TreeNode;
 

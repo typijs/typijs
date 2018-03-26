@@ -20,7 +20,8 @@ import { PageTreeService } from './page-tree.service';
                         [root]="root"
                         [config]="treeConfig"
                         (nodeSelected)="nodeSelected($event)"
-                        (nodeCreated)="nodeCreated($event)"></cms-tree>
+                        (nodeCreated)="nodeCreated($event)">
+                    </cms-tree>
                 </li>
             </ul>
         </li>
@@ -64,7 +65,7 @@ export class PageTreeComponent {
 
     constructor(
         private subjectService: SubjectService,
-        private router: Router, 
+        private router: Router,
         private route: ActivatedRoute) {
     }
 

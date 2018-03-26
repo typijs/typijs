@@ -13,7 +13,7 @@ export class TreeNode {
   hasChildren: boolean = false;
   parentPath: string;
   //variable to store extend data ex content type, published or not... depend on type of tree
-  extendData: any = {};
+  extendProperties: any = {};
 
   public constructor(init?: Partial<TreeNode>) {
     Object.assign(this, init);

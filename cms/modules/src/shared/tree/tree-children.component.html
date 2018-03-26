@@ -1,7 +1,9 @@
 <ul class="tree">
     <li *ngFor="let node of children">
-        <div class="node-value" [ngClass]="{'node-selected': node.isSelected}">
-            <i class="indicator fa" *ngIf="node.hasChildren" [ngClass]="{'fa-caret-right': !node.isExpanded, 'fa-caret-down': node.isExpanded}" (click)="node.expand()"></i>
+        <!-- Default tree node template -->
+        <div class="node-value" [ngClass]="{'node-selected': node.isSelected}" *ngIf="!templates.treeNodeTemplate">
+            <i class="indicator fa" *ngIf="node.hasChildren" [ngClass]="{'fa-caret-right': !node.isExpanded, 'fa-caret-down': node.isExpanded}"
+                (click)="node.expand()"></i>
             <a href="javascript:void(0)" (click)="selectNode(node)">{{ node.name }}</a>
             <div *ngIf="menuItems" class="node-menu" dropdown>
                 <i class="fa fa-bars" dropdownToggle></i>
@@ -12,6 +14,25 @@
                 </div>
             </div>
         </div>
-        <tree-children *ngIf="node.isExpanded" [config]="config" [root]="node"></tree-children>
+        <ng-container [ngTemplateOutlet]="templates.treeNodeTemplate" 
+                    [ngTemplateOutletContext]="{ $implicit: node, node: node, menuItems: menuItems, selectNode: selectNode.bind(this)}">
+        </ng-container>
+        <!-- using ng-template to custom render node template -->
+        <!-- <ng-template #treeNodeTemplate let-node let-menuItems="menuItems" let-selectNode="selectNode">
+                <div class="node-value" [ngClass]="{'node-selected': node.isSelected}">
+                    <i class="indicator fa" *ngIf="node.hasChildren" [ngClass]="{'fa-caret-right': !node.isExpanded, 'fa-caret-down': node.isExpanded}"
+                        (click)="node.expand()"></i>
+                    <a href="javascript:void(0)" (click)="selectNode(node)">{{ node.name }}</a>
+                    <div *ngIf="menuItems" class="node-menu" dropdown>
+                        <i class="fa fa-bars" dropdownToggle></i>
+                        <div class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
+                            <a *ngFor="let menuItem of menuItems" class="dropdown-item" href="javascript:void(0)" (click)="menuItemSelected(menuItem.action, node)">
+                                {{menuItem.name}}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </ng-template> -->
+        <tree-children *ngIf="node.isExpanded" [config]="config" [root]="node" [templates]="templates"></tree-children>
     </li>
 </ul>
