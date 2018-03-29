@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA, ComponentFactoryResolver } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { registerContentTypes, CoreModule, CMS, registerProperty, registerModule, CmsRootModule } from '@angular-cms/core';
+import { registerContentTypes, CoreModule, CMS, registerProperty, registerModule, CmsRootModule, CmsWidgetPosition } from '@angular-cms/core';
 
 import { PagesModule } from './pages/pages.module';
 import { BlocksModule } from './blocks/blocks.module';
@@ -19,6 +19,7 @@ import { BlogTypeSelectionFactory } from './pages/blog/blog-type-selection.facto
 import { TestComponent } from './test.component';
 import { TestModule } from './test.module';
 import { TagComponent } from './properties/tag/tag.component';
+import { TestWidget } from './test.widget';
 
 registerProperty(TagComponent, "Tag");
 registerContentTypes(contentTypes);
@@ -29,6 +30,13 @@ registerModule({
     {
       path: 'test', //type is 'block' or 'page'
       component: TestComponent
+    }
+  ],
+  widgets: [
+    {
+      component: TestWidget,
+      position: CmsWidgetPosition.Left,
+      group: 'Pages'
     }
   ]
 })
@@ -50,13 +58,13 @@ registerModule({
     LayoutComponent,
     TagComponent
   ],
-  providers:[
+  providers: [
     BlogTypeSelectionFactory
   ],
-  entryComponents:[
+  entryComponents: [
     TagComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }
