@@ -8,6 +8,15 @@ export default class PageCtrl extends BaseCtrl {
   model = Page;
   pageVersion = PageVersion;
 
+  get = (req, res) => {
+    this.model.findOne({ _id: req.params.id })
+      .populate('childItems.itemId')
+      .exec((err, item) => {
+        if (err) { return console.error(err); }
+        res.status(200).json(item);
+      });
+  }
+
   //Override insert base
   insert = (req, res) => {
     const pageObj = new this.model(req.body);
@@ -15,7 +24,7 @@ export default class PageCtrl extends BaseCtrl {
     let urlSegment = pageObj.urlSegment;
     //get page parent
     this.model.findOne({
-      _id: pageObj.parentId ? mongoose.Schema.Types.ObjectId(pageObj.parentId) : null
+      _id: pageObj.parentId ? pageObj.parentId : null
     })
       .then(parentPage => {
         let parentId = parentPage ? parentPage._id : null;
@@ -71,6 +80,7 @@ export default class PageCtrl extends BaseCtrl {
           matchPage.changed = Date.now();
           //matchPage.changedBy = userId
           matchPage.name = pageObj.name;
+          matchPage.childItems = pageObj.childItems;
           matchPage.properties = pageObj.properties;
           if (saveAsPublish) { matchPage.isPublished = true; }
           matchPage.save((error, result) => {
@@ -115,7 +125,8 @@ export default class PageCtrl extends BaseCtrl {
   }
 
   getAllByParentId = (req, res) => {
-    this.model.find({ parentId: req.params.parentId }, (err, items) => {
+    let parentId = req.params.parentId != 'null' ? req.params.parentId : null;
+    this.model.find({ parentId: parentId }, (err, items) => {
       if (err) { return this.handleError(err); }
       res.status(200).json(items);
     });
@@ -160,6 +171,7 @@ export default class PageCtrl extends BaseCtrl {
               parentId: page.parentId,
 
               isLastPublished: true,
+              childItems: page.childItems,
               properties: page.properties
             });
 
@@ -173,5 +185,5 @@ export default class PageCtrl extends BaseCtrl {
         });
     });
   }
-  
+
 }

@@ -26,12 +26,14 @@ export class Blog extends PageData {
     @Property({
         displayName: "This is content",
         displayType: UIHint.Textarea,
+        groupName: 'Site Setting',
         validates: [ValidationTypes.required("This is min required")]
     })
     content: string;
 
     @Property({
         displayName: "This is summary",
+        groupName: 'Site Setting',
         displayType: UIHint.Xhtml
     })
     summary: string;

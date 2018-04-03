@@ -1,8 +1,17 @@
 <ul class="tree">
     <li *ngFor="let node of children">
+        <!-- Default tree node template -->
         <div class="node-value" [ngClass]="{'node-selected': node.isSelected}">
-            <i class="indicator fa " [ngClass]="{'fa-caret-right': !node.isExpanded, 'fa-caret-down': node.isExpanded}" (click)="node.expand()"></i>
-            <a href="javascript:void(0)" (click)="selectNode(node)">{{ node.name }}</a>
+            <i class="indicator fa" *ngIf="node.hasChildren" [ngClass]="{'fa-caret-right': !node.isExpanded, 'fa-caret-down': node.isExpanded}"
+                (click)="node.expand()"></i>
+            <div class="no-children" *ngIf="!node.hasChildren"></div>
+            <a href="javascript:void(0)" (click)="selectNode(node)">
+                <span *ngIf="!templates.treeNodeTemplate">{{ node.name }}</span>
+                <ng-container   [ngTemplateOutlet]="templates.treeNodeTemplate" 
+                                [ngTemplateOutletContext]="{ $implicit: node, node: node}">
+                </ng-container>
+            </a>
+
             <div *ngIf="menuItems" class="node-menu" dropdown>
                 <i class="fa fa-bars" dropdownToggle></i>
                 <div class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
@@ -12,6 +21,6 @@
                 </div>
             </div>
         </div>
-        <tree-children *ngIf="node.isExpanded" [config]="config" [root]="node"></tree-children>
+        <tree-children *ngIf="node.isExpanded" [config]="config" [root]="node" [templates]="templates"></tree-children>
     </li>
 </ul>

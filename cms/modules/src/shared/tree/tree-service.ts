@@ -3,6 +3,6 @@ import { Observable } from 'rxjs/Observable';
 import { TreeNode } from "./tree-node";
 
 export interface TreeService {
-    reloadNode$: Subject<string>;
-    loadChildren: (key: string) => Observable<any>;
+    getNode: (nodeId: string) => Observable<any>;
+    loadChildren: (parentNodeId: string) => Observable<any>;
 }

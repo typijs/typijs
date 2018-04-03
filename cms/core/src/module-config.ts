@@ -25,3 +25,8 @@ export interface CmsModuleConfig {
     widgets?: CmsComponentConfig[]
 }
 
+export interface CmsTab {
+    title: string,
+    content: string
+}
+

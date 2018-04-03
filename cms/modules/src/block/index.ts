@@ -10,7 +10,7 @@ export function registerBlockModule() {
         widgets: [
             {
                 component: BlockComponent,
-                position: CmsWidgetPosition.Right
+                position: CmsWidgetPosition.Right,
             }
         ]
     })

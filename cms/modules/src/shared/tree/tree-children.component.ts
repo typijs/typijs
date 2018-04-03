@@ -15,23 +15,31 @@ import { TreeMenuItem, NodeMenuItemAction } from './tree-menu';
 export class TreeChildrenComponent implements OnInit {
     @Input() config: TreeConfig;
     @Input() root: TreeNode;
+    @Input() templates: any = {};
 
     public children = [];
 
     private treeService: TreeService;
     private menuItems: TreeMenuItem[]
-
     private subscriptions: Subscription[] = [];
 
     constructor(private store: TreeStore) { }
 
     ngOnInit() {
+        console.log('ngOnInit: ' + this.root.id);
         if (this.config) {
             this.treeService = this.config.service;
             this.menuItems = this.config.menuItems;
 
-            this.subscriptions.push(this.store.getTreeNodes(this.root.id).subscribe(res => {
-                this.children = res;
+            this.subscriptions.push(this.store.getTreeNodes(this.root.id).subscribe(nodes => {
+                this.children = nodes;
+                let selectedNode = this.store.getSelectedNode();
+                this.children.forEach(child=> {
+                    if(selectedNode && selectedNode.id == child.id) {
+                        child.isSelected = true;
+                        this.store.fireNodeSelected(child);
+                    }
+                })
             }));
 
             if (this.treeService) {
@@ -48,6 +56,7 @@ export class TreeChildrenComponent implements OnInit {
         }));
     }
 
+    //handle event when node is clicked
     selectNode(node: TreeNode) {
         node.isSelected = true;
         this.store.fireNodeSelected(node);

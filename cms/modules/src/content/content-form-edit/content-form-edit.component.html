@@ -15,7 +15,12 @@
                     </dl>
                 </div>
                 <div class="card-body">
-                    <ng-template cmsInsertPoint></ng-template>
+                    <!-- <ng-template cmsInsertPoint></ng-template> -->
+                    <tabset>
+                        <tab *ngFor="let tabz of formTabs" [heading]="tabz.title">
+                            <ng-template [cmsInsertPoint]="tabz.content"></ng-template>
+                        </tab>
+                    </tabset>
                 </div>
                 <div class="card-footer ">
                     <button type="button" class="btn btn-sm btn-primary" (click)="formId.ngSubmit.emit(false)">

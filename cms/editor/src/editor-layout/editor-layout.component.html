@@ -1,10 +1,14 @@
 <div class="cms-layout app header-fixed sidebar-fixed aside-menu-fixed aside-menu-hidden">
   <app-header>
-    <ng-template [cmsInsertPoint]="0"></ng-template>
+    <ng-template [cmsInsertPoint]="'top'"></ng-template>
   </app-header>
   <div class="app-body">
     <app-sidebar>
-      <ng-template [cmsInsertPoint]="1"></ng-template>
+      <tabset>
+        <tab *ngFor="let tabz of leftTabs" [heading]="tabz.title">
+          <ng-template [cmsInsertPoint]="tabz.content"></ng-template>
+        </tab>
+      </tabset>
     </app-sidebar>
     <!-- Main content -->
     <main class="main">
@@ -12,7 +16,7 @@
       <ol class="breadcrumb">
         <app-breadcrumbs></app-breadcrumbs>
         <!-- Breadcrumb Menu-->
-        <li class="breadcrumb-menu d-md-down-none">
+        <!-- <li class="breadcrumb-menu d-md-down-none">
           <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
             <a class="btn" href="#">
               <i class="icon-speech"></i>
@@ -22,7 +26,7 @@
             <a class="btn" href="#">
               <i class="icon-settings"></i> &nbsp;Settings</a>
           </div>
-        </li>
+        </li> -->
       </ol>
       <div class="container-fluid">
         <router-outlet></router-outlet>
@@ -30,7 +34,11 @@
       <!-- /.conainer-fluid -->
     </main>
     <app-aside>
-      <ng-template [cmsInsertPoint]="2"></ng-template>
+      <tabset>
+        <tab *ngFor="let tabz of rightTabs" [heading]="tabz.title">
+          <ng-template [cmsInsertPoint]="tabz.content"></ng-template>
+        </tab>
+      </tabset>
     </app-aside>
   </div>
   <app-footer></app-footer>

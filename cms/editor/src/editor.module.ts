@@ -4,6 +4,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 
+import { TabsModule } from 'ngx-bootstrap/tabs';
+
 import { PropertiesModule } from '@angular-cms/properties';
 import { ContentService, CoreModule } from '@angular-cms/core';
 import { LayoutModule } from '@angular-cms/modules';
@@ -21,7 +23,8 @@ import { } from "reflect-metadata";
         RouterModule,
         CoreModule,
         PropertiesModule,
-        LayoutModule
+        LayoutModule,
+        TabsModule.forRoot()
     ],
     declarations: [
         EditorLayoutComponent

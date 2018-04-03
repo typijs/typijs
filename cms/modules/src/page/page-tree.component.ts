@@ -1,9 +1,9 @@
 import { Component, Input, ComponentFactoryResolver, Inject, ViewChild, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { ContentService, ServiceLocator } from '@angular-cms/core';
-import { TreeNode, TreeService, TreeConfig, NodeMenuItemAction } from '../shared/tree';
-import { PageService } from './page.service';
+import { SubjectService, ServiceLocator } from '@angular-cms/core';
+import { TreeNode, TreeService, TreeConfig, NodeMenuItemAction, TreeComponent } from '../shared/tree';
+import { PageTreeService } from './page-tree.service';
 
 @Component({
     template: `
@@ -20,7 +20,12 @@ import { PageService } from './page.service';
                         [root]="root"
                         [config]="treeConfig"
                         (nodeSelected)="nodeSelected($event)"
-                        (nodeCreated)="nodeCreated($event)"></cms-tree>
+                        (nodeCreated)="nodeCreated($event)">
+                        <ng-template #treeNodeTemplate let-node>
+                            <i class="fa fa-folder-o"></i>
+                            <span>{{node.name}}</span>
+                        </ng-template>
+                    </cms-tree>
                 </li>
             </ul>
         </li>
@@ -33,9 +38,11 @@ import { PageService } from './page.service';
         `]
 })
 export class PageTreeComponent {
-    root: TreeNode = new TreeNode('000000000000000000000000', "");
+    @ViewChild(TreeComponent) cmsTree: TreeComponent;
+
+    root: TreeNode = new TreeNode({ id: 'null' });
     treeConfig: TreeConfig = {
-        service: ServiceLocator.Instance.get(PageService),
+        service: ServiceLocator.Instance.get(PageTreeService),
         menuItems: [
             {
                 action: NodeMenuItemAction.NewNode,
@@ -60,10 +67,26 @@ export class PageTreeComponent {
         ]
     }
 
-    constructor(private router: Router, private route: ActivatedRoute) {
+    constructor(
+        private subjectService: SubjectService,
+        private router: Router,
+        private route: ActivatedRoute) {
     }
 
     ngOnInit() {
+        this.subjectService.pageCreated$.subscribe(pageData => {
+            this.cmsTree.reloadNode(pageData.parentId);
+        });
+
+        this.subjectService.pageSelected$.subscribe(pageData => {
+            this.cmsTree.locateToSelectedNode(new TreeNode({
+                id: pageData._id,
+                name: pageData.name,
+                hasChildren: pageData.hasChildren,
+                parentId: pageData.parentId,
+                parentPath: pageData.parentPath
+            }));
+        });
     }
 
     nodeSelected(node) {

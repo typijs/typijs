@@ -9,11 +9,14 @@ export class TreeNode {
   isSelected: boolean = false;
   isEditing: boolean = false;
   isLoading: boolean = false;
-  hasChildren: boolean = true;
 
-  constructor(id, name) {
-    this.id = id;
-    this.name = name;
+  hasChildren: boolean = false;
+  parentPath: string;
+  //variable to store extend data ex content type, published or not... depend on type of tree
+  extendProperties: any = {};
+
+  public constructor(init?: Partial<TreeNode>) {
+    Object.assign(this, init);
   }
 
   expand() {
