@@ -4,12 +4,13 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 
+import { TabsModule } from 'ngx-bootstrap/tabs';
+
 import { PropertiesModule } from '@angular-cms/properties';
 import { CoreModule } from '@angular-cms/core';
 
 import { ContentTypeListComponent } from './content-type-list/content-type-list.component';
 import { ContentFormEditComponent } from './content-form-edit/content-form-edit.component';
-
 import { } from "reflect-metadata";
 
 @NgModule({
@@ -20,6 +21,7 @@ import { } from "reflect-metadata";
         ReactiveFormsModule,
         PropertiesModule,
         CoreModule,
+        TabsModule.forRoot(),
         RouterModule
     ],
     declarations: [

@@ -8,7 +8,7 @@ interface ValidateMetadata{
     message?: string
 }
 
-interface PropertyMetadata {
+export interface PropertyMetadata {
     displayName?: string;
     description?: string;
     displayType?: string;

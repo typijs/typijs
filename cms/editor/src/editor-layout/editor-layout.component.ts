@@ -8,7 +8,9 @@ import {
     InsertPointDirective,
     ContentService,
     CmsComponentConfig,
-    CmsWidgetPosition
+    CmsWidgetPosition,
+    CmsTab,
+    sortTabByTitle
 } from '@angular-cms/core';
 
 @Component({
@@ -20,8 +22,8 @@ export class EditorLayoutComponent {
     private componentRefs: Array<any> = [];
     private defaulGroup: string = 'Global';
 
-    rightTabs: Array<any> = [];
-    leftTabs: Array<any> = [];
+    rightTabs: Array<CmsTab> = [];
+    leftTabs: Array<CmsTab> = [];
 
     constructor(
         @Inject(ComponentFactoryResolver) private componentFactoryResolver: ComponentFactoryResolver,
@@ -47,13 +49,13 @@ export class EditorLayoutComponent {
         this.initWidgets(this.leftTabs, CmsWidgetPosition.Left);
     }
 
-    private initTopWidgets(){
+    private initTopWidgets() {
 
     }
 
-    private initWidgets(tabs: Array<any>, position: CmsWidgetPosition) {
+    private initWidgets(tabs: Array<CmsTab>, position: CmsWidgetPosition) {
         if (tabs) {
-            tabs.forEach(tab => {
+            tabs.forEach((tab: CmsTab) => {
                 let viewContainerRef = this.insertPoints.find(x => x.name == tab.content).viewContainerRef;
                 viewContainerRef.clear();
                 CMS.EDITOR_WIDGETS().filter(x => x.position == position && (x.group == tab.title || (!x.group && tab.title == this.defaulGroup))).forEach(widget => {
@@ -63,12 +65,12 @@ export class EditorLayoutComponent {
         }
     }
 
-    private initWidgetTab(position: CmsWidgetPosition): Array<any> {
+    private initWidgetTab(position: CmsWidgetPosition): Array<CmsTab> {
         let tabs = [];
         let widgets = CMS.EDITOR_WIDGETS().filter(widget => widget.position == position);
 
         widgets.forEach(widget => {
-            if(widget.hasOwnProperty('group')) {
+            if (widget.hasOwnProperty('group')) {
                 if (tabs.findIndex(x => x.title == widget.group) == -1) {
                     tabs.push({ title: widget.group, content: `${position}_${widget.group}` });
                 }
@@ -79,25 +81,12 @@ export class EditorLayoutComponent {
             tabs.push({ title: this.defaulGroup, content: `${position}_${this.defaulGroup}` });
         }
 
-        return tabs.sort(this.sortByTitle);
+        return tabs.sort(sortTabByTitle);
     }
 
     private createWidget(viewContainerRef, widget: CmsComponentConfig): any {
         let componentFactory = this.componentFactoryResolver.resolveComponentFactory(widget.component);
         return viewContainerRef.createComponent(componentFactory);
-    }
-
-    private sortByTitle(a, b): number {
-        var nameA = a.title.toUpperCase(); // ignore upper and lowercase
-        var nameB = b.title.toUpperCase(); // ignore upper and lowercase
-        if (nameA < nameB) {
-            return -1;
-        }
-        if (nameA > nameB) {
-            return 1;
-        }
-        // names must be equal
-        return 0;
     }
 
     ngOnDestroy() {

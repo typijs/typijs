@@ -1,16 +1,27 @@
-import { Component, Input, AfterViewInit, ViewChild, ComponentFactoryResolver, OnDestroy, Inject, Injector, OnInit } from '@angular/core';
+import {
+    Component, Input, AfterViewInit, ViewChild, ViewChildren, QueryList,
+    ComponentFactoryResolver, OnDestroy, Inject, Injector, OnInit, ChangeDetectorRef
+} from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
 import { PAGE_TYPE_METADATA_KEY, PROPERTY_METADATA_KEY, PROPERTIES_METADATA_KEY } from '@angular-cms/core';
-import { CMS, UIHint, CmsProperty, InsertPointDirective, Content, ISelectionFactory } from '@angular-cms/core';
+import {
+    CMS, UIHint, CmsProperty, InsertPointDirective, Content, ISelectionFactory, PropertyMetadata, CmsTab,
+    sortTabByTitle
+} from '@angular-cms/core';
 import { ContentService, PageService, BlockService, SubjectService } from '@angular-cms/core';
 
 import { Elements, PropertyListComponent, SelectProperty } from '@angular-cms/properties';
 
 import { PAGE_TYPE, BLOCK_TYPE } from './../../constants';
+
+interface FormProperty {
+    name: string,
+    metadata: PropertyMetadata
+}
 
 @Component({
     templateUrl: './content-form-edit.component.html'
@@ -19,12 +30,14 @@ export class ContentFormEditComponent implements OnInit {
     private subParams: Subscription;
 
     contentForm: any = new FormGroup({});
+    formTabs: Array<CmsTab> = [];
     private typeOfContent: string;
-    private propertyMetadatas: Array<any> = [];
+    private propertyMetadatas: Array<FormProperty> = [];
     private componentRefs: Array<any> = [];
     private currentContent: any;
+    private defaultGroup: string = "Content";
 
-    @ViewChild(InsertPointDirective) insertPointDirective: InsertPointDirective;
+    @ViewChildren(InsertPointDirective) insertPoints: QueryList<InsertPointDirective>;
 
     constructor(
         @Inject(ComponentFactoryResolver) private componentFactoryResolver: ComponentFactoryResolver,
@@ -34,7 +47,8 @@ export class ContentFormEditComponent implements OnInit {
         private contentService: ContentService,
         private pageService: PageService,
         private blockService: BlockService,
-        private subjectService: SubjectService
+        private subjectService: SubjectService,
+        private _changeDetectionRef: ChangeDetectorRef,
     ) { }
 
     ngOnInit() {
@@ -58,6 +72,17 @@ export class ContentFormEditComponent implements OnInit {
                 }
             }
         });
+
+
+    }
+
+    ngAfterViewInit() {
+        this.insertPoints.changes.subscribe((newValue: QueryList<InsertPointDirective>) => {
+            if (newValue.length > 0) {
+                this.componentRefs = this.createFormControls(this.propertyMetadatas);
+                this._changeDetectionRef.detectChanges();
+            }
+        });
     }
 
     private bindDataForContentForm(contentData, contentType) {
@@ -68,18 +93,19 @@ export class ContentFormEditComponent implements OnInit {
             this.propertyMetadatas = this.createPropertyMetadatas(contentType);
             if (this.propertyMetadatas.length > 0) {
                 this.propertyMetadatas.forEach(propertyMeta => this.populateReferenceProperty(propertyMeta));
+                this.formTabs = this.createFormTabs(this.propertyMetadatas);
                 this.contentForm = this.createFormGroup(this.propertyMetadatas);
-                this.componentRefs = this.createFormControls(this.propertyMetadatas);
+                //this.componentRefs = this.createFormControls(this.propertyMetadatas);
             }
         }
     }
 
-    private createPropertyMetadatas(contentType: string): Array<any> {
+    private createPropertyMetadatas(contentType: string): Array<FormProperty> {
         let metadatas = [];
         let properties = Reflect.getMetadata(PROPERTIES_METADATA_KEY, contentType);
         if (properties) {
             properties.forEach(propertyName => {
-                let propertyMeta = {
+                let propertyMeta: FormProperty = {
                     name: propertyName,
                     metadata: Reflect.getMetadata(PROPERTY_METADATA_KEY, contentType, propertyName)
                 }
@@ -90,7 +116,25 @@ export class ContentFormEditComponent implements OnInit {
         return metadatas;
     }
 
-    private createFormGroup(properties): FormGroup {
+    private createFormTabs(properties: Array<FormProperty>): Array<CmsTab> {
+        let tabs = [];
+
+        properties.forEach((property: FormProperty) => {
+            if (property.metadata.hasOwnProperty('groupName')) {
+                if (tabs.findIndex(x => x.title == property.metadata.groupName) == -1) {
+                    tabs.push({ title: property.metadata.groupName, content: `${property.metadata.groupName}` });
+                }
+            }
+        });
+
+        if (properties.findIndex((property: FormProperty) => !property.metadata.groupName) != -1) {
+            tabs.push({ title: this.defaultGroup, content: `${this.defaultGroup}` });
+        }
+
+        return tabs.sort(sortTabByTitle);
+    }
+
+    private createFormGroup(properties: Array<FormProperty>): FormGroup {
         if (properties) {
             let formModel = this.currentContent.properties ? this.currentContent.properties : {};
             let group = {};
@@ -109,31 +153,35 @@ export class ContentFormEditComponent implements OnInit {
         return new FormGroup({})
     }
 
-    private createFormControls(properties): Array<any> {
+    private createFormControls(properties: Array<FormProperty>): Array<any> {
         let formControls = [];
-        if (properties) {
-            let viewContainerRef = this.insertPointDirective.viewContainerRef;
-            viewContainerRef.clear();
 
-            properties.forEach(property => {
-                if (CMS.PROPERTIES[property.metadata.displayType]) {
-                    let propertyFactory = this.componentFactoryResolver.resolveComponentFactory(CMS.PROPERTIES[property.metadata.displayType]);
-                    let propertyComponent = viewContainerRef.createComponent(propertyFactory);
+        if (this.formTabs) {
+            this.formTabs.forEach(tab => {
+                let viewContainerRef = this.insertPoints.find(x => x.name == tab.content).viewContainerRef;
+                viewContainerRef.clear();
 
-                    (<CmsProperty>propertyComponent.instance).label = property.metadata.displayName;
-                    (<CmsProperty>propertyComponent.instance).formGroup = this.contentForm;
-                    (<CmsProperty>propertyComponent.instance).propertyName = property.name;
+                properties.filter(x => (x.metadata.groupName == tab.title || (!x.metadata.groupName && tab.title == this.defaultGroup))).forEach(property => {
+                    if (CMS.PROPERTIES[property.metadata.displayType]) {
+                        let propertyFactory = this.componentFactoryResolver.resolveComponentFactory(CMS.PROPERTIES[property.metadata.displayType]);
+                        let propertyComponent = viewContainerRef.createComponent(propertyFactory);
 
-                    if (propertyComponent.instance instanceof SelectProperty) {
-                        (<SelectProperty>propertyComponent.instance).selectItems = (<ISelectionFactory>(this.injector.get(property.metadata.selectionFactory))).GetSelections();
-                    } else if (propertyComponent.instance instanceof PropertyListComponent) {
-                        (<PropertyListComponent>propertyComponent.instance).itemType = property.metadata.propertyListItemType;
+                        (<CmsProperty>propertyComponent.instance).label = property.metadata.displayName;
+                        (<CmsProperty>propertyComponent.instance).formGroup = this.contentForm;
+                        (<CmsProperty>propertyComponent.instance).propertyName = property.name;
+
+                        if (propertyComponent.instance instanceof SelectProperty) {
+                            (<SelectProperty>propertyComponent.instance).selectItems = (<ISelectionFactory>(this.injector.get(property.metadata.selectionFactory))).GetSelections();
+                        } else if (propertyComponent.instance instanceof PropertyListComponent) {
+                            (<PropertyListComponent>propertyComponent.instance).itemType = property.metadata.propertyListItemType;
+                        }
+
+                        formControls.push(propertyComponent);
                     }
-
-                    formControls.push(propertyComponent);
-                }
+                });
             });
         }
+
         return formControls;
     }
 
