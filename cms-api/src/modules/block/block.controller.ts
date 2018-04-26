@@ -67,9 +67,25 @@ export default class BlockCtrl extends BaseCtrl {
             });
     }
 
-    private updateHasChildren = (page: any): any => {
-        page.hasChildren = true;
-        page.save(function (err) {
+    getFoldersByParentId = (req, res) => {
+        let parentId = req.params.parentId != 'null' ? req.params.parentId : null;
+        this.model.find({ parentId: parentId, contentType: null }, (err, items) => {
+            if (err) { return this.handleError(err); }
+            res.status(200).json(items);
+        });
+    }
+
+    getBlocksByFolder = (req, res) => {
+        let parentId = req.params.parentId != 'null' ? req.params.parentId : null;
+        this.model.find({ parentId: parentId, contentType: { $ne: null } }, (err, items) => {
+            if (err) { return this.handleError(err); }
+            res.status(200).json(items);
+        });
+    }
+
+    private updateHasChildren = (block: any): any => {
+        block.hasChildren = true;
+        block.save(function (err) {
             if (err) return this.handleError(err);
         });
     }

@@ -33,7 +33,9 @@ export function setRoutes(app) {
   router.route('/block/:id').get(blockCtrl.get);
   router.route('/block/:id').put(blockCtrl.update);
   router.route('/block/:id').delete(blockCtrl.delete);
+  router.route('/block/folders/:parentId').get(blockCtrl.getFoldersByParentId);
+  router.route('/block/get-by-folder/:parentId').get(blockCtrl.getBlocksByFolder);
 
-  // Apply the routes to our application with the prefix /api
+  // Apply the routes to our application with the prefix /api get-by-folder
   app.use('/api', router);
 }

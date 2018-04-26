@@ -106,7 +106,7 @@ export class ContentTypeListComponent implements OnDestroy {
         )
     }
 
-    private saveBlock(content: Content) {
+    private saveBlock(content: any) {
         this.blockService.addBlockContent(content).subscribe(
             res => {
                 console.log(res);

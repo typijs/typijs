@@ -8,7 +8,7 @@ const blockSchema = new mongoose.Schema({
   changedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'cmsUser', required: false },
 
   name: { type: String, required: true },
-  contentType: { type: String, required: true },
+  contentType: { type: String, required: false },
 
   parentId: String,
   parentPath: { type: String, required: false },

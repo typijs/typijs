@@ -65,15 +65,13 @@ export class ContentFormEditComponent implements OnInit {
                         });
                         break;
                     case BLOCK_TYPE:
-                        this.blockService.getBlockContent({ _id: contentId }).subscribe(contentData => {
+                        this.blockService.getBlockContent(contentId).subscribe(contentData => {
                             this.bindDataForContentForm(contentData, CMS.BLOCK_TYPES[contentData.contentType])
                         });
                         break;
                 }
             }
         });
-
-
     }
 
     ngAfterViewInit() {
