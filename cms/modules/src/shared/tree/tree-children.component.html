@@ -5,12 +5,18 @@
             <i class="indicator fa" *ngIf="node.hasChildren" [ngClass]="{'fa-caret-right': !node.isExpanded, 'fa-caret-down': node.isExpanded}"
                 (click)="node.expand()"></i>
             <div class="no-children" *ngIf="!node.hasChildren"></div>
-            <a href="javascript:void(0)" (click)="selectNode(node)">
-                <span *ngIf="!templates.treeNodeTemplate">{{ node.name }}</span>
-                <ng-container   [ngTemplateOutlet]="templates.treeNodeTemplate" 
-                                [ngTemplateOutletContext]="{ $implicit: node, node: node}">
-                </ng-container>
-            </a>
+            <div *ngIf="!shouldShowInputForTreeNode(node)">
+                <a href="javascript:void(0)" (click)="selectNode(node)">
+                    <span *ngIf="!templates.treeNodeTemplate">{{ node.name }}</span>
+                    <ng-container   [ngTemplateOutlet]="templates.treeNodeTemplate" 
+                                    [ngTemplateOutletContext]="{ $implicit: node, node: node}">
+                    </ng-container>
+                </a>
+            </div>
+            
+            <div *ngIf="shouldShowInputForTreeNode(node)">
+                <input type="text " id="input-normal " name="input-normal " class="form-control " placeholder="Normal ">
+            </div>
 
             <div *ngIf="menuItems" class="node-menu" dropdown>
                 <i class="fa fa-bars" dropdownToggle></i>

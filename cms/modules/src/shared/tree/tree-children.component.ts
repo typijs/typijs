@@ -68,9 +68,11 @@ export class TreeChildrenComponent implements OnInit {
                 this.store.fireNodeCreated(node);
                 break;
             case NodeMenuItemAction.NewNodeInline:
+                //add temp new node with status is new
                 this.store.fireNodeInlineCreated(node);
                 break;
             case NodeMenuItemAction.Rename:
+                //update current node with status is rename
                 this.store.fireNodeRenamed(node);
                 break;
             case NodeMenuItemAction.Cut:
@@ -88,6 +90,11 @@ export class TreeChildrenComponent implements OnInit {
             default:
                 throw new Error(`Chosen menu item doesn't exist`);
         }
+    }
+
+    shouldShowInputForTreeNode(node: TreeNode) {
+        //get status of node to show or not editable node
+        return false;
     }
 
     ngOnDestroy(): void {

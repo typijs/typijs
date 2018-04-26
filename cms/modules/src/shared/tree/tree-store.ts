@@ -54,14 +54,14 @@ export class TreeStore {
     locateToSelectedNode(newSelectedNode: TreeNode) {
         if (!this.selectedNode || this.selectedNode.id != newSelectedNode.id) {
             this.selectedNode = newSelectedNode;
-            var parentPath = `null${newSelectedNode.parentPath}`;
+            var parentPath = newSelectedNode.parentPath ? `null${newSelectedNode.parentPath}` : 'null';
             var parentIds = parentPath.split(',').filter(id => id);
             if (parentIds.length > 0) {
                 Observable.from(parentIds)
                     .concatMap(id => {
                         if (!this.nodes[id]) {
                             return this.treeService.loadChildren(id).map(res => {
-                                return res.map(x=> new TreeNode({
+                                return res.map(x => new TreeNode({
                                     id: x._id,
                                     name: x.name,
                                     hasChildren: x.hasChildren,
@@ -135,6 +135,10 @@ export class TreeStore {
     }
 
     fireNodeInlineCreated(node) {
+        this.nodes[node.id].push(new TreeNode({
+            isNew: true
+        }));
+        node.isExpanded = true;
         this.nodeInlineCreated$.next(node);
     }
 
