@@ -42,7 +42,7 @@ export class BlockTreeComponent {
     @ViewChild(TreeComponent) cmsTree: TreeComponent;
     blocks: Array<Block>;
 
-    root: TreeNode = new TreeNode({ id: 'null' });
+    root: TreeNode = new TreeNode({ id: 'null', name: 'Block' });
     treeConfig: TreeConfig = {
         service: ServiceLocator.Instance.get(BlockTreeService),
         menuItems: [

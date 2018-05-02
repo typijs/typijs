@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, ContentChild, TemplateRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, ContentChild, TemplateRef, ViewEncapsulation } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
 import { TreeStore } from './tree-store';
@@ -9,13 +9,28 @@ import { TreeMenuItem, NodeMenuItemAction } from './tree-menu';
 
 @Component({
     selector: 'cms-tree',
-    template: `<tree-children 
-                    [config]="config" 
-                    [root]="root" 
-                    [templates]="{
-                        loadingTemplate: loadingTemplate,
-                        treeNodeTemplate: treeNodeTemplate}">
-                </tree-children>`,
+    template: `
+            <div class="tree">
+                <div class="tree-item">
+                    <tree-node  
+                        [node]="root" 
+                        [config]="config" 
+                        [templates]="templates"
+                        (selectNode)="selectNode($event)"
+                        (menuItemSelected)="menuItemSelected($event)">
+                    </tree-node>
+                    <tree-children 
+                        [root]="root" 
+                        [config]="config" 
+                        [templates]="templates"
+                        (selectNode)="selectNode($event)"
+                        (menuItemSelected)="menuItemSelected($event)">
+                    </tree-children>
+                </div>
+            </div>
+                `,
+    styleUrls: ['./tree.component.scss'],
+    encapsulation: ViewEncapsulation.None,
     providers: [TreeStore]
 })
 export class TreeComponent {
@@ -36,6 +51,10 @@ export class TreeComponent {
     @Output() nodeDeleted: EventEmitter<any> = new EventEmitter();
 
     private subscriptions: Subscription[] = [];
+    private templates: any = {
+        loadingTemplate: this.loadingTemplate,
+        treeNodeTemplate: this.treeNodeTemplate
+    };
     constructor(private store: TreeStore) { }
 
     ngOnInit() {
@@ -76,11 +95,50 @@ export class TreeComponent {
         }
     }
 
+    //handle event when node is clicked
+    selectNode(node: TreeNode) {
+
+        node.isSelected = true;
+        this.store.fireNodeSelected(node);
+    }
+
+    menuItemSelected(menuEvent) {
+        let action = menuEvent.action;
+        let node = menuEvent.node;
+        switch (action) {
+            case NodeMenuItemAction.NewNode:
+                this.store.fireNodeCreated(node);
+                break;
+            case NodeMenuItemAction.NewNodeInline:
+                //add temp new node with status is new
+                this.store.fireNodeInlineCreated(node);
+                break;
+            case NodeMenuItemAction.Rename:
+                //update current node with status is rename
+                this.store.fireNodeRenamed(node);
+                break;
+            case NodeMenuItemAction.Cut:
+                this.store.fireNodeCut(node);
+                break;
+            case NodeMenuItemAction.Copy:
+                this.store.fireNodeCopied(node);
+                break;
+            case NodeMenuItemAction.Paste:
+                this.store.fireNodePasted(node);
+                break;
+            case NodeMenuItemAction.Delete:
+                this.store.fireNodeDeleted(node);
+                break;
+            default:
+                throw new Error(`Chosen menu item doesn't exist`);
+        }
+    }
+
     reloadNode(nodeId) {
         this.store.reloadNode(nodeId);
     }
 
-    locateToSelectedNode(node: TreeNode){
+    locateToSelectedNode(node: TreeNode) {
         this.store.locateToSelectedNode(node);
     }
 
