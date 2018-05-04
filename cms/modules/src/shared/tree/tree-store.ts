@@ -8,6 +8,7 @@ import 'rxjs/add/operator/map';
 
 import { TreeNode } from './tree-node';
 import { TreeService } from './index';
+import { TreeMenuItem, NodeMenuItemAction } from './tree-menu';
 
 @Injectable()
 export class TreeStore {
@@ -42,6 +43,29 @@ export class TreeStore {
     reloadNode(nodeId) {
         this.getNode(nodeId);
         this.getNodeChildren(nodeId);
+    }
+
+    removeEmptyNode(parent, node) {
+        let childNodes = this.nodes[node.parentId ? node.parentId : 'null'];
+        if (childNodes) {
+            let nodeIndex = childNodes.findIndex(x => x.id == node.id);
+            if (nodeIndex > -1) childNodes.splice(nodeIndex, 1);
+            if(childNodes.length == 0) {
+                parent.hasChildren = false;
+                parent.isExpanded = false;
+            }
+        }
+    }
+
+    showInlineEditNode(node: TreeNode) {
+        if (!this.nodes[node.id]) this.nodes[node.id] = [];
+
+        this.nodes[node.id].push(new TreeNode({
+            isNew: true,
+            parentId: node.id
+        }));
+        node.isExpanded = true;
+        node.hasChildren = true;
     }
 
     getTreeNodes(key) {
@@ -124,6 +148,38 @@ export class TreeStore {
         }
     }
 
+    fireNodeActions(nodeAction){
+        let action = nodeAction.action;
+        let node = nodeAction.node;
+        switch (action) {
+            case NodeMenuItemAction.NewNode:
+                this.fireNodeCreated(node);
+                break;
+            case NodeMenuItemAction.NewNodeInline:
+                //add temp new node with status is new
+                this.showInlineEditNode(node);
+                break;
+            case NodeMenuItemAction.Rename:
+                //update current node with status is rename
+                this.fireNodeRenamed(node);
+                break;
+            case NodeMenuItemAction.Cut:
+                this.fireNodeCut(node);
+                break;
+            case NodeMenuItemAction.Copy:
+                this.fireNodeCopied(node);
+                break;
+            case NodeMenuItemAction.Paste:
+                this.fireNodePasted(node);
+                break;
+            case NodeMenuItemAction.Delete:
+                this.fireNodeDeleted(node);
+                break;
+            default:
+                throw new Error(`Chosen menu item doesn't exist`);
+        }
+    }
+
     //fire all tree events
     fireNodeSelected(node) {
         this.selectedNode = node;
@@ -135,10 +191,6 @@ export class TreeStore {
     }
 
     fireNodeInlineCreated(node) {
-        this.nodes[node.id].push(new TreeNode({
-            isNew: true
-        }));
-        node.isExpanded = true;
         this.nodeInlineCreated$.next(node);
     }
 

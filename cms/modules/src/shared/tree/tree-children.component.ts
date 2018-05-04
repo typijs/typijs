@@ -18,13 +18,12 @@ import { TreeMenuItem, NodeMenuItemAction } from './tree-menu';
                 [config]="config"
                 [templates]="templates"
                 (selectNode)="selectNode($event)"
-                (menuItemSelected)="menuItemSelected($event)"></tree-node>
+                (menuItemSelected)="menuItemSelected($event)"
+                (nodeOnBlur)="nodeOnBlur($event)"></tree-node>
             <tree-children *ngIf="node.isExpanded" 
                 [root]="node" 
                 [config]="config" 
-                [templates]="templates"
-                (selectNode)="selectNode($event)"
-                (menuItemSelected)="menuItemSelected($event)"></tree-children>
+                [templates]="templates"></tree-children>
         </li>
     </ul>
 `,
@@ -33,9 +32,6 @@ export class TreeChildrenComponent implements OnInit {
     @Input() config: TreeConfig;
     @Input() root: TreeNode;
     @Input() templates: any = {};
-
-    @Output("selectNode") selectNodeEvent: EventEmitter<TreeNode> = new EventEmitter();
-    @Output("menuItemSelected") menuItemSelectedEvent: EventEmitter<any> = new EventEmitter();
 
     public children = [];
     private treeService: TreeService;
@@ -73,13 +69,21 @@ export class TreeChildrenComponent implements OnInit {
         }));
     }
 
-    //handle event when node is clicked
     selectNode(node: TreeNode) {
-        this.selectNodeEvent.emit(node);
+        node.isSelected = true;
+        this.store.fireNodeSelected(node);
+    }
+
+    nodeOnBlur(node: TreeNode) {
+        if (node.name) {
+            this.store.fireNodeInlineCreated(node);
+        } else {
+            this.store.removeEmptyNode(this.root, node);
+        }
     }
 
     menuItemSelected(menuEvent) {
-        this.menuItemSelectedEvent.emit(menuEvent);
+        this.store.fireNodeActions(menuEvent);
     }
 
     ngOnDestroy(): void {

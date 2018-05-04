@@ -24,7 +24,7 @@ import { TreeMenuItem, NodeMenuItemAction } from './tree-menu';
         </div>
         
         <div *ngIf="shouldShowInputForTreeNode(node)">
-            <input type="text " id="input-normal " name="input-normal " class="form-control " placeholder="Normal ">
+            <input autofocus type="text" class="form-control" (blur)="nodeOnBlur(node)" [(ngModel)]="node.name"/>
         </div>
 
         <div *ngIf="menuItems" class="node-menu" dropdown>
@@ -36,13 +36,7 @@ import { TreeMenuItem, NodeMenuItemAction } from './tree-menu';
             </div>
         </div>
     </div>
-`,
-styles: [`
-        .tree-root {
-            margin-left: 10px;
-            display:block;
-        }
-        `]
+    `
 })
 export class TreeNodeComponent {
     @Input() node: TreeNode;
@@ -50,6 +44,7 @@ export class TreeNodeComponent {
     @Input() templates: any = {};
 
     @Output("selectNode") selectNodeEvent: EventEmitter<TreeNode> = new EventEmitter();
+    @Output("nodeOnBlur") nodeOnBlurEvent: EventEmitter<TreeNode> = new EventEmitter();
     @Output("menuItemSelected") menuItemSelectedEvent: EventEmitter<any> = new EventEmitter();
 
     private menuItems: TreeMenuItem[];
@@ -61,7 +56,6 @@ export class TreeNodeComponent {
     }
 
     shouldShowInputForTreeNode(node: TreeNode) {
-        //get status of node to show or not editable node
         return node.isNew || node.isEditing;
     }
 
@@ -71,5 +65,9 @@ export class TreeNodeComponent {
 
     menuItemSelected(action: NodeMenuItemAction, node: TreeNode) {
         this.menuItemSelectedEvent.emit({ action: action, node: node })
+    }
+
+    nodeOnBlur(node: TreeNode) {
+        this.nodeOnBlurEvent.emit(node);
     }
 }

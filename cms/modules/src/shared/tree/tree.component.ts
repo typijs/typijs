@@ -22,9 +22,7 @@ import { TreeMenuItem, NodeMenuItemAction } from './tree-menu';
                     <tree-children 
                         [root]="root" 
                         [config]="config" 
-                        [templates]="templates"
-                        (selectNode)="selectNode($event)"
-                        (menuItemSelected)="menuItemSelected($event)">
+                        [templates]="templates">
                     </tree-children>
                 </div>
             </div>
@@ -97,41 +95,12 @@ export class TreeComponent {
 
     //handle event when node is clicked
     selectNode(node: TreeNode) {
-
         node.isSelected = true;
         this.store.fireNodeSelected(node);
     }
 
     menuItemSelected(menuEvent) {
-        let action = menuEvent.action;
-        let node = menuEvent.node;
-        switch (action) {
-            case NodeMenuItemAction.NewNode:
-                this.store.fireNodeCreated(node);
-                break;
-            case NodeMenuItemAction.NewNodeInline:
-                //add temp new node with status is new
-                this.store.fireNodeInlineCreated(node);
-                break;
-            case NodeMenuItemAction.Rename:
-                //update current node with status is rename
-                this.store.fireNodeRenamed(node);
-                break;
-            case NodeMenuItemAction.Cut:
-                this.store.fireNodeCut(node);
-                break;
-            case NodeMenuItemAction.Copy:
-                this.store.fireNodeCopied(node);
-                break;
-            case NodeMenuItemAction.Paste:
-                this.store.fireNodePasted(node);
-                break;
-            case NodeMenuItemAction.Delete:
-                this.store.fireNodeDeleted(node);
-                break;
-            default:
-                throw new Error(`Chosen menu item doesn't exist`);
-        }
+        this.store.fireNodeActions(menuEvent);
     }
 
     reloadNode(nodeId) {

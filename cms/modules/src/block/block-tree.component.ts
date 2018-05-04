@@ -20,7 +20,8 @@ import { BlockTreeService } from './block-tree.service';
                         [root]="root"
                         [config]="treeConfig"
                         (nodeSelected)="folderSelected($event)"
-                        (nodeCreated)="nodeCreated($event)">
+                        (nodeCreated)="nodeCreated($event)"
+                        (nodeInlineCreated)="createBlockFolder($event)">
                         <ng-template #treeNodeTemplate let-node>
                             <i class="fa fa-folder-o"></i>
                             <span>{{node.name}}</span>
@@ -81,8 +82,8 @@ export class BlockTreeComponent {
     }
 
     ngOnInit() {
-        this.subjectService.pageCreated$.subscribe(pageData => {
-            this.cmsTree.reloadNode(pageData.parentId);
+        this.subjectService.blockFolderCreated$.subscribe(blockData => {
+            this.cmsTree.reloadNode(blockData.parentId);
         });
         this.folderSelected({ id: 'null' });
     }
@@ -92,6 +93,13 @@ export class BlockTreeComponent {
         this.blockService.getChildBlocksOfFolder(node.id).subscribe(childBlocks => {
             this.blocks = childBlocks;
         })
+    }
+
+    createBlockFolder(node: TreeNode) {
+        this.blockService.addBlockContent({ name: node.name, parentId: node.parentId })
+        .subscribe(block => {
+            this.subjectService.fireBlockCreated(block);
+        });
     }
 
     nodeCreated(parentNode) {

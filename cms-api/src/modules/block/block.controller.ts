@@ -12,7 +12,7 @@ export default class BlockCtrl extends BaseCtrl {
 
         //get parent folder
         this.model.findOne({
-            _id: blockObj.parentId ? mongoose.Schema.Types.ObjectId(blockObj.parentId) : null
+            _id: blockObj.parentId ? blockObj.parentId : null
         })
             .then(parentFolder => {
                 let parentId = parentFolder ? parentFolder._id : null;
