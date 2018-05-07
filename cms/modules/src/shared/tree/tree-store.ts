@@ -62,7 +62,7 @@ export class TreeStore {
 
         this.nodes[node.id].push(new TreeNode({
             isNew: true,
-            parentId: node.id
+            parentId: node.id == 'null' ? null : node.id
         }));
         node.isExpanded = true;
         node.hasChildren = true;
@@ -117,7 +117,7 @@ export class TreeStore {
     }
 
     private getNode(nodeId) {
-        if (this.treeService) {
+        if (this.treeService && nodeId) {
             this.treeService.getNode(nodeId)
                 .subscribe(nodeData => {
                     if (nodeData) {
@@ -134,6 +134,7 @@ export class TreeStore {
 
     private getNodeChildren(parentId) {
         if (this.treeService) {
+            if(!parentId) parentId = 'null';
             this.treeService.loadChildren(parentId)
                 .subscribe(res => {
                     this.nodes[parentId] = res.map(x => new TreeNode({

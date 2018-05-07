@@ -83,6 +83,7 @@ export class BlockTreeComponent {
 
     ngOnInit() {
         this.subjectService.blockFolderCreated$.subscribe(blockData => {
+            //Todo: need to optimize only reload new node
             this.cmsTree.reloadNode(blockData.parentId);
         });
         this.folderSelected({ id: 'null' });
