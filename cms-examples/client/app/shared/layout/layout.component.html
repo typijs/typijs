@@ -7,6 +7,9 @@
             <div id="navigation">
                 <ul>
                     <li>
+                        <a href="javascript:void(0)" [routerLink]="['/cms/editor']">CMS</a>
+                    </li>
+                    <li>
                         <a href="javascript:void(0)" [routerLink]="['/new-page-3']">Home</a>
                     </li>
                     <li class="menu">
@@ -41,7 +44,7 @@
                         <span *ngFor="let link of item.linkItems">&gt;
                             <a href="#header">{{link.linkText}}</a>
                         </span>
-                        
+
                     </li>
                 </ul>
             </div>

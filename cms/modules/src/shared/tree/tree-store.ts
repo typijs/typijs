@@ -5,6 +5,9 @@ import 'rxjs/add/observable/from';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/concatMap';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/observable/empty';
+
 
 import { TreeNode } from './tree-node';
 import { TreeService } from './index';
@@ -36,13 +39,13 @@ export class TreeStore {
             this.getTreeNodes(key).next(this.nodes[key]);
         }
         else {
-            this.getNodeChildren(key);
+            this.getNodeChildren(key).subscribe();
         }
     }
 
     reloadNode(nodeId) {
         this.getNode(nodeId);
-        this.getNodeChildren(nodeId);
+        this.getNodeChildren(nodeId).subscribe();
     }
 
     removeEmptyNode(parent, node) {
@@ -50,7 +53,7 @@ export class TreeStore {
         if (childNodes) {
             let nodeIndex = childNodes.findIndex(x => x.id == node.id);
             if (nodeIndex > -1) childNodes.splice(nodeIndex, 1);
-            if(childNodes.length == 0) {
+            if (childNodes.length == 0) {
                 parent.hasChildren = false;
                 parent.isExpanded = false;
             }
@@ -58,14 +61,21 @@ export class TreeStore {
     }
 
     showInlineEditNode(node: TreeNode) {
-        if (!this.nodes[node.id]) this.nodes[node.id] = [];
-
-        this.nodes[node.id].push(new TreeNode({
+        let newNode = new TreeNode({
             isNew: true,
             parentId: node.id == 'null' ? null : node.id
-        }));
-        node.isExpanded = true;
-        node.hasChildren = true;
+        });
+
+        if (this.nodes[node.id]) {
+            this.nodes[node.id].push(newNode);
+            node.isExpanded = true;
+            node.hasChildren = true;
+        } else {
+            this.getNodeChildren(node.id, newNode).subscribe(result => {
+                node.isExpanded = true;
+                node.hasChildren = true;
+            });
+        }
     }
 
     getTreeNodes(key) {
@@ -84,15 +94,7 @@ export class TreeStore {
                 Observable.from(parentIds)
                     .concatMap(id => {
                         if (!this.nodes[id]) {
-                            return this.treeService.loadChildren(id).map(res => {
-                                return res.map(x => new TreeNode({
-                                    id: x._id,
-                                    name: x.name,
-                                    hasChildren: x.hasChildren,
-                                    parentId: x.parentId,
-                                    parentPath: x.parentPath
-                                }));
-                            });
+                            return this.treeService.loadChildren(id);
                         } else {
                             return Observable.of(this.nodes[id]);
                         }
@@ -123,33 +125,34 @@ export class TreeStore {
                     if (nodeData) {
                         let parentId = nodeData.parentId ? nodeData.parentId : 'null';
                         if (this.nodes[parentId]) {
-                            let matchIndex = this.nodes[parentId].findIndex(x => x.id == nodeData._id);
-                            if (matchIndex != -1)
+                            let matchIndex = this.nodes[parentId].findIndex(x => x.id == nodeData.id || (x.isNew && x.name == nodeData.name));
+                            if (matchIndex != -1) {
+                                this.nodes[nodeData.parentId][matchIndex].id = nodeData.id;
+                                this.nodes[nodeData.parentId][matchIndex].parentPath = nodeData.parentPath;
+                                this.nodes[nodeData.parentId][matchIndex].isNew = false;
+                                this.nodes[nodeData.parentId][matchIndex].isEditing = false;
                                 this.nodes[nodeData.parentId][matchIndex].hasChildren = nodeData.hasChildren;
+                            }
                         }
                     }
                 });
         }
     }
 
-    private getNodeChildren(parentId) {
+    private getNodeChildren(parentId, newNode?: TreeNode): Observable<any> {
         if (this.treeService) {
-            if(!parentId) parentId = 'null';
-            this.treeService.loadChildren(parentId)
-                .subscribe(res => {
-                    this.nodes[parentId] = res.map(x => new TreeNode({
-                        id: x._id,
-                        name: x.name,
-                        hasChildren: x.hasChildren,
-                        parentId: x.parentId,
-                        parentPath: x.parentPath
-                    }));
+            if (!parentId) parentId = 'null';
+            return this.treeService.loadChildren(parentId)
+                .do(childNodes => {
+                    this.nodes[parentId] = childNodes;
+                    if (newNode) this.nodes[parentId].push(newNode);
                     this.getTreeNodes(parentId).next(this.nodes[parentId]);
                 });
         }
+        return Observable.empty();
     }
 
-    fireNodeActions(nodeAction){
+    fireNodeActions(nodeAction) {
         let action = nodeAction.action;
         let node = nodeAction.node;
         switch (action) {
