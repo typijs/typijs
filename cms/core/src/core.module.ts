@@ -5,11 +5,13 @@ import { HttpClientModule } from '@angular/common/http';
 import { InsertPointDirective, ContentAreaDirective } from './directives';
 import { ContentService, BlockService, PageService, SubjectService } from './services';
 import { CmsRenderContentComponent } from './render';
+import { DndModule } from './shared';
 
 @NgModule({
   imports: [
     CommonModule,
-    HttpClientModule
+    HttpClientModule,
+    DndModule.forRoot()
   ],
   declarations: [
     InsertPointDirective,
@@ -28,4 +30,4 @@ import { CmsRenderContentComponent } from './render';
     SubjectService
   ]
 })
-export class CoreModule {}
+export class CoreModule { }
