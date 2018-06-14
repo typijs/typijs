@@ -1,7 +1,6 @@
 import { Input, Directive, ViewContainerRef, ComponentFactoryResolver, Inject, OnDestroy } from '@angular/core';
 
 import { BLOCK_TYPE_METADATA_KEY } from './../constants';
-import { ContentService } from './../services/content.service';
 import { CMS } from './../cms';
 import { ContentData } from './../bases/content-data';
 import { CmsComponent } from './../bases/cms-component';
