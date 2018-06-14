@@ -65,15 +65,13 @@ export class ContentFormEditComponent implements OnInit {
                         });
                         break;
                     case BLOCK_TYPE:
-                        this.blockService.getBlockContent({ _id: contentId }).subscribe(contentData => {
+                        this.blockService.getBlockContent(contentId).subscribe(contentData => {
                             this.bindDataForContentForm(contentData, CMS.BLOCK_TYPES[contentData.contentType])
                         });
                         break;
                 }
             }
         });
-
-
     }
 
     ngAfterViewInit() {
@@ -201,7 +199,7 @@ export class ContentFormEditComponent implements OnInit {
                             fieldValue.forEach(item => {
                                 if (childItems.findIndex(x => x.itemId == item._id) == -1)
                                     childItems.push({
-                                        path: 'cmsBlock',
+                                        path: 'cmsBlock', //Todo: need to get path based on item which drop on content area
                                         itemId: item._id
                                     })
                             })

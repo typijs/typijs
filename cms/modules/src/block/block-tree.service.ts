@@ -5,18 +5,17 @@ import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
-import { PageService, Page } from '@angular-cms/core';
+import { BlockService, Block } from '@angular-cms/core';
 import { TreeService } from '../shared/tree/tree-service';
 import { TreeNode } from '../shared/tree/tree-node';
 
 @Injectable()
-export class PageTreeService implements TreeService {
+export class BlockTreeService implements TreeService {
 
-    constructor(private pageService: PageService) {
-    }
+    constructor(private blockService: BlockService) { }
 
-    getNode(nodeId: string): any {
-        return this.pageService.getPageContent(nodeId).map(x => new TreeNode({
+    getNode(nodeId: string): Observable<TreeNode> {
+        return this.blockService.getBlockContent(nodeId).map(x => new TreeNode({
             id: x._id,
             name: x.name,
             hasChildren: x.hasChildren,
@@ -25,8 +24,8 @@ export class PageTreeService implements TreeService {
         }));
     }
 
-    loadChildren(parentNodeId: string): any {
-        return this.pageService.getChildren(parentNodeId).map((res: Page[]) => {
+    loadChildren(parentNodeId: string): Observable<TreeNode[]> {
+        return this.blockService.getBlockFolders(parentNodeId).map((res: Block[]) => {
             return res.map(x => new TreeNode({
                 id: x._id,
                 name: x.name,
@@ -34,6 +33,6 @@ export class PageTreeService implements TreeService {
                 parentId: x.parentId,
                 parentPath: x.parentPath
             }));
-        });;
+        });
     }
 }

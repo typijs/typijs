@@ -1,33 +1,33 @@
-import { Injectable, Inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 
-import { Subject } from 'rxjs/Subject';
-
-import { Content } from '../models/content.model';
+import { Block } from '../models/block.model';
 @Injectable()
 export class BlockService {
   constructor(private http: HttpClient) { }
 
-  contentCreated$: Subject<Content> = new Subject<Content>();
-
-  fireContentCreated(content) {
-    this.contentCreated$.next(content);
+  getBlockContents(): Observable<Block[]> {
+    return this.http.get<Block[]>('/api/blocks');
   }
 
-  getBlockContents(): Observable<Content[]> {
-    return this.http.get<Content[]>('/api/blocks');
+  getBlockFolders(parentId: string): Observable<Block[]> {
+    return this.http.get<Block[]>(`/api/block/folders/${parentId}`);
   }
 
-  addBlockContent(blockContent: Content): Observable<Content> {
-    return this.http.post<Content>('/api/block', blockContent);
+  getChildBlocksOfFolder(folderId: string): Observable<Block[]> {
+    return this.http.get<Block[]>(`/api/block/get-by-folder/${folderId}`);
   }
 
-  getBlockContent(content: Content): Observable<Content> {
-    return this.http.get<Content>(`/api/block/${content._id}`);
+  addBlockContent(blockContent: Block): Observable<Block> {
+    return this.http.post<Block>('/api/block', blockContent);
   }
 
-  editBlockContent(content: Content): Observable<string> {
+  getBlockContent(blockId: string): Observable<Block> {
+    return this.http.get<Block>(`/api/block/${blockId}`);
+  }
+
+  editBlockContent(content: Block): Observable<string> {
     return this.http.put(`/api/block/${content._id}`, content, { responseType: 'text' });
   }
 }

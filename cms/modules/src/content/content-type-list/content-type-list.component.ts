@@ -98,7 +98,6 @@ export class ContentTypeListComponent implements OnDestroy {
     private savePage(content: any) {
         this.pageService.createPage(content).subscribe(
             res => {
-                console.log(res);
                 this.subjectService.firePageCreated(content);
                 this.router.navigate(["/cms/editor/content/", PAGE_TYPE, res._id])
             },
@@ -106,10 +105,9 @@ export class ContentTypeListComponent implements OnDestroy {
         )
     }
 
-    private saveBlock(content: Content) {
+    private saveBlock(content: any) {
         this.blockService.addBlockContent(content).subscribe(
             res => {
-                console.log(res);
                 this.router.navigate(["/cms/editor/content/", BLOCK_TYPE, res._id])
             },
             error => console.log(error)

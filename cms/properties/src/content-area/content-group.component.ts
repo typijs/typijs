@@ -4,13 +4,16 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 @Component({
     selector: 'content-group',
     template: `
-            <ul class="list-group">
+            <ul class="list-group" droppable (onDrop) = "onDropItem($event)">
                 <li *ngFor="let item of model;" class="list-group-item d-flex list-group-item-action justify-content-between align-items-center">
                     <div>
                         <i class="fa fa-comment fa-fw"></i> {{item.name}}
                         <span class="pull-right text-muted small"><em>{{item.value}}</em>
                         </span>
                     </div>
+                </li>
+                <li dndPlaceholder>
+                    This is dnd placeholder
                 </li>
             </ul>
 `,
@@ -43,9 +46,9 @@ export class ContentGroupComponent implements ControlValueAccessor {
         this.onTouched = fn;
     }
 
-    addItem(item) {
+    onDropItem(e: any) {
         if (!this._model) this._model = [];
-        this._model.push(item);
+        this._model.splice(e.index, 0, e.dragData);
         this.onChange(this._model);
     }
 }

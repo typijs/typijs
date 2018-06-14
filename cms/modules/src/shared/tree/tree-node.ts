@@ -9,6 +9,7 @@ export class TreeNode {
   isSelected: boolean = false;
   isEditing: boolean = false;
   isLoading: boolean = false;
+  isNew: boolean = false;
 
   hasChildren: boolean = false;
   parentPath: string;

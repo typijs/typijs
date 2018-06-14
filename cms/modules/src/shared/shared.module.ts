@@ -10,6 +10,7 @@ import { CoreModule } from '@angular-cms/core';
 
 import { TreeComponent } from './tree/tree.component';
 import { TreeChildrenComponent } from './tree/tree-children.component';
+import { TreeNodeComponent } from './tree/tree-node.component';
 
 @NgModule({
     imports: [
@@ -22,6 +23,7 @@ import { TreeChildrenComponent } from './tree/tree-children.component';
         RouterModule
     ],
     declarations: [
+        TreeNodeComponent,
         TreeChildrenComponent,
         TreeComponent
     ],

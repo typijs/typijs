@@ -5,9 +5,13 @@ import 'rxjs/add/observable/from';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/concatMap';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/observable/empty';
+
 
 import { TreeNode } from './tree-node';
 import { TreeService } from './index';
+import { TreeMenuItem, NodeMenuItemAction } from './tree-menu';
 
 @Injectable()
 export class TreeStore {
@@ -35,13 +39,43 @@ export class TreeStore {
             this.getTreeNodes(key).next(this.nodes[key]);
         }
         else {
-            this.getNodeChildren(key);
+            this.getNodeChildren(key).subscribe();
         }
     }
 
     reloadNode(nodeId) {
         this.getNode(nodeId);
-        this.getNodeChildren(nodeId);
+        this.getNodeChildren(nodeId).subscribe();
+    }
+
+    removeEmptyNode(parent, node) {
+        let childNodes = this.nodes[node.parentId ? node.parentId : 'null'];
+        if (childNodes) {
+            let nodeIndex = childNodes.findIndex(x => x.id == node.id);
+            if (nodeIndex > -1) childNodes.splice(nodeIndex, 1);
+            if (childNodes.length == 0) {
+                parent.hasChildren = false;
+                parent.isExpanded = false;
+            }
+        }
+    }
+
+    showInlineEditNode(node: TreeNode) {
+        let newNode = new TreeNode({
+            isNew: true,
+            parentId: node.id == 'null' ? null : node.id
+        });
+
+        if (this.nodes[node.id]) {
+            this.nodes[node.id].push(newNode);
+            node.isExpanded = true;
+            node.hasChildren = true;
+        } else {
+            this.getNodeChildren(node.id, newNode).subscribe(result => {
+                node.isExpanded = true;
+                node.hasChildren = true;
+            });
+        }
     }
 
     getTreeNodes(key) {
@@ -54,21 +88,13 @@ export class TreeStore {
     locateToSelectedNode(newSelectedNode: TreeNode) {
         if (!this.selectedNode || this.selectedNode.id != newSelectedNode.id) {
             this.selectedNode = newSelectedNode;
-            var parentPath = `null${newSelectedNode.parentPath}`;
+            var parentPath = newSelectedNode.parentPath ? `null${newSelectedNode.parentPath}` : 'null';
             var parentIds = parentPath.split(',').filter(id => id);
             if (parentIds.length > 0) {
                 Observable.from(parentIds)
                     .concatMap(id => {
                         if (!this.nodes[id]) {
-                            return this.treeService.loadChildren(id).map(res => {
-                                return res.map(x=> new TreeNode({
-                                    id: x._id,
-                                    name: x.name,
-                                    hasChildren: x.hasChildren,
-                                    parentId: x.parentId,
-                                    parentPath: x.parentPath
-                                }));
-                            });
+                            return this.treeService.loadChildren(id);
                         } else {
                             return Observable.of(this.nodes[id]);
                         }
@@ -93,34 +119,68 @@ export class TreeStore {
     }
 
     private getNode(nodeId) {
-        if (this.treeService) {
+        if (this.treeService && nodeId) {
             this.treeService.getNode(nodeId)
                 .subscribe(nodeData => {
                     if (nodeData) {
                         let parentId = nodeData.parentId ? nodeData.parentId : 'null';
                         if (this.nodes[parentId]) {
-                            let matchIndex = this.nodes[parentId].findIndex(x => x.id == nodeData._id);
-                            if (matchIndex != -1)
+                            let matchIndex = this.nodes[parentId].findIndex(x => x.id == nodeData.id || (x.isNew && x.name == nodeData.name));
+                            if (matchIndex != -1) {
+                                this.nodes[nodeData.parentId][matchIndex].id = nodeData.id;
+                                this.nodes[nodeData.parentId][matchIndex].parentPath = nodeData.parentPath;
+                                this.nodes[nodeData.parentId][matchIndex].isNew = false;
+                                this.nodes[nodeData.parentId][matchIndex].isEditing = false;
                                 this.nodes[nodeData.parentId][matchIndex].hasChildren = nodeData.hasChildren;
+                            }
                         }
                     }
                 });
         }
     }
 
-    private getNodeChildren(parentId) {
+    private getNodeChildren(parentId, newNode?: TreeNode): Observable<any> {
         if (this.treeService) {
-            this.treeService.loadChildren(parentId)
-                .subscribe(res => {
-                    this.nodes[parentId] = res.map(x => new TreeNode({
-                        id: x._id,
-                        name: x.name,
-                        hasChildren: x.hasChildren,
-                        parentId: x.parentId,
-                        parentPath: x.parentPath
-                    }));
+            if (!parentId) parentId = 'null';
+            return this.treeService.loadChildren(parentId)
+                .do(childNodes => {
+                    this.nodes[parentId] = childNodes;
+                    if (newNode) this.nodes[parentId].push(newNode);
                     this.getTreeNodes(parentId).next(this.nodes[parentId]);
                 });
+        }
+        return Observable.empty();
+    }
+
+    fireNodeActions(nodeAction) {
+        let action = nodeAction.action;
+        let node = nodeAction.node;
+        switch (action) {
+            case NodeMenuItemAction.NewNode:
+                this.fireNodeCreated(node);
+                break;
+            case NodeMenuItemAction.NewNodeInline:
+                //add temp new node with status is new
+                this.showInlineEditNode(node);
+                break;
+            case NodeMenuItemAction.Rename:
+                //update current node with status is rename
+                this.fireNodeRenamed(node);
+                break;
+            case NodeMenuItemAction.Cut:
+                this.fireNodeCut(node);
+                break;
+            case NodeMenuItemAction.Copy:
+                this.fireNodeCopied(node);
+                break;
+            case NodeMenuItemAction.Paste:
+                this.fireNodePasted(node);
+                break;
+            case NodeMenuItemAction.Delete:
+                this.fireNodeDeleted(node);
+                break;
+            default:
+                throw new Error(`Chosen menu item doesn't exist`);
         }
     }
 

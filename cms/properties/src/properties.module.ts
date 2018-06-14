@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
-import { CoreModule } from '@angular-cms/core';
+import { CoreModule, DndModule } from '@angular-cms/core';
 
 import { InputComponent } from './input/input.component';
 import { TextareaComponent } from './textarea/textarea.component';
@@ -25,7 +25,8 @@ registerCmsProperties();
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
-        CoreModule
+        CoreModule,
+        DndModule.forRoot()
     ],
     declarations: [
         InputComponent,

@@ -7,7 +7,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 
 import { PropertiesModule } from '@angular-cms/properties';
-import { ContentService, CoreModule } from '@angular-cms/core';
+import { ContentService, CoreModule, DndModule } from '@angular-cms/core';
 import { LayoutModule } from '@angular-cms/modules';
 
 import { EditorLayoutComponent } from './editor-layout/editor-layout.component';
@@ -24,7 +24,8 @@ import { } from "reflect-metadata";
         CoreModule,
         PropertiesModule,
         LayoutModule,
-        TabsModule.forRoot()
+        TabsModule.forRoot(),
+        DndModule.forRoot()
     ],
     declarations: [
         EditorLayoutComponent

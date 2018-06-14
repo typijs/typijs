@@ -1,4 +1,4 @@
-import { Component, Input, ComponentFactoryResolver, Inject, ViewChild, OnDestroy } from '@angular/core';
+import { Component, ComponentFactoryResolver, Inject, ViewChild, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { PAGE_TYPE_METADATA_KEY } from './../constants';
