@@ -1,17 +1,16 @@
-import { NgModule, ModuleWithProviders, ComponentFactoryResolver } from '@angular/core';
+import { NgModule, ModuleWithProviders  } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 
 import { InsertPointDirective, ContentAreaDirective } from './directives';
 import { ContentService, BlockService, PageService, SubjectService } from './services';
 import { CmsRenderContentComponent } from './render';
-import { DndModule } from './shared';
+//import { DndModule } from './shared';
 
 @NgModule({
   imports: [
     CommonModule,
-    HttpClientModule,
-    DndModule.forRoot()
+    HttpClientModule
   ],
   declarations: [
     InsertPointDirective,
@@ -26,8 +25,15 @@ import { DndModule } from './shared';
   providers: [
     ContentService,
     BlockService,
-    PageService,
+    PageService, 
     SubjectService
   ]
 })
-export class CoreModule { }
+export class CoreModule { 
+  static forRoot(): ModuleWithProviders {
+    return {
+      ngModule: CoreModule,
+      providers: [SubjectService]
+    };
+  }
+}

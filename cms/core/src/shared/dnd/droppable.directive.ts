@@ -1,6 +1,8 @@
-import { of as observableOf, Subscription, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { Directive, ElementRef, HostListener, Input, Output, EventEmitter, OnInit, OnDestroy, Renderer2, NgZone } from '@angular/core';
+
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/of';
+import { map } from 'rxjs/operators';
 
 import { DropEvent } from './drop-event.model';
 import { DndService } from './dnd.service';
@@ -67,12 +69,12 @@ export class Droppable implements OnInit, OnDestroy {
     /**
      * @private
      */
-    dragStartSubscription: Subscription;
+    dragStartSubscription: any;
 
     /**
      * @private
      */
-    dragEndSubscription: Subscription;
+    dragEndSubscription: any;
 
     /**
      * @private
@@ -113,8 +115,10 @@ export class Droppable implements OnInit, OnDestroy {
      */
     unbindDragLeaveListener: Function;
 
+    placeholder: any;
+
     constructor(protected el: ElementRef, private renderer: Renderer2,
-        private ng2DragDropService: DndService, private zone: NgZone) {
+        private dndService: DndService, private zone: NgZone) {
     }
 
     ngOnInit() {
@@ -128,6 +132,64 @@ export class Droppable implements OnInit, OnDestroy {
         this.unbindDragListeners();
     }
 
+    setDndPlaceholder(placeholderElement: ElementRef) {
+        var placeholder;
+
+        if (placeholderElement) {
+            placeholder = placeholderElement.nativeElement;
+        }
+
+        this.placeholder = placeholder || DomHelper.createElement('li', { 'class': 'dndPlaceholder' });
+    }
+
+    private getPlaceholderIndex() {
+        if (!this.el.nativeElement.children) return 0;
+        if (!this.placeholder) return this.el.nativeElement.children.length;
+
+        return Array.prototype.indexOf.call(this.el.nativeElement.children, this.placeholder);
+    }
+
+    private insertDropPlaceholder(event) {
+        if (!this.placeholder) return;
+
+        event = event.originalEvent || event;
+        let listNode = this.el.nativeElement;
+
+        // Make sure the placeholder is shown, which is especially important if the list is empty.
+        if (this.placeholder.parentNode != listNode) {
+            listNode.appendChild(this.placeholder);
+        }
+
+        if (event.target != listNode) {
+            // Try to find the node direct directly below the list node.
+            let listItemNode = event.target;
+            while (listItemNode.parentNode != listNode && listItemNode.parentNode) {
+                listItemNode = listItemNode.parentNode;
+            }
+
+            if (listItemNode.parentNode == listNode && listItemNode != this.placeholder) {
+                // If the mouse pointer is in the upper half of the list item element,
+                // we position the placeholder before the list item, otherwise after it.
+                let rect = listItemNode.getBoundingClientRect();
+                let isFirstHalf = event.clientY < rect.top + rect.height / 2;
+                listNode.insertBefore(this.placeholder, isFirstHalf ? listItemNode : listItemNode.nextSibling);
+            }
+        }
+    }
+
+    private removeDropPlaceholder(event) {
+        event = event.originalEvent || event;
+        let listNode = this.el.nativeElement;
+
+        let newTarget = document.elementFromPoint(event.clientX, event.clientY);
+        if (listNode.contains(newTarget) && !event._dndPhShown) {
+            // Signalize to potential parent lists that a placeholder is already shown.
+            event._dndPhShown = true;
+        } else {
+            this.placeholder.remove();
+        }
+    }
+
     dragEnter(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -137,6 +199,7 @@ export class Droppable implements OnInit, OnDestroy {
     dragOver(e, result) {
         if (result) {
             DomHelper.addClass(this.el, this.dragOverClass);
+            this.insertDropPlaceholder(e);
             e.preventDefault();
             this.onDragOver.emit(e);
         }
@@ -144,6 +207,7 @@ export class Droppable implements OnInit, OnDestroy {
 
     dragLeave(e) {
         DomHelper.removeClass(this.el, this.dragOverClass);
+        this.removeDropPlaceholder(e);
         e.preventDefault();
         this.onDragLeave.emit(e);
     }
@@ -156,33 +220,35 @@ export class Droppable implements OnInit, OnDestroy {
                 e.preventDefault();
                 e.stopPropagation();
 
-                this.ng2DragDropService.onDragEnd.next();
-                this.onDrop.emit(new DropEvent(e, this.ng2DragDropService.dragData));
-                this.ng2DragDropService.dragData = null;
-                this.ng2DragDropService.scope = null;
+                this.dndService.onDragEnd.next();
+                this.onDrop.emit(new DropEvent(e, this.dndService.dragData, this.getPlaceholderIndex()));
+                this.dndService.dragData = null;
+                this.dndService.scope = null;
+                this.placeholder.remove();
             }
         });
     }
 
     allowDrop(): Observable<boolean> {
-        let allowed: boolean | Observable<boolean> = false;
+        //let allowed: boolean | Observable<boolean> = false;
+        let allowed: any = false;
 
         /* tslint:disable:curly */
         /* tslint:disable:one-line */
         if (typeof this.dropScope === 'string') {
-            if (typeof this.ng2DragDropService.scope === 'string')
-                allowed = this.ng2DragDropService.scope === this.dropScope;
-            else if (this.ng2DragDropService.scope instanceof Array)
-                allowed = this.ng2DragDropService.scope.indexOf(this.dropScope) > -1;
+            if (typeof this.dndService.scope === 'string')
+                allowed = this.dndService.scope === this.dropScope;
+            else if (this.dndService.scope instanceof Array)
+                allowed = this.dndService.scope.indexOf(this.dropScope) > -1;
         } else if (this.dropScope instanceof Array) {
-            if (typeof this.ng2DragDropService.scope === 'string')
-                allowed = this.dropScope.indexOf(this.ng2DragDropService.scope) > -1;
-            else if (this.ng2DragDropService.scope instanceof Array)
+            if (typeof this.dndService.scope === 'string')
+                allowed = this.dropScope.indexOf(this.dndService.scope) > -1;
+            else if (this.dndService.scope instanceof Array)
                 allowed = this.dropScope.filter(item => {
-                    return this.ng2DragDropService.scope.indexOf(item) !== -1;
+                    return this.dndService.scope.indexOf(item) !== -1;
                 }).length > 0;
         } else if (typeof this.dropScope === 'function') {
-            allowed = this.dropScope(this.ng2DragDropService.dragData);
+            allowed = this.dropScope(this.dndService.dragData);
             if (allowed instanceof Observable) {
                 return allowed.pipe(map(result => result && this.dropEnabled));
             }
@@ -191,7 +257,7 @@ export class Droppable implements OnInit, OnDestroy {
         /* tslint:enable:curly */
         /* tslint:disable:one-line */
 
-        return observableOf(allowed && this.dropEnabled);
+        return Observable.of(allowed && this.dropEnabled);
     }
 
     subscribeService() {
@@ -199,7 +265,7 @@ export class Droppable implements OnInit, OnDestroy {
             return;
         }
         this._isServiceActive = true;
-        this.dragStartSubscription = this.ng2DragDropService.onDragStart.subscribe(() => {
+        this.dragStartSubscription = this.dndService.onDragStart.subscribe(() => {
             this._isDragActive = true;
             this.allowDrop().subscribe(result => {
                 if (result && this._isDragActive) {
@@ -220,7 +286,7 @@ export class Droppable implements OnInit, OnDestroy {
             });
         });
 
-        this.dragEndSubscription = this.ng2DragDropService.onDragEnd.subscribe(() => {
+        this.dragEndSubscription = this.dndService.onDragEnd.subscribe(() => {
             this._isDragActive = false;
             DomHelper.removeClass(this.el, this.dragHintClass);
             this.unbindDragListeners();
@@ -249,3 +315,4 @@ export class Droppable implements OnInit, OnDestroy {
         }
     }
 }
+

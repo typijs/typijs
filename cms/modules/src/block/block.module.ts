@@ -4,7 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 
-import { CoreModule } from '@angular-cms/core';
+import { CoreModule, DndModule } from '@angular-cms/core';
 
 import { SharedModule } from '../shared/shared.module';
 import { BlockTreeComponent } from './block-tree.component';
@@ -18,7 +18,8 @@ import { BlockTreeService } from './block-tree.service';
         ReactiveFormsModule,
         CoreModule,
         SharedModule,
-        RouterModule
+        RouterModule,
+        DndModule.forRoot()
     ],
     declarations: [
         BlockTreeComponent

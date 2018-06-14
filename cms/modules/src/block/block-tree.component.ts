@@ -32,7 +32,7 @@ import { BlockTreeService } from './block-tree.service';
         </div>
         <div>
             <div class="list-group" *ngIf="blocks">
-                <div *ngFor="let block of blocks" class="list-group-item" [routerLink]="['content/block', block._id]">
+                <div *ngFor="let block of blocks" [draggable] [dragData]="block"  class="list-group-item" [routerLink]="['content/block', block._id]">
                     {{block.name}}
                 </div>
             </div>

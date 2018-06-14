@@ -57,6 +57,18 @@ export class DomHelper {
         }
     }
 
+    public static createElement(tagName: string, attributes?: any) {
+        let element = document.createElement(tagName);
+
+        if (attributes) {
+            for (let key of Object.keys(attributes)) {
+                element.setAttribute(key, attributes[key]);
+            }
+        }
+
+        return element;
+    }
+
     /**
      * Gets element with valid classList
      *
