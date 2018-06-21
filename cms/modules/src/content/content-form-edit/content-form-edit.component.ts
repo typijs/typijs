@@ -1,20 +1,13 @@
-import {
-    Component, Input, AfterViewInit, ViewChild, ViewChildren, QueryList,
-    ComponentFactoryResolver, OnDestroy, Inject, Injector, OnInit, ChangeDetectorRef
-} from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
-import { Observable } from 'rxjs/Observable';
+import { Component, ViewChildren, QueryList, ComponentFactoryResolver, Inject, Injector, OnInit, ChangeDetectorRef } from '@angular/core';
+import { FormGroup, FormBuilder } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 
-import { PAGE_TYPE_METADATA_KEY, PROPERTY_METADATA_KEY, PROPERTIES_METADATA_KEY } from '@angular-cms/core';
-import {
-    CMS, UIHint, CmsProperty, InsertPointDirective, Content, ISelectionFactory, PropertyMetadata, CmsTab,
-    sortTabByTitle
-} from '@angular-cms/core';
-import { ContentService, PageService, BlockService, SubjectService } from '@angular-cms/core';
+import { PROPERTY_METADATA_KEY, PROPERTIES_METADATA_KEY } from '@angular-cms/core';
+import { CMS, UIHint, CmsProperty, InsertPointDirective, ISelectionFactory, PropertyMetadata, CmsTab, sortTabByTitle, clone } from '@angular-cms/core';
+import { PageService, BlockService, SubjectService } from '@angular-cms/core';
 
-import { Elements, PropertyListComponent, SelectProperty } from '@angular-cms/properties';
+import { PropertyListComponent, SelectProperty } from '@angular-cms/properties';
 
 import { PAGE_TYPE, BLOCK_TYPE } from './../../constants';
 
@@ -44,7 +37,6 @@ export class ContentFormEditComponent implements OnInit {
         private injector: Injector,
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
-        private contentService: ContentService,
         private pageService: PageService,
         private blockService: BlockService,
         private subjectService: SubjectService,
@@ -222,7 +214,7 @@ export class ContentFormEditComponent implements OnInit {
                         for (var i = 0; i < fieldValue.length; i++) {
                             let matchItem = childItems.find(x => x.itemId._id == fieldValue[i]._id);
                             if (matchItem) {
-                                fieldValue[i] = matchItem.itemId;
+                                fieldValue[i] = clone(matchItem.itemId);
                             }
                         }
                     }

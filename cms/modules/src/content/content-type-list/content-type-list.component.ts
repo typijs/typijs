@@ -1,16 +1,13 @@
-import { Component, Input, Inject, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
+import { Component, OnDestroy } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 
 import {
     PAGE_TYPE_METADATA_KEY,
-    BLOCK_TYPE_METADATA_KEY,
-    PROPERTY_METADATA_KEY,
-    PROPERTIES_METADATA_KEY
-} from '@angular-cms/core';
+    BLOCK_TYPE_METADATA_KEY} from '@angular-cms/core';
 
-import { ContentService, PageService, BlockService, SubjectService } from '@angular-cms/core';
-import { CMS, Content, slugify } from '@angular-cms/core';
+import { PageService, BlockService, SubjectService } from '@angular-cms/core';
+import { CMS, slugify } from '@angular-cms/core';
 
 import { PAGE_TYPE, BLOCK_TYPE } from './../../constants';
 
@@ -26,7 +23,6 @@ export class ContentTypeListComponent implements OnDestroy {
     parentId: string;
 
     constructor(
-        private contentService: ContentService, 
         private pageService: PageService, 
         private blockService: BlockService,
         private subjectService: SubjectService,
