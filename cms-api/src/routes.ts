@@ -2,6 +2,8 @@ import * as express from 'express';
 import ContentCtrl from './modules/content/content.controller';
 import BlockCtrl from './modules/block/block.controller';
 import PageCtrl from './modules/page/page.controller';
+import MediaCtrl from './modules/media/media.controller';
+import * as upload from './modules/media/upload';
 
 export function setRoutes(app) {
   const router = express.Router();
@@ -35,6 +37,10 @@ export function setRoutes(app) {
   router.route('/block/:id').delete(blockCtrl.delete);
   router.route('/block/folders/:parentId').get(blockCtrl.getFoldersByParentId);
   router.route('/block/get-by-folder/:parentId').get(blockCtrl.getBlocksByFolder);
+
+  // Media
+  const mediaCtrl = new MediaCtrl();
+  router.route('/media/upload/:parentId?').post(upload.uploadFile.single("file"), mediaCtrl.uploadMedia);
 
   // Apply the routes to our application with the prefix /api get-by-folder
   app.use('/api', router);
