@@ -8,7 +8,7 @@ const mediaSchema = new mongoose.Schema({
     changedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'cmsUser', required: false },
 
     name: { type: String, required: true },
-    mimeType: { type: String, required: false },
+    mimeType: { type: String, required: true },
     size: { type: String, required: false },
 
     parentId: String,

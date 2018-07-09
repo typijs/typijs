@@ -75,8 +75,8 @@ export default class MediaCtrl extends BaseCtrl {
     }
 
     getFoldersByParentId = (req, res) => {
-        let parentId = req.params.parentId ? req.params.parentId : null;
-        this.model.find({ parentId: parentId, contentType: null })
+        let parentId = req.params.parentId != '0' ? req.params.parentId : null;
+        this.model.find({ parentId: parentId, mimeType: null })
             .then(items => {
                 res.status(200).json(items);
             })
@@ -86,8 +86,8 @@ export default class MediaCtrl extends BaseCtrl {
     }
 
     getMediasByFolder = (req, res) => {
-        let parentId = req.params.parentId ? req.params.parentId : null;
-        this.model.find({ parentId: parentId, contentType: { $ne: null } })
+        let parentId = req.params.parentId != '0' ? req.params.parentId : null;
+        this.model.find({ parentId: parentId, mimeType: { $ne: null } })
             .then(items => {
                 res.status(200).json(items);
             })

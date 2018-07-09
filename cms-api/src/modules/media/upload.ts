@@ -16,6 +16,7 @@ const generateFolder = (request: any): string => {
     }
     return dir;
 }
+
 const generateFileName = (request: any, file: any): string => {
     //const fileName = mongoose.Types.ObjectId();
     const fileName = request["fileId"];

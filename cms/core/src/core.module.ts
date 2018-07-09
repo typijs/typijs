@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 
 import { InsertPointDirective, ContentAreaDirective } from './directives';
-import { ContentService, BlockService, PageService, SubjectService } from './services';
+import { ContentService, BlockService, PageService, SubjectService, MediaService } from './services';
 import { CmsRenderContentComponent } from './render';
 //import { DndModule } from './shared';
 
@@ -26,6 +26,7 @@ import { CmsRenderContentComponent } from './render';
     ContentService,
     BlockService,
     PageService, 
+    MediaService,
     SubjectService
   ]
 })

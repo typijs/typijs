@@ -42,6 +42,12 @@ export function setRoutes(app) {
   router.route('/assets/:fileId/:fileName').get(mediaCtrl.getMediaById);
   router.route('/media/upload/:parentId?').post(mediaCtrl.uploadMedia('file'), mediaCtrl.processMedia);
   router.route('/media/folders/:parentId?').get(mediaCtrl.getFoldersByParentId);
+  router.route('/media/get-by-folder/:parentId?').get(mediaCtrl.getMediasByFolder);
+  router.route('/medias').get(mediaCtrl.getAll);
+  router.route('/media').post(mediaCtrl.insert);
+  router.route('/media/:id').get(mediaCtrl.get);
+  router.route('/media/:id').put(mediaCtrl.update);
+  router.route('/media/:id').delete(mediaCtrl.delete);
 
   // Apply the routes to our application with the prefix /api get-by-folder
   app.use('/api', router);

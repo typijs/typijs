@@ -1,16 +1,16 @@
 import { registerModule, CmsRootModule, CmsWidgetPosition } from '@angular-cms/core';
-import { BlockModule } from './block.module';
-import { BlockTreeComponent } from './block-tree.component';
+import { MediaModule } from './media.module';
+import { MediaTreeComponent } from './media-tree.component';
 
-export function registerBlockModule() {
+export function registerMediaModule() {
     registerModule({
-        module: BlockModule,
+        module: MediaModule,
         root: CmsRootModule.Editor,
         widgets: [
             {
-                component: BlockTreeComponent,
+                component: MediaTreeComponent,
                 position: CmsWidgetPosition.Right,
-                group: "Blocks"
+                group: "Medias"
             }
         ]
     })
