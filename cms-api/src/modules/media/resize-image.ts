@@ -12,7 +12,7 @@ export function resizeImage(imagePath, destPath, options = defaultOptions) {
 
     return sharp(imagePath)
         .resize(width, height)
-        .max()
+        //.max()
         .toFormat('jpeg')
         .webp()
         .toFile(destPath);
