@@ -49,7 +49,7 @@ export class TreeStore {
     }
 
     removeEmptyNode(parent, node) {
-        let childNodes = this.nodes[node.parentId ? node.parentId : 'null'];
+        let childNodes = this.nodes[node.parentId ? node.parentId : '0'];
         if (childNodes) {
             let nodeIndex = childNodes.findIndex(x => x.id == node.id);
             if (nodeIndex > -1) childNodes.splice(nodeIndex, 1);
@@ -63,7 +63,7 @@ export class TreeStore {
     showInlineEditNode(node: TreeNode) {
         let newNode = new TreeNode({
             isNew: true,
-            parentId: node.id == 'null' ? null : node.id
+            parentId: node.id == '0' ? null : node.id
         });
 
         if (this.nodes[node.id]) {
@@ -88,7 +88,7 @@ export class TreeStore {
     locateToSelectedNode(newSelectedNode: TreeNode) {
         if (!this.selectedNode || this.selectedNode.id != newSelectedNode.id) {
             this.selectedNode = newSelectedNode;
-            var parentPath = newSelectedNode.parentPath ? `null${newSelectedNode.parentPath}` : 'null';
+            var parentPath = newSelectedNode.parentPath ? `0${newSelectedNode.parentPath}` : '0';
             var parentIds = parentPath.split(',').filter(id => id);
             if (parentIds.length > 0) {
                 Observable.from(parentIds)
@@ -123,7 +123,7 @@ export class TreeStore {
             this.treeService.getNode(nodeId)
                 .subscribe(nodeData => {
                     if (nodeData) {
-                        let parentId = nodeData.parentId ? nodeData.parentId : 'null';
+                        let parentId = nodeData.parentId ? nodeData.parentId : '0';
                         if (this.nodes[parentId]) {
                             let matchIndex = this.nodes[parentId].findIndex(x => x.id == nodeData.id || (x.isNew && x.name == nodeData.name));
                             if (matchIndex != -1) {
@@ -141,7 +141,7 @@ export class TreeStore {
 
     private getNodeChildren(parentId, newNode?: TreeNode): Observable<any> {
         if (this.treeService) {
-            if (!parentId) parentId = 'null';
+            if (!parentId) parentId = '0';
             return this.treeService.loadChildren(parentId)
                 .do(childNodes => {
                     this.nodes[parentId] = childNodes;

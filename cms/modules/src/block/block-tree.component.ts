@@ -43,7 +43,7 @@ export class BlockTreeComponent {
     @ViewChild(TreeComponent) cmsTree: TreeComponent;
     blocks: Array<Block>;
 
-    root: TreeNode = new TreeNode({ id: 'null', name: 'Block' });
+    root: TreeNode = new TreeNode({ id: '0', name: 'Block' });
     treeConfig: TreeConfig = {
         service: ServiceLocator.Instance.get(BlockTreeService),
         menuItems: [
@@ -86,7 +86,7 @@ export class BlockTreeComponent {
             //Todo: need to optimize only reload new node
             this.cmsTree.reloadNode(blockData._id);
         });
-        this.folderSelected({ id: 'null' });
+        this.folderSelected({ id: '0' });
     }
 
     folderSelected(node) {

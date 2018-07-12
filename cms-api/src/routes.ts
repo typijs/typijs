@@ -2,6 +2,7 @@ import * as express from 'express';
 import ContentCtrl from './modules/content/content.controller';
 import BlockCtrl from './modules/block/block.controller';
 import PageCtrl from './modules/page/page.controller';
+import MediaCtrl from './modules/media/media.controller';
 
 export function setRoutes(app) {
   const router = express.Router();
@@ -33,8 +34,20 @@ export function setRoutes(app) {
   router.route('/block/:id').get(blockCtrl.get);
   router.route('/block/:id').put(blockCtrl.update);
   router.route('/block/:id').delete(blockCtrl.delete);
-  router.route('/block/folders/:parentId').get(blockCtrl.getFoldersByParentId);
-  router.route('/block/get-by-folder/:parentId').get(blockCtrl.getBlocksByFolder);
+  router.route('/block/folders/:parentId?').get(blockCtrl.getFoldersByParentId);
+  router.route('/block/get-by-folder/:parentId?').get(blockCtrl.getBlocksByFolder);
+
+  // Media
+  const mediaCtrl = new MediaCtrl();
+  router.route('/assets/:fileId/:fileName').get(mediaCtrl.getMediaById);
+  router.route('/media/upload/:parentId?').post(mediaCtrl.uploadMedia('file'), mediaCtrl.processMedia);
+  router.route('/media/folders/:parentId?').get(mediaCtrl.getFoldersByParentId);
+  router.route('/media/get-by-folder/:parentId?').get(mediaCtrl.getMediasByFolder);
+  router.route('/medias').get(mediaCtrl.getAll);
+  router.route('/media').post(mediaCtrl.insert);
+  router.route('/media/:id').get(mediaCtrl.get);
+  router.route('/media/:id').put(mediaCtrl.update);
+  router.route('/media/:id').delete(mediaCtrl.delete);
 
   // Apply the routes to our application with the prefix /api get-by-folder
   app.use('/api', router);

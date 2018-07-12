@@ -34,12 +34,18 @@ export class HomePage extends PageData {
         displayName: "Features",
         displayType: UIHint.ContentArea
     })
-    features: Array<any>
+    features: Array<any>;
+
+    @Property({
+        displayName: "Carousel",
+        displayType: UIHint.ContentArea
+    })
+    carousel: Array<any>;
 
     @Property({
         displayName: "Footer",
         displayType: UIHint.PropertyList,
         propertyListItemType: FooterItem,
     })
-    footers: Array<FooterItem>
+    footers: Array<FooterItem>;
 }

@@ -9,7 +9,7 @@ import { CmsProperty } from '@angular-cms/core';
         <div class="col-sm-8">
             <div class="card">
                 <div class="card-body" >
-                    <content-group [formControlName]="propertyName"></content-group>
+                    <content-group [formControlName]="propertyName" [name]="propertyName"></content-group>
                 </div>
             </div>
         </div>

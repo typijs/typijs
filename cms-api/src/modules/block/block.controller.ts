@@ -68,7 +68,7 @@ export default class BlockCtrl extends BaseCtrl {
     }
 
     getFoldersByParentId = (req, res) => {
-        let parentId = req.params.parentId != 'null' ? req.params.parentId : null;
+        let parentId = req.params.parentId != '0' ? req.params.parentId : null;
         this.model.find({ parentId: parentId, contentType: null }, (err, items) => {
             if (err) { return this.handleError(err); }
             res.status(200).json(items);
@@ -76,7 +76,7 @@ export default class BlockCtrl extends BaseCtrl {
     }
 
     getBlocksByFolder = (req, res) => {
-        let parentId = req.params.parentId != 'null' ? req.params.parentId : null;
+        let parentId = req.params.parentId != '0' ? req.params.parentId : null;
         this.model.find({ parentId: parentId, contentType: { $ne: null } }, (err, items) => {
             if (err) { return this.handleError(err); }
             res.status(200).json(items);

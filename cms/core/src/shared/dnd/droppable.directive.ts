@@ -8,6 +8,8 @@ import { DropEvent } from './drop-event.model';
 import { DndService } from './dnd.service';
 import { DomHelper } from '../../dom-helper';
 
+import { clone } from '../../util';
+
 @Directive({
     selector: '[droppable]'
 })
@@ -221,7 +223,7 @@ export class Droppable implements OnInit, OnDestroy {
                 e.stopPropagation();
 
                 this.dndService.onDragEnd.next();
-                this.onDrop.emit(new DropEvent(e, this.dndService.dragData, this.getPlaceholderIndex()));
+                this.onDrop.emit(new DropEvent(e, clone(this.dndService.dragData), this.getPlaceholderIndex()));
                 this.dndService.dragData = null;
                 this.dndService.scope = null;
                 this.placeholder.remove();

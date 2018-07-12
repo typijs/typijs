@@ -21,25 +21,25 @@ import { TestModule } from './test.module';
 import { TagComponent } from './properties/tag/tag.component';
 import { TestWidget } from './test.widget';
 
-registerProperty(TagComponent, "Tag");
+//registerProperty(TagComponent, "Tag");
 registerContentTypes(contentTypes);
-registerModule({
-  module: TestModule,
-  root: CmsRootModule.Editor,
-  routes: [
-    {
-      path: 'test', //type is 'block' or 'page'
-      component: TestComponent
-    }
-  ],
-  widgets: [
-    {
-      component: TestWidget,
-      position: CmsWidgetPosition.Left,
-      group: 'Pages'
-    }
-  ]
-})
+// registerModule({
+//   module: TestModule,
+//   root: CmsRootModule.Editor,
+//   routes: [
+//     {
+//       path: 'test', //type is 'block' or 'page'
+//       component: TestComponent
+//     }
+//   ],
+//   widgets: [
+//     {
+//       component: TestWidget,
+//       position: CmsWidgetPosition.Left,
+//       group: 'Pages'
+//     }
+//   ]
+// })
 
 @NgModule({
   imports: [

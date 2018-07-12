@@ -40,7 +40,7 @@ import { PageTreeService } from './page-tree.service';
 export class PageTreeComponent {
     @ViewChild(TreeComponent) cmsTree: TreeComponent;
 
-    root: TreeNode = new TreeNode({ id: 'null' });
+    root: TreeNode = new TreeNode({ id: '0' });
     treeConfig: TreeConfig = {
         service: ServiceLocator.Instance.get(PageTreeService),
         menuItems: [
