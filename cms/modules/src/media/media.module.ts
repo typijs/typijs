@@ -11,11 +11,11 @@ import { CoreModule, DndModule } from '@angular-cms/core';
 import { SharedModule } from '../shared/shared.module';
 import { MediaTreeComponent } from './media-tree.component';
 import { MediaTreeService } from './media-tree.service';
-import { FileUploadComponent } from './file-upload.component';
-import { UploadService } from './upload.service';
-import { DropZoneDirective } from './drop-zone.directive';
-import { DragOverDirective } from './drag-over.directive';
-import { DragLeaveDirective } from './drag-leave.directive';
+import { FileDropComponent } from './upload/file-drop.component';
+import { FileDialogComponent } from './upload/file-dialog.component'
+import { UploadService } from './upload/upload.service';
+import { DragOverDirective } from './upload/drag-over.directive';
+import { DragLeaveDirective } from './upload/drag-leave.directive';
 
 @NgModule({
     imports: [
@@ -28,11 +28,11 @@ import { DragLeaveDirective } from './drag-leave.directive';
         RouterModule,
         DndModule.forRoot(),
         ProgressbarModule.forRoot()
-    ],
+    ], 
     declarations: [
         MediaTreeComponent,
-        FileUploadComponent,
-        DropZoneDirective,
+        FileDropComponent,
+        FileDialogComponent,
         DragOverDirective,
         DragLeaveDirective
     ],

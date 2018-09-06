@@ -1,20 +1,15 @@
-import { Input, Directive, Renderer2, Inject, HostBinding, HostListener, ViewChild, ElementRef } from '@angular/core';
+import { Directive, Renderer2, HostBinding, HostListener, ElementRef } from '@angular/core';
 
 @Directive({
     selector: '[dragOver]',
 })
 export class DragOverDirective {
-    constructor(private renderer: Renderer2, private hostElement: ElementRef) {
-
-    }
-    @HostBinding('style.background') private background = '#eee';
+    constructor(private renderer: Renderer2, private hostElement: ElementRef) {}
 
     @HostListener('dragover', ['$event']) public onDragOver(event) {
         if(!this.containsFiles(event)) return;
         event.preventDefault();
         event.stopPropagation();
-        this.background = '#999';
-        //console.log("dragover");
         this.renderer.addClass(this.hostElement.nativeElement, 'drag-over');
     }
 
@@ -28,5 +23,4 @@ export class DragOverDirective {
         }
         return false;
     }
-
 }
