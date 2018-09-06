@@ -9,10 +9,9 @@ import { UploadService } from './upload.service';
         <!--UPLOAD-->
         <form #f="ngForm" enctype="multipart/form-data" novalidate>
             <div class="dropbox">
-                <input type="file" multiple [name]="uploadFieldName" title=" " (change)="filesChange($event.target.name, $event.target.files)"/>
+                <input type="file"  multiple [name]="uploadFieldName" title=" " (change)="filesChange($event.target.name, $event.target.files)"/>
             </div>
         </form>
-        
     `,
     styles: [`
         input[type="file"] {
@@ -23,50 +22,28 @@ import { UploadService } from './upload.service';
             position: absolute;
             top:0px;
         }
-
-        .show {
-            display: block;
-        }
   `]
 })
 
-export class FileUploadComponent {
+export class FileDropComponent {
 
-    progress: any;
-
-    chooseFiles: Array<File>;
-    uploadError: any;
-    currentStatus: number;
-
-    readonly STATUS_INITIAL = 0;
-    readonly STATUS_SAVING = 1;
-    readonly STATUS_SUCCESS = 2;
-    readonly STATUS_FAILED = 3;
-
-    @Input() uploadFieldName: string;
+    @Input() uploadFieldName: string = "files"; //default field file name
     @Output() onUploadedFile: EventEmitter<any> = new EventEmitter();
-    @Output() onFileChange: EventEmitter<any> = new EventEmitter();
 
-    constructor(private ref: ChangeDetectorRef, private uploadService: UploadService) {
-        this.uploadFieldName = "files";
+    constructor(private uploadService: UploadService) {
         this.reset();
     }
 
     filesChange(fieldName: string, fileList: FileList) {
         if (!fileList.length) return;
-
-        this.currentStatus = this.STATUS_INITIAL;
+        let chooseFiles = [];
         Array.from(Array(fileList.length).keys())
             .map(index => {
-                this.chooseFiles.push(fileList[index])
+                chooseFiles.push(fileList[index])
             });
-        this.onFileChange.emit(this.chooseFiles);
+        this.uploadService.setFilesToUpload(chooseFiles);
     }
 
     reset() {
-        this.chooseFiles = [];
-        this.currentStatus = this.STATUS_INITIAL;
-        this.uploadError = null;
     }
-
 }
