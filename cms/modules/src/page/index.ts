@@ -26,7 +26,7 @@ export function registerPageModule() {
         widgets: [
             {
                 component: PageTreeComponent,
-                position: CmsWidgetPosition.Right,
+                position: CmsWidgetPosition.Left,
                 group: 'Pages'
             }
         ]

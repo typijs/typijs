@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectorRef, ViewChildren, QueryList, ComponentFactoryResolver, Injector, Inject } from '@angular/core';
+import { Component, ViewEncapsulation, ChangeDetectorRef, ViewChildren, QueryList, ComponentFactoryResolver, Injector, Inject } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 
@@ -15,7 +15,8 @@ import {
 
 @Component({
     templateUrl: './editor-layout.component.html',
-    styleUrls: ['./editor-layout.component.scss']
+    styleUrls: ['./editor-layout.component.scss'],
+    encapsulation: ViewEncapsulation.None
 })
 export class EditorLayoutComponent {
     @ViewChildren(InsertPointDirective) insertPoints: QueryList<InsertPointDirective>;

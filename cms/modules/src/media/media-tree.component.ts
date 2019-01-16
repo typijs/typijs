@@ -9,37 +9,47 @@ import { UploadService } from './upload/upload.service';
 
 @Component({
     template: `
-        <div dragOver>
+        <div dragOver class="media-container">
             <div class="drop-zone" dragLeave>
                 <file-upload [uploadFieldName]='"files"'></file-upload>
             </div>
-            <div class="nav-item nav-dropdown open media-container">
-                <ul class="nav-dropdown-items">
-                    <li class="nav-item">
-                        <cms-tree 
-                            class="tree-root" 
-                            [root]="root"
-                            [config]="treeConfig"
-                            (nodeSelected)="folderSelected($event)"
-                            (nodeInlineCreated)="createMediaFolder($event)">
-                            <ng-template #treeNodeTemplate let-node>
-                                <i class="fa fa-folder-o"></i>
-                                <span>{{node.name}}</span>
-                            </ng-template>
-                        </cms-tree>
-                    </li>
-                </ul>
-            </div>
-            <div class="media-container list-group"  *ngIf="medias" #mediaItem>
-                <div *ngFor="let media of medias" [draggable] [dragData]="media" class="list-group-item">
-                    <img [src]='media["path"]'/>
-                    {{media.name}}
-                </div>
-            </div>
+            <as-split direction="vertical" gutterSize="4">
+                <as-split-area size="50">
+                    <div class="nav-item nav-dropdown open media-content">
+                        <ul class="nav-dropdown-items">
+                            <li class="nav-item">
+                                <cms-tree 
+                                    class="tree-root" 
+                                    [root]="root"
+                                    [config]="treeConfig"
+                                    (nodeSelected)="folderSelected($event)"
+                                    (nodeInlineCreated)="createMediaFolder($event)">
+                                    <ng-template #treeNodeTemplate let-node>
+                                        <i class="fa fa-folder-o"></i>
+                                        <span>{{node.name}}</span>
+                                    </ng-template>
+                                </cms-tree>
+                            </li>
+                        </ul>
+                    </div>
+                </as-split-area>
+                <as-split-area size="50">
+                    <div class="media-content list-group"  *ngIf="medias" #mediaItem>
+                        <div *ngFor="let media of medias" [draggable] [dragData]="media" class="list-group-item">
+                            <img [src]='media["path"]'/>
+                            {{media.name}}
+                        </div>
+                    </div>
+                </as-split-area>
+            </as-split>
             <file-dialog></file-dialog>
         </div>
         `,
     styles: [`
+        .media-container{
+            height:100%;
+        }
+        
         .drop-zone {
             height: calc(100vh - 55px);
             position: relative;
@@ -49,7 +59,7 @@ import { UploadService } from './upload/upload.service';
             background-color: #999;
         }
 
-        .drag-over .media-container{
+        .drag-over .media-content{
             display: none;
         }
 
