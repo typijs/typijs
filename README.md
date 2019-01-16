@@ -1,3 +1,69 @@
+
+# Node JS Authentication
+https://scotch.io/tutorials/authenticate-a-node-js-api-with-json-web-tokens
+
+http://jasonwatmore.com/post/2016/12/08/angular-2-redirect-to-previous-url-after-login-with-auth-guard
+
+https://stackoverflow.com/questions/34331478/angular-redirect-to-login-page
+
+# Think everything in modular
+https://dzone.com/articles/build-your-nodejs-application-in-a-modular-way
+
+https://github.com/brechtbilliet/largescale_apps
+
+# Decorator in Angular
+https://medium.com/@ttemplier/angular2-decorators-and-class-inheritance-905921dbd1b7
+
+https://spin.atomicobject.com/2017/04/24/typescript-modular-typesafe-metadata/
+
+# File Manager
+http://menge.io/2015/03/24/storing-small-images-in-mongodb/
+http://blog.nbostech.com/2016/10/store-and-read-image-file-in-mongodb-using-nodejsexpressmongoose/
+http://www.codexpedia.com/node-js/node-js-http-server-displaying-images-from-a-directory/
+https://malcoded.com/posts/nodejs-image-resize-express-sharp
+
+http://stackabuse.com/node-http-servers-for-static-file-serving/
+
+## Stream
+https://medium.com/@dalaidunc/fs-readfile-vs-streams-to-read-text-files-in-node-js-5dd0710c80ea
+https://medium.freecodecamp.org/node-js-streams-everything-you-need-to-know-c9141306be93
+
+## Option 2:
+http://www.tutorialsteacher.com/nodejs/serving-static-files-in-nodejs
+
+## On Client side:
+https://malcoded.com/posts/angular-file-upload-component-with-express
+
+## Issue with drag and drop: 
+https://stackoverflow.com/questions/7110353/html5-dragleave-fired-when-hovering-a-child-element
+
+# Advanced Dynamic Create Component
+https://netbasal.com/create-advanced-components-in-angular-e0655df5dde6
+
+https://www.dev6.com/Modal-Templates-in-Angular2-Part-3
+
+https://blog.angular-university.io/angular-ng-template-ng-container-ngtemplateoutlet/
+
+# Lazy Load Module
+https://stackoverflow.com/questions/40293240/how-to-manually-lazy-load-a-module
+
+https://blog.angularindepth.com/here-is-what-you-need-to-know-about-dynamic-components-in-angular-ac1e96167f9e
+
+# Service Locator
+https://stackoverflow.com/questions/39409328/storing-injector-instance-for-use-in-components
+
+# Mongoose in real world
+https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/mongoose
+
+http://davin.ninja/bulk-updating-inserting-copying-domains-mongodb-using-collection-initializeunorderedbulkop/
+
+https://stackoverflow.com/questions/28218460/nodejs-mongoose-bulk-update
+
+https://stackoverflow.com/questions/27513844/mongooose-query-where-objectid-is-null
+
+# Node optimize:
+https://nodejs.org/en/docs/guides/dont-block-the-event-loop/
+
 # Form Validation Message
 http://plnkr.co/edit/Aa8O6lAh9lsOo3qk8gYZ?p=preview
 
@@ -12,25 +78,6 @@ https://medium.com/@mihalcan/angular-multiple-check-boxes-45ad2119e115
 http://www.syntaxsuccess.com/viewarticle/recursive-treeview-in-angular-2.0
 
 https://angular2-tree.readme.io/docs/async-data-1
-
-# Node JS Authentication
-https://scotch.io/tutorials/authenticate-a-node-js-api-with-json-web-tokens
-
-http://jasonwatmore.com/post/2016/12/08/angular-2-redirect-to-previous-url-after-login-with-auth-guard
-
-https://stackoverflow.com/questions/34331478/angular-redirect-to-login-page
-
-# Think everything in modular
-https://dzone.com/articles/build-your-nodejs-application-in-a-modular-way
-
-https://github.com/brechtbilliet/largescale_apps
-
-
-
-# Decorator in Angular
-https://medium.com/@ttemplier/angular2-decorators-and-class-inheritance-905921dbd1b7
-
-https://spin.atomicobject.com/2017/04/24/typescript-modular-typesafe-metadata/
 
 # Stack:
 Reflect JS library, Decorator Typescript
