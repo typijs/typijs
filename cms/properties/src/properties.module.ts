@@ -26,7 +26,7 @@ registerCmsProperties();
         FormsModule,
         ReactiveFormsModule,
         CoreModule,
-        DndModule.forRoot()
+        DndModule
     ],
     declarations: [
         InputComponent,

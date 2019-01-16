@@ -19,7 +19,7 @@ import { TreeNodeComponent } from './tree/tree-node.component';
         FormsModule,
         ReactiveFormsModule,
         CoreModule,
-        BsDropdownModule.forRoot(),
+        BsDropdownModule,
         RouterModule
     ],
     declarations: [
