@@ -50,7 +50,7 @@ registerContentTypes(contentTypes);
     ReactiveFormsModule,
     PagesModule,
     BlocksModule,
-    CoreModule,
+    CoreModule.forRoot(),
     AppRoutingModule,
   ],
   declarations: [
