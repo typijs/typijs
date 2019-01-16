@@ -1,6 +1,6 @@
 import { Routes, Route } from '@angular/router';
-import { PAGE_TYPE_INDICATOR, BLOCK_TYPE_INDICATOR } from './constants';
-import { CmsModuleConfig, CmsRootModule, CmsComponentConfig } from './module-config';
+import { PAGE_TYPE_INDICATOR, BLOCK_TYPE_INDICATOR } from './constants/meta-keys';
+import { CmsModuleConfig, CmsRootModule, CmsComponentConfig } from './constants/module-config';
 
 export interface CmsModel {
     PAGE_TYPES: object;

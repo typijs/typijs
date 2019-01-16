@@ -1,4 +1,4 @@
-import { CmsTab } from "./module-config";
+import { CmsTab } from "../constants/module-config";
 
 export function slugify(text) {
   return text.toString().toLowerCase()

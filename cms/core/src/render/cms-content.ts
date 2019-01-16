@@ -1,7 +1,7 @@
 import { Component, ComponentFactoryResolver, Inject, ViewChild, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { PAGE_TYPE_METADATA_KEY } from './../constants';
+import { PAGE_TYPE_METADATA_KEY } from '../constants/meta-keys';
 import { ContentService } from './../services/content.service';
 import { InsertPointDirective } from './../directives/insert-point.directive';
 

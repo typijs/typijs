@@ -6,9 +6,9 @@ import { map } from 'rxjs/operators';
 
 import { DropEvent } from './drop-event.model';
 import { DndService } from './dnd.service';
-import { DomHelper } from '../../dom-helper';
+import { DomHelper } from '../../helpers/dom-helper';
 
-import { clone } from '../../util';
+import { clone } from '../../helpers/common';
 
 @Directive({
     selector: '[droppable]'

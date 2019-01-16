@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { BLOCK_TYPE_METADATA_KEY, BLOCK_TYPE_INDICATOR } from './../constants';
+import { BLOCK_TYPE_METADATA_KEY, BLOCK_TYPE_INDICATOR } from '../constants/meta-keys';
 import { ContentTypeMetadata } from './content-type-metadata';
 
 function registerBlockTypeDecorator(item: any) {
