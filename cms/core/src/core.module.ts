@@ -1,11 +1,10 @@
-import { NgModule, ModuleWithProviders  } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 
 import { InsertPointDirective, ContentAreaDirective } from './directives';
 import { ContentService, BlockService, PageService, SubjectService, MediaService } from './services';
 import { CmsRenderContentComponent } from './render';
-//import { DndModule } from './shared';
 
 @NgModule({
   imports: [
@@ -25,16 +24,9 @@ import { CmsRenderContentComponent } from './render';
   providers: [
     ContentService,
     BlockService,
-    PageService, 
+    PageService,
     MediaService,
     SubjectService
   ]
 })
-export class CoreModule { 
-  static forRoot(): ModuleWithProviders {
-    return {
-      ngModule: CoreModule,
-      providers: [SubjectService]
-    };
-  }
-}
+export class CoreModule {}

@@ -1,7 +1,7 @@
 
 import { Routes } from '@angular/router';
 
-export enum CmsRootModule {
+export enum CmsModuleRoot {
     Editor = "Editor",
     Admin = "Admin"
 }
@@ -19,7 +19,7 @@ export interface CmsComponentConfig {
 }
 
 export interface CmsModuleConfig {
-    root: CmsRootModule,
+    root: CmsModuleRoot,
     module: any,
     routes?: Routes,
     widgets?: CmsComponentConfig[]

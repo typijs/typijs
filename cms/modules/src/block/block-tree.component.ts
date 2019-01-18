@@ -7,36 +7,42 @@ import { BlockTreeService } from './block-tree.service';
 
 @Component({
     template: `
-        <div class="nav-item nav-dropdown open">
-            <a class="nav-link">
-                <i class="fa fa-sitemap fa-fw"></i>
-                Blocks
-                <span class="badge badge-info" [routerLink]="['new/block']">NEW</span>
-            </a>
-            <ul class="nav-dropdown-items">
-                <li class="nav-item">
-                    <cms-tree 
-                        class="tree-root" 
-                        [root]="root"
-                        [config]="treeConfig"
-                        (nodeSelected)="folderSelected($event)"
-                        (nodeCreated)="nodeCreated($event)"
-                        (nodeInlineCreated)="createBlockFolder($event)">
-                        <ng-template #treeNodeTemplate let-node>
-                            <i class="fa fa-folder-o"></i>
-                            <span>{{node.name}}</span>
-                        </ng-template>
-                    </cms-tree>
-                </li>
-            </ul>
-        </div>
-        <div>
-            <div class="list-group" *ngIf="blocks">
-                <div *ngFor="let block of blocks" [draggable] [dragData]="block"  class="list-group-item" [routerLink]="['content/block', block._id]">
-                    {{block.name}}
+    <as-split direction="vertical" gutterSize="4">
+        <as-split-area size="50">
+            <div class="nav-item nav-dropdown open">
+                <a class="nav-link">
+                    <i class="fa fa-sitemap fa-fw"></i>
+                    Blocks
+                    <span class="badge badge-info" [routerLink]="['new/block']">NEW</span>
+                </a>
+                <ul class="nav-dropdown-items">
+                    <li class="nav-item">
+                        <cms-tree 
+                            class="tree-root" 
+                            [root]="root"
+                            [config]="treeConfig"
+                            (nodeSelected)="folderSelected($event)"
+                            (nodeCreated)="nodeCreated($event)"
+                            (nodeInlineCreated)="createBlockFolder($event)">
+                            <ng-template #treeNodeTemplate let-node>
+                                <i class="fa fa-folder-o"></i>
+                                <span>{{node.name}}</span>
+                            </ng-template>
+                        </cms-tree>
+                    </li>
+                </ul>
+            </div>
+        </as-split-area>
+        <as-split-area size="50">
+            <div>
+                <div class="list-group" *ngIf="blocks">
+                    <div *ngFor="let block of blocks" [draggable] [dragData]="block"  class="list-group-item" [routerLink]="['content/block', block._id]">
+                        {{block.name}}
+                    </div>
                 </div>
             </div>
-        </div>
+        </as-split-area>
+    </as-split>
         `
 })
 export class BlockTreeComponent {
@@ -98,9 +104,9 @@ export class BlockTreeComponent {
 
     createBlockFolder(node: TreeNode) {
         this.blockService.addBlockContent({ name: node.name, parentId: node.parentId })
-        .subscribe(block => {
-            this.subjectService.fireBlockCreated(block);
-        });
+            .subscribe(block => {
+                this.subjectService.fireBlockCreated(block);
+            });
     }
 
     nodeCreated(parentNode) {

@@ -16,6 +16,7 @@ import { FileDialogComponent } from './upload/file-dialog.component'
 import { UploadService } from './upload/upload.service';
 import { DragOverDirective } from './upload/drag-over.directive';
 import { DragLeaveDirective } from './upload/drag-leave.directive';
+import { AngularSplitModule } from '../shared/angular-split';
 
 @NgModule({
     imports: [
@@ -26,7 +27,8 @@ import { DragLeaveDirective } from './upload/drag-leave.directive';
         CoreModule,
         SharedModule,
         RouterModule,
-        DndModule.forRoot(),
+        DndModule,
+        AngularSplitModule,
         ProgressbarModule.forRoot()
     ], 
     declarations: [

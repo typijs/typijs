@@ -1,14 +1,14 @@
-import { NgModule } from '@angular/core';
+import { NgModule  } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule } from '@angular/router';
 
 import { TabsModule } from 'ngx-bootstrap/tabs';
 
 import { PropertiesModule } from '@angular-cms/properties';
-import { ContentService, CoreModule, DndModule } from '@angular-cms/core';
-import { LayoutModule } from '@angular-cms/modules';
+import { CoreModule, DndModule } from '@angular-cms/core';
+import { LayoutModule, AngularSplitModule   } from '@angular-cms/modules';
 
 import { EditorLayoutComponent } from './editor-layout/editor-layout.component';
 
@@ -24,6 +24,7 @@ import { } from "reflect-metadata";
         CoreModule,
         PropertiesModule,
         LayoutModule,
+        AngularSplitModule,
         TabsModule.forRoot(),
         DndModule.forRoot()
     ],
@@ -32,6 +33,6 @@ import { } from "reflect-metadata";
     ],
     exports: [
         EditorLayoutComponent
-    ],
+    ]
 })
-export class EditorModule { }
+export class EditorModule {}

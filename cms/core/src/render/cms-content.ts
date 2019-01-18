@@ -1,7 +1,7 @@
 import { Component, ComponentFactoryResolver, Inject, ViewChild, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { PAGE_TYPE_METADATA_KEY } from './../constants';
+import { PAGE_TYPE_METADATA_KEY } from '../constants/meta-keys';
 import { ContentService } from './../services/content.service';
 import { InsertPointDirective } from './../directives/insert-point.directive';
 
@@ -25,13 +25,13 @@ export class CmsRenderContentComponent implements OnDestroy {
         private router: Router) { }
 
     ngOnInit() {
-        this.router.events.subscribe((event) => {
-            if (event.constructor.name === "NavigationEnd") {
-                console.log(window.location.pathname);
-                this.resolveContentDataByUrl();
-            }
-        });
-
+        // this.router.events.subscribe((event) => {
+        //     if (event.constructor.name === "NavigationEnd") {
+        //         console.log(window.location.pathname);
+        //         this.resolveContentDataByUrl();
+        //     }
+        // });
+        console.log(window.location.pathname);
         this.resolveContentDataByUrl();
     }
 

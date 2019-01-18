@@ -1,6 +1,6 @@
 import { Routes, Route } from '@angular/router';
-import { PAGE_TYPE_INDICATOR, BLOCK_TYPE_INDICATOR } from './constants';
-import { CmsModuleConfig, CmsRootModule, CmsComponentConfig } from './module-config';
+import { PAGE_TYPE_INDICATOR, BLOCK_TYPE_INDICATOR } from './constants/meta-keys';
+import { CmsModuleConfig, CmsModuleRoot, CmsComponentConfig } from './constants/module-config';
 
 export interface CmsModel {
     PAGE_TYPES: object;
@@ -20,11 +20,11 @@ export const CMS: CmsModel = {
 
     MODULES: [],
     EDITOR_MODULES(): Array<any> {
-        return this.MODULES.filter(x => x.root == CmsRootModule.Editor).map(x => x.module);
+        return this.MODULES.filter(x => x.root == CmsModuleRoot.Editor).map(x => x.module);
     },
     EDITOR_ROUTES(): Array<Route> {
         let editorRoutes = [];
-        this.MODULES.filter(x => x.root == CmsRootModule.Editor).map(x => x.routes).forEach((routes: Routes) => {
+        this.MODULES.filter(x => x.root == CmsModuleRoot.Editor).map(x => x.routes).forEach((routes: Routes) => {
             if (routes)
                 editorRoutes = editorRoutes.concat(routes);
         });;
@@ -32,7 +32,7 @@ export const CMS: CmsModel = {
     },
     EDITOR_WIDGETS(): Array<CmsComponentConfig> {
         let editorWidgets = [];
-        this.MODULES.filter(x => x.root == CmsRootModule.Editor).map(x => x.widgets).forEach((widgets: CmsComponentConfig[]) => {
+        this.MODULES.filter(x => x.root == CmsModuleRoot.Editor).map(x => x.widgets).forEach((widgets: CmsComponentConfig[]) => {
             if (widgets)
                 editorWidgets = editorWidgets.concat(widgets);
         });;

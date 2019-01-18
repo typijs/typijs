@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { VALIDATION_METADATA_KEY } from './../constants';
+import { VALIDATION_METADATA_KEY } from '../constants/meta-keys';
 
 interface ValidateMetadata {
     require?: boolean;

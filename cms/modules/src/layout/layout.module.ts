@@ -57,7 +57,7 @@ const APP_DIRECTIVES = [
         ReactiveFormsModule,
         RouterModule,
         BsDropdownModule.forRoot(),
-        TabsModule.forRoot()
+        TabsModule
     ],
     declarations: [
         ...APP_COMPONENTS,

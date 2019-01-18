@@ -7,8 +7,8 @@ import { CMS } from '@angular-cms/core';
 import { registerPageModule, registerBlockModule, registerMediaModule } from '@angular-cms/modules';
 
 registerPageModule();
-registerBlockModule();
 registerMediaModule();
+registerBlockModule();
 
 const cmsRoutes: Routes = [
     {
