@@ -1,3 +1,4 @@
+# Welcome all contributors and pull requests
 
 # Node JS Authentication
 https://scotch.io/tutorials/authenticate-a-node-js-api-with-json-web-tokens
