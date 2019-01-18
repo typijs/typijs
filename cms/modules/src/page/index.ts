@@ -1,4 +1,4 @@
-import { registerModule, CmsRootModule, CmsWidgetPosition } from '@angular-cms/core';
+import { registerModule, CmsModuleRoot, CmsWidgetPosition } from '@angular-cms/core';
 import { PageModule } from './page.module';
 import { PageTreeComponent } from './page-tree.component';
 import { ContentTypeListComponent } from '../content/content-type-list/content-type-list.component';
@@ -8,7 +8,7 @@ import { ContentFormEditComponent } from '../content/content-form-edit/content-f
 export function registerPageModule() {
     registerModule({
         module: PageModule,
-        root: CmsRootModule.Editor,
+        root: CmsModuleRoot.Editor,
         routes: [
             {
                 path: 'new/:type', //type is 'block' or 'page'

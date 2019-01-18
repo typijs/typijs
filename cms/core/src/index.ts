@@ -10,5 +10,6 @@ export * from './helpers/common';
 export * from './cms';
 export * from './shared';
 export * from './core.module';
+export * from './angular-cms.module';
 export { ServiceLocator, setAppInjector } from './utils/service-locator';
 
