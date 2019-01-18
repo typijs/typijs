@@ -1,12 +1,10 @@
-import { NgModule, ModuleWithProviders } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { EVENT_MANAGER_PLUGINS } from '@angular/platform-browser';
 
 import { InsertPointDirective, ContentAreaDirective } from './directives';
 import { ContentService, BlockService, PageService, SubjectService, MediaService } from './services';
 import { CmsRenderContentComponent } from './render';
-import { OutsideZoneEventPlugin } from './utils/outside-zone-event-plugin';
 
 @NgModule({
   imports: [
@@ -31,17 +29,4 @@ import { OutsideZoneEventPlugin } from './utils/outside-zone-event-plugin';
     SubjectService
   ]
 })
-export class CoreModule {
-
-  public static forRoot(): ModuleWithProviders {
-    return {
-      ngModule: CoreModule,
-      providers: [{
-        provide: EVENT_MANAGER_PLUGINS,
-        useClass: OutsideZoneEventPlugin,
-        multi: true
-      }]
-    };
-  }
-
-}
+export class CoreModule {}

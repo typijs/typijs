@@ -25,13 +25,13 @@ export class CmsRenderContentComponent implements OnDestroy {
         private router: Router) { }
 
     ngOnInit() {
-        this.router.events.subscribe((event) => {
-            if (event.constructor.name === "NavigationEnd") {
-                console.log(window.location.pathname);
-                this.resolveContentDataByUrl();
-            }
-        });
-
+        // this.router.events.subscribe((event) => {
+        //     if (event.constructor.name === "NavigationEnd") {
+        //         console.log(window.location.pathname);
+        //         this.resolveContentDataByUrl();
+        //     }
+        // });
+        console.log(window.location.pathname);
         this.resolveContentDataByUrl();
     }
 

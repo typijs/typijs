@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA, ComponentFactoryResolver } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { registerContentTypes, CoreModule, CMS, registerProperty, registerModule, CmsRootModule, CmsWidgetPosition } from '@angular-cms/core';
+import { AngularCmsModule, CmsModuleRoot, CmsWidgetPosition } from '@angular-cms/core';
 
 import { PagesModule } from './pages/pages.module';
 import { BlocksModule } from './blocks/blocks.module';
@@ -21,11 +21,11 @@ import { TestModule } from './test.module';
 import { TagComponent } from './properties/tag/tag.component';
 import { TestWidget } from './test.widget';
 
-//registerProperty(TagComponent, "Tag");
-registerContentTypes(contentTypes);
-// registerModule({
+//AngularCmsModule.registerProperty(TagComponent, "Tag");
+AngularCmsModule.registerContentTypes(contentTypes);
+// AngularCmsModule.registerModule({
 //   module: TestModule,
-//   root: CmsRootModule.Editor,
+//   root: CmsModuleRoot.Editor,
 //   routes: [
 //     {
 //       path: 'test', //type is 'block' or 'page'
@@ -50,7 +50,7 @@ registerContentTypes(contentTypes);
     ReactiveFormsModule,
     PagesModule,
     BlocksModule,
-    CoreModule.forRoot(),
+    AngularCmsModule.forRoot(),
     AppRoutingModule,
   ],
   declarations: [
