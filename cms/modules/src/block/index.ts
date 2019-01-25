@@ -5,12 +5,16 @@ import { BlockTreeComponent } from './block-tree.component';
 export function registerBlockModule() {
     registerModule({
         module: BlockModule,
-        root: CmsModuleRoot.Editor,
-        widgets: [
+        roots: [
             {
-                component: BlockTreeComponent,
-                position: CmsWidgetPosition.Right,
-                group: "Blocks"
+                name: CmsModuleRoot.Editor,
+                widgets: [
+                    {
+                        component: BlockTreeComponent,
+                        position: CmsWidgetPosition.Right,
+                        group: "Blocks"
+                    }
+                ]
             }
         ]
     })

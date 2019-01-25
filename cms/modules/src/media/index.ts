@@ -5,13 +5,18 @@ import { MediaTreeComponent } from './media-tree.component';
 export function registerMediaModule() {
     registerModule({
         module: MediaModule,
-        root: CmsModuleRoot.Editor,
-        widgets: [
+        roots: [
             {
-                component: MediaTreeComponent,
-                position: CmsWidgetPosition.Right,
-                group: "Medias"
+                name: CmsModuleRoot.Editor,
+                widgets: [
+                    {
+                        component: MediaTreeComponent,
+                        position: CmsWidgetPosition.Right,
+                        group: "Medias"
+                    }
+                ]
             }
         ]
+        
     })
 }

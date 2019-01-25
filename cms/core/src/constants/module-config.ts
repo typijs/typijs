@@ -18,11 +18,15 @@ export interface CmsComponentConfig {
     group?: string
 }
 
-export interface CmsModuleConfig {
-    root: CmsModuleRoot,
-    module: any,
+export interface CmsRootConfig {
+    name: CmsModuleRoot,
     routes?: Routes,
     widgets?: CmsComponentConfig[]
+}
+
+export interface CmsModuleConfig {
+    module: any,
+    roots: Array<CmsRootConfig>
 }
 
 export interface CmsTab {

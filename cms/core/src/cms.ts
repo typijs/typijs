@@ -8,9 +8,14 @@ export interface CmsModel {
     PROPERTIES: object;
 
     MODULES: Array<CmsModuleConfig>;
-    EDITOR_MODULES(): Array<any>;
+
     EDITOR_ROUTES(): Array<Route>;
     EDITOR_WIDGETS(): Array<CmsComponentConfig>;
+
+    ADMIN_ROUTES(): Array<Route>;
+    ADMIN_WIDGETS(): Array<CmsComponentConfig>;
+
+    REGISTER_MODULES(): Array<any>;
 }
 
 export const CMS: CmsModel = {
@@ -19,12 +24,10 @@ export const CMS: CmsModel = {
     PROPERTIES: {},
 
     MODULES: [],
-    EDITOR_MODULES(): Array<any> {
-        return this.MODULES.filter(x => x.root == CmsModuleRoot.Editor).map(x => x.module);
-    },
+
     EDITOR_ROUTES(): Array<Route> {
         let editorRoutes = [];
-        this.MODULES.filter(x => x.root == CmsModuleRoot.Editor).map(x => x.routes).forEach((routes: Routes) => {
+        this.MODULES.map(x => x.roots).reduce((a, b) => a.concat(b)).filter(x => x.name == CmsModuleRoot.Editor).map(x => x.routes).forEach((routes: Routes) => {
             if (routes)
                 editorRoutes = editorRoutes.concat(routes);
         });;
@@ -32,11 +35,31 @@ export const CMS: CmsModel = {
     },
     EDITOR_WIDGETS(): Array<CmsComponentConfig> {
         let editorWidgets = [];
-        this.MODULES.filter(x => x.root == CmsModuleRoot.Editor).map(x => x.widgets).forEach((widgets: CmsComponentConfig[]) => {
+        this.MODULES.map(x => x.roots).reduce((a, b) => a.concat(b)).filter(x => x.name == CmsModuleRoot.Editor).map(x => x.widgets).forEach((widgets: CmsComponentConfig[]) => {
             if (widgets)
                 editorWidgets = editorWidgets.concat(widgets);
         });;
         return editorWidgets;
+    },
+    ADMIN_ROUTES(): Array<Route> {
+        let adminRoutes = [];
+        this.MODULES.map(x => x.roots).reduce((a, b) => a.concat(b)).filter(x => x.name == CmsModuleRoot.Admin).map(x => x.routes).forEach((routes: Routes) => {
+            if (routes)
+                adminRoutes = adminRoutes.concat(routes);
+        });;
+        return adminRoutes;
+    },
+    ADMIN_WIDGETS(): Array<CmsComponentConfig> {
+        let adminWidgets = [];
+        this.MODULES.map(x => x.roots).reduce((a, b) => a.concat(b)).filter(x => x.name == CmsModuleRoot.Admin).map(x => x.widgets).forEach((widgets: CmsComponentConfig[]) => {
+            if (widgets)
+                adminWidgets = adminWidgets.concat(widgets);
+        });;
+        return adminWidgets;
+    },
+
+    REGISTER_MODULES(): Array<any> {
+        return this.MODULES.map(x => x.module);
     }
 };
 
@@ -85,17 +108,12 @@ export function registerProperties(properties: Array<[string, Function]> | Array
 
 //register module with cms
 export function registerModule(moduleConfig: CmsModuleConfig) {
-    if (moduleConfig && moduleConfig.root && moduleConfig.module) {
+    if (moduleConfig && moduleConfig.module && moduleConfig.roots) {
         let moduleName = moduleConfig.module['name'];
-        let rootName = moduleConfig.root;
+
         var existingModule = CMS.MODULES.find(m => m.module['name'] === moduleName);
         if (existingModule) {
             console.warn(`The module ${moduleName} has already registed`);
-        }
-
-        var existingModuleConfig = CMS.MODULES.find(m => m.module['name'] === moduleName && m.root === rootName);
-        if (existingModuleConfig) {
-            console.warn(`The module ${moduleName} has already registed in root module ${rootName}`);
         } else {
             CMS.MODULES.push(moduleConfig);
         }
