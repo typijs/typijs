@@ -8,6 +8,7 @@ import { CoreModule, setAppInjector } from '@angular-cms/core';
 
 import { SharedModule } from '../shared/shared.module';
 import { PageTreeComponent } from './page-tree.component';
+import { PageTreeReadonlyComponent } from './page-tree-readonly.component';
 import { ContentModule } from '../content/content.module';
 import { PageTreeService } from './page-tree.service';
 
@@ -23,13 +24,16 @@ import { PageTreeService } from './page-tree.service';
         RouterModule
     ],
     declarations: [
-        PageTreeComponent
+        PageTreeComponent,
+        PageTreeReadonlyComponent
     ],
     entryComponents: [
-        PageTreeComponent
+        PageTreeComponent,
+        PageTreeReadonlyComponent
     ],
     exports: [
-        PageTreeComponent
+        PageTreeComponent,
+        PageTreeReadonlyComponent
     ],
     providers: [PageTreeService]
 })
