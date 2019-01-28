@@ -4,10 +4,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 
-import { CoreModule, setAppInjector } from '@angular-cms/core';
+import { CoreModule, setAppInjector, DndModule } from '@angular-cms/core';
 
 import { SharedModule } from '../shared/shared.module';
 import { PageTreeComponent } from './page-tree.component';
+import { PageTreeReadonlyComponent } from './page-tree-readonly.component';
 import { ContentModule } from '../content/content.module';
 import { PageTreeService } from './page-tree.service';
 
@@ -20,16 +21,20 @@ import { PageTreeService } from './page-tree.service';
         CoreModule,
         ContentModule,
         SharedModule,
-        RouterModule
+        RouterModule,
+        DndModule
     ],
     declarations: [
-        PageTreeComponent
+        PageTreeComponent,
+        PageTreeReadonlyComponent
     ],
     entryComponents: [
-        PageTreeComponent
+        PageTreeComponent,
+        PageTreeReadonlyComponent
     ],
     exports: [
-        PageTreeComponent
+        PageTreeComponent,
+        PageTreeReadonlyComponent
     ],
     providers: [PageTreeService]
 })

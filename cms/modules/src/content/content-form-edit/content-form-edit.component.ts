@@ -162,7 +162,8 @@ export class ContentFormEditComponent implements OnInit {
 
                         if (propertyComponent.instance instanceof SelectProperty) {
                             (<SelectProperty>propertyComponent.instance).selectItems = (<ISelectionFactory>(this.injector.get(property.metadata.selectionFactory))).GetSelections();
-                        } else if (propertyComponent.instance instanceof PropertyListComponent) {
+                        } 
+                        else if (propertyComponent.instance instanceof PropertyListComponent) {
                             (<PropertyListComponent>propertyComponent.instance).itemType = property.metadata.propertyListItemType;
                         }
 
@@ -208,6 +209,7 @@ export class ContentFormEditComponent implements OnInit {
             let childItems = this.currentContent.childItems;
             let fieldType = property.metadata.displayType;
             switch (fieldType) {
+                // Content Area
                 case UIHint.ContentArea:
                     let fieldValue = this.currentContent.properties[property.name]
                     if (Array.isArray(fieldValue)) {

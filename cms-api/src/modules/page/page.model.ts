@@ -34,6 +34,5 @@ const pageSchema = new mongoose.Schema({
 
   properties: mongoose.Schema.Types.Mixed
 });
-const Page = mongoose.model('cmsPage', pageSchema);
 
-export default Page;
+export const Page = mongoose.model('cmsPage', pageSchema);

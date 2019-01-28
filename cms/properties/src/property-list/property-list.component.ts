@@ -4,7 +4,7 @@ import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { CMS, CmsProperty, UIHint, PROPERTIES_METADATA_KEY, PROPERTY_METADATA_KEY, InsertPointDirective, ISelectionFactory } from '@angular-cms/core';
 
 import { Elements } from './../elements';
-import { PropertyGroupComponent } from './property-group.component';
+import { PropertyListControl } from './property-list.control';
 import { SelectProperty } from '../select/select-property';
 
 @Component({
@@ -56,7 +56,7 @@ export class PropertyListComponent extends CmsProperty {
     private _itemType: any;
 
     @ViewChild(InsertPointDirective) modelEditHost: InsertPointDirective;
-    @ViewChild(PropertyGroupComponent) propertyGroup: PropertyGroupComponent;
+    @ViewChild(PropertyListControl) propertyGroup: PropertyListControl;
 
     @Input()
     set itemType(itemType: any) {

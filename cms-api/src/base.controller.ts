@@ -53,4 +53,4 @@ abstract class BaseCtrl {
   handleError = (error: any): any => console.error(error);
 }
 
-export default BaseCtrl;
+export { BaseCtrl }

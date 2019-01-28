@@ -1,10 +1,10 @@
 import * as mongoose from 'mongoose';
 
-import BaseCtrl from '../../base.controller';
-import Page from './page.model';
-import PageVersion from './page-version.model';
+import { BaseCtrl } from '../../base.controller';
+import { Page } from './page.model';
+import { PageVersion } from './page-version.model';
 
-export default class PageCtrl extends BaseCtrl {
+export class PageCtrl extends BaseCtrl {
   model = Page;
   pageVersion = PageVersion;
 

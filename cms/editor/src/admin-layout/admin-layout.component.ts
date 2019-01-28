@@ -1,12 +1,12 @@
 import { Component, ViewEncapsulation, ChangeDetectorRef, ViewChild, QueryList, ComponentFactoryResolver, Injector, Inject } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
+
 import { CmsLayoutComponent } from './../shared/cms-layout.component';
 import { BaseLayoutComponent } from './../base-layout.component';
 
 import {
     CMS,
-    UIHint,
     InsertPointDirective,
     ContentService,
     CmsComponentConfig,
@@ -20,7 +20,7 @@ import { WidgetService } from '../services/widget.service';
 @Component({
     template: `<cms-layout [rightTabs]="rightTabs" [leftTabs]="leftTabs"></cms-layout>`
 })
-export class EditorLayoutComponent extends BaseLayoutComponent {
+export class AdminLayoutComponent extends BaseLayoutComponent {
 
     constructor(
         _changeDetectionRef: ChangeDetectorRef,
@@ -29,6 +29,6 @@ export class EditorLayoutComponent extends BaseLayoutComponent {
     }
 
     protected getCmsWidgets(): Array<CmsComponentConfig>{
-        return CMS.EDITOR_WIDGETS();
+        return CMS.ADMIN_WIDGETS();
     }
 }
