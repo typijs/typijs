@@ -6,7 +6,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
-import { CoreModule } from '@angular-cms/core';
+import { CoreModule, DndModule } from '@angular-cms/core';
 
 import { TreeComponent } from './tree/tree.component';
 import { TreeChildrenComponent } from './tree/tree-children.component';
@@ -20,7 +20,8 @@ import { TreeNodeComponent } from './tree/tree-node.component';
         ReactiveFormsModule,
         CoreModule,
         BsDropdownModule,
-        RouterModule
+        RouterModule,
+        DndModule
     ],
     declarations: [
         TreeNodeComponent,

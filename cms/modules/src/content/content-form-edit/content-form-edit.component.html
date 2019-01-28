@@ -1,8 +1,8 @@
 <div class="row">
     <div class="col-lg-12">
         <form (ngSubmit)="onSubmit($event, formId)" [formGroup]="contentForm" #formId="ngForm">
-            <div class="card ">
-                <div class="card-header ">
+            <div class="card">
+                <div class="card-header">
                     <dl class="row" *ngIf="currentContent">
                         <dt class="col-sm-3">Name</dt>
                         <dd class="col-sm-9">{{currentContent.name}}</dd>

@@ -10,7 +10,7 @@ import { TreeMenuItem, NodeMenuItemAction } from './tree-menu';
 @Component({
     selector: 'tree-node',
     template: `
-    <div class="node-value" [ngClass]="{'node-selected': node.isSelected}">
+    <div class="node-value" [ngClass]="{'node-selected': node.isSelected}" [draggable] [dragData]="node">
         <i class="indicator fa" *ngIf="node.hasChildren" [ngClass]="{'fa-caret-right': !node.isExpanded, 'fa-caret-down': node.isExpanded}"
             (click)="node.expand()"></i>
         <div class="no-children" *ngIf="!node.hasChildren"></div>
