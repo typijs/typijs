@@ -1,4 +1,4 @@
-import BaseCtrl from '../../base.controller';
+import { BaseCtrl } from '../../base.controller';
 import Content from './content.model';
 
 const emptyObjectId = '000000000000000000000000'

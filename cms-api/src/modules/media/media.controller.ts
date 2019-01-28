@@ -2,6 +2,12 @@ import * as Promise from 'bluebird';
 import * as mime from 'mime-types';
 import * as path from 'path';
 import * as fs from 'fs';
+
+import { BaseCtrl } from '../../base.controller';
+import { Media } from './media.model';
+import { resizeImage } from './resize-image';
+import * as upload from './upload';
+
 const fsAsync: any = Promise.promisifyAll(fs);
 
 fsAsync.existsAsync = Promise.promisify(
@@ -9,12 +15,7 @@ fsAsync.existsAsync = Promise.promisify(
         fs.exists(path, function callbackWrapper(exists) { exists2callback(null, exists); });
     });
 
-import BaseCtrl from '../../base.controller';
-import Media from './media.model';
-import * as upload from './upload';
-import { resizeImage } from './resize-image';
-
-export default class MediaCtrl extends BaseCtrl {
+export class MediaCtrl extends BaseCtrl {
     model = Media;
 
     //Override insert base

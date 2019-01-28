@@ -18,6 +18,4 @@ const mediaSchema = new mongoose.Schema({
     isDeleted: { type: Boolean, required: true, default: false }
 });
 
-const Media = mongoose.model('cmsMedia', mediaSchema);
-
-export default Media;
+export const Media = mongoose.model('cmsMedia', mediaSchema);

@@ -24,6 +24,5 @@ const pageVersionSchema = new mongoose.Schema({
 
     properties: mongoose.Schema.Types.Mixed
 });
-const PageVersion = mongoose.model('cmsPageVersion', pageVersionSchema);
 
-export default PageVersion;
+export const PageVersion = mongoose.model('cmsPageVersion', pageVersionSchema);

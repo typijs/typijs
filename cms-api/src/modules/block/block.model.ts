@@ -20,9 +20,8 @@ const blockSchema = new mongoose.Schema({
 
   properties: mongoose.Schema.Types.Mixed
 });
-const Block = mongoose.model('cmsBlock', blockSchema);
 
-export default Block;
+export const Block = mongoose.model('cmsBlock', blockSchema);
 
 
 
