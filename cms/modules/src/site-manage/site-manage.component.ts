@@ -3,26 +3,51 @@ import { FormGroup, FormArray, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
     template: `
-  <div>
-    <form [formGroup]="form" novalidate (ngSubmit)="onSubmit()">
-        <div formArrayName="Sites">
-            <div>Manage websites</div>
-            <div *ngFor="let user of form['controls'].Sites['controls']; let i=index" [formGroupName]="i">
-                <input type="text" placeholder="Host Name" formControlName="HostName"/>
-                <input type="text" placeholder="Start Page" formControlName="StartPage"/>
-                <button type="button" *ngIf="form['controls'].Sites['controls'].length > 1" (click)="removeHost(i)">
-                    Delete
-                </button>
-            </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <form [formGroup]="form" novalidate (ngSubmit)="onSubmit()">
+                <div class="card">
+                    <div class="card-header">
+                        <strong>Manage websites</strong>
+                    </div>
+                    <div class="card-body" formArrayName="Sites">
+                        <div class="row">
+                            <div class="form-group col-sm-5">
+                                <label for="HostName">Host Name</label>
+                            </div>
+                            <div class="form-group col-sm-6">
+                                <label for="StartPage">Start Page</label>
+                            </div>
+                            <div class="form-group col-sm-1">
+                                <label>Actions</label>
+                            </div>
+                        </div>
+                        <div class="row" *ngFor="let user of form['controls'].Sites['controls']; let i=index" [formGroupName]="i">
+                            <div class="form-group col-sm-5" >
+                                <input type="text" class="form-control" placeholder="Host Name" formControlName="HostName"/>
+                            </div>
+                            <div class="form-group col-sm-6">
+                                <content-reference formControlName="StartPage" name="'StartPage'"></content-reference>
+                            </div>
+                            <div class="form-group col-sm-1">
+                                <button class="btn btn-sm btn-danger" type="button" *ngIf="form['controls'].Sites['controls'].length > 1" (click)="removeHost(i)">
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-sm-12">
+                                <button type="button" class="btn btn-sm btn-success" (click)="addHost()">Add Host</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                    </div>
+                </div>
+            </form>
         </div>
-        <div>
-            <button type="button" (click)="addHost()">Add Host</button>
-        </div>
-        <div>
-            <button type="submit" color="accent">Save</button>
-        </div>
-    </form>
-  </div>
+    </div>
   `
 })
 export class SiteManageComponent {

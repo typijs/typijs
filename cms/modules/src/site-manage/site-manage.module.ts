@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 
 import { CoreModule, setAppInjector } from '@angular-cms/core';
+import { PropertiesModule } from '@angular-cms/properties';
 
 import { SharedModule } from '../shared/shared.module';
 import { SiteManageEntryComponent } from './site-manage-entry.component';
@@ -19,7 +20,8 @@ import { SiteManageService } from './site-manage.service';
         ReactiveFormsModule,
         CoreModule,
         SharedModule,
-        RouterModule
+        RouterModule,
+        PropertiesModule
     ],
     declarations: [
         SiteManageComponent,
