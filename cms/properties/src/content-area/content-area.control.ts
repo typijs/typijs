@@ -22,12 +22,12 @@ import { generateUUID } from '@angular-cms/core';
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => ContentGroupComponent),
+            useExisting: forwardRef(() => ContentAreaControl),
             multi: true
         }
     ]
 })
-export class ContentGroupComponent implements ControlValueAccessor {
+export class ContentAreaControl implements ControlValueAccessor {
     private _model: any;
     private onChange: (m: any) => void;
     private onTouched: (m: any) => void;

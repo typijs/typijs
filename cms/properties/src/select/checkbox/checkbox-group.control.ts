@@ -14,12 +14,12 @@ import { SelectItem } from '@angular-cms/core';
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => CheckboxGroupComponent),
+            useExisting: forwardRef(() => CheckboxGroupControl),
             multi: true
         }
     ]
 })
-export class CheckboxGroupComponent implements ControlValueAccessor {
+export class CheckboxGroupControl implements ControlValueAccessor {
     private onChange: (m: any) => void;
     private onTouched: (m: any) => void;
 

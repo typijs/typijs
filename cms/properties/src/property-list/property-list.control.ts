@@ -17,12 +17,12 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => PropertyGroupComponent),
+            useExisting: forwardRef(() => PropertyListControl),
             multi: true
         }
     ]
 })
-export class PropertyGroupComponent implements ControlValueAccessor {
+export class PropertyListControl implements ControlValueAccessor {
     private _model: any;
     private onChange: (m: any) => void;
     private onTouched: (m: any) => void;

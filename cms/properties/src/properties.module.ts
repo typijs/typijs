@@ -6,16 +6,23 @@ import { CoreModule, DndModule } from '@angular-cms/core';
 
 import { InputComponent } from './input/input.component';
 import { TextareaComponent } from './textarea/textarea.component';
+
 import { PropertyListComponent } from './property-list/property-list.component';
-import { PropertyGroupComponent } from './property-list/property-group.component';
+import { PropertyListControl } from './property-list/property-list.control';
+
 import { HiddenInputControl } from './xhtml/hidden-input';
 import { TinymceComponent } from './xhtml/tinymce.component';
 import { DropdownComponent } from './select/dropdown/dropdown.component';
-import { CheckboxComponent } from './select/checkbox/checkbox.component';
-import { CheckboxGroupComponent } from './select/checkbox/checkbox-group.component';
 
-import { ContentGroupComponent } from './content-area/content-group.component';
+import { CheckboxComponent } from './select/checkbox/checkbox.component';
+import { CheckboxGroupControl } from './select/checkbox/checkbox-group.control';
+
+import { ContentAreaControl } from './content-area/content-area.control';
 import { ContentAreaComponent } from './content-area/content-area.component';
+
+import { ContentReferenceControl } from './content-reference/content-reference.control';
+import { ContentReferenceComponent } from './content-reference/content-reference.component';
+
 import { registerCmsProperties } from './registerCmsProperties';
 
 registerCmsProperties();
@@ -32,14 +39,17 @@ registerCmsProperties();
         InputComponent,
         TextareaComponent,
         DropdownComponent,
-        CheckboxGroupComponent,
+        CheckboxGroupControl,
         CheckboxComponent,
-        PropertyGroupComponent,
+        PropertyListControl,
         PropertyListComponent,
         HiddenInputControl,
         TinymceComponent,
         ContentAreaComponent,
-        ContentGroupComponent
+        ContentAreaControl,
+
+        ContentReferenceControl,
+        ContentReferenceComponent
     ],
     entryComponents: [
         InputComponent,
@@ -48,7 +58,8 @@ registerCmsProperties();
         CheckboxComponent,
         PropertyListComponent,
         TinymceComponent,
-        ContentAreaComponent
+        ContentAreaComponent,
+        ContentReferenceComponent
     ],
     exports: [
         InputComponent,
@@ -57,7 +68,10 @@ registerCmsProperties();
         CheckboxComponent,
         PropertyListComponent,
         TinymceComponent,
-        ContentAreaComponent
+        ContentAreaComponent,
+        
+        ContentReferenceControl,
+        ContentReferenceComponent
     ]
 })
 export class PropertiesModule { }
