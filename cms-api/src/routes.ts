@@ -5,27 +5,29 @@ import ContentCtrl from './modules/content/content.controller';
 import { asset, media } from './modules/media/media.route';
 import { block } from './modules/block/block.route';
 import { page } from './modules/page/page.route';
+import { sideDefinition } from './modules/site-definition/site-definition.route';
 
-const router: Router = Router();
+const appRouter: Router = Router();
 
 // Contents
 const contentCtrl = new ContentCtrl();
-router.route('/contents').get(contentCtrl.getAll);
-router.route('/contents/count').get(contentCtrl.count);
-router.route('/content').post(contentCtrl.insert);
-router.route('/content/:id').get(contentCtrl.get);
-router.route('/content/:id').put(contentCtrl.update);
-router.route('/content/:id').delete(contentCtrl.delete);
-router.route('/content-by-url').get(contentCtrl.getByUrl);
-router.route('/contents-by-parent/:parentId').get(contentCtrl.getAllByParentId);
+appRouter.route('/contents').get(contentCtrl.getAll);
+appRouter.route('/contents/count').get(contentCtrl.count);
+appRouter.route('/content').post(contentCtrl.insert);
+appRouter.route('/content/:id').get(contentCtrl.get);
+appRouter.route('/content/:id').put(contentCtrl.update);
+appRouter.route('/content/:id').delete(contentCtrl.delete);
+appRouter.route('/content-by-url').get(contentCtrl.getByUrl);
+appRouter.route('/contents-by-parent/:parentId').get(contentCtrl.getAllByParentId);
 
-router.use('/page', page);
+appRouter.use('/page', page);
 
 // Blocks
-router.use('/block', block);
+appRouter.use('/block', block);
 
 // Media
-router.use('/assets', asset);
-router.use('/media', media)
+appRouter.use('/assets', asset);
+appRouter.use('/media', media);
+appRouter.use('/site-definition', sideDefinition);
 
-export default router;
+export { appRouter };

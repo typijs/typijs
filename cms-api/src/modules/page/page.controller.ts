@@ -8,11 +8,11 @@ export class PageCtrl extends BaseCtrl {
   model = Page;
   pageVersion = PageVersion;
 
-  get = (req, res) => {
+  get = (req, res, next) => {
     this.model.findOne({ _id: req.params.id })
       .populate('childItems.itemId')
       .exec((err, item) => {
-        if (err) { return console.error(err); }
+        if (err) next(err);
         res.status(200).json(item);
       });
   }
@@ -124,10 +124,10 @@ export class PageCtrl extends BaseCtrl {
       });
   }
 
-  getAllByParentId = (req, res) => {
+  getAllByParentId = (req, res, next) => {
     let parentId = req.params.parentId != '0' ? req.params.parentId : null;
     this.model.find({ parentId: parentId }, (err, items) => {
-      if (err) { return this.handleError(err); }
+      if (err) { next(err); }
       res.status(200).json(items);
     });
   }

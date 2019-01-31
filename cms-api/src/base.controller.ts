@@ -30,7 +30,7 @@ abstract class BaseCtrl {
   }
 
   // Get by id
-  get = (req, res) => {
+  get = (req, res, next) => {
     this.model.findOne({ _id: req.params.id })
       .then(item => res.status(200).json(item))
       .catch(err => this.handleError(err));
