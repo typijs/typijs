@@ -43,3 +43,4 @@ testem.log
 Thumbs.db
 .vscode/
 cms-examples/uploads/
+cms-examples/logs/
