@@ -8,7 +8,7 @@ export function httpLoggerMiddleware() {
 
     let morganMiddleware;
 
-    switch (CONFIG.MORGAN.LOG_LEVEL) {
+    switch (CONFIG.LOG.LEVEL) {
         //Log all requests to winston
         case LogLevel.Debug: {
             morganMiddleware = morgan(morganJsonFormat, { stream: loggerStream });
