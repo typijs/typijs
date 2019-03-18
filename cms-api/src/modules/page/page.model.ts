@@ -1,4 +1,8 @@
 import * as mongoose from 'mongoose';
+import { IPage } from './page.interface';
+import { IContentModel } from '../content';
+
+export interface IPageModel extends IPage, IContentModel { }
 
 const pageSchema = new mongoose.Schema({
   created: { type: Date, default: Date.now },
@@ -23,10 +27,10 @@ const pageSchema = new mongoose.Schema({
   ancestors: { type: [String], required: false },
   hasChildren: { type: Boolean, required: true, default: false },
   //containt all reference Ids of all assets which be used in page such as block, media, page
-  childItems: { type: [{path: String, itemId: {type: mongoose.Schema.Types.ObjectId, refPath: 'childItems.path'}}], required: false },
+  childItems: { type: [{ path: String, itemId: { type: mongoose.Schema.Types.ObjectId, refPath: 'childItems.path' } }], required: false },
 
   isPublished: { type: Boolean, required: true, default: false },
-  isDeleted: { type: Boolean, required: true, default: false },
+  isContentDeleted: { type: Boolean, required: true, default: false },
 
   isVisibleOnSite: { type: Boolean, required: true, default: true },
   sortIndex: Number,
@@ -35,4 +39,4 @@ const pageSchema = new mongoose.Schema({
   properties: mongoose.Schema.Types.Mixed
 });
 
-export const Page = mongoose.model('cmsPage', pageSchema);
+export const Page: mongoose.Model<IPageModel> = mongoose.model<IPageModel>('cmsPage', pageSchema);

@@ -28,6 +28,6 @@ appRouter.use('/block', block);
 // Media
 appRouter.use('/assets', asset);
 appRouter.use('/media', media);
-appRouter.use('/site-definition', sideDefinition);
+appRouter.use(sideDefinition);
 
 export { appRouter };

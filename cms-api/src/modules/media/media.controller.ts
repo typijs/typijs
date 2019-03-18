@@ -1,103 +1,36 @@
-import * as Promise from 'bluebird';
+import * as Bluebird from 'bluebird';
 import * as mime from 'mime-types';
 import * as path from 'path';
 import * as fs from 'fs';
 
-import { BaseCtrl } from '../../base.controller';
-import { Media } from './media.model';
+import { Media, IMediaModel } from './media.model';
 import { resizeImage } from './resize-image';
 import * as upload from './upload';
+import { ContentCtrl } from '../content';
+import { NotFoundException } from '../../errorHandling';
 
-const fsAsync: any = Promise.promisifyAll(fs);
+const fsAsync: any = Bluebird.promisifyAll(fs);
 
-fsAsync.existsAsync = Promise.promisify(
+fsAsync.existsAsync = Bluebird.promisify(
     function exists2(path, exists2callback) {
         fs.exists(path, function callbackWrapper(exists) { exists2callback(null, exists); });
     });
 
-export class MediaCtrl extends BaseCtrl {
+export class MediaCtrl extends ContentCtrl {
     model = Media;
 
-    //Override insert base
-    insert = (req, res) => {
-        const mediaObj = new this.model(req.body);
-
-        //get parent folder
-        this.model.findOne({ _id: mediaObj.parentId ? mediaObj.parentId : null })
-            .then(parentFolder => {
-                let parentId = parentFolder ? parentFolder._id : null;
-
-                mediaObj.parentId = parentId;
-                mediaObj.isDeleted = false;
-
-                //create linkUrl and parent path ids
-                if (parentFolder) {
-                    mediaObj.parentPath = parentFolder.parentPath ? `${parentFolder.parentPath}${parentFolder._id},` : `,${parentFolder._id},`;
-                } else {
-                    mediaObj.parentPath = null;
-                }
-
-                return mediaObj.save().then(item => ({ item, parentFolder }))
-            })
-            .then(({ item, parentFolder }) => {
-                return parentFolder ? this.updateHasChildren(parentFolder).then(updatedFolder => ({ item, updatedFolder })) : { item };
-            })
-            .then(({ item }) => {
-                res.status(200).json(item);
-            })
-            .catch(err => {
-                return this.handleError(err);
-            })
-    }
-
-    update = (req, res) => {
-        const mediaObj = req.body;
-
-        this.model.findOne({ _id: req.params.id })
-            .then(matchFolder => {
-                if (!matchFolder) return null;
-
-                //update existing page
-                matchFolder.changed = Date.now();
-                //matchPage.changedBy = userId
-                matchFolder.name = mediaObj.name;
-                return matchFolder.save();
-            })
-            .then(item => {
-                if (item) {
-                    res.status(200).json(item);
-                } else {
-                    res.sendStatus(404);
-                }
-            })
-            .catch(error => {
-                return this.handleError(error);
-            });
-    }
-
-    getFoldersByParentId = (req, res) => {
-        let parentId = req.params.parentId != '0' ? req.params.parentId : null;
-        this.model.find({ parentId: parentId, mimeType: null })
-            .then(items => {
-                res.status(200).json(items);
-            })
-            .catch(err => {
-                res.status(500).json(err);
-            })
-    }
-
-    getMediasByFolder = (req, res) => {
+    getMediasByFolder = (req, res, next) => {
         let parentId = req.params.parentId != '0' ? req.params.parentId : null;
         this.model.find({ parentId: parentId, mimeType: { $ne: null } })
             .then(items => {
                 res.status(200).json(items);
             })
             .catch(err => {
-                res.status(500).json(err);
+                next(err);
             })
     }
 
-    getMediaById = (req, res) => {
+    getMediaById = (req, res, next) => {
 
         const widthStr = req.query.w ? req.query.w : req.query.width;
         const heightStr = req.query.h ? req.query.h : req.query.height;
@@ -130,7 +63,7 @@ export class MediaCtrl extends BaseCtrl {
                     }
                 })
                 .catch(err => {
-                    res.status(500).json(err);
+                    next(err);
                 })
         } else {
             return fsAsync.existsAsync(fileOriginalPath)
@@ -143,7 +76,7 @@ export class MediaCtrl extends BaseCtrl {
                     }
                 })
                 .catch(err => {
-                    res.status(500).json(err);
+                    next(err);
                 })
         }
     }
@@ -153,7 +86,7 @@ export class MediaCtrl extends BaseCtrl {
         return upload.uploadFile.single(fieldName);
     }
 
-    processMedia = (req, res) => {
+    processMedia = (req, res, next) => {
         const file = req.file;
         const mediaObj = {
             _id: req.fileId,
@@ -164,16 +97,16 @@ export class MediaCtrl extends BaseCtrl {
         }
         this.saveMedia(mediaObj)
             .then(mediaItem => res.status(200).json(mediaItem))
-            .catch(error => res.status(500).json(error));
+            .catch(err => next(err));
     }
 
-    private saveMedia = (media: any): any => {
+    private saveMedia = (media: any): Promise<IMediaModel> => {
         const mediaObj = new this.model(media);
-        return this.model.findOne({ _id: mediaObj.parentId ? mediaObj.parentId : null })
-            .then(parentFolder => {
+        return this.model.findOne({ _id: mediaObj.parentId ? mediaObj.parentId : null }).exec()
+            .then((parentFolder: IMediaModel) => {
                 let parentId = parentFolder ? parentFolder._id : null;
                 mediaObj.parentId = parentId;
-                mediaObj.isDeleted = false;
+                mediaObj.isContentDeleted = false;
 
                 //create linkUrl and parent path ids
                 if (parentFolder) {
@@ -182,11 +115,6 @@ export class MediaCtrl extends BaseCtrl {
                     mediaObj.parentPath = null;
                 }
                 return mediaObj.save();
-            })
-    }
-
-    private updateHasChildren = (folder: any): any => {
-        folder.hasChildren = true;
-        return folder.save();
+            });
     }
 }
