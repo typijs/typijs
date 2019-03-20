@@ -1,4 +1,5 @@
 import * as winston from 'winston';
+import { Format } from 'logform';
 import * as fs from 'fs';
 import { CONFIG } from '../config/config';
 const DailyRotateFile = require('winston-daily-rotate-file');

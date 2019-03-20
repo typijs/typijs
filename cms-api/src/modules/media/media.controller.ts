@@ -3,6 +3,7 @@ import * as mime from 'mime-types';
 import * as path from 'path';
 import * as fs from 'fs';
 
+import { Model } from 'mongoose';
 import { Media, IMediaModel } from './media.model';
 import { resizeImage } from './resize-image';
 import * as upload from './upload';
