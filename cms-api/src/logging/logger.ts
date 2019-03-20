@@ -19,7 +19,7 @@ const options: winston.LoggerOptions = {
 
 export const logger = winston.createLogger(options);
 
-class LoggerStream {
+export class LoggerStream {
     write(message: string) {
         const messageObj: MorganToken = JSON.parse(message);
 

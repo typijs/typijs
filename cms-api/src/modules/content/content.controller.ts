@@ -1,59 +1,91 @@
-import { BaseCtrl } from '../../base.controller';
-import Content from './content.model';
+import * as express from 'express';
 
-const emptyObjectId = '000000000000000000000000'
+import { BaseCtrl } from '../base.controller';
+import { IContentModel } from './content.model';
+import { NotFoundException } from '../../errorHandling';
 
-export default class ContentCtrl extends BaseCtrl {
-  model = Content;
+export abstract class ContentCtrl extends BaseCtrl {
+  //Create new folder
+  createContent = (req, res, next) => {
+    const mediaObj = new this.model(req.body);
 
-  //Override insert base
-  insert = (req, res) => {
-    const obj = new this.model(req.body);
-    let nameInUrl = obj.nameInUrl;
-    this.model.findOne({ _id: obj.parentId }).then(parent => {
-      let parentId = parent ? `${parent._id}` : emptyObjectId;
-      this.generateNameInUrl(0, nameInUrl, parentId).then(url => {
-        obj.nameInUrl = url;
-        obj.linkUrl = parent ? `${parent.linkUrl}/${url}` : `/${url}`;
-        obj.parentId = parentId;
-        obj.save((err, item) => {
-          // 11000 is the code for duplicate key error
-          if (err && err.code === 11000) {
-            res.sendStatus(400);
-          }
-          if (err) {
-            return console.error(err);
-          }
-          res.status(200).json(item);
-        });
-      })
-    })
+    //get parent folder
+    this.model.findOne({ _id: mediaObj.parentId ? mediaObj.parentId : null }).exec()
+      .then((parentFolder: IContentModel) => {
+        let parentId = parentFolder ? parentFolder._id : null;
 
-  }
+        mediaObj.parentId = parentId;
+        mediaObj.isContentDeleted = false;
 
-  getByUrl = (req, res) => {
-    this.model.findOne({ linkUrl: req.query.url }, (err, item) => {
-      if (err) { return console.error(err); }
-      res.status(200).json(item);
-    });
-  }
-
-  getAllByParentId = (req, res) => {
-    this.model.find({ parentId: req.params.parentId }, (err, items) => {
-      if (err) { return console.error(err); }
-      res.status(200).json(items);
-    });
-  }
-
-  private generateNameInUrl = (index: number, orignalUrl: string, parentId: string, generatedNameInUrl?: string): any =>
-    this.model.count({ 'nameInUrl': generatedNameInUrl ? generatedNameInUrl : orignalUrl, 'parentId': parentId })
-      .then(count => {
-        if (count > 0) {
-          return this.generateNameInUrl(index + 1, orignalUrl, parentId, `${orignalUrl}-${index + 1}`);
+        //create linkUrl and parent path ids
+        if (parentFolder) {
+          mediaObj.parentPath = parentFolder.parentPath ? `${parentFolder.parentPath}${parentFolder._id},` : `,${parentFolder._id},`;
+        } else {
+          mediaObj.parentPath = null;
         }
-        return generatedNameInUrl ? generatedNameInUrl : orignalUrl;
+
+        return mediaObj.save().then(item => [item, parentFolder])
+      })
+      .then(([item, parentFolder]) => {
+        return parentFolder ? this.updateHasChildren(parentFolder).then(() => item) : Promise.resolve(item);
+      })
+      .then(item => {
+        res.status(200).json(item);
       })
       .catch(err => {
-        return console.error(err);
+        next(err);
       })
+  }
+
+  updateContent = (req, res, next) => {
+    const mediaObj = req.body;
+
+    this.model.findOne({ _id: req.params.id })
+      .then(matchFolder => {
+        if (!matchFolder) throw new NotFoundException(req.params.id);
+
+        //update existing page
+        matchFolder.changed = new Date();
+        //matchPage.changedBy = userId
+        matchFolder.name = mediaObj.name;
+        return matchFolder.save();
+      })
+      .then(item => {
+        if (item) {
+          res.status(200).json(item);
+        } else {
+          res.sendStatus(404);
+        }
+      })
+      .catch(err => {
+        next(err);
+      });
+  }
+
+  getFoldersByParentId = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    let parentId = req.params.parentId != '0' ? req.params.parentId : null;
+    this.model.find({ parentId: parentId, contentType: null })
+      .then(items => {
+        res.status(200).json(items);
+      })
+      .catch(err => {
+        next(err);
+      })
+  }
+
+  getContentsByFolder = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    let parentId = req.params.parentId != '0' ? req.params.parentId : null;
+    this.model.find({ parentId: parentId, contentType: { $ne: null } })
+      .then(items => {
+        res.status(200).json(items);
+      })
+      .catch(err => {
+        next(err);
+      })
+  }
+
+  protected updateHasChildren = (content: IContentModel): Promise<IContentModel> => {
+    content.hasChildren = true;
+    return content.save();
+  }
 }

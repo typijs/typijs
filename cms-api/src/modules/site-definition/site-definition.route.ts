@@ -4,8 +4,8 @@ import { SiteDefinitionCtrl } from './site-definition.controller';
 const sideDefinition: Router = Router();
 const controller = new SiteDefinitionCtrl();
 
-sideDefinition.get('/', controller.getAll);
+sideDefinition.get('/site-definition', controller.getAll);
 
-sideDefinition.post('/', controller.insert);
+sideDefinition.post('/site-definition', controller.insert);
 
 export { sideDefinition };

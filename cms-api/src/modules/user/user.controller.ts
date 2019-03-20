@@ -1,8 +1,9 @@
 import * as dotenv from 'dotenv';
 import * as jwt from 'jsonwebtoken';
 
-import User from './user.model';
-import BaseCtrl from '../../base.controller';
+import { Model } from 'mongoose';
+import { User, IUserModel } from './user.model';
+import { BaseCtrl } from '../base.controller';
 
 export default class UserCtrl extends BaseCtrl {
     model = User;

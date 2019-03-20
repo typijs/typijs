@@ -1,4 +1,8 @@
 import * as mongoose from 'mongoose';
+import { IMedia } from './media.interface';
+import { IContentModel } from '../content';
+
+export interface IMediaModel extends IMedia, IContentModel { }
 
 const mediaSchema = new mongoose.Schema({
     created: { type: Date, default: Date.now },
@@ -15,7 +19,9 @@ const mediaSchema = new mongoose.Schema({
     parentPath: { type: String, required: false },
     hasChildren: { type: Boolean, required: true, default: false },
 
-    isDeleted: { type: Boolean, required: true, default: false }
+    isContentDeleted: { type: Boolean, required: true, default: false },
+
+    properties: mongoose.Schema.Types.Mixed
 });
 
-export const Media = mongoose.model('cmsMedia', mediaSchema);
+export const Media: mongoose.Model<IMediaModel> = mongoose.model<IMediaModel>('cmsMedia', mediaSchema);

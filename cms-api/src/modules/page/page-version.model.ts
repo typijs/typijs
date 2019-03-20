@@ -1,4 +1,7 @@
 import * as mongoose from 'mongoose';
+import { IPageVersion } from './page-version.interface';
+
+export interface IPageVersionModel extends IPageVersion, mongoose.Document {}
 
 const pageVersionSchema = new mongoose.Schema({
 
@@ -18,11 +21,11 @@ const pageVersionSchema = new mongoose.Schema({
     publishedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'cmsUser' },
 
     isLastPublished: { type: Boolean, required: true, default: true },
-    isDeleted: { type: Boolean, required: true, default: false },
+    isPageDeleted: { type: Boolean, required: true, default: false },
 
     isVisibleOnSite: { type: Boolean, required: true, default: true },
 
     properties: mongoose.Schema.Types.Mixed
 });
 
-export const PageVersion = mongoose.model('cmsPageVersion', pageVersionSchema);
+export const PageVersion: mongoose.Model<IPageVersionModel> = mongoose.model<IPageVersionModel>('cmsPageVersion', pageVersionSchema);

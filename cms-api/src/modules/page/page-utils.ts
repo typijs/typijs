@@ -1,6 +1,6 @@
 
-import Page from './page.model';
-import PageVersion from './page-version.model';
+import { Page } from './page.model';
+import { PageVersion } from './page-version.model';
 
 const batchSize = 100;
 const timeout = 100;
@@ -18,7 +18,7 @@ export function bulkUpdateDeletedStatus(parentPage, finishCallback) {
 }
 
 //parentPage is page was updated
-function asyncBulkUpdateChildrenPage(parentPage,asyncUpdateChildPage, finishCallback) {
+function asyncBulkUpdateChildrenPage(parentPage, asyncUpdateChildPage, finishCallback) {
 
     var itemCursor = Page.collection.find({ parentPath: /,${parentPage._id},/ });
     var itemBulk = Page.collection.initializeUnorderedBulkOp();

@@ -24,7 +24,7 @@ export const CONFIG = {
     SALT_ROUNDS: process.env.SALT_ROUNDS || 10,
 
     LOG: {
-        LEVEL: process.env.LOG_LEVEL || LogLevel.Debug,
+        LEVEL: process.env.LOG_LEVEL || LogLevel.Error,
         DIR: process.env.LOG_DIR || 'logs',
         KEEP_IN_DAYS: process.env.LOG_KEEP_IN_DAYS || '30',
 

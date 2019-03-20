@@ -1,13 +1,5 @@
 import * as mongoose from 'mongoose';
+import { IContent } from './content.interface';
 
-const contentSchema = new mongoose.Schema({
-  name: String,
-  contentType: String,
-  parentId: String,
-  nameInUrl: String,
-  linkUrl: String,
-  properties: mongoose.Schema.Types.Mixed
-});
-const Content = mongoose.model('Content', contentSchema);
+export interface IContentModel extends IContent, mongoose.Document { }
 
-export default Content;

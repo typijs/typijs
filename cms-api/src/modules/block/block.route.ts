@@ -8,11 +8,11 @@ block.get('/:id', controller.get);
 
 block.get('/folders/:parentId?', controller.getFoldersByParentId);
 
-block.get('/get-by-folder/:parentId?', controller.getBlocksByFolder);
+block.get('/get-by-folder/:parentId?', controller.getContentsByFolder);
 
-block.post('/', controller.insert);
+block.post('/', controller.createContent);
 
-block.put('/:id', controller.update);
+block.put('/:id', controller.updateContent);
 
 block.delete('/:id', controller.delete);
 

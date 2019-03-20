@@ -1,5 +1,10 @@
 import * as bcrypt from 'bcryptjs';
 import * as mongoose from 'mongoose';
+import { IUser } from './user.interface';
+
+export interface IUserModel extends IUser, mongoose.Document {
+    comparePassword(candidatePassword, callback);
+ }
 
 const userSchema = new mongoose.Schema({
     username: { type: String, unique: true, trim: true },
@@ -13,7 +18,7 @@ const userSchema = new mongoose.Schema({
 
 // Before saving the user, hash the password
 userSchema.pre('save', function (next) {
-    const user = this;
+    const user = this as IUserModel;
     if (!user.isModified('password')) { return next(); }
     bcrypt.genSalt(10, function (err, salt) {
         if (err) { return next(err); }
@@ -40,6 +45,5 @@ userSchema.set('toJSON', {
     }
 });
 
-const User = mongoose.model('cmsUser', userSchema);
+export const User: mongoose.Model<IUserModel> = mongoose.model<IUserModel>('cmsUser', userSchema);
 
-export default User;

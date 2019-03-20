@@ -10,13 +10,13 @@ media.get('/folders/:parentId?', controller.getFoldersByParentId);
 
 media.get('/get-by-folder/:parentId?', controller.getMediasByFolder);
 
-media.post('/', controller.insert);
+media.post('/', controller.createContent);
 
 media.post('/upload/:parentId?', controller.uploadMedia('file'), controller.processMedia)
 
-media.put('/:id', controller.update);
+media.put('/:id', controller.updateContent);
 
-media.delete('/:id', controller.update);
+media.delete('/:id', controller.delete);
 
 export { media };
 
