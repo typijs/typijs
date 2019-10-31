@@ -1,91 +1,88 @@
-# Welcome all contributors and pull requests
+# Angular Cms
 
-# Node JS Authentication
-https://scotch.io/tutorials/authenticate-a-node-js-api-with-json-web-tokens
+The cms based on Angular, NodeJs and MongoDB
 
-http://jasonwatmore.com/post/2016/12/08/angular-2-redirect-to-previous-url-after-login-with-auth-guard
+## Prerequisites
+Need to install
+* Node
+* MongoDB
 
-https://stackoverflow.com/questions/34331478/angular-redirect-to-login-page
+## Module dependency
 
-# Think everything in modular
-https://dzone.com/articles/build-your-nodejs-application-in-a-modular-way
+```mermaid
+    graph TD
+    A(cms core)-->B(cms properties)
+    B-->C(cms modules)
+    C-->D(cms editor)
+    D-->E(cms portal)
+    E-->Z(cms examples)
+    X(cms api)-->Z
 
-https://github.com/brechtbilliet/largescale_apps
+```
 
-# Decorator in Angular
-https://medium.com/@ttemplier/angular2-decorators-and-class-inheritance-905921dbd1b7
+## How to run in dev mode
 
-https://spin.atomicobject.com/2017/04/24/typescript-modular-typesafe-metadata/
+For running examples, we need set up the [symlinks](https://docs.npmjs.com/cli/link.html) between modules as below:
 
-# File Manager
-http://menge.io/2015/03/24/storing-small-images-in-mongodb/
-http://blog.nbostech.com/2016/10/store-and-read-image-file-in-mongodb-using-nodejsexpressmongoose/
-http://www.codexpedia.com/node-js/node-js-http-server-displaying-images-from-a-directory/
-https://malcoded.com/posts/nodejs-image-resize-express-sharp
+1. Go to `cms-api` folders and run command 
+```
+    npm link
+``` 
+2. Go to `cms\core` folders and run command 
+```
+    npm link
+```
 
-http://stackabuse.com/node-http-servers-for-static-file-serving/
+3. Go to `cms\properties` folder and run command 
+``` 
+    npm link @angular-cms/core
 
-## Stream
-https://medium.com/@dalaidunc/fs-readfile-vs-streams-to-read-text-files-in-node-js-5dd0710c80ea
-https://medium.freecodecamp.org/node-js-streams-everything-you-need-to-know-c9141306be93
+    npm link
+```  
+4. Go to `cms\modules` folder and run commands 
 
-## Option 2:
-http://www.tutorialsteacher.com/nodejs/serving-static-files-in-nodejs
+```
+    npm link @angular-cms/core @angular-cms/properties
 
-## On Client side:
-https://malcoded.com/posts/angular-file-upload-component-with-express
+    npm link
+```
+5. Go to `cms\editor` folder and run commands
 
-## Issue with drag and drop: 
-https://stackoverflow.com/questions/7110353/html5-dragleave-fired-when-hovering-a-child-element
+```
+    npm link @angular-cms/core @angular-cms/properties @angular-cms/modules
+    
+    npm link
+```
+6. Go to `cms\portal` folder and run commands
 
-# Advanced Dynamic Create Component
-https://netbasal.com/create-advanced-components-in-angular-e0655df5dde6
+```
+    npm link @angular-cms/core @angular-cms/properties @angular-cms/modules @angular-cms/editor
+```
 
-https://www.dev6.com/Modal-Templates-in-Angular2-Part-3
+7. Go to `cms-examples` folder and run commands
 
-https://blog.angular-university.io/angular-ng-template-ng-container-ngtemplateoutlet/
+```
+    npm link @angular-cms/api @angular-cms/core @angular-cms/properties @angular-cms/modules @angular-cms/editor
+```
+8. Final step, under `cms-examples` folder and run command
+```
+    npm run dev
+```
 
-# Lazy Load Module
-https://stackoverflow.com/questions/40293240/how-to-manually-lazy-load-a-module
+## Versioning
 
-https://blog.angularindepth.com/here-is-what-you-need-to-know-about-dynamic-components-in-angular-ac1e96167f9e
+We are current on Alpha
 
-# Service Locator
-https://stackoverflow.com/questions/39409328/storing-injector-instance-for-use-in-components
+## Authors
 
-# Mongoose in real world
-https://developer.mozilla.org/en-US/docs/Learn/Server-side/Express_Nodejs/mongoose
+* **Hung Dang Viet** - *Initial work and maintain* - [danghung1202](https://github.com/danghung1202)
 
-http://davin.ninja/bulk-updating-inserting-copying-domains-mongodb-using-collection-initializeunorderedbulkop/
 
-https://stackoverflow.com/questions/28218460/nodejs-mongoose-bulk-update
+## License
 
-https://stackoverflow.com/questions/27513844/mongooose-query-where-objectid-is-null
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
-# Node optimize:
-https://nodejs.org/en/docs/guides/dont-block-the-event-loop/
+## Acknowledgments
 
-# Form Validation Message
-http://plnkr.co/edit/Aa8O6lAh9lsOo3qk8gYZ?p=preview
+* Inspiration from Episerver
 
-https://stackoverflow.com/questions/43383341/angular-2-reactive-form-validation-messages
-
-https://stackoverflow.com/questions/42184800/how-to-validate-formarray-length-in-angular2
-
-# Checkbox group custom control
-https://medium.com/@mihalcan/angular-multiple-check-boxes-45ad2119e115
-
-# Angular Tree
-http://www.syntaxsuccess.com/viewarticle/recursive-treeview-in-angular-2.0
-
-https://angular2-tree.readme.io/docs/async-data-1
-
-# Stack:
-Reflect JS library, Decorator Typescript
-Dynamic Form and Component in Angular 5
-MongoDB and Express based on NodeJS,
-Lazy load module
-
-# Note*:
-Npm link not working with lazy module loader via router
-Take a lot of time to resolve issues of npm link and angular -cli
