@@ -2,9 +2,10 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
-import { CoreModule, DndModule } from '@angular-cms/core';
+import { AngularCmsModule, DndModule } from '@angular-cms/core';
 
 import { InputComponent } from './input/input.component';
+
 import { TextareaComponent } from './textarea/textarea.component';
 
 import { PropertyListComponent } from './property-list/property-list.component';
@@ -32,8 +33,8 @@ registerCmsProperties();
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
-        CoreModule,
-        DndModule
+        AngularCmsModule.forRoot(),
+        DndModule.forRoot()
     ],
     declarations: [
         InputComponent,
@@ -69,7 +70,7 @@ registerCmsProperties();
         PropertyListComponent,
         TinymceComponent,
         ContentAreaComponent,
-        
+
         ContentReferenceControl,
         ContentReferenceComponent
     ]

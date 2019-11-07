@@ -1,9 +1,9 @@
-import { Component, Input, ChangeDetectionStrategy, ViewChild, Inject, ComponentFactoryResolver, Injector } from '@angular/core';
-import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
+import { Component, Input, ViewChild, Inject, ComponentFactoryResolver, Injector } from '@angular/core';
+import { FormGroup, FormBuilder } from '@angular/forms';
 
 import { CMS, CmsProperty, UIHint, PROPERTIES_METADATA_KEY, PROPERTY_METADATA_KEY, InsertPointDirective, ISelectionFactory } from '@angular-cms/core';
 
-import { Elements } from './../elements';
+import 'reflect-metadata';
 import { PropertyListControl } from './property-list.control';
 import { SelectProperty } from '../select/select-property';
 
@@ -55,8 +55,8 @@ export class PropertyListComponent extends CmsProperty {
     modelForm: FormGroup = new FormGroup({});
     private _itemType: any;
 
-    @ViewChild(InsertPointDirective) modelEditHost: InsertPointDirective;
-    @ViewChild(PropertyListControl) propertyGroup: PropertyListControl;
+    @ViewChild(InsertPointDirective, { static: false }) modelEditHost: InsertPointDirective;
+    @ViewChild(PropertyListControl, { static: false }) propertyGroup: PropertyListControl;
 
     @Input()
     set itemType(itemType: any) {

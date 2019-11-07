@@ -1,4 +1,4 @@
-import { registerProperty, UIHint, registerProperties } from '@angular-cms/core';
+import { AngularCmsModule, UIHint } from '@angular-cms/core';
 
 import { InputComponent } from './input/input.component';
 import { TextareaComponent } from './textarea/textarea.component';
@@ -9,7 +9,7 @@ import { CheckboxComponent } from './select/checkbox/checkbox.component';
 import { ContentAreaComponent } from './content-area/content-area.component';
 
 export function registerCmsProperties() {
-    registerProperties([
+    AngularCmsModule.registerProperties([
         [UIHint.Input, InputComponent],
         [UIHint.Textarea, TextareaComponent],
         [UIHint.PropertyList, PropertyListComponent],
@@ -18,13 +18,4 @@ export function registerCmsProperties() {
         [UIHint.Checkbox, CheckboxComponent],
         [UIHint.ContentArea, ContentAreaComponent]
     ])
-    // registerProperty(InputComponent, UIHint.Input);
-    // registerProperty(TextareaComponent, UIHint.Textarea);
-    // registerProperty(PropertyListComponent, UIHint.PropertyList);
-    // registerProperty(TinymceComponent, UIHint.Xhtml);
-    // registerProperty(DropdownComponent, UIHint.Select);
-    // registerProperty(CheckboxComponent, UIHint.Checkbox);
-    // registerProperty(ContentAreaComponent, UIHint.ContentArea);
 }
-
-
