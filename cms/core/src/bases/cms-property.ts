@@ -1,6 +1,7 @@
 import { Input } from '@angular/core';
-import * as _ from 'lodash';
 import { FormGroup } from '@angular/forms';
+
+import { uniqueId } from '../helpers/common';
 
 export class CmsProperty {
     id: string = this.getId();
@@ -8,7 +9,7 @@ export class CmsProperty {
     @Input() propertyName: string;
     @Input() formGroup: FormGroup;
 
-    protected getId(id: number | string = _.uniqueId()): string {
-        return _.lowerFirst(this.constructor.name) + '_' + id;
+    protected getId(id: number | string = uniqueId()): string {
+        return this.constructor.name + '_' + id;
     }
 }
