@@ -1,7 +1,6 @@
 import { Directive, ElementRef, HostListener, Input, Output, EventEmitter, OnInit, OnDestroy, Renderer2, NgZone } from '@angular/core';
 
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/of';
+import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { DropEvent } from './drop-event.model';
@@ -69,23 +68,23 @@ export class Droppable implements OnInit, OnDestroy {
     }
 
     /**
-     * @private
+     * 
      */
     dragStartSubscription: any;
 
     /**
-     * @private
+     * 
      */
     dragEndSubscription: any;
 
     /**
-     * @private
+     * 
      * Backing field for the dropEnabled property
      */
     _dropEnabled = true;
 
     /**
-     * @private
+     * 
      * Field for tracking drag state. Helps when
      * drag stop event occurs before the allowDrop()
      * can be calculated (async).
@@ -93,26 +92,26 @@ export class Droppable implements OnInit, OnDestroy {
     _isDragActive = false;
 
     /**
-     * @private
+     * 
      * Field for tracking if service is subscribed.
      * Avoids creating multiple subscriptions of service.
      */
     _isServiceActive = false;
 
     /**
-     * @private
+     * 
      * Function for unbinding the drag enter listener
      */
     unbindDragEnterListener: Function;
 
     /**
-     * @private
+     * 
      * Function for unbinding the drag over listener
      */
     unbindDragOverListener: Function;
 
     /**
-     * @private
+     * 
      * Function for unbinding the drag leave listener
      */
     unbindDragLeaveListener: Function;
@@ -259,7 +258,7 @@ export class Droppable implements OnInit, OnDestroy {
         /* tslint:enable:curly */
         /* tslint:disable:one-line */
 
-        return Observable.of(allowed && this.dropEnabled);
+        return of(allowed && this.dropEnabled);
     }
 
     subscribeService() {

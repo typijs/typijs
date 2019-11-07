@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-
-import { Subject } from 'rxjs/Subject';
+import { Observable, Subject } from 'rxjs';
 
 import { Content } from '../models/content.model';
 @Injectable()
@@ -18,7 +16,7 @@ export class ContentService {
   getStartPage(): Observable<Content> {
     const startPageUrl = '/'
     return this.http.get<Content>(`/api/content-by-url?url=${startPageUrl}`);
-  } 
+  }
 
   getContents(): Observable<Content[]> {
     return this.http.get<Content[]>('/api/contents');
@@ -40,7 +38,7 @@ export class ContentService {
     return this.http.get<Content>(`/api/content-by-url?url=${linkUrl}`);
   }
 
-  getContentsByParentId(parentId: string):  Observable<Content[]> {
+  getContentsByParentId(parentId: string): Observable<Content[]> {
     return this.http.get<Content[]>(`/api/contents-by-parent/${parentId}`);
   }
 
