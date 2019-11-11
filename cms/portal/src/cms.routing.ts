@@ -1,18 +1,11 @@
 
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CmsComponent } from './cms.component';
-import { EditorLayoutComponent, AdminLayoutComponent } from '@angular-cms/editor';
+
 import { CMS } from '@angular-cms/core';
-import { registerPageModule, registerBlockModule, registerMediaModule, registerSiteManageModule } from '@angular-cms/modules';
+import { EditorLayoutComponent, AdminLayoutComponent } from '@angular-cms/editor';
 
-//register module for editor
-registerPageModule();
-registerMediaModule();
-registerBlockModule();
-
-//register module for admin
-registerSiteManageModule();
+import { CmsComponent } from './cms.component';
 
 const cmsRoutes: Routes = [
     {

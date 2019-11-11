@@ -32,6 +32,7 @@ export * from './models/content.model';
 export * from './models/block.model';
 export * from './models/content.model';
 export * from './models/media.model';
+export * from './models/page.model';
 
 export { slugify, sortTabByTitle, uniqueId, clone } from './helpers/common';
 
@@ -46,6 +47,6 @@ export * from './shared/dnd/draggable.directive';
 export * from './shared/dnd/dnd-placeholder.directive';
 export * from './shared/dnd/dnd.module';
 
-export { CMS } from './cms';
+export * from './cms';
 export * from './core.module';
 export * from './angular-cms.module';
