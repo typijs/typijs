@@ -1,9 +1,6 @@
-import { Injectable, Component, ViewEncapsulation, ChangeDetectorRef, ViewChildren, QueryList, ComponentFactoryResolver, Injector, Inject } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
+import { Injectable, QueryList, ComponentFactoryResolver, Inject } from '@angular/core';
 
 import {
-    CMS,
     InsertPointDirective,
     CmsComponentConfig,
     CmsWidgetPosition,
@@ -13,12 +10,12 @@ import {
 
 @Injectable()
 export class WidgetService {
-    private defaulGroup: string = 'Global';
+    private defaultGroup: string = 'Global';
 
     constructor(@Inject(ComponentFactoryResolver) private componentFactoryResolver: ComponentFactoryResolver) { }
 
     initWidgets(
-        registedWidgets: Array<CmsComponentConfig>,
+        registeredWidgets: Array<CmsComponentConfig>,
         insertPoints: QueryList<InsertPointDirective>,
         tabs: Array<CmsTab>,
         position: CmsWidgetPosition): Array<any> {
@@ -28,7 +25,7 @@ export class WidgetService {
             tabs.forEach((tab: CmsTab) => {
                 let viewContainerRef = insertPoints.find(x => x.name == tab.content).viewContainerRef;
                 viewContainerRef.clear();
-                registedWidgets.filter(x => x.position == position && (x.group == tab.title || (!x.group && tab.title == this.defaulGroup))).forEach(widget => {
+                registeredWidgets.filter(x => x.position == position && (x.group == tab.title || (!x.group && tab.title == this.defaultGroup))).forEach(widget => {
                     componentRefs.push(this.createWidget(viewContainerRef, widget));
                 });
             });
@@ -37,9 +34,9 @@ export class WidgetService {
         return componentRefs;
     }
 
-    initWidgetTab(registedWidgets: Array<CmsComponentConfig>, position: CmsWidgetPosition): Array<CmsTab> {
+    initWidgetTab(registeredWidgets: Array<CmsComponentConfig>, position: CmsWidgetPosition): Array<CmsTab> {
         let tabs = [];
-        let widgets = registedWidgets.filter(widget => widget.position == position);
+        let widgets = registeredWidgets.filter(widget => widget.position == position);
 
         widgets.forEach(widget => {
             if (widget.hasOwnProperty('group')) {
@@ -50,7 +47,7 @@ export class WidgetService {
         });
 
         if (widgets.findIndex(widget => !widget.group) != -1) {
-            tabs.push({ title: this.defaulGroup, content: `${position}_${this.defaulGroup}` });
+            tabs.push({ title: this.defaultGroup, content: `${position}_${this.defaultGroup}` });
         }
 
         return tabs.sort(sortTabByTitle);

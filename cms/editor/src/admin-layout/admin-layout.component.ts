@@ -1,19 +1,7 @@
-import { Component, ViewEncapsulation, ChangeDetectorRef, ViewChild, QueryList, ComponentFactoryResolver, Injector, Inject } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
-
-import { CmsLayoutComponent } from './../shared/cms-layout.component';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { BaseLayoutComponent } from './../base-layout.component';
 
-import {
-    CMS,
-    InsertPointDirective,
-    ContentService,
-    CmsComponentConfig,
-    CmsWidgetPosition,
-    CmsTab,
-    sortTabByTitle
-} from '@angular-cms/core';
+import { CMS, CmsComponentConfig } from '@angular-cms/core';
 
 import { WidgetService } from '../services/widget.service';
 
@@ -28,7 +16,7 @@ export class AdminLayoutComponent extends BaseLayoutComponent {
         super(_changeDetectionRef, widgetService);
     }
 
-    protected getCmsWidgets(): Array<CmsComponentConfig>{
+    protected getCmsWidgets(): Array<CmsComponentConfig> {
         return CMS.ADMIN_WIDGETS();
     }
 }

@@ -4,11 +4,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
-import { TabsModule } from 'ngx-bootstrap/tabs';
-
-import { PropertiesModule } from '@angular-cms/properties';
 import { CoreModule, DndModule } from '@angular-cms/core';
-import { LayoutModule, AngularSplitModule } from '@angular-cms/modules';
+import { PropertiesModule } from '@angular-cms/properties';
+import { LayoutModule, AngularSplitModule, CmsTabsModule } from '@angular-cms/modules';
 
 import { CmsLayoutComponent } from './shared/cms-layout.component';
 import { EditorLayoutComponent } from './editor-layout/editor-layout.component';
@@ -29,8 +27,8 @@ import { } from "reflect-metadata";
         PropertiesModule,
         LayoutModule,
         AngularSplitModule,
-        TabsModule.forRoot(),
-        DndModule.forRoot()
+        CmsTabsModule.forRoot(),
+        DndModule
     ],
     declarations: [
         CmsLayoutComponent,
