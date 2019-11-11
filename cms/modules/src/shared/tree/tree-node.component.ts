@@ -1,11 +1,8 @@
-import { Component, Input, Output, EventEmitter, OnInit, ContentChild, TemplateRef } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
-import { TreeStore } from './tree-store';
 import { TreeNode } from './tree-node';
-import { TreeService } from './tree-service';
 import { TreeConfig } from './tree-config';
-import { TreeMenuItem, NodeMenuItemAction } from './tree-menu';
+import { NodeMenuItemAction, TreeMenuItem } from './tree-menu';
 
 @Component({
     selector: 'tree-node',
@@ -47,7 +44,8 @@ export class TreeNodeComponent {
     @Output("nodeOnBlur") nodeOnBlurEvent: EventEmitter<TreeNode> = new EventEmitter();
     @Output("menuItemSelected") menuItemSelectedEvent: EventEmitter<any> = new EventEmitter();
 
-    private menuItems: TreeMenuItem[];
+
+    menuItems: TreeMenuItem[];
 
     ngOnInit() {
         if (this.config) {

@@ -1,7 +1,7 @@
 import { Component, ViewChildren, QueryList, ComponentFactoryResolver, Inject, Injector, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 import { PROPERTY_METADATA_KEY, PROPERTIES_METADATA_KEY } from '@angular-cms/core';
 import { CMS, UIHint, CmsProperty, InsertPointDirective, ISelectionFactory, PropertyMetadata, CmsTab, sortTabByTitle, clone } from '@angular-cms/core';
@@ -24,10 +24,11 @@ export class ContentFormEditComponent implements OnInit {
 
     contentForm: any = new FormGroup({});
     formTabs: Array<CmsTab> = [];
+    currentContent: any;
+
     private typeOfContent: string;
     private propertyMetadatas: Array<FormProperty> = [];
     private componentRefs: Array<any> = [];
-    private currentContent: any;
     private defaultGroup: string = "Content";
 
     @ViewChildren(InsertPointDirective) insertPoints: QueryList<InsertPointDirective>;
@@ -162,7 +163,7 @@ export class ContentFormEditComponent implements OnInit {
 
                         if (propertyComponent.instance instanceof SelectProperty) {
                             (<SelectProperty>propertyComponent.instance).selectItems = (<ISelectionFactory>(this.injector.get(property.metadata.selectionFactory))).GetSelections();
-                        } 
+                        }
                         else if (propertyComponent.instance instanceof PropertyListComponent) {
                             (<PropertyListComponent>propertyComponent.instance).itemType = property.metadata.propertyListItemType;
                         }

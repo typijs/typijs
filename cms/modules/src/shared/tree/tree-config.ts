@@ -1,4 +1,3 @@
-import { TreeNode } from "./tree-node";
 import { TreeService } from "./tree-service";
 import { TreeMenuItem } from "./tree-menu";
 

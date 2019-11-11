@@ -1,11 +1,10 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
+import { Component, Input, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 import { TreeStore } from './tree-store';
 import { TreeNode } from './tree-node';
 import { TreeService } from './tree-service';
 import { TreeConfig } from './tree-config';
-import { TreeMenuItem, NodeMenuItemAction } from './tree-menu';
 
 @Component({
     selector: 'tree-children',

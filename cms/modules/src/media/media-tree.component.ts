@@ -1,9 +1,12 @@
 import { Component, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 import { SubjectService, ServiceLocator, Media, MediaService } from '@angular-cms/core';
-import { TreeNode, TreeConfig, NodeMenuItemAction, TreeComponent } from '../shared/tree';
+import { TreeNode } from '../shared/tree/tree-node';
+import { TreeComponent } from '../shared/tree/tree.component';
+import { TreeConfig } from '../shared/tree/tree-config';
+import { NodeMenuItemAction } from '../shared/tree/tree-menu';
+
 import { MediaTreeService } from './media-tree.service';
 import { UploadService } from './upload/upload.service';
 
@@ -71,7 +74,7 @@ import { UploadService } from './upload/upload.service';
 export class MediaTreeComponent {
     private subscriptions: Subscription[] = [];
 
-    @ViewChild(TreeComponent) cmsTree: TreeComponent;
+    @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
     medias: Array<Media>;
 
     root: TreeNode = new TreeNode({ id: '0', name: 'Media' });

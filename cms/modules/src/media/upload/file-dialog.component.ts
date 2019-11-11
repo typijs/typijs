@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { UploadService } from './upload.service';
 
 @Component({
@@ -55,7 +55,7 @@ export class FileDialogComponent {
     progress: any;
     chooseFiles: Array<File>;
     private subscriptions: Subscription[] = [];
-    
+
     constructor(private uploadService: UploadService) {
         this.subscriptions.push(this.uploadService.openFileDialog$.subscribe(data => {
             this.progress = data.uploadProgress;

@@ -1,5 +1,4 @@
-import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { TreeNode } from "./tree-node";
 
 export interface TreeService {

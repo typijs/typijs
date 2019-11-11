@@ -1,11 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpRequest, HttpEventType, HttpResponse } from '@angular/common/http';
 
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Observable';
-import { forkJoin } from "rxjs/observable/forkJoin";
-import { TreeNode } from '../../shared/tree';
+import { BehaviorSubject, Subject, forkJoin } from 'rxjs';
+import { TreeNode } from '../../shared/tree/tree-node';
 
 //Temp hardcode url
 const url = 'http://localhost:4200/api/media/upload/';
