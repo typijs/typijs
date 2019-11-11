@@ -1,5 +1,6 @@
 import { Component, ComponentFactoryResolver, Inject, ViewChild, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
+import 'reflect-metadata';
 
 import { PAGE_TYPE_METADATA_KEY } from '../constants/meta-keys';
 import { ContentService } from './../services/content.service';
@@ -17,7 +18,7 @@ export class CmsRenderContentComponent implements OnDestroy {
 
     private pageComponentRef: any;
 
-    @ViewChild(InsertPointDirective) pageEditHost: InsertPointDirective;
+    @ViewChild(InsertPointDirective, { static: true }) pageEditHost: InsertPointDirective;
 
     constructor(
         @Inject(ComponentFactoryResolver) private componentFactoryResolver: ComponentFactoryResolver,
@@ -36,7 +37,7 @@ export class CmsRenderContentComponent implements OnDestroy {
     }
 
     ngOnDestroy() {
-        if(this.pageComponentRef) {
+        if (this.pageComponentRef) {
             this.pageComponentRef.destroy();
         }
     }

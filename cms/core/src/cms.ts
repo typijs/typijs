@@ -8,6 +8,7 @@ export interface CmsModel {
     PROPERTIES: object;
 
     MODULES: Array<CmsModuleConfig>;
+    NG_MODULES: Array<any>;
 
     EDITOR_ROUTES(): Array<Route>;
     EDITOR_WIDGETS(): Array<CmsComponentConfig>;
@@ -24,6 +25,7 @@ export const CMS: CmsModel = {
     PROPERTIES: {},
 
     MODULES: [],
+    NG_MODULES: [],
 
     EDITOR_ROUTES(): Array<Route> {
         let editorRoutes = [];
@@ -116,6 +118,7 @@ export function registerModule(moduleConfig: CmsModuleConfig) {
             console.warn(`The module ${moduleName} has already registed`);
         } else {
             CMS.MODULES.push(moduleConfig);
+            CMS.NG_MODULES.push(moduleConfig.module);
         }
     }
 }

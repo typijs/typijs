@@ -2,13 +2,15 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule } from '@angular/router';
 
-import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
+import { CmsProgressbarModule } from '../shared/ngx-bootstrap/progressbar.module';
 
 import { CoreModule, DndModule } from '@angular-cms/core';
 
 import { SharedModule } from '../shared/shared.module';
+import { AngularSplitModule } from '../shared/angular-split/module';
+
 import { MediaTreeComponent } from './media-tree.component';
 import { MediaTreeService } from './media-tree.service';
 import { FileDropComponent } from './upload/file-drop.component';
@@ -16,7 +18,6 @@ import { FileDialogComponent } from './upload/file-dialog.component'
 import { UploadService } from './upload/upload.service';
 import { DragOverDirective } from './upload/drag-over.directive';
 import { DragLeaveDirective } from './upload/drag-leave.directive';
-import { AngularSplitModule } from '../shared/angular-split';
 
 @NgModule({
     imports: [
@@ -29,8 +30,8 @@ import { AngularSplitModule } from '../shared/angular-split';
         RouterModule,
         DndModule,
         AngularSplitModule,
-        ProgressbarModule.forRoot()
-    ], 
+        CmsProgressbarModule.forRoot()
+    ],
     declarations: [
         MediaTreeComponent,
         FileDropComponent,

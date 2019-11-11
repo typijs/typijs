@@ -1,8 +1,10 @@
-import { Component, Input, ComponentFactoryResolver, Inject, ViewChild, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, ViewChild } from '@angular/core';
 
-import { SubjectService, ServiceLocator } from '@angular-cms/core';
-import { TreeNode, TreeService, TreeConfig, NodeMenuItemAction, TreeComponent } from '../shared/tree';
+import { ServiceLocator } from '@angular-cms/core';
+
+import { TreeNode } from '../shared/tree/tree-node';
+import { TreeComponent } from '../shared/tree/tree.component';
+import { TreeConfig } from '../shared/tree/tree-config';
 import { PageTreeService } from './page-tree.service';
 
 @Component({
@@ -31,7 +33,7 @@ import { PageTreeService } from './page-tree.service';
         `]
 })
 export class PageTreeReadonlyComponent {
-    @ViewChild(TreeComponent) cmsTree: TreeComponent;
+    @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
 
     root: TreeNode = new TreeNode({ id: '0' });
     treeConfig: TreeConfig = {
@@ -39,8 +41,6 @@ export class PageTreeReadonlyComponent {
     }
 
     constructor(
-        private subjectService: SubjectService,
-        private router: Router,
-        private route: ActivatedRoute) {
+    ) {
     }
 }

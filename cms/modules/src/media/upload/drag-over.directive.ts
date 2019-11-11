@@ -1,13 +1,13 @@
-import { Directive, Renderer2, HostBinding, HostListener, ElementRef } from '@angular/core';
+import { Directive, Renderer2, HostListener, ElementRef } from '@angular/core';
 
 @Directive({
     selector: '[dragOver]',
 })
 export class DragOverDirective {
-    constructor(private renderer: Renderer2, private hostElement: ElementRef) {}
+    constructor(private renderer: Renderer2, private hostElement: ElementRef) { }
 
     @HostListener('dragover', ['$event']) public onDragOver(event) {
-        if(!this.containsFiles(event)) return;
+        if (!this.containsFiles(event)) return;
         event.preventDefault();
         event.stopPropagation();
         this.renderer.addClass(this.hostElement.nativeElement, 'drag-over');

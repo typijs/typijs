@@ -40,28 +40,42 @@ export function clone(obj) {
 
   // Handle Date
   if (obj instanceof Date) {
-      copy = new Date();
-      copy.setTime(obj.getTime());
-      return copy;
+    copy = new Date();
+    copy.setTime(obj.getTime());
+    return copy;
   }
 
   // Handle Array
   if (obj instanceof Array) {
-      copy = [];
-      for (var i = 0, len = obj.length; i < len; i++) {
-          copy[i] = clone(obj[i]);
-      }
-      return copy;
+    copy = [];
+    for (var i = 0, len = obj.length; i < len; i++) {
+      copy[i] = clone(obj[i]);
+    }
+    return copy;
   }
 
   // Handle Object
   if (obj instanceof Object) {
-      // copy = {};
-      // for (var attr in obj) {
-      //     if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
-      // }
-      return Object.assign({}, obj);
+    // copy = {};
+    // for (var attr in obj) {
+    //     if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
+    // }
+    return Object.assign({}, obj);
   }
 
   throw new Error("Unable to copy obj! Its type isn't supported.");
+}
+
+const idCounter = {}
+export function uniqueId(prefix = '$lodash$') {
+  if (!idCounter[prefix]) {
+    idCounter[prefix] = 0
+  }
+
+  const id = ++idCounter[prefix]
+  if (prefix === '$lodash$') {
+    return `${id}`
+  }
+
+  return `${prefix + id}`
 }

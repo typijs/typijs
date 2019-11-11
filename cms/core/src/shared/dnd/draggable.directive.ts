@@ -12,7 +12,7 @@ export class Draggable implements OnInit, OnDestroy {
     /**
      * The data that will be avaliable to the droppable directive on its `onDrop()` event.
      */
-    @Input() dragData;
+    @Input() dragData: any;
 
     /**
      * The selector that defines the drag Handle.
@@ -88,31 +88,31 @@ export class Draggable implements OnInit, OnDestroy {
     @Output() onDragEnd: EventEmitter<any> = new EventEmitter();
 
     /**
-     * @private
+     * 
      * Keeps track of mouse over element that is used to determine drag handles
      */
     mouseDownElement: any;
 
     /**
-     * @private
+     * 
      * Backing field for the dragEnabled property
      */
     _dragEnabled = true;
 
     /**
-     * @private
+     * 
      * Backing field for the dragImage property
      */
     _dragImage: string;
 
     /**
-     * @private
+     * 
      * Image element for the dragImage
      */
     dragImageElement: HTMLImageElement;
 
     /**
-     * @private
+     * 
      * Function for unbinding the drag listener
      */
     unbindDragListener: Function;

@@ -1,11 +1,9 @@
 import { Component, Input, Output, EventEmitter, OnInit, ContentChild, TemplateRef, ViewEncapsulation } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 import { TreeStore } from './tree-store';
 import { TreeNode } from './tree-node';
-import { TreeService } from './tree-service';
 import { TreeConfig } from './tree-config';
-import { TreeMenuItem, NodeMenuItemAction } from './tree-menu';
 
 @Component({
     selector: 'cms-tree',
@@ -31,10 +29,10 @@ import { TreeMenuItem, NodeMenuItemAction } from './tree-menu';
     encapsulation: ViewEncapsulation.None,
     providers: [TreeStore]
 })
-export class TreeComponent {
+export class TreeComponent implements OnInit {
 
-    @ContentChild('treeNodeTemplate') treeNodeTemplate: TemplateRef<any>;
-    @ContentChild('loadingTemplate') loadingTemplate: TemplateRef<any>;
+    @ContentChild('treeNodeTemplate', { static: false }) treeNodeTemplate: TemplateRef<any>;
+    @ContentChild('loadingTemplate', { static: false }) loadingTemplate: TemplateRef<any>;
 
     @Input() config: TreeConfig;
     @Input() root: TreeNode;
@@ -49,10 +47,11 @@ export class TreeComponent {
     @Output() nodeDeleted: EventEmitter<any> = new EventEmitter();
 
     private subscriptions: Subscription[] = [];
-    private templates: any = {
+    public templates: any = {
         loadingTemplate: this.loadingTemplate,
         treeNodeTemplate: this.treeNodeTemplate
     };
+
     constructor(private store: TreeStore) { }
 
     ngOnInit() {

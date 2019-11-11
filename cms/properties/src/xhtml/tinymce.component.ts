@@ -29,7 +29,7 @@ import { HiddenInputControl } from './hidden-input';
 })
 export class TinymceComponent extends CmsProperty implements AfterViewInit, OnDestroy {
 
-    @ViewChild(HiddenInputControl) hiddenControl: HiddenInputControl;
+    @ViewChild(HiddenInputControl, { static: false }) hiddenControl: HiddenInputControl;
 
     editor: any;
 

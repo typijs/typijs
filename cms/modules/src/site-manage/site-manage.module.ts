@@ -1,10 +1,10 @@
-import { NgModule, Injector } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule } from '@angular/router';
 
-import { CoreModule, setAppInjector } from '@angular-cms/core';
+import { CoreModule } from '@angular-cms/core';
 import { PropertiesModule } from '@angular-cms/properties';
 
 import { SharedModule } from '../shared/shared.module';
@@ -37,4 +37,4 @@ import { SiteManageService } from './site-manage.service';
     ],
     providers: [SiteManageService]
 })
-export class SiteManageModule {}
+export class SiteManageModule { }

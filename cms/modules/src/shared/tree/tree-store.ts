@@ -1,17 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/observable/from';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/concatMap';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/observable/empty';
-
+import { Observable, Subject, from, of, empty } from 'rxjs';
+import { concatMap, map, tap } from 'rxjs/operators';
 
 import { TreeNode } from './tree-node';
-import { TreeService } from './index';
-import { TreeMenuItem, NodeMenuItemAction } from './tree-menu';
+import { TreeService } from './tree-service';
+import { NodeMenuItemAction } from './tree-menu';
 
 @Injectable()
 export class TreeStore {
@@ -91,15 +84,15 @@ export class TreeStore {
             var parentPath = newSelectedNode.parentPath ? `0${newSelectedNode.parentPath}` : '0';
             var parentIds = parentPath.split(',').filter(id => id);
             if (parentIds.length > 0) {
-                Observable.from(parentIds)
-                    .concatMap(id => {
+                from(parentIds).pipe(
+                    concatMap(id => {
                         if (!this.nodes[id]) {
                             return this.treeService.loadChildren(id);
                         } else {
-                            return Observable.of(this.nodes[id]);
+                            return of(this.nodes[id]);
                         }
-                    }, (id, nodes, outIndex, innerIndex) => [id, nodes])
-                    .map(result => {
+                    }, (id, nodes, outIndex, innerIndex) => [id, nodes]),
+                    map(result => {
                         let nodeId = result[0];
                         let nodes = result[1];
                         if (!this.nodes[nodeId]) this.nodes[nodeId] = nodes;
@@ -110,10 +103,10 @@ export class TreeStore {
                                 this.nodes[parentIds[index - 1]][currentNodeIndex].isExpanded = true;
                         }
                         return index;
-                    }).subscribe(index => {
-                        console.log('pointToSelectedNode: ' + parentIds[index]);
-                    });
-
+                    })
+                ).subscribe(index => {
+                    console.log('pointToSelectedNode: ' + parentIds[index]);
+                });
             }
         }
     }
@@ -142,14 +135,13 @@ export class TreeStore {
     private getNodeChildren(parentId, newNode?: TreeNode): Observable<any> {
         if (this.treeService) {
             if (!parentId) parentId = '0';
-            return this.treeService.loadChildren(parentId)
-                .do(childNodes => {
-                    this.nodes[parentId] = childNodes;
-                    if (newNode) this.nodes[parentId].push(newNode);
-                    this.getTreeNodes(parentId).next(this.nodes[parentId]);
-                });
+            return this.treeService.loadChildren(parentId).pipe(tap(childNodes => {
+                this.nodes[parentId] = childNodes;
+                if (newNode) this.nodes[parentId].push(newNode);
+                this.getTreeNodes(parentId).next(this.nodes[parentId]);
+            }));
         }
-        return Observable.empty();
+        return empty();
     }
 
     fireNodeActions(nodeAction) {

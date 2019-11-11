@@ -1,4 +1,4 @@
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 
 import { Page } from '../models/page.model';
 import { Block } from '../models/block.model';

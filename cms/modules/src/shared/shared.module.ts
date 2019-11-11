@@ -2,9 +2,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule } from '@angular/router';
 
-import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { CmsBsDropdownModule } from './ngx-bootstrap/bs-dropdown.module';
 
 import { CoreModule, DndModule } from '@angular-cms/core';
 
@@ -18,10 +18,10 @@ import { TreeNodeComponent } from './tree/tree-node.component';
         HttpClientModule,
         FormsModule,
         ReactiveFormsModule,
-        CoreModule,
-        BsDropdownModule,
         RouterModule,
-        DndModule
+        CoreModule,
+        DndModule,
+        CmsBsDropdownModule.forRoot()
     ],
     declarations: [
         TreeNodeComponent,

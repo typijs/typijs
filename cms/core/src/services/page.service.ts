@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
 import { Page } from '../models/page.model';
 
@@ -19,7 +19,7 @@ export class PageService {
   getStartPage(): Observable<Page> {
     const startPageUrl = '/'
     return this.http.get<Page>(`/api/page/get-data?url=${startPageUrl}`);
-  } 
+  }
 
   getPageContent(pageId: string): Observable<Page> {
     return this.http.get<Page>(`/api/page/${pageId}`);
@@ -29,7 +29,7 @@ export class PageService {
     return this.http.get<Page>(`/api/page/get-data?url=${linkUrl}`);
   }
 
-  getChildren(parentId: string):  Observable<Page[]> {
+  getChildren(parentId: string): Observable<Page[]> {
     return this.http.get<Page[]>(`/api/page/get-children/${parentId}`);
   }
 }

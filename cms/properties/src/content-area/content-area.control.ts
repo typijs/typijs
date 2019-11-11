@@ -1,13 +1,18 @@
 import { Component, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
-import { generateUUID } from '@angular-cms/core';
+function generateUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
 
 @Component({
     selector: 'content-group',
     template: `
             <ul class="list-group" droppable (onDrop)="onDropItem($event)">
-                <li *ngFor="let item of model;" [draggable] [dragData]="item" class="list-group-item d-flex list-group-item-action justify-content-between align-items-center">
+                <li *ngFor="let item of model;" draggable [dragData]="item" class="list-group-item d-flex list-group-item-action justify-content-between align-items-center">
                     <div>
                         <i class="fa fa-comment fa-fw"></i> {{item.name}}
                         <span class="pull-right text-muted small"><em>{{item.value}}</em>
@@ -73,7 +78,7 @@ export class ContentAreaControl implements ControlValueAccessor {
             item.owner = this.name;
             this._model.splice(e.index, 0, item);
         }
-        
+
         this.onChange(this._model);
     }
 }

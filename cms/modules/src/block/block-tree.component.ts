@@ -1,8 +1,11 @@
-import { Component, Input, ComponentFactoryResolver, Inject, ViewChild, OnDestroy } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { SubjectService, ServiceLocator, Block, BlockService } from '@angular-cms/core';
-import { TreeNode, TreeService, TreeConfig, NodeMenuItemAction, TreeComponent } from '../shared/tree';
+import { TreeNode } from '../shared/tree/tree-node';
+import { TreeComponent } from '../shared/tree/tree.component';
+import { TreeConfig } from '../shared/tree/tree-config';
+import { NodeMenuItemAction } from '../shared/tree/tree-menu';
 import { BlockTreeService } from './block-tree.service';
 
 @Component({
@@ -46,7 +49,7 @@ import { BlockTreeService } from './block-tree.service';
         `
 })
 export class BlockTreeComponent {
-    @ViewChild(TreeComponent) cmsTree: TreeComponent;
+    @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
     blocks: Array<Block>;
 
     root: TreeNode = new TreeNode({ id: '0', name: 'Block' });

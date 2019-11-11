@@ -9,7 +9,7 @@ import { CoreModule, DndModule } from '@angular-cms/core';
 import { SharedModule } from '../shared/shared.module';
 import { BlockTreeComponent } from './block-tree.component';
 import { BlockTreeService } from './block-tree.service';
-import { AngularSplitModule } from '../shared/angular-split';
+import { AngularSplitModule } from '../shared/angular-split/module';
 
 @NgModule({
     imports: [

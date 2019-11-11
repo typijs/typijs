@@ -1,43 +1,16 @@
 {
   "name": "@angular-cms/modules",
-  "version": "1.0.0",
-  "description": "",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
-  "scripts": {
-    "build": "tsc",
-    "build:aot": "ngc"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@angular/common": "^5.0.0",
-    "@angular/compiler": "^5.0.0",
-    "@angular/core": "^5.0.0",
-    "@angular/forms": "^5.0.0",
-    "@angular/http": "^5.0.0",
-    "@angular/platform-browser": "^5.0.0",
-    "@angular/platform-browser-dynamic": "^5.0.0",
-    "@angular/router": "^5.0.0",
-    "@angular-cms/core": "1.0.0",
-    "@angular-cms/properties": "1.0.0",
-    "bootstrap": "4.0.0",
-    "core-js": "^2.4.1",
-    "font-awesome": "^4.7.0",
-    "lodash": "^4.6.0",
-    "ngx-bootstrap": "2.0.0",
-    "reflect-metadata": "^0.1.10",
-    "rxjs": "^5.1.0",
-    "simple-line-icons": "^2.4.1",
-    "zone.js": "^0.8.4"
-  },
-  "devDependencies": {
-    "@angular/compiler-cli": "^5.0.0",
-    "@types/node": "~6.0.60",
-    "@types/lodash": "^4.14.88",
-    "codelyzer": "^4.0.1",
-    "ts-node": "~3.2.0",
-    "tslint": "~5.7.0",
-    "typescript": "~2.4.2"
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/common": "^8.2.13",
+    "@angular/core": "^8.2.13",
+    "@angular/router": "~8.2.13",
+    "@angular/forms": "~8.2.13",
+    "@angular-cms/core": "0.0.1",
+    "@angular-cms/properties": "0.0.1",
+    "ngx-bootstrap": "^5.2.0",
+    "bootstrap": "^4.3.1",
+    "rxjs": "~6.4.0",
+    "reflect-metadata": "^0.1.13"
   }
 }

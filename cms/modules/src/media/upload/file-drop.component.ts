@@ -1,6 +1,4 @@
-import { Component, ChangeDetectionStrategy, ChangeDetectorRef, Output, Input, EventEmitter } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { forkJoin } from "rxjs/observable/forkJoin";
+import { Component, Output, Input, EventEmitter } from '@angular/core';
 import { UploadService } from './upload.service';
 
 @Component({
@@ -9,7 +7,7 @@ import { UploadService } from './upload.service';
         <!--UPLOAD-->
         <form #f="ngForm" enctype="multipart/form-data" novalidate>
             <div class="dropbox">
-                <input type="file"  multiple [name]="uploadFieldName" title=" " (change)="filesChange($event.target.name, $event.target.files)"/>
+                <input type="file"  multiple [name]="uploadFieldName" title=" " (change)="filesChange($event.target.files)"/>
             </div>
         </form>
     `,
@@ -34,7 +32,7 @@ export class FileDropComponent {
         this.reset();
     }
 
-    filesChange(fieldName: string, fileList: FileList) {
+    filesChange(fileList: FileList) {
         if (!fileList.length) return;
         let chooseFiles = [];
         Array.from(Array(fileList.length).keys())

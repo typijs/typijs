@@ -1,23 +1,17 @@
-import { Component, OnInit, ChangeDetectorRef, ViewChild, QueryList, ComponentFactoryResolver, Injector, Inject } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
+import { OnInit, ChangeDetectorRef, ViewChild, QueryList } from '@angular/core';
 import { CmsLayoutComponent } from './shared/cms-layout.component';
 
 import {
-    CMS,
-    UIHint,
     InsertPointDirective,
-    ContentService,
     CmsComponentConfig,
     CmsWidgetPosition,
-    CmsTab,
-    sortTabByTitle
+    CmsTab
 } from '@angular-cms/core';
 
 import { WidgetService } from './services/widget.service';
 
 export abstract class BaseLayoutComponent implements OnInit {
-    @ViewChild(CmsLayoutComponent) private cmsLayout: CmsLayoutComponent;
+    @ViewChild(CmsLayoutComponent, { static: false }) private cmsLayout: CmsLayoutComponent;
 
     private insertPoints: QueryList<InsertPointDirective>;
     private componentRefs: Array<any> = [];
@@ -26,7 +20,7 @@ export abstract class BaseLayoutComponent implements OnInit {
     rightTabs: Array<CmsTab> = [];
     leftTabs: Array<CmsTab> = [];
 
-    constructor(private _changeDetectionRef: ChangeDetectorRef, private widgetService: WidgetService) { 
+    constructor(private _changeDetectionRef: ChangeDetectorRef, private widgetService: WidgetService) {
         this.cmsWidgets = this.getCmsWidgets();
     }
 
