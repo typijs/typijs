@@ -108,6 +108,19 @@ http://www.syntaxsuccess.com/viewarticle/recursive-treeview-in-angular-2.0
 
 https://angular2-tree.readme.io/docs/async-data-1
 
+# Angular Library
+
+https://willtaylor.blog/complete-guide-to-angular-libraries/
+https://medium.com/better-programming/angular-7-series-part-2-create-custom-library-8d7a0494b2cc
+
+# Rxjs migration
+
+https://github.com/ReactiveX/rxjs/blob/master/docs_app/content/guide/v6/migration.md
+
+# Type checking
+
+https://blog.angularindepth.com/type-checking-templates-in-angular-viewengine-and-ivy-77f8536359f5
+
 # Stack:
 Reflect JS library, Decorator Typescript
 Dynamic Form and Component in Angular 5
@@ -117,4 +130,3 @@ Lazy load module
 # Note*:
 Npm link not working with lazy module loader via router
 Take a lot of time to resolve issues of npm link and angular -cli
-

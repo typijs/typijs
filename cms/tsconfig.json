@@ -30,11 +30,32 @@
       ],
       "@angular-cms/properties/*": [
         "dist/properties/*"
+      ],
+      "@angular-cms/modules": [
+        "dist/modules"
+      ],
+      "@angular-cms/modules/*": [
+        "dist/modules/*"
+      ],
+      "@angular-cms/editor": [
+        "dist/editor"
+      ],
+      "@angular-cms/editor/*": [
+        "dist/editor/*"
+      ],
+      "@angular-cms/portal": [
+        "dist/portal"
+      ],
+      "@angular-cms/portal/*": [
+        "dist/portal/*"
       ]
     }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true
-  }
+  },
+  "exclude": [
+    "dist"
+  ]
 }
