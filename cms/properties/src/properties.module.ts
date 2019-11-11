@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
-import { AngularCmsModule, DndModule } from '@angular-cms/core';
+import { CoreModule, DndModule } from '@angular-cms/core';
 
 import { InputComponent } from './input/input.component';
 
@@ -33,8 +33,8 @@ registerCmsProperties();
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
-        AngularCmsModule.forRoot(),
-        DndModule.forRoot()
+        CoreModule,
+        DndModule
     ],
     declarations: [
         InputComponent,

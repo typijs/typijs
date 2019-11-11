@@ -1,8 +1,9 @@
 /*
  * Public API Surface of properties
  */
-export * from './input/input.component';
 
+export * from './input/input.component';
+export * from './select/select-property';
 export * from './content-area/content-area.component';
 export * from './textarea/textarea.component';
 export * from './property-list/property-list.component';

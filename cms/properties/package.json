@@ -4,15 +4,10 @@
   "peerDependencies": {
     "@angular/common": "^8.2.13",
     "@angular/core": "^8.2.13",
-    "@angular/platform-browser": "~8.2.13",
-    "@angular/platform-browser-dynamic": "~8.2.13",
-    "@angular/router": "~8.2.13",
     "@angular/forms": "~8.2.13",
     "@angular-cms/core": "0.0.1",
     "rxjs": "~6.4.0",
-    "reflect-metadata": "^0.1.13"
-  },
-  "dependencies": {
+    "reflect-metadata": "^0.1.13",
     "tinymce": "^5.1.1"
   }
 }
