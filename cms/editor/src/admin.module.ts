@@ -28,7 +28,7 @@ import { } from "reflect-metadata";
         LayoutModule,
         AngularSplitModule,
         CmsTabsModule.forRoot(),
-        DndModule
+        DndModule.forRoot()
     ],
     declarations: [
         CmsLayoutComponent,
