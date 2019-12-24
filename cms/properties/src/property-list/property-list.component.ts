@@ -55,7 +55,7 @@ export class PropertyListComponent extends CmsProperty {
     modelForm: FormGroup = new FormGroup({});
     private _itemType: any;
 
-    @ViewChild(InsertPointDirective, { static: false }) modelEditHost: InsertPointDirective;
+    @ViewChild(InsertPointDirective, { static: true }) modelEditHost: InsertPointDirective;
     @ViewChild(PropertyListControl, { static: false }) propertyGroup: PropertyListControl;
 
     @Input()

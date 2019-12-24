@@ -14,7 +14,7 @@ export const CONFIG = {
     MONGO: {
         DB_HOST: process.env.MONGO_DB_HOST || 'localhost',
         DB_PORT: process.env.MONGO_DB_PORT || '27017',
-        DB_NAME: process.env.MONGO_DB_NAME || 'angularcmsprototype',
+        DB_NAME: process.env.MONGO_DB_NAME || 'angularcms',
         DB_USER: process.env.MONGO_DB_USER,
         DB_PASSWORD: process.env.MONGO_DB_PASSWORD,
     },

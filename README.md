@@ -4,7 +4,7 @@ The cms based on Angular, NodeJs and MongoDB
 
 ## Prerequisites
 Need to install
-* Node
+* Node.js version 10.9.0 or later
 * MongoDB
 
 ## Module dependency
@@ -22,49 +22,29 @@ Need to install
 
 ## How to run in dev mode
 
+### Setup Npm Symlinks
+
 For running examples, we need set up the [symlinks](https://docs.npmjs.com/cli/link.html) between modules as below:
 
 1. Go to `cms-api` folders and run command 
 ```
     npm link
 ``` 
-2. Go to `cms\core` folders and run command 
-```
-    npm link
-```
 
-3. Go to `cms\properties` folder and run command 
-``` 
-    npm link @angular-cms/core
-
-    npm link
-```  
-4. Go to `cms\modules` folder and run commands 
+2. Go to `cms-server` folder and run commands
 
 ```
-    npm link @angular-cms/core @angular-cms/properties
-
-    npm link
-```
-5. Go to `cms\editor` folder and run commands
-
-```
-    npm link @angular-cms/core @angular-cms/properties @angular-cms/modules
-    
-    npm link
-```
-6. Go to `cms\portal` folder and run commands
-
-```
-    npm link @angular-cms/core @angular-cms/properties @angular-cms/modules @angular-cms/editor
+    npm link @angular-cms/api
 ```
 
-7. Go to `cms-examples` folder and run commands
+### Run in Dev Mode
 
+1. Final step, under `cms-server` folder and run command
 ```
-    npm link @angular-cms/api @angular-cms/core @angular-cms/properties @angular-cms/modules @angular-cms/editor
+    npm run dev
 ```
-8. Final step, under `cms-examples` folder and run command
+
+2. Final step, under `cms` folder and run command
 ```
     npm run dev
 ```
@@ -85,4 +65,8 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 ## Acknowledgments
 
 * Inspiration from Episerver
+
+## Notes
+
+
 

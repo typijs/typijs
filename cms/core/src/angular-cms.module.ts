@@ -29,31 +29,7 @@ export class AngularCmsModule {
     }
 
     public static registerCmsRoutes(layoutComponent): Routes {
-        // fix for issue "Cannot read property 'loadchildren' of undefined in angular 5"
-        // The weired fixing way in https://github.com/angular/angular/issues/22700 
-        // return [
-        //     {
-        //         path: 'cms',
-        //         loadChildren: '@angular-cms/portal/src/cms.module#CmsModule',
-        //     },
-        //     {
-        //         path: '',
-        //         component: layoutComponent,
-        //         children: [
-        //             {
-        //                 path: '**',
-        //                 data: { reuse: false },
-        //                 component: CmsRenderContentComponent,
-        //             }
-        //         ]
-        //     }
-        // ];
-
         const cmsRoutes: Routes = [
-            {
-                path: 'cms',
-                loadChildren: '@angular-cms/portal/src/cms.module#CmsModule',
-            },
             {
                 path: '',
                 component: layoutComponent,

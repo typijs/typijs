@@ -1,19 +1,24 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
+import { AngularCmsModule } from '@angular-cms/core';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { LayoutComponent } from './shared/layout/layout.component';
+import * as contentTypes from './registerContentTypes';
 
-import { AngularCmsModule } from '@angular-cms/core';
+AngularCmsModule.registerContentTypes(contentTypes);
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    LayoutComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
-    AngularCmsModule.forRoot()
+    AngularCmsModule.forRoot(),
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]

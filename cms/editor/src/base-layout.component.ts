@@ -36,8 +36,8 @@ export abstract class BaseLayoutComponent implements OnInit {
 
     private creatingWidgets(): Array<any> {
         let componentRefs = [];
-        componentRefs.push(this.widgetService.initWidgets(this.cmsWidgets, this.insertPoints, this.rightTabs, CmsWidgetPosition.Right));
-        componentRefs.push(this.widgetService.initWidgets(this.cmsWidgets, this.insertPoints, this.leftTabs, CmsWidgetPosition.Left));
+        componentRefs.push(...this.widgetService.initWidgets(this.cmsWidgets, this.insertPoints, this.rightTabs, CmsWidgetPosition.Right));
+        componentRefs.push(...this.widgetService.initWidgets(this.cmsWidgets, this.insertPoints, this.leftTabs, CmsWidgetPosition.Left));
         return componentRefs;
     }
 
