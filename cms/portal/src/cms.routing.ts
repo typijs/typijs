@@ -5,6 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { CMS } from '@angular-cms/core';
 import { EditorLayoutComponent, AdminLayoutComponent } from '@angular-cms/editor';
 
+import './cms-module-register';
 import { CmsComponent } from './cms.component';
 
 const cmsRoutes: Routes = [
