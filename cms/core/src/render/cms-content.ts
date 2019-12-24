@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import 'reflect-metadata';
 
 import { PAGE_TYPE_METADATA_KEY } from '../constants/meta-keys';
-import { ContentService } from './../services/content.service';
+import { PageService } from './../services/page.service';
 import { InsertPointDirective } from './../directives/insert-point.directive';
 
 import { CMS } from './../cms';
@@ -22,7 +22,7 @@ export class CmsRenderContentComponent implements OnDestroy {
 
     constructor(
         @Inject(ComponentFactoryResolver) private componentFactoryResolver: ComponentFactoryResolver,
-        private contentService: ContentService,
+        private pageService: PageService,
         private router: Router) { }
 
     ngOnInit() {
@@ -44,7 +44,7 @@ export class CmsRenderContentComponent implements OnDestroy {
 
     private resolveContentDataByUrl() {
         let pathUrl = window.location.pathname;
-        this.contentService.getContentByUrl(pathUrl).subscribe(res => {
+        this.pageService.getPublishedPage(pathUrl).subscribe(res => {
             if (res) {
                 let contentType = CMS.PAGE_TYPES[res.contentType];
                 let metadata = Reflect.getMetadata(PAGE_TYPE_METADATA_KEY, contentType);

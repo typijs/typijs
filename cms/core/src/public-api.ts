@@ -36,7 +36,6 @@ export * from './models/page.model';
 
 export { slugify, sortTabByTitle, uniqueId, clone } from './helpers/common';
 
-export * from './services/content.service';
 export * from './services/block.service';
 export * from './services/page.service';
 export * from './services/subject.service';

@@ -5,7 +5,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { ContentAreaDirective } from './directives/content-area.directive';
 import { InsertPointDirective } from './directives/insert-point.directive';
 
-import { ContentService } from './services/content.service';
 import { BlockService } from './services/block.service';
 import { PageService } from './services/page.service';
 import { MediaService } from './services/media.service';
@@ -30,7 +29,6 @@ import { CmsRenderContentComponent } from './render/cms-content';
     ContentAreaDirective
   ],
   providers: [
-    ContentService,
     BlockService,
     PageService,
     MediaService,
