@@ -4,13 +4,16 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
-import { CmsBsDropdownModule } from './ngx-bootstrap/bs-dropdown.module';
+import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { faBars, faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 
 import { CoreModule, DndModule } from '@angular-cms/core';
 
+import { CmsBsDropdownModule } from './ngx-bootstrap/bs-dropdown.module';
 import { TreeComponent } from './tree/tree.component';
 import { TreeChildrenComponent } from './tree/tree-children.component';
 import { TreeNodeComponent } from './tree/tree-node.component';
+
 
 @NgModule({
     imports: [
@@ -19,6 +22,8 @@ import { TreeNodeComponent } from './tree/tree-node.component';
         FormsModule,
         ReactiveFormsModule,
         RouterModule,
+        FontAwesomeModule,
+
         CoreModule,
         DndModule,
         CmsBsDropdownModule.forRoot()
@@ -32,4 +37,8 @@ import { TreeNodeComponent } from './tree/tree-node.component';
         TreeComponent
     ]
 })
-export class SharedModule { }
+export class SharedModule {
+    constructor(private library: FaIconLibrary) {
+        library.addIcons(faBars, faCaretDown, faCaretRight);
+    }
+}

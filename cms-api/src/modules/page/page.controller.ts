@@ -106,7 +106,7 @@ export class PageCtrl extends ContentCtrl {
 
         return Promise.resolve(null)
       })
-      .then(() => res.status(200))
+      .then(() => res.status(200).json("Update successfully"))
       .catch(error => {
         next(error);
       });

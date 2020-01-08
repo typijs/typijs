@@ -170,21 +170,6 @@
         }
       }
     },
-    "editor": {
-      "projectType": "library",
-      "root": "editor",
-      "sourceRoot": "editor/src",
-      "prefix": "lib",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
-          "options": {
-            "tsConfig": "editor/tsconfig.lib.json",
-            "project": "editor/ng-package.json"
-          }
-        }
-      }
-    },
     "portal": {
       "projectType": "library",
       "root": "portal",

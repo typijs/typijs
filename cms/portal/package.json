@@ -9,11 +9,11 @@
     "@angular-cms/core": "0.0.1",
     "@angular-cms/properties": "0.0.1",
     "@angular-cms/modules": "0.0.1",
-    "@angular-cms/editor": "0.0.1",
-    "ngx-bootstrap": "^5.2.0",
+    "@fortawesome/angular-fontawesome": "^0.5.0",
+    "@fortawesome/fontawesome-svg-core": "^1.2.26",
+    "@fortawesome/free-solid-svg-icons": "^5.12.0",
     "bootstrap": "^4.3.1",
-    "font-awesome": "^4.7.0",
-    "simple-line-icons": "^2.4.1",
+    "ngx-bootstrap": "^5.2.0",
     "rxjs": "~6.4.0",
     "reflect-metadata": "^0.1.13"
   }
