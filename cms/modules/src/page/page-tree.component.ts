@@ -10,28 +10,24 @@ import { PageTreeService } from './page-tree.service';
 
 @Component({
     template: `
-        <li class="nav-item nav-dropdown open">
-            <a class="nav-link">
-                <i class="fa fa-sitemap fa-fw"></i>
-                Pages
-                <span class="badge badge-info" [routerLink]="['new/page']">NEW</span>
-            </a>
-            <ul class="nav-dropdown-items">
-                <li class="nav-item">
-                    <cms-tree 
-                        class="tree-root" 
-                        [root]="root"
-                        [config]="treeConfig"
-                        (nodeSelected)="nodeSelected($event)"
-                        (nodeCreated)="nodeCreated($event)">
-                        <ng-template #treeNodeTemplate let-node>
-                            <i class="fa fa-folder-o"></i>
-                            <span>{{node.name}}</span>
-                        </ng-template>
-                    </cms-tree>
-                </li>
-            </ul>
-        </li>
+    <div>
+        <a class="nav-link">
+            <i class="fa fa-sitemap fa-fw"></i>
+            Pages
+            <span class="badge badge-info" [routerLink]="['new/page']">NEW</span>
+        </a>
+        <cms-tree 
+            class="tree-root" 
+            [root]="root"
+            [config]="treeConfig"
+            (nodeSelected)="nodeSelected($event)"
+            (nodeCreated)="nodeCreated($event)">
+            <ng-template #treeNodeTemplate let-node>
+                <i class="fa fa-folder-o"></i>
+                <span>{{node.name}}</span>
+            </ng-template>
+        </cms-tree>
+    </div>
         `,
     styles: [`
         .tree-root {

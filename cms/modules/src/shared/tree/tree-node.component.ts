@@ -8,8 +8,7 @@ import { NodeMenuItemAction, TreeMenuItem } from './tree-menu';
     selector: 'tree-node',
     template: `
     <div class="node-value" [ngClass]="{'node-selected': node.isSelected}" [draggable] [dragData]="node">
-        <i class="indicator fa" *ngIf="node.hasChildren" [ngClass]="{'fa-caret-right': !node.isExpanded, 'fa-caret-down': node.isExpanded}"
-            (click)="node.expand()"></i>
+        <fa-icon *ngIf="node.hasChildren" [icon]="node.isExpanded ? ['fas', 'caret-down']: ['fas', 'caret-right']" (click)="node.expand()"></fa-icon>
         <div class="no-children" *ngIf="!node.hasChildren"></div>
         <div *ngIf="!shouldShowInputForTreeNode(node)">
             <a href="javascript:void(0)" (click)="selectNode(node)">
@@ -25,7 +24,7 @@ import { NodeMenuItemAction, TreeMenuItem } from './tree-menu';
         </div>
 
         <div *ngIf="menuItems" class="node-menu" dropdown>
-            <i class="fa fa-bars" dropdownToggle></i>
+            <fa-icon [icon]="['fas', 'bars']" dropdownToggle></fa-icon>
             <div class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
                 <a *ngFor="let menuItem of menuItems" class="dropdown-item" href="javascript:void(0)" (click)="menuItemSelected(menuItem.action, node)">
                     {{menuItem.name}}
