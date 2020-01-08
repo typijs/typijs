@@ -37,12 +37,6 @@
       "@angular-cms/modules/*": [
         "dist/modules/*"
       ],
-      "@angular-cms/editor": [
-        "dist/editor"
-      ],
-      "@angular-cms/editor/*": [
-        "dist/editor/*"
-      ],
       "@angular-cms/portal": [
         "dist/portal"
       ],

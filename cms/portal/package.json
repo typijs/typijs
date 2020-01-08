@@ -9,7 +9,6 @@
     "@angular-cms/core": "0.0.1",
     "@angular-cms/properties": "0.0.1",
     "@angular-cms/modules": "0.0.1",
-    "@angular-cms/editor": "0.0.1",
     "ngx-bootstrap": "^5.2.0",
     "bootstrap": "^4.3.1",
     "font-awesome": "^4.7.0",
