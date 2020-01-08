@@ -1,0 +1,33 @@
+<div class="cms-layout app header-fixed">
+    <cms-header>
+        <ng-template [cmsInsertPoint]="'top'"></ng-template>
+    </cms-header>
+    <div class="app-body">
+        <as-split gutterSize="1">
+            <as-split-area size="30">
+                <tabset class="tab-container-left">
+                    <tab *ngFor="let tabz of leftTabs" [heading]="tabz.title">
+                        <ng-template [cmsInsertPoint]="tabz.content"></ng-template>
+                    </tab>
+                </tabset>
+            </as-split-area>
+            <as-split-area size="40">
+                <!-- Main content -->
+                <main class="main">
+                    <div class="container-fluid">
+                        <router-outlet></router-outlet>
+                    </div>
+                    <!-- /.conainer-fluid -->
+                </main>
+            </as-split-area>
+            <as-split-area size="30">
+                <tabset class="tab-container-right">
+                    <tab *ngFor="let tabz of rightTabs" [heading]="tabz.title">
+                        <ng-template [cmsInsertPoint]="tabz.content"></ng-template>
+                    </tab>
+                </tabset>
+            </as-split-area>
+        </as-split>
+    </div>
+    <cms-footer></cms-footer>
+</div>
