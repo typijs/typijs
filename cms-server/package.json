@@ -7,7 +7,7 @@
     "build": "tsc",
     "watch": "tsc -w",
     "serve": "node dist/server.js",
-    "dev": "concurrently \"mongod --dbpath D:/ProgramData/MongoDB/data/db\" \"tsc -w ../cms-api\" \"nodemon --inspect --watch ../cms-api/dist dist/server.js\"",
+    "dev": "concurrently \"mongod --dbpath D:/ProgramData/MongoDB/data/db\" \"tsc -w -p ../cms-api\" \"nodemon --inspect --watch ../cms-api/dist dist/server.js\"",
     "prod": "concurrently \"mongod\" \"tsc -p server && node dist/server.js\""
   },
   "author": "danghung1202@gmail.com",
