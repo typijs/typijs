@@ -4,12 +4,19 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { CoreModule, CMS } from '@angular-cms/core';
+import { CoreModule, DndModule, CMS } from '@angular-cms/core';
 import { PropertiesModule } from '@angular-cms/properties';
-import { AdminModule } from '@angular-cms/editor';
+import { AngularSplitModule, CmsTabsModule, CmsBsDropdownModule } from '@angular-cms/modules';
 
 import { CmsComponent } from './cms.component';
 import { CmsRoutingModule } from './cms.routing';
+import { CmsLayoutComponent } from './shared/components/cms-layout/cms-layout.component';
+import { EditorLayoutComponent } from './editor-layout/editor-layout.component';
+import { AdminLayoutComponent } from './admin-layout/admin-layout.component';
+import { WidgetService } from './services/widget.service';
+import { CmsHeaderComponent } from './shared/components/cms-header/cms-header.component';
+import { CmsFooterComponent } from './shared/components/cms-footer/cms-footer.component';
+import { ReplaceDirective } from './shared/directives/replace/replace.directive';
 
 @NgModule({
   imports: [
@@ -17,12 +24,27 @@ import { CmsRoutingModule } from './cms.routing';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
+
     CoreModule,
     PropertiesModule,
-    AdminModule,
+    AngularSplitModule,
+
+    CmsTabsModule.forRoot(),
+    CmsBsDropdownModule.forRoot(),
+    DndModule.forRoot(),
+
     CmsRoutingModule,
     ...CMS.NG_MODULES
   ],
-  declarations: [CmsComponent]
+  declarations: [
+    CmsComponent,
+    CmsLayoutComponent,
+    CmsHeaderComponent,
+    CmsFooterComponent,
+    ReplaceDirective,
+    EditorLayoutComponent,
+    AdminLayoutComponent
+  ],
+  providers: [WidgetService]
 })
 export class CmsModule { }
