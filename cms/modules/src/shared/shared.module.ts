@@ -5,7 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
-import { faBars, faCaretDown, faCaretRight } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faCaretDown, faCaretRight, faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 
 import { CoreModule, DndModule } from '@angular-cms/core';
 
@@ -39,6 +39,6 @@ import { TreeNodeComponent } from './tree/tree-node.component';
 })
 export class SharedModule {
     constructor(private library: FaIconLibrary) {
-        library.addIcons(faBars, faCaretDown, faCaretRight);
+        library.addIcons(faBars, faCaretDown, faCaretRight, faMinusSquare, faPlusSquare);
     }
 }

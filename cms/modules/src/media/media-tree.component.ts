@@ -18,23 +18,18 @@ import { UploadService } from './upload/upload.service';
             </div>
             <as-split direction="vertical" gutterSize="4">
                 <as-split-area size="50">
-                    <div class="nav-item nav-dropdown open media-content">
-                        <ul class="nav-dropdown-items">
-                            <li class="nav-item">
-                                <cms-tree 
-                                    class="tree-root" 
-                                    [root]="root"
-                                    [config]="treeConfig"
-                                    (nodeSelected)="folderSelected($event)"
-                                    (nodeInlineCreated)="createMediaFolder($event)">
-                                    <ng-template #treeNodeTemplate let-node>
-                                        <i class="fa fa-folder-o"></i>
-                                        <span>{{node.name}}</span>
-                                    </ng-template>
-                                </cms-tree>
-                            </li>
-                        </ul>
-                    </div>
+                    <cms-tree 
+                        class="tree-root pl-1 pt-2 d-block" 
+                        [root]="root"
+                        [config]="treeConfig"
+                        (nodeSelected)="folderSelected($event)"
+                        (nodeInlineCreated)="createMediaFolder($event)">
+                        <ng-template #treeNodeTemplate let-node>
+                            <fa-icon class="mr-1" *ngIf="node.id == 0" [icon]="['fas', 'photo-video']"></fa-icon>
+                            <fa-icon class="mr-1" *ngIf="node.id != 0" [icon]="['fas', 'folder']"></fa-icon>
+                            <span class="node-name">{{node.name}}</span>
+                        </ng-template>
+                    </cms-tree>
                 </as-split-area>
                 <as-split-area size="50">
                     <div class="media-content list-group"  *ngIf="medias" #mediaItem>
@@ -77,7 +72,7 @@ export class MediaTreeComponent {
     @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
     medias: Array<Media>;
 
-    root: TreeNode = new TreeNode({ id: '0', name: 'Media' });
+    root: TreeNode = new TreeNode({ id: '0', name: 'Media', hasChildren: true });
     treeConfig: TreeConfig = {
         service: ServiceLocator.Instance.get(MediaTreeService),
         menuItems: [

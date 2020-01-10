@@ -7,8 +7,10 @@ import { ContentCtrl } from '../content';
 
 import { NotFoundException } from '../../errorHandling';
 
-export class PageCtrl extends ContentCtrl {
-  model = Page;
+export class PageCtrl extends ContentCtrl<IPageModel> {
+
+  constructor() { super(Page); }
+
   pageVersion = PageVersion;
 
   get = (req, res, next) => {

@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
+import { EditorModule } from '@tinymce/tinymce-angular';
 import { CoreModule, DndModule } from '@angular-cms/core';
 
 import { InputComponent } from './input/input.component';
@@ -11,7 +12,6 @@ import { TextareaComponent } from './textarea/textarea.component';
 import { PropertyListComponent } from './property-list/property-list.component';
 import { PropertyListControl } from './property-list/property-list.control';
 
-import { HiddenInputControl } from './xhtml/hidden-input';
 import { TinymceComponent } from './xhtml/tinymce.component';
 import { DropdownComponent } from './select/dropdown/dropdown.component';
 
@@ -33,6 +33,7 @@ registerCmsProperties();
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
+        EditorModule,
         CoreModule,
         DndModule
     ],
@@ -44,7 +45,6 @@ registerCmsProperties();
         CheckboxComponent,
         PropertyListControl,
         PropertyListComponent,
-        HiddenInputControl,
         TinymceComponent,
         ContentAreaComponent,
         ContentAreaControl,

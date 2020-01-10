@@ -17,8 +17,8 @@ fsAsync.existsAsync = Bluebird.promisify(
         fs.exists(path, function callbackWrapper(exists) { exists2callback(null, exists); });
     });
 
-export class MediaCtrl extends ContentCtrl {
-    model = Media;
+export class MediaCtrl extends ContentCtrl<IMediaModel> {
+    constructor() { super(Media); }
 
     getMediasByFolder = (req, res, next) => {
         let parentId = req.params.parentId != '0' ? req.params.parentId : null;

@@ -10,36 +10,38 @@ import { PageTreeService } from './page-tree.service';
 
 @Component({
     template: `
-    <div>
-        <a class="nav-link">
-            <i class="fa fa-sitemap fa-fw"></i>
-            Pages
-            <span class="badge badge-info" [routerLink]="['new/page']">NEW</span>
-        </a>
         <cms-tree 
-            class="tree-root" 
+            class="tree-root pl-1 pt-2 d-block" 
             [root]="root"
             [config]="treeConfig"
             (nodeSelected)="nodeSelected($event)"
             (nodeCreated)="nodeCreated($event)">
             <ng-template #treeNodeTemplate let-node>
-                <i class="fa fa-folder-o"></i>
-                <span>{{node.name}}</span>
+                <span [ngClass]="{'page-node': node.id != 0}">
+                    <fa-icon class="mr-1" *ngIf="node.id == 0" [icon]="['fas', 'sitemap']"></fa-icon>
+                    <fa-icon class="mr-1" *ngIf="node.id != 0" [icon]="['fas', 'file']"></fa-icon>
+                    <span>{{node.name}}</span>
+                    <span *ngIf="node.id == 0" class="badge badge-info float-right mt-2 mr-1" [routerLink]="['new/page']">NEW</span>
+                </span>
             </ng-template>
         </cms-tree>
-    </div>
         `,
     styles: [`
-        .tree-root {
-            margin-left: 10px;
-            display:block;
+        .page-node {
+            width: calc(100% - 20px);
+            cursor: pointer;
+            display: inline-block;
         }
-        `]
+
+        .page-node:hover {
+            font-weight: bold;
+        }
+  `]
 })
 export class PageTreeComponent {
     @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
 
-    root: TreeNode = new TreeNode({ id: '0' });
+    root: TreeNode = new TreeNode({ id: '0', name: 'Root', hasChildren: true });
     treeConfig: TreeConfig = {
         service: ServiceLocator.Instance.get(PageTreeService),
         menuItems: [

@@ -6,7 +6,7 @@ import { LayoutComponent } from './shared/layout/layout.component';
 const routes: Routes = [
   {
     path: 'cms',
-    loadChildren: './shared/portal/portal.module#PortalModule'
+    loadChildren: () => import('./portal/portal.module').then(m => m.PortalModule)
   }
 ]
 //fix for error: Angular CLI ERROR in Cannot read property 'loadChildren' of null

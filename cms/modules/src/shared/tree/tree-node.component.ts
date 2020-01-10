@@ -7,24 +7,24 @@ import { NodeMenuItemAction, TreeMenuItem } from './tree-menu';
 @Component({
     selector: 'tree-node',
     template: `
-    <div class="node-value" [ngClass]="{'node-selected': node.isSelected}" [draggable] [dragData]="node">
-        <fa-icon *ngIf="node.hasChildren" [icon]="node.isExpanded ? ['fas', 'caret-down']: ['fas', 'caret-right']" (click)="node.expand()"></fa-icon>
-        <div class="no-children" *ngIf="!node.hasChildren"></div>
-        <div *ngIf="!shouldShowInputForTreeNode(node)">
-            <a href="javascript:void(0)" (click)="selectNode(node)">
-                <span *ngIf="!templates.treeNodeTemplate">{{ node.name }}</span>
-                <ng-container   [ngTemplateOutlet]="templates.treeNodeTemplate" 
-                                [ngTemplateOutletContext]="{ $implicit: node, node: node}">
-                </ng-container>
-            </a>
-        </div>
+    <div class="node-value" [ngClass]="{'node-selected': node.isSelected}" [draggable]="node.id != 0" [dragData]="node">
+        <span *ngIf="node.hasChildren && node.id != 0" class="tree-icon mr-2 d-inline-block">
+            <fa-icon [icon]="node.isExpanded ? ['fas', 'minus-square']: ['fas', 'plus-square']" (click)="node.expand()"></fa-icon>
+        </span>
+        <span *ngIf="!node.hasChildren" class="no-children mr-2"></span>
+        <span *ngIf="!shouldShowInputForTreeNode(node)" (click)="selectNode(node)">
+            <span *ngIf="!templates?.treeNodeTemplate">{{ node.name }}</span>
+            <ng-container   [ngTemplateOutlet]="templates.treeNodeTemplate" 
+                            [ngTemplateOutletContext]="{ $implicit: node, node: node}">
+            </ng-container>
+        </span>
         
         <div *ngIf="shouldShowInputForTreeNode(node)">
             <input autofocus type="text" class="form-control" (blur)="nodeOnBlur(node)" [(ngModel)]="node.name"/>
         </div>
 
-        <div *ngIf="menuItems" class="node-menu" dropdown>
-            <fa-icon [icon]="['fas', 'bars']" dropdownToggle></fa-icon>
+        <div *ngIf="menuItems && node.id != 0" class="node-menu" dropdown>
+            <fa-icon class="mr-1" [icon]="['fas', 'bars']" dropdownToggle></fa-icon>
             <div class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
                 <a *ngFor="let menuItem of menuItems" class="dropdown-item" href="javascript:void(0)" (click)="menuItemSelected(menuItem.action, node)">
                     {{menuItem.name}}
@@ -57,6 +57,7 @@ export class TreeNodeComponent {
     }
 
     selectNode(node: TreeNode) {
+        if (node.id == '0') return;
         this.selectNodeEvent.emit(node);
     }
 

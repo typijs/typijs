@@ -3,14 +3,15 @@ import { Subscription } from 'rxjs';
 
 import { TreeStore } from './tree-store';
 import { TreeNode } from './tree-node';
-import { TreeConfig } from './tree-config';
+import { TreeConfig, TreeNodeTemplate } from './tree-config';
 
 @Component({
     selector: 'cms-tree',
     template: `
             <div class="tree">
                 <div class="tree-item">
-                    <tree-node  
+                    <tree-node 
+                        class="node-root"
                         [node]="root" 
                         [config]="config" 
                         [templates]="templates"
@@ -31,8 +32,8 @@ import { TreeConfig } from './tree-config';
 })
 export class TreeComponent implements OnInit {
 
-    @ContentChild('treeNodeTemplate', { static: false }) treeNodeTemplate: TemplateRef<any>;
-    @ContentChild('loadingTemplate', { static: false }) loadingTemplate: TemplateRef<any>;
+    @ContentChild('treeNodeTemplate', { static: true }) treeNodeTemplate: TemplateRef<any>;
+    @ContentChild('loadingTemplate', { static: true }) loadingTemplate: TemplateRef<any>;
 
     @Input() config: TreeConfig;
     @Input() root: TreeNode;
@@ -47,14 +48,15 @@ export class TreeComponent implements OnInit {
     @Output() nodeDeleted: EventEmitter<any> = new EventEmitter();
 
     private subscriptions: Subscription[] = [];
-    public templates: any = {
-        loadingTemplate: this.loadingTemplate,
-        treeNodeTemplate: this.treeNodeTemplate
-    };
+    public templates: TreeNodeTemplate;
 
     constructor(private store: TreeStore) { }
 
     ngOnInit() {
+        this.templates = {
+            loadingTemplate: this.loadingTemplate,
+            treeNodeTemplate: this.treeNodeTemplate
+        }
         if (this.config) {
             this.store.treeService = this.config.service;
 
