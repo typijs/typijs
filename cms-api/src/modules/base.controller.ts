@@ -1,8 +1,13 @@
 import * as express from 'express';
+import * as mongoose from 'mongoose';
 
-abstract class BaseCtrl {
+abstract class BaseCtrl<T extends mongoose.Model<mongoose.Document>> {
 
-  abstract model: any;
+  constructor(mongooseModel: T) {
+    this.model = mongooseModel;
+  }
+
+  model: T;
 
   // Get all
   getAll = (req: express.Request, res: express.Response, next: express.NextFunction) => {

@@ -1,10 +1,11 @@
 import * as express from 'express';
+import * as mongoose from 'mongoose';
 
 import { BaseCtrl } from '../base.controller';
 import { IContentModel } from './content.model';
 import { NotFoundException } from '../../errorHandling';
 
-export abstract class ContentCtrl extends BaseCtrl {
+export abstract class ContentCtrl<T extends IContentModel> extends BaseCtrl<mongoose.Model<T>> {
   //Create new folder
   createContent = (req, res, next) => {
     const mediaObj = new this.model(req.body);
