@@ -12,29 +12,22 @@ import { BlockTreeService } from './block-tree.service';
     template: `
     <as-split direction="vertical" gutterSize="4">
         <as-split-area size="50">
-            <div class="nav-item nav-dropdown open">
-                <a class="nav-link">
-                    <i class="fa fa-sitemap fa-fw"></i>
-                    Blocks
-                    <span class="badge badge-info" [routerLink]="['new/block']">NEW</span>
-                </a>
-                <ul class="nav-dropdown-items">
-                    <li class="nav-item">
-                        <cms-tree 
-                            class="tree-root" 
-                            [root]="root"
-                            [config]="treeConfig"
-                            (nodeSelected)="folderSelected($event)"
-                            (nodeCreated)="nodeCreated($event)"
-                            (nodeInlineCreated)="createBlockFolder($event)">
-                            <ng-template #treeNodeTemplate let-node>
-                                <i class="fa fa-folder-o"></i>
-                                <span>{{node.name}}</span>
-                            </ng-template>
-                        </cms-tree>
-                    </li>
-                </ul>
-            </div>
+            <cms-tree 
+                class="tree-root pl-1 pt-2 d-block" 
+                [root]="root"
+                [config]="treeConfig"
+                (nodeSelected)="folderSelected($event)"
+                (nodeCreated)="nodeCreated($event)"
+                (nodeInlineCreated)="createBlockFolder($event)">
+                <ng-template #treeNodeTemplate let-node>
+                    <span [ngClass]="{'block-node': node.id != 0}">
+                        <fa-icon class="mr-1" *ngIf="node.id == 0" [icon]="['fas', 'cubes']"></fa-icon>
+                        <fa-icon class="mr-1" *ngIf="node.id != 0" [icon]="['fas', 'folder']"></fa-icon>
+                        <span class="node-name">{{node.name}}</span>
+                        <span *ngIf="node.id == 0" class="badge badge-info float-right mt-2 mr-1" [routerLink]="['new/block']">NEW</span>
+                    </span>
+                </ng-template>
+            </cms-tree>
         </as-split-area>
         <as-split-area size="50">
             <div>
@@ -46,13 +39,24 @@ import { BlockTreeService } from './block-tree.service';
             </div>
         </as-split-area>
     </as-split>
-        `
+        `,
+    styles: [`
+        .block-node {
+            width: calc(100% - 20px);
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .block-node:hover {
+            font-weight: bold;
+        }
+  `]
 })
 export class BlockTreeComponent {
     @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
     blocks: Array<Block>;
 
-    root: TreeNode = new TreeNode({ id: '0', name: 'Block' });
+    root: TreeNode = new TreeNode({ id: '0', name: 'Block', hasChildren: true });
     treeConfig: TreeConfig = {
         service: ServiceLocator.Instance.get(BlockTreeService),
         menuItems: [

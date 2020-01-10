@@ -24,27 +24,11 @@ input {
 }
 
 /* Draggable*/
-
 .drag-border {
-  border: #ff525b dashed 2px;
-}
-
-.drag-handle {
-  cursor: move;
-  /* fallback if grab cursor is unsupported */
-  cursor: grab;
-  cursor: -moz-grab;
-  cursor: -webkit-grab;
-}
-
-.drag-handle:active {
-  cursor: grabbing;
-  cursor: -moz-grabbing;
-  cursor: -webkit-grabbing;
+  border: #f57c82 dashed 2px;
 }
 
 /* Droppable */
-
 .drag-hint-border {
   border: #3c763d dashed 1px;
   min-height: 20px;
@@ -56,7 +40,6 @@ input {
 }
 
 /* Sortable */
-
 .drag-over-expand {
   transition: all .2s ease-in-out;
   transform: scale(1.05);

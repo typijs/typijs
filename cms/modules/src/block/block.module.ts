@@ -6,10 +6,14 @@ import { RouterModule } from '@angular/router';
 
 import { CoreModule, DndModule } from '@angular-cms/core';
 
+import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { faFolder, faCubes } from '@fortawesome/free-solid-svg-icons';
+
 import { SharedModule } from '../shared/shared.module';
 import { BlockTreeComponent } from './block-tree.component';
 import { BlockTreeService } from './block-tree.service';
 import { AngularSplitModule } from '../shared/angular-split/module';
+
 
 @NgModule({
     imports: [
@@ -17,6 +21,7 @@ import { AngularSplitModule } from '../shared/angular-split/module';
         HttpClientModule,
         FormsModule,
         ReactiveFormsModule,
+        FontAwesomeModule,
         CoreModule,
         SharedModule,
         RouterModule,
@@ -34,4 +39,8 @@ import { AngularSplitModule } from '../shared/angular-split/module';
     ],
     providers: [BlockTreeService]
 })
-export class BlockModule { }
+export class BlockModule {
+    constructor(private library: FaIconLibrary) {
+        library.addIcons(faFolder, faCubes);
+    }
+}

@@ -4,6 +4,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
+import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { faFolder, faPhotoVideo } from '@fortawesome/free-solid-svg-icons';
+
 import { CmsProgressbarModule } from '../shared/ngx-bootstrap/progressbar.module';
 
 import { CoreModule, DndModule } from '@angular-cms/core';
@@ -25,6 +28,7 @@ import { DragLeaveDirective } from './upload/drag-leave.directive';
         HttpClientModule,
         FormsModule,
         ReactiveFormsModule,
+        FontAwesomeModule,
         CoreModule,
         SharedModule,
         RouterModule,
@@ -47,4 +51,8 @@ import { DragLeaveDirective } from './upload/drag-leave.directive';
     ],
     providers: [MediaTreeService, UploadService]
 })
-export class MediaModule { }
+export class MediaModule {
+    constructor(private library: FaIconLibrary) {
+        library.addIcons(faFolder, faPhotoVideo);
+    }
+}

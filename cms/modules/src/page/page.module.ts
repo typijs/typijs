@@ -11,6 +11,8 @@ import { PageTreeComponent } from './page-tree.component';
 import { PageTreeReadonlyComponent } from './page-tree-readonly.component';
 import { ContentModule } from '../content/content.module';
 import { PageTreeService } from './page-tree.service';
+import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { faFolder, faFile, faSitemap } from '@fortawesome/free-solid-svg-icons';
 
 @NgModule({
     imports: [
@@ -18,6 +20,7 @@ import { PageTreeService } from './page-tree.service';
         HttpClientModule,
         FormsModule,
         ReactiveFormsModule,
+        FontAwesomeModule,
         CoreModule,
         ContentModule,
         SharedModule,
@@ -39,7 +42,8 @@ import { PageTreeService } from './page-tree.service';
     providers: [PageTreeService]
 })
 export class PageModule {
-    constructor(injector: Injector) {
+    constructor(private injector: Injector, private library: FaIconLibrary) {
         setAppInjector(injector);
+        library.addIcons(faFolder, faSitemap, faFile);
     }
 }
