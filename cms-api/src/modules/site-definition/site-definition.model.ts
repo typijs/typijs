@@ -1,14 +1,17 @@
 import * as mongoose from 'mongoose';
-import { ISiteDefinition } from './site-definition.interface';
+import { cmsPublishedPage, IPublishedPage } from '../page/models/published-page.model';
 
-export interface ISiteDefinitionModel extends ISiteDefinition, mongoose.Document { }
+export interface ISiteDefinition {
+    startPage: IPublishedPage;
+    siteUrl: string;
+}
+
+export interface ISiteDefinitionDocument extends ISiteDefinition, mongoose.Document { }
 
 const siteDefinitionSchema = new mongoose.Schema({
-    startPage: { type: mongoose.Schema.Types.ObjectId, ref: 'cmsPage' },
+    startPage: { type: mongoose.Schema.Types.ObjectId, ref: cmsPublishedPage },
     siteUrl: { type: String, unique: true, trim: true, lowercase: true },
+}, { timestamps: true });
 
-    created: { type: Date, default: Date.now },
-    changed: { type: Date, default: Date.now }
-});
-
-export const SiteDefinition: mongoose.Model<ISiteDefinitionModel> = mongoose.model<ISiteDefinitionModel>('cmsSiteDefinition', siteDefinitionSchema);
+export const cmsSiteDefinition = 'cms_SiteDefinition';
+export const SiteDefinitionModel: mongoose.Model<ISiteDefinitionDocument> = mongoose.model<ISiteDefinitionDocument>(cmsSiteDefinition, siteDefinitionSchema);
