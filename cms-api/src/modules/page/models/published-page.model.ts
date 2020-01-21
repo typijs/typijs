@@ -1,17 +1,18 @@
 import * as mongoose from 'mongoose';
-import { cmsPageVersion, IPageVersion, PageVersionSchema } from './page-version.model';
+import { cmsPageVersion, IPageVersion, PageVersionSchema, IPageVersionDocument } from './page-version.model';
+import { IPublishedContentDocument, IPublishedContent } from '../../content/content.model';
+import { IPageDocument } from './page.model';
 
-export interface IPublishedPage extends IPageVersion {
-    pageVersionId: any;
+export interface IPublishedPage extends IPageVersion, IPublishedContent {
     publishedLinkUrl?: string;
 }
 
-export interface IPublishedPageDocument extends IPublishedPage, mongoose.Document { }
+export interface IPublishedPageDocument extends IPublishedPage, IPageVersionDocument, IPublishedContentDocument { }
 export const cmsPublishedPage = 'cms_PublishedPage'
 
 const PublishedPageSchema = new mongoose.Schema({
     ...PageVersionSchema.obj,
-    pageVersionId: { type: mongoose.Schema.Types.ObjectId, ref: cmsPageVersion, required: true },
+    contentVersionId: { type: mongoose.Schema.Types.ObjectId, ref: cmsPageVersion, required: true },
 
 }, { timestamps: true });
 

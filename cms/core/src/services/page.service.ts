@@ -16,9 +16,13 @@ export class PageService {
     return this.http.put(`/api/page/${pageData._id}`, pageData, { responseType: 'text' });
   }
 
+  deletePage(id: string): Observable<Page> {
+    return this.http.delete<Page>(`/api/page/${id}`)
+  }
+
   getStartPage(): Observable<Page> {
-    const startPageUrl = '/'
-    return this.http.get<Page>(`/api/page/get-data?url=${startPageUrl}`);
+    const startPageUrl = 'http://localhost:4200'
+    return this.http.get<Page>(`/api/page/published?url=${startPageUrl}`);
   }
 
   getPageContent(pageId: string): Observable<Page> {
@@ -26,10 +30,10 @@ export class PageService {
   }
 
   getPublishedPage(linkUrl: string): Observable<Page> {
-    return this.http.get<Page>(`/api/page/get-data?url=${linkUrl}`);
+    return this.http.get<Page>(`/api/page/published?url=${linkUrl}`);
   }
 
   getChildren(parentId: string): Observable<Page[]> {
-    return this.http.get<Page[]>(`/api/page/get-children/${parentId}`);
+    return this.http.get<Page[]>(`/api/page/children/${parentId}`);
   }
 }

@@ -1,8 +1,8 @@
 import * as mongoose from 'mongoose';
 
-import { IContentDocument, IContent, ContentSchema, RefContent, ContentHasChildItemsSchema, IContentHasChildItems } from '../../content';
+import { IContentDocument, ContentSchema, ContentHasChildItemsSchema, IContentHasChildItems, IContent } from '../../content/content.model';
 
-export interface IPage extends IContent, IContentHasChildItems {
+export interface IPage extends IContentHasChildItems, IContent {
   urlSegment: string;
   linkUrl: string;
 

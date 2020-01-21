@@ -1,23 +1,18 @@
 import * as express from 'express';
 
-import { ContentCtrl } from '../content';
+import { ContentCtrl } from '../content/content.controller';
 import { PageService } from './page.service';
 
 import { PageModel, IPageDocument } from './models/page.model';
+import { IPageVersionDocument, PageVersionModel } from './models/page-version.model';
+import { PublishedPageModel, IPublishedPageDocument } from './models/published-page.model';
 
-export class PageCtrl extends ContentCtrl<IPageDocument> {
-
-  constructor() {
-    super(PageModel);
-    this.pageService = new PageService();
-  }
+export class PageCtrl extends ContentCtrl<IPageDocument, IPageVersionDocument, IPublishedPageDocument> {
 
   private pageService: PageService;
-
-  get = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    this.pageService.getPopulatedContentById(req.params.id)
-      .then(item => res.status(200).json(item))
-      .catch(err => next(err));
+  constructor() {
+    super(PageModel, PageVersionModel, PublishedPageModel);
+    this.pageService = new PageService();
   }
 
   getByUrl = (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -51,14 +46,10 @@ export class PageCtrl extends ContentCtrl<IPageDocument> {
   update = (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const pageDocument = this.pageService.createModelInstance(req.body);
 
-    this.pageService.updateAndPublishPage(req.params.id, pageDocument)
+    this.pageService.updateAndPublishContent<IPageDocument>(req.params.id, pageDocument)
       .then((savedPage: IPageDocument) => res.status(200).json(savedPage))
       .catch(error => next(error));
   }
 
-  delete = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    this.pageService.beginDeletePageFlow(req.params.id)
-      .then((savedPage: IPageDocument) => res.status(200).json(savedPage))
-      .catch(error => next(error));
-  }
+
 }

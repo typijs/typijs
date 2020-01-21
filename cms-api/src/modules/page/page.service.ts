@@ -1,27 +1,17 @@
 import * as mongoose from 'mongoose';
 import { ContentService } from '../content/content.service';
 
-import { IPageDocument, PageModel, cmsPage } from "./models/page.model";
-import { IPageVersionDocument, IPageVersion, PageVersionModel } from "./models/page-version.model";
-import { IPublishedPageDocument, IPublishedPage, PublishedPageModel, cmsPublishedPage } from './models/published-page.model';
-import { ISiteDefinitionModel, SiteDefinition } from '../site-definition/site-definition.model';
-import { RefContent } from '../content';
-import { cmsBlock } from '../block/models/block.model';
-import { cmsMedia } from '../media/media.model';
-import { cmsPublishedBlock } from '../block/models/published-block.model';
+import { IPageDocument, PageModel } from "./models/page.model";
+import { IPageVersionDocument, PageVersionModel } from "./models/page-version.model";
+import { IPublishedPageDocument, PublishedPageModel } from './models/published-page.model';
+import { ISiteDefinitionDocument, SiteDefinitionModel } from '../site-definition/site-definition.model';
 
-export class PageService extends ContentService<IPageDocument> {
-    private pageModel: mongoose.Model<IPageDocument>;
-    private pageVersionModel: mongoose.Model<IPageVersionDocument>;
-    private publishedPageModel: mongoose.Model<IPublishedPageDocument>;
-    private siteDefinitionModel: mongoose.Model<ISiteDefinitionModel>;
+export class PageService extends ContentService<IPageDocument, IPageVersionDocument, IPublishedPageDocument> {
 
+    private siteDefinitionModel: mongoose.Model<ISiteDefinitionDocument>
     constructor() {
-        super(PageModel);
-        this.pageModel = PageModel;
-        this.pageVersionModel = PageVersionModel;
-        this.publishedPageModel = PublishedPageModel;
-        this.siteDefinitionModel = SiteDefinition;
+        super(PageModel, PageVersionModel, PublishedPageModel);
+        this.siteDefinitionModel = SiteDefinitionModel;
     }
 
     public getPublishedPageByUrl = (url: string): Promise<IPublishedPageDocument> => {
@@ -34,7 +24,7 @@ export class PageService extends ContentService<IPageDocument> {
         const pathUrl = urlObj.pathname; // --> /abc/xyz
 
         return this.getSiteDefinitionBySiteUrl(originalUrl)
-            .then((site: ISiteDefinitionModel) => site.startPage.linkUrl)
+            .then((site: ISiteDefinitionDocument) => site.startPage.linkUrl)
             .then((startPageLinkUrl: string) => this.getPublishedPageByLinkUrl(`${startPageLinkUrl}${pathUrl}`))
             .then((publishedPage: IPublishedPageDocument) => publishedPage ?
                 Promise.resolve(publishedPage) :
@@ -45,7 +35,7 @@ export class PageService extends ContentService<IPageDocument> {
     public getPageChildren = (parentId: string): Promise<IPageDocument[]> => {
         if (parentId == '0') parentId = null;
 
-        return this.pageModel.find({ parentId: parentId, isDeleted: false }).exec()
+        return this.contentModel.find({ parentId: parentId, isDeleted: false }).exec()
     }
 
     public getPublishedPageChildren = (parentId: string): Promise<IPublishedPageDocument[]> => {
@@ -53,10 +43,10 @@ export class PageService extends ContentService<IPageDocument> {
 
         //Todo: Temporary get first site definition
         return this.getSiteDefinitionBySiteUrl(null)
-            .then((site: ISiteDefinitionModel) => site.startPage.linkUrl)
+            .then((site: ISiteDefinitionDocument) => site.startPage.linkUrl)
             .then((startPageLinkUrl: string) => Promise.all([
                 Promise.resolve(startPageLinkUrl),
-                this.publishedPageModel.find({ parentId: parentId, isDeleted: false }).exec()
+                this.publishedContentModel.find({ parentId: parentId, isDeleted: false }).exec()
             ]))
             .then(([startPageLinkUrl, publishedPages]: [string, IPublishedPageDocument[]]) => {
                 publishedPages.forEach(page => page.publishedLinkUrl = this.getPublishedLinkUrl(startPageLinkUrl, page))
@@ -69,7 +59,7 @@ export class PageService extends ContentService<IPageDocument> {
         //generate url segment
         //create new page
         //update parent page's has children property
-        return this.getContentById(pageObj.parentId)
+        return this.getModelById(pageObj.parentId)
             .then((parentPage: IPageDocument) => Promise.all([
                 this.generateUrlSegment(0, pageObj.urlSegment, parentPage ? parentPage._id : null),
                 Promise.resolve(parentPage)
@@ -81,55 +71,10 @@ export class PageService extends ContentService<IPageDocument> {
             .then(([item, parentPage]: [IPageDocument, IPageDocument]) => this.updateHasChildren(parentPage).then(() => item))
     }
 
-    public updateAndPublishPage = (id: string, pageObj: IPageDocument): Promise<IPageDocument> => {
-        return this.getContentById(id)
-            .then((currentPage: IPageDocument) => pageObj.isDirty ?
-                this.updatePage(currentPage, pageObj) :
-                Promise.resolve(currentPage))
-            .then((currentPage: IPageDocument) => {
-                if (pageObj.isPublished && currentPage.changed > currentPage.published) return this.beginPublishPageFlow(currentPage);
-                return Promise.resolve(currentPage);
-            })
-    }
-
-    public beginDeletePageFlow = (id: string): Promise<IPageDocument> => {
-        //find page
-        //soft delete page
-        //soft delete published page
-        //soft delete page's children
-        //update the 'HasChildren' field of page's parent
-        const softDeletePublishedPage = (currentPage: IPageDocument): Promise<IPageDocument> =>
-            this.publishedPageModel.findOne({ _id: currentPage._id }).exec()
-                .then((publishedPage: IPublishedPageDocument) => this.softDeletePage(publishedPage));
-
-        const softDeletePageChildren = (currentPage: IPageDocument): Promise<any> =>
-            this.pageModel.updateMany({ parentPath: new RegExp("^" + `${currentPage.parentPath}${currentPage._id},`) }, { isDeleted: true, deleted: new Date() }).exec()
-
-        return this.getContentById(id)
-            .then((currentPage: IPageDocument) => this.softDeletePage(currentPage))
-            .then((currentPage: IPageDocument) => Promise.all([
-                softDeletePublishedPage(currentPage),
-                softDeletePageChildren(currentPage)
-            ]))
-            .then(([currentPage, result]: [IPageDocument, any]) => {
-                console.log(result);
-                return Promise.resolve(currentPage);
-            })
-    }
-
-    private beginPublishPageFlow = (currentPage: IPageDocument): Promise<IPageDocument> => {
-        return this.publishPage(currentPage)
-            .then((publishedPage: IPageDocument) => Promise.all([
-                Promise.resolve(publishedPage),
-                this.createPageVersion(publishedPage)
-            ]))
-            .then(([publishedPage, pageVersion]: [IPageDocument, IPageVersionDocument]) => this.createPublishedPage(publishedPage, pageVersion._id));
-    }
-
     private generateUrlSegment = (seed: number, originalUrl: string, parentId: string, generatedNameInUrl?: string): Promise<string> => {
         if (!parentId) parentId = null;
 
-        return this.pageModel.countDocuments({ urlSegment: generatedNameInUrl ? generatedNameInUrl : originalUrl, parentId: parentId }).exec()
+        return this.contentModel.countDocuments({ urlSegment: generatedNameInUrl ? generatedNameInUrl : originalUrl, parentId: parentId }).exec()
             .then(count => {
                 if (count > 0) {
                     return this.generateUrlSegment(seed + 1, originalUrl, parentId, `${originalUrl}-${seed + 1}`);
@@ -163,76 +108,8 @@ export class PageService extends ContentService<IPageDocument> {
         return newPage.save();
     }
 
-    private updatePage = (currentPage: IPageDocument, pageObj: IPageDocument): Promise<IPageDocument> => {
-        currentPage.changed = new Date();
-        //currentPage.changedBy = userId
-        currentPage.name = pageObj.name;
-        currentPage.childItems = pageObj.childItems;
-        currentPage.publishedChildItems = this.getPublishedChildItems(pageObj.childItems);
-        currentPage.properties = pageObj.properties;
-        return currentPage.save();
-    }
-
-    private softDeletePage = (currentPage: IPageDocument): Promise<IPageDocument> => {
-        currentPage.deleted = new Date();
-        //currentPage.deletedBy = userId
-        currentPage.isDeleted = true;
-        return currentPage.save();
-    }
-
-    private getPublishedChildItems = (currentItems: RefContent[]): RefContent[] => {
-        return currentItems.map((item: RefContent) => <RefContent>{
-            content: item.content,
-            refPath: this.getPublishedRefPath(item.refPath)
-        })
-    };
-
-    private getPublishedRefPath = (refPath: string): string => {
-        switch (refPath) {
-            case cmsPage: return cmsPublishedPage;
-            case cmsBlock: return cmsPublishedBlock;
-            case cmsMedia: return cmsMedia;
-            default: return refPath;
-        }
-    }
-
-    private publishPage = (currentPage: IPageDocument): Promise<IPageDocument> => {
-        currentPage.isPublished = true;
-        currentPage.published = new Date();
-        //currentPage.publishedBy = userId;
-        return currentPage.save()
-    }
-
-    private createPageVersion = (currentPage: IPageDocument): Promise<IPageVersionDocument> => {
-        const newPageVersion: IPageVersion = {
-            ...currentPage.toObject(),
-            pageId: currentPage._id,
-            _id: new mongoose.Types.ObjectId()
-        }
-        const pageVersionDocument = new this.pageVersionModel(newPageVersion);
-        return pageVersionDocument.save();
-    }
-
-    private createPublishedPage = (currentPage: IPageDocument, pageVersionId: string): Promise<IPublishedPageDocument> => {
-        //find the existing published page
-        //delete the existing published page
-        //create new the published page
-        return this.publishedPageModel.findOneAndDelete({ _id: currentPage._id })
-            .exec()
-            .then(() => {
-                const newPublishedPage: IPublishedPage = {
-                    ...currentPage.toObject(),
-                    pageId: currentPage._id,
-                    pageVersionId: pageVersionId
-                }
-
-                const publishedPageDocument = new this.publishedPageModel(newPublishedPage);
-                return publishedPageDocument.save();
-            })
-    }
-
     private getPublishedPageByLinkUrl = (linkUrl: string): Promise<IPublishedPageDocument> => {
-        return this.publishedPageModel.findOne({ linkUrl: linkUrl })
+        return this.publishedContentModel.findOne({ linkUrl: linkUrl })
             .populate({
                 path: 'publishedChildItems.content',
                 match: { isDeleted: false }
@@ -246,7 +123,7 @@ export class PageService extends ContentService<IPageDocument> {
         return publishedPage.linkUrl;
     }
 
-    private getSiteDefinitionBySiteUrl = (siteUrl: string): Promise<ISiteDefinitionModel> => {
+    private getSiteDefinitionBySiteUrl = (siteUrl: string): Promise<ISiteDefinitionDocument> => {
         return this.siteDefinitionModel.findOne(siteUrl ? { siteUrl: siteUrl } : {})
             .populate('startPage')
             .exec()
