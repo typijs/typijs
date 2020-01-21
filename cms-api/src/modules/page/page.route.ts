@@ -6,12 +6,14 @@ const controller = new PageCtrl();
 
 page.get('/:id', controller.get);
 
-page.get('/get-data', controller.getByUrl);
-
-page.get('/get-children/:parentId', controller.getAllByParentId);
-
 page.post('/', controller.insert);
 
 page.put('/:id', controller.update);
+
+page.delete('/:id', controller.delete)
+
+page.get('/published', controller.getByUrl); //query param url =??
+
+page.get('/children/:parentId', controller.getPageChildren);
 
 export { page };

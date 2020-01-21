@@ -1,6 +1,6 @@
 
-import { Page } from './page.model';
-import { PageVersion } from './page-version.model';
+import { PageModel } from './models/page.model';
+import { PageVersionModel } from './models/page-version.model';
 
 const batchSize = 100;
 const timeout = 100;
@@ -20,10 +20,10 @@ export function bulkUpdateDeletedStatus(parentPage, finishCallback) {
 //parentPage is page was updated
 function asyncBulkUpdateChildrenPage(parentPage, asyncUpdateChildPage, finishCallback) {
 
-    var itemCursor = Page.collection.find({ parentPath: /,${parentPage._id},/ });
-    var itemBulk = Page.collection.initializeUnorderedBulkOp();
+    var itemCursor = PageModel.collection.find({ parentPath: /,${parentPage._id},/ });
+    var itemBulk = PageModel.collection.initializeUnorderedBulkOp();
 
-    var pageVersionBulk = PageVersion.collection.initializeUnorderedBulkOp();
+    var pageVersionBulk = PageVersionModel.collection.initializeUnorderedBulkOp();
 
 
     var totalResults = 0;
@@ -46,7 +46,7 @@ function asyncBulkUpdateChildrenPage(parentPage, asyncUpdateChildPage, finishCal
                         finishCallback({ updated: totalUpdated });
                     }
                 });
-                itemBulk = Page.collection.initializeUnorderedBulkOp();
+                itemBulk = PageModel.collection.initializeUnorderedBulkOp();
             }
             //for case the remaining found items less than batch size
             if (endStream && totalUpdated == totalResults) {

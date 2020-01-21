@@ -3,7 +3,7 @@ import * as jwt from 'jsonwebtoken';
 import * as mongoose from 'mongoose';
 
 import { User, IUserModel } from './user.model';
-import { BaseCtrl } from '../base.controller';
+import { BaseCtrl } from '../shared/base.controller';
 
 export default class UserCtrl extends BaseCtrl<mongoose.Model<IUserModel>> {
     constructor() { super(User); }

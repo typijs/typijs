@@ -191,10 +191,10 @@ export class ContentFormEditComponent implements OnInit {
                         let fieldValue = this.currentContent.properties[fieldName]
                         if (Array.isArray(fieldValue)) {
                             fieldValue.forEach(item => {
-                                if (childItems.findIndex(x => x.itemId == item._id) == -1)
+                                if (childItems.findIndex(x => x.content == item._id) == -1)
                                     childItems.push({
-                                        path: 'cmsBlock', //Todo: need to get path based on item which drop on content area
-                                        itemId: item._id
+                                        refPath: 'cms_Block', //Todo: need to get path based on item which drop on content area
+                                        content: item._id
                                     })
                             })
                         }
@@ -215,7 +215,7 @@ export class ContentFormEditComponent implements OnInit {
                     let fieldValue = this.currentContent.properties[property.name]
                     if (Array.isArray(fieldValue)) {
                         for (var i = 0; i < fieldValue.length; i++) {
-                            let matchItem = childItems.find(x => x.itemId._id == fieldValue[i]._id);
+                            let matchItem = childItems.find(x => x.content._id == fieldValue[i]._id);
                             if (matchItem) {
                                 fieldValue[i] = clone(matchItem.itemId);
                             }

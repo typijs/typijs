@@ -1,11 +1,11 @@
 import * as mongoose from 'mongoose';
 
-import { SiteDefinition } from './site-definition.model';
-import { BaseCtrl } from '../base.controller';
-import { ISiteDefinitionModel } from './site-definition.model';
+import { SiteDefinitionModel } from './site-definition.model';
+import { BaseCtrl } from '../shared/base.controller';
+import { ISiteDefinitionDocument } from './site-definition.model';
 
-export class SiteDefinitionCtrl extends BaseCtrl<mongoose.Model<ISiteDefinitionModel>> {
-    constructor() { super(SiteDefinition); }
+export class SiteDefinitionCtrl extends BaseCtrl<mongoose.Model<ISiteDefinitionDocument>> {
+    constructor() { super(SiteDefinitionModel); }
 
     insertMany = (req, res, next) => {
         //Validate data

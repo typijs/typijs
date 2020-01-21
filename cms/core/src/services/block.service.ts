@@ -16,15 +16,15 @@ export class BlockService {
   }
 
   getChildBlocksOfFolder(folderId: string): Observable<Block[]> {
-    return this.http.get<Block[]>(`/api/block/get-by-folder/${folderId}`);
-  }
-
-  addBlockContent(blockContent: Block): Observable<Block> {
-    return this.http.post<Block>('/api/block', blockContent);
+    return this.http.get<Block[]>(`/api/block/children/${folderId}`);
   }
 
   getBlockContent(blockId: string): Observable<Block> {
     return this.http.get<Block>(`/api/block/${blockId}`);
+  }
+
+  addBlockContent(blockContent: Block): Observable<Block> {
+    return this.http.post<Block>('/api/block', blockContent);
   }
 
   editBlockContent(content: Block): Observable<string> {

@@ -18,7 +18,7 @@ abstract class BaseCtrl<T extends mongoose.Model<mongoose.Document>> {
 
   // Count all
   count = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    this.model.count({})
+    this.model.countDocuments({})
       .then(count => res.status(200).json(count))
       .catch(err => next(err));
   }
@@ -47,7 +47,7 @@ abstract class BaseCtrl<T extends mongoose.Model<mongoose.Document>> {
 
   // Delete by id
   delete = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    this.model.findOneAndRemove({ _id: req.params.id })
+    this.model.findOneAndDelete({ _id: req.params.id })
       .then(() => res.sendStatus(200))
       .catch(err => next(err));
   }

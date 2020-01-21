@@ -22,6 +22,7 @@ export const docFilter = function (req, file, cb) {
     cb(null, true);
 };
 
+
 export const ignoreDangerousFileFilter = function (req, file, cb) {
     // accept image only
     if (file.originalname.match(/\.(exe|pif|application|msi|msp|com|scr|hta|cpl|msc|jar|gadget|bat|cmd|vb|vbs|vbe|jse|ws|wsf|wsc|wsh|ps1|ps2|psc1|psc2|scf|lnk|inf|reg)$/)) {
@@ -29,3 +30,4 @@ export const ignoreDangerousFileFilter = function (req, file, cb) {
     }
     cb(null, true);
 };
+
