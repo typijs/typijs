@@ -12,15 +12,15 @@ export class MediaService {
   }
 
   getFilesInFolder(folderId: string): Observable<Media[]> {
-    return this.http.get<Media[]>(`/api/media/get-by-folder/${folderId}`);
-  }
-
-  addMediaFolder(blockContent: Media): Observable<Media> {
-    return this.http.post<Media>('/api/media', blockContent);
+    return this.http.get<Media[]>(`/api/media/children/${folderId}`);
   }
 
   getMediaFolder(blockId: string): Observable<Media> {
     return this.http.get<Media>(`/api/media/${blockId}`);
+  }
+
+  addMediaFolder(blockContent: Media): Observable<Media> {
+    return this.http.post<Media>('/api/media', blockContent);
   }
 
   editMediaFolder(content: Media): Observable<string> {

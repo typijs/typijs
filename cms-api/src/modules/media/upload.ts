@@ -1,4 +1,5 @@
 
+import * as express from 'express';
 import * as multer from 'multer';
 import * as filter from './filter';
 import * as mongoose from 'mongoose';
@@ -7,9 +8,9 @@ import * as fs from 'fs';
 
 export const UPLOAD_PATH = 'uploads';
 
-const generateFolder = (request: any): string => {
+const generateFolder = (request: express.Request): string => {
     const fileId = mongoose.Types.ObjectId();
-    request["fileId"] = fileId;
+    request.params.fileId = fileId.toHexString();
     const dir = path.join(UPLOAD_PATH, `${fileId}`);
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir);
@@ -17,20 +18,20 @@ const generateFolder = (request: any): string => {
     return dir;
 }
 
-const generateFileName = (request: any, file: any): string => {
+const generateFileName = (request: express.Request, file: Express.Multer.File): string => {
     //const fileName = mongoose.Types.ObjectId();
-    const fileName = request["fileId"];
+    const fileName = request.params.fileId;
     const fileExt = path.extname(file.originalname);
-    request["fileOriginalName"] = file.originalname;
+    request.params.fileOriginalName = file.originalname;
     return `${fileName}${fileExt}`;
 }
 
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, generateFolder(req));
+    destination: function (req: express.Request, file: Express.Multer.File, callback) {
+        callback(null, generateFolder(req));
     },
-    filename: function (req, file, cb) {
-        cb(null, generateFileName(req, file));
+    filename: function (req: express.Request, file: Express.Multer.File, callback) {
+        callback(null, generateFileName(req, file));
     }
 });
 

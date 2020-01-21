@@ -6,17 +6,17 @@ const controller = new MediaCtrl();
 
 media.get('/:id', controller.get);
 
+media.delete('/:id', controller.delete);
+
 media.get('/folders/:parentId?', controller.getFoldersByParentId);
 
-media.get('/get-by-folder/:parentId?', controller.getMediasByFolder);
+media.get('/children/:parentId?', controller.getContentsByFolder);
 
-media.post('/', controller.createContent);
+media.post('/folder', controller.createFolderContent);
+
+media.put('/folder/:id', controller.updateFolderName);
 
 media.post('/upload/:parentId?', controller.uploadMedia('file'), controller.processMedia)
-
-media.put('/:id', controller.updateContent);
-
-media.delete('/:id', controller.delete);
 
 export { media };
 
