@@ -14,22 +14,23 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
         this.siteDefinitionModel = SiteDefinitionModel;
     }
 
-    public getPublishedPageByUrl = (url: string): Promise<IPublishedPageDocument> => {
+    public getPublishedPageByUrl = async (encodedUrl: string): Promise<IPublishedPageDocument> => {
         //need to check isPageDeleted = false
         //get domain from url
         //get start page from domain
         //get start page link url
+        const url = Buffer.from(encodedUrl, 'base64').toString();
         const urlObj = new URL(url); // --> https://example.org:80/abc/xyz?123
         const originalUrl = urlObj.origin; // --> https://example.org:80
         const pathUrl = urlObj.pathname; // --> /abc/xyz
 
-        return this.getSiteDefinitionBySiteUrl(originalUrl)
-            .then((site: ISiteDefinitionDocument) => site.startPage.linkUrl)
-            .then((startPageLinkUrl: string) => this.getPublishedPageByLinkUrl(`${startPageLinkUrl}${pathUrl}`))
-            .then((publishedPage: IPublishedPageDocument) => publishedPage ?
-                Promise.resolve(publishedPage) :
-                this.getPublishedPageByLinkUrl(`${pathUrl}`)
-            )
+        const siteDefinition = await this.getSiteDefinitionBySiteUrl(originalUrl);
+        const startPageLinkUrl = siteDefinition != null && siteDefinition.startPage != null ? siteDefinition.startPage.linkUrl : '';
+        let linkUrl = `${startPageLinkUrl}${pathUrl}`;
+        if (linkUrl.endsWith('/')) linkUrl = linkUrl.substring(0, linkUrl.length - 1);
+
+        const publishedPage = await this.getPublishedPageByLinkUrl(linkUrl);
+        return publishedPage ? publishedPage : (startPageLinkUrl != '' ? await this.getPublishedPageByLinkUrl(`${pathUrl}`) : null);
     }
 
     public getPageChildren = (parentId: string): Promise<IPageDocument[]> => {

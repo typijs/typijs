@@ -32,7 +32,6 @@ export class CmsRenderContentComponent implements OnDestroy {
         //         this.resolveContentDataByUrl();
         //     }
         // });
-        console.log(window.location.pathname);
         this.resolveContentDataByUrl();
     }
 
@@ -43,8 +42,8 @@ export class CmsRenderContentComponent implements OnDestroy {
     }
 
     private resolveContentDataByUrl() {
-        let pathUrl = window.location.pathname;
-        this.pageService.getPublishedPage(pathUrl).subscribe(res => {
+        let currentUrl = window.location.href;
+        this.pageService.getPublishedPage(currentUrl).subscribe(res => {
             if (res) {
                 let contentType = CMS.PAGE_TYPES[res.contentType];
                 let metadata = Reflect.getMetadata(PAGE_TYPE_METADATA_KEY, contentType);
