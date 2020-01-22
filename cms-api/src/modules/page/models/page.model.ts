@@ -2,7 +2,7 @@ import * as mongoose from 'mongoose';
 
 import { IContentDocument, ContentSchema, ContentHasChildItemsSchema, IContentHasChildItems, IContent } from '../../content/content.model';
 
-export interface IPage extends IContentHasChildItems, IContent {
+export interface IPage extends IContent {
   urlSegment: string;
   linkUrl: string;
 

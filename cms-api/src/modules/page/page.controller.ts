@@ -17,7 +17,7 @@ export class PageCtrl extends ContentCtrl<IPageDocument, IPageVersionDocument, I
 
   getByUrl = (req: express.Request, res: express.Response, next: express.NextFunction) => {
     //need to check isPageDeleted = false
-    this.pageService.getPublishedPageByUrl(req.query.url)
+    this.pageService.getPublishedPageByUrl(req.params.url)
       .then(item => res.status(200).json(item))
       .catch(err => next(err));
   }
@@ -46,7 +46,7 @@ export class PageCtrl extends ContentCtrl<IPageDocument, IPageVersionDocument, I
   update = (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const pageDocument = this.pageService.createModelInstance(req.body);
 
-    this.pageService.updateAndPublishContent<IPageDocument>(req.params.id, pageDocument)
+    this.pageService.updateAndPublishContent(req.params.id, pageDocument)
       .then((savedPage: IPageDocument) => res.status(200).json(savedPage))
       .catch(error => next(error));
   }

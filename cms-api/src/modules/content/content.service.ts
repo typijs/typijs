@@ -81,13 +81,17 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
         return content.save().then(result => result.hasChildren);
     }
 
-    public updateAndPublishContent = <K extends IContentHasChildItems & T>(id: string, contentObj: K): Promise<T> => {
+    public updateAndPublishContent = async (id: string, contentObj: T): Promise<T> => {
+
+        // let currentContent = await this.getModelById(id);
+        // if(contentObj.isDirty) currentContent = await this.updateContent<K>(currentContent, contentObj);
+
         return this.getModelById(id)
-            .then((currentContent: K) => contentObj.isDirty ?
-                this.updateContent<K>(currentContent, contentObj) :
+            .then((currentContent: T) => contentObj.isDirty ?
+                this.updateContent(currentContent, contentObj) :
                 Promise.resolve(currentContent))
             .then((currentContent: T) => {
-                if (contentObj.isPublished && currentContent.changed > currentContent.published) return this.executePublishContentFlow(currentContent);
+                if (contentObj.isPublished && (!currentContent.published || currentContent.changed > currentContent.published)) return this.executePublishContentFlow(currentContent);
                 return Promise.resolve(currentContent);
             })
     }
@@ -136,14 +140,14 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
             })
     }
 
-    private updateContent = <K extends IContentHasChildItems & T>(currentContent: K, pageObj: K): Promise<T> => {
+    private updateContent = (currentContent: T, pageObj: T): Promise<T> => {
         currentContent.changed = new Date();
         //currentContent.changedBy = userId
         currentContent.name = pageObj.name;
         currentContent.properties = pageObj.properties;
-
         currentContent.childItems = pageObj.childItems;
         currentContent.publishedChildItems = this.getPublishedChildItems(pageObj.childItems);
+
         return currentContent.save();
     }
 
