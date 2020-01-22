@@ -1,5 +1,4 @@
 import * as mongoose from 'mongoose';
-import { NotFoundException } from '../../errorHandling';
 
 export class BaseService<T extends mongoose.Document> {
 
@@ -9,15 +8,14 @@ export class BaseService<T extends mongoose.Document> {
         this.mongooseModel = mongooseModel;
     }
 
-    public createModelInstance = (doc: any): T => new this.mongooseModel(doc);
+    public createModelInstance = (doc: any): T => {
+        const modelInstance = new this.mongooseModel(doc);
+        return Object.assign(modelInstance, doc);
+    }
 
-    public getModelById = (id: string): Promise<T> => {
+    public getModelById = async (id: string): Promise<T> => {
         if (!id) id = null;
-
-        return this.mongooseModel.findOne({ _id: id }).exec()
-            .then((content: T) => {
-                if (!content) throw new NotFoundException(id);
-                return content;
-            });
+        const content = await this.mongooseModel.findOne({ _id: id }).exec();
+        return content ? content : null;
     }
 }
