@@ -193,7 +193,7 @@ export class ContentFormEditComponent implements OnInit {
                             fieldValue.forEach(item => {
                                 if (childItems.findIndex(x => x.content == item._id) == -1)
                                     childItems.push({
-                                        refPath: 'cms_Block', //Todo: need to get path based on item which drop on content area
+                                        refPath: 'cms_Block', //TODO: need to get path based on item which drop on content area
                                         content: item._id
                                     })
                             })
