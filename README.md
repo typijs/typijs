@@ -1,6 +1,8 @@
 # Angular Cms
 
-The cms based on Angular, NodeJs and MongoDB
+The single app CMS based on Angular, Express, NodeJs and MongoDB.
+
+**HOPE THERE IS SOMEONE WORK WITH ME TO CREATE THE FUN. FEEL FREE TO CONTACT ME (danghung1202@gmail.com)**
 
 ## Prerequisites
 Need to install
@@ -13,9 +15,8 @@ Need to install
     graph TD
     A(cms core)-->B(cms properties)
     B-->C(cms modules)
-    C-->D(cms editor)
-    D-->E(cms portal)
-    E-->Z(cms examples)
+    C-->D(cms portal)
+    D-->Z(cms demo)
     X(cms api)-->Z
 
 ```
@@ -39,15 +40,28 @@ For running examples, we need set up the [symlinks](https://docs.npmjs.com/cli/l
 
 ### Run in Dev Mode
 
-1. Final step, under `cms-server` folder and run command
+1. First step, under `cms-server` folder, run the command
 ```
+    npm install
     npm run dev
 ```
 
-2. Final step, under `cms` folder and run command
+This command will run script to connect to mongo db, so make sure you have the correct path to your db.
+For example, in my local, I have the db path like as `D:/ProgramData/MongoDB/data/db`
 ```
+    mongod --dbpath D:/ProgramData/MongoDB/data/db
+```
+
+2. Final step, under `cms` folder, run the command
+```
+    npm install
+    ng build core
+    ng build properties
+    ng build modules
+    ng build portal
     npm run dev
 ```
+> Make sure you installed Angular CLI with `--global`
 
 ## Versioning
 
