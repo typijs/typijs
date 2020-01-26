@@ -1,6 +1,5 @@
 import * as express from 'express';
 import * as mime from 'mime-types';
-import * as fs from 'fs';
 
 import { MediaModel, IMediaDocument, FileContent, ImageContent, VideoContent } from './models/media.model';
 import * as upload from './upload';
@@ -18,8 +17,7 @@ export class MediaCtrl extends ContentCtrl<IMediaDocument, IMediaVersionDocument
         this.mediaService = new MediaService();
     }
 
-    getMediaById = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-
+    getMediaById = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
         const widthStr = req.query.w ? req.query.w : req.query.width;
         const heightStr = req.query.h ? req.query.h : req.query.height;
         const width = widthStr ? parseInt(widthStr, 10) : undefined;
@@ -28,16 +26,17 @@ export class MediaCtrl extends ContentCtrl<IMediaDocument, IMediaVersionDocument
         const fileId = req.params.fileId;
         const fileName = req.params.fileName;
 
-        this.mediaService.createReadMediaStream(fileId, fileName, width, height)
-            .then((stream: fs.ReadStream) => {
-                if (stream) {
-                    res.writeHead(200, { 'Content-type': mime.lookup(fileName) });
-                    stream.pipe(res);
-                } else {
-                    res.status(404).json("404 - File Not Found");
-                }
-            })
-            .catch(err => next(err))
+        try {
+            const stream = await this.mediaService.createReadMediaStream(fileId, fileName, width, height)
+            if (stream) {
+                res.writeHead(200, { 'Content-type': mime.lookup(fileName) });
+                stream.pipe(res);
+            } else {
+                res.status(404).json("404 - File Not Found");
+            }
+        } catch (error) {
+            next(error);
+        }
     }
 
     uploadMedia = (fieldName: string): any => {
@@ -45,9 +44,9 @@ export class MediaCtrl extends ContentCtrl<IMediaDocument, IMediaVersionDocument
         return upload.uploadFile.single(fieldName);
     }
 
-    processMedia = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    processMedia = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
         const file: Express.Multer.File = req.file;
-        const mediaObj = {
+        const mediaObj: Partial<IMediaDocument> = {
             _id: req.params.fileId,
             name: req.params.fileOriginalName,
             parentId: req.params.parentId,
@@ -55,12 +54,15 @@ export class MediaCtrl extends ContentCtrl<IMediaDocument, IMediaVersionDocument
             size: file.size,
             contentType: this.getMediaContentType(req.params.fileOriginalName)
         }
+        try {
+            const mediaDocument = this.mediaService.createModelInstance(mediaObj);
+            const savedMedia = await this.mediaService.executeCreateContentFlow(mediaDocument);
+            const publishedMedia = await this.mediaService.executePublishContentFlow(savedMedia);
+            res.status(200).json(publishedMedia)
 
-        const mediaDocument = this.mediaService.createModelInstance(mediaObj);
-        this.mediaService.executeCreateContentFlow(mediaDocument)
-            .then(savedMedia => this.mediaService.executePublishContentFlow(savedMedia))
-            .then(publishedMedia => res.status(200).json(publishedMedia))
-            .catch(err => next(err));
+        } catch (error) {
+            next(error);
+        }
     }
 
     private getMediaContentType = (fileName: string) => {

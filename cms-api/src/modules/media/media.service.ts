@@ -15,38 +15,35 @@ export class MediaService extends ContentService<IMediaDocument, IMediaVersionDo
         super(MediaModel, MediaVersionModel, PublishedMediaModel);
     }
 
-    public createReadMediaStream = (fileId: string, fileName: string, width?: number, height?: number): Promise<fs.ReadStream> => {
+    public createReadMediaStream = async (fileId: string, fileName: string, width?: number, height?: number): Promise<fs.ReadStream> => {
         const fileExt = path.extname(fileName);
-        return this.getPopulatedPublishedContentById(fileId)
-            .then((publishedMedia: IPublishedMediaDocument) => {
-                if (!publishedMedia) return null;
+        const publishedMedia = await this.getPopulatedPublishedContentById(fileId);
+        if (!publishedMedia) return null;
 
-                if (publishedMedia.contentType == ImageContent) return this.getResizedImageStream(fileId, fileExt, width, height);
+        if (publishedMedia.contentType == ImageContent) return await this.getResizedImageStream(fileId, fileExt, width, height);
 
-                return this.getMediaStream(fileId, fileExt);
-            })
+        return await this.getMediaStream(fileId, fileExt);
     }
 
-    private getMediaStream = (fileId: string, fileExt: string): Promise<fs.ReadStream> => {
+    private getMediaStream = async (fileId: string, fileExt: string): Promise<fs.ReadStream> => {
         const fileOriginalPath = path.join(upload.UPLOAD_PATH, fileId, `${fileId}${fileExt}`);
-        return this.existsFile(fileOriginalPath)
-            .then((isExisted: boolean) => isExisted ? fs.createReadStream(fileOriginalPath) : null)
+        const isExisted = await this.existsFile(fileOriginalPath);
+        return isExisted ? fs.createReadStream(fileOriginalPath) : null;
     }
 
-    private getResizedImageStream = (fileId: string, fileExt: string, width: number | undefined, height: number | undefined): Promise<fs.ReadStream> => {
+    private getResizedImageStream = async (fileId: string, fileExt: string, width?: number, height?: number): Promise<fs.ReadStream> => {
         const fileOriginalPath = path.join(upload.UPLOAD_PATH, fileId, `${fileId}${fileExt}`);
         const fileResizedPath = width || height ? path.join(upload.UPLOAD_PATH, fileId, `${fileId}_${width}x${height}${fileExt}`) : fileOriginalPath;
         //check existing the fileResizedPath
+        const isExisted = await this.existsFile(fileResizedPath);
+        if (isExisted) return fs.createReadStream(fileResizedPath);
         //If not execute resize image at fileResizedPath
         //create stream reader from fileResizedPath
-        return this.existsFile(fileResizedPath)
-            .then((isExisted: boolean) => {
-                if (isExisted) return fs.createReadStream(fileResizedPath);
-
-                if (width || height) return this.resizeImage(fileOriginalPath, fileResizedPath, width, height).then(() => fs.createReadStream(fileResizedPath));
-
-                return null;
-            })
+        if (width || height) {
+            const output = await this.resizeImage(fileOriginalPath, fileResizedPath, width, height);
+            return output ? fs.createReadStream(fileResizedPath) : null;
+        }
+        return null;
     }
 
     private existsFile = (filePath: string): Promise<boolean> => {

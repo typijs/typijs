@@ -13,7 +13,7 @@ const generateFolder = (request: express.Request): string => {
     request.params.fileId = fileId.toHexString();
     const dir = path.join(UPLOAD_PATH, `${fileId}`);
     if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir);
+        fs.mkdirSync(dir, { recursive: true });
     }
     return dir;
 }
