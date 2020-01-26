@@ -31,7 +31,7 @@ export abstract class ContentCtrl<T extends IContentDocument, V extends IContent
 
   delete = (req: express.Request, res: express.Response, next: express.NextFunction) => {
     this.contentService.executeDeleteContentFlow(req.params.id)
-      .then((deletedContent: T) => res.status(200).json(deletedContent))
+      .then((deleteResult: [T, any]) => res.status(200).json(deleteResult))
       .catch(error => next(error));
   }
 }

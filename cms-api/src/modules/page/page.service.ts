@@ -14,76 +14,72 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
         this.siteDefinitionModel = SiteDefinitionModel;
     }
 
-    public getPublishedPageByUrl = (url: string): Promise<IPublishedPageDocument> => {
+    public getPublishedPageByUrl = async (encodedUrl: string): Promise<IPublishedPageDocument> => {
         //need to check isPageDeleted = false
         //get domain from url
         //get start page from domain
         //get start page link url
+        const url = Buffer.from(encodedUrl, 'base64').toString();
         const urlObj = new URL(url); // --> https://example.org:80/abc/xyz?123
         const originalUrl = urlObj.origin; // --> https://example.org:80
         const pathUrl = urlObj.pathname; // --> /abc/xyz
 
-        return this.getSiteDefinitionBySiteUrl(originalUrl)
-            .then((site: ISiteDefinitionDocument) => site.startPage.linkUrl)
-            .then((startPageLinkUrl: string) => this.getPublishedPageByLinkUrl(`${startPageLinkUrl}${pathUrl}`))
-            .then((publishedPage: IPublishedPageDocument) => publishedPage ?
-                Promise.resolve(publishedPage) :
-                this.getPublishedPageByLinkUrl(`${pathUrl}`)
-            )
+        const startPage = await this.getStartPageFromHostname(originalUrl);
+        const startPageLinkUrl = startPage != null ? startPage.linkUrl : '';
+        const linkUrl = `${startPageLinkUrl}${pathUrl}`;
+
+        const publishedPage = await this.getPublishedPageByLinkUrl(linkUrl);
+        if (publishedPage) return publishedPage;
+        //if the current page is not startpage's child, resolve directly by its url
+        if (startPageLinkUrl != '') return await this.getPublishedPageByLinkUrl(`${pathUrl}`);
+
+        return null;
     }
 
-    public getPageChildren = (parentId: string): Promise<IPageDocument[]> => {
+    public getPageChildren = async (parentId: string): Promise<IPageDocument[]> => {
         if (parentId == '0') parentId = null;
 
         return this.contentModel.find({ parentId: parentId, isDeleted: false }).exec()
     }
 
-    public getPublishedPageChildren = (parentId: string): Promise<IPublishedPageDocument[]> => {
+    public getPublishedPageChildren = async (parentId: string): Promise<IPublishedPageDocument[]> => {
         if (parentId == '0') parentId = null;
 
-        //Todo: Temporary get first site definition
-        return this.getSiteDefinitionBySiteUrl(null)
-            .then((site: ISiteDefinitionDocument) => site.startPage.linkUrl)
-            .then((startPageLinkUrl: string) => Promise.all([
-                Promise.resolve(startPageLinkUrl),
-                this.publishedContentModel.find({ parentId: parentId, isDeleted: false }).exec()
-            ]))
-            .then(([startPageLinkUrl, publishedPages]: [string, IPublishedPageDocument[]]) => {
-                publishedPages.forEach(page => page.publishedLinkUrl = this.getPublishedLinkUrl(startPageLinkUrl, page))
-                return Promise.resolve(publishedPages);
-            })
+        //TODO: Temporary get first site definition
+        const publishedPages = await this.publishedContentModel.find({ parentId: parentId, isDeleted: false }).exec()
+        if (publishedPages.length == 0) return [];
+
+        const startPage = await this.getStartPageFromHostname(null);
+        const startPageLinkUrl = startPage != null ? startPage.linkUrl : '';
+        publishedPages.forEach(page => page.publishedLinkUrl = this.getPublishedLinkUrl(startPageLinkUrl, page));
+
+        return publishedPages;
     }
 
-    public beginCreatePageFlow = (pageObj: IPageDocument): Promise<IPageDocument> => {
+    public beginCreatePageFlow = async (pageObj: IPageDocument): Promise<IPageDocument> => {
         //get page's parent
         //generate url segment
         //create new page
         //update parent page's has children property
-        return this.getModelById(pageObj.parentId)
-            .then((parentPage: IPageDocument) => Promise.all([
-                this.generateUrlSegment(0, pageObj.urlSegment, parentPage ? parentPage._id : null),
-                Promise.resolve(parentPage)
-            ]))
-            .then(([urlSegment, parentPage]: [string, IPageDocument]) => Promise.all([
-                this.createPage(pageObj, parentPage, urlSegment),
-                Promise.resolve(parentPage)
-            ]))
-            .then(([item, parentPage]: [IPageDocument, IPageDocument]) => this.updateHasChildren(parentPage).then(() => item))
+        const parentPage = await this.getModelById(pageObj.parentId);
+        const urlSegment = await this.generateUrlSegment(0, pageObj.urlSegment, parentPage ? parentPage._id : null);
+        const savedPage = await this.createPage(pageObj, parentPage, urlSegment);
+
+        if (savedPage) await this.updateHasChildren(parentPage);
+        return savedPage;
     }
 
-    private generateUrlSegment = (seed: number, originalUrl: string, parentId: string, generatedNameInUrl?: string): Promise<string> => {
+    private generateUrlSegment = async (seed: number, originalUrl: string, parentId: string, generatedNameInUrl?: string): Promise<string> => {
         if (!parentId) parentId = null;
 
-        return this.contentModel.countDocuments({ urlSegment: generatedNameInUrl ? generatedNameInUrl : originalUrl, parentId: parentId }).exec()
-            .then(count => {
-                if (count > 0) {
-                    return this.generateUrlSegment(seed + 1, originalUrl, parentId, `${originalUrl}-${seed + 1}`);
-                }
-                return Promise.resolve(generatedNameInUrl ? generatedNameInUrl : originalUrl);
-            })
+        const count = await this.contentModel.countDocuments({ urlSegment: generatedNameInUrl ? generatedNameInUrl : originalUrl, parentId: parentId }).exec();
+
+        if (count <= 0) return generatedNameInUrl ? generatedNameInUrl : originalUrl;
+
+        return await this.generateUrlSegment(seed + 1, originalUrl, parentId, `${originalUrl}-${seed + 1}`);
     }
 
-    private createPage = (newPage: IPageDocument, parentPage: IPageDocument, urlSegment: string): Promise<IPageDocument> => {
+    private createPage = async (newPage: IPageDocument, parentPage: IPageDocument, urlSegment: string): Promise<IPageDocument> => {
         newPage.created = new Date();
         //pageObj.createdBy = userId;
         newPage.changed = new Date();
@@ -105,10 +101,13 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
             newPage.ancestors = [];
         }
 
-        return newPage.save();
+        return await newPage.save();
     }
 
-    private getPublishedPageByLinkUrl = (linkUrl: string): Promise<IPublishedPageDocument> => {
+    private getPublishedPageByLinkUrl = async (linkUrl: string): Promise<IPublishedPageDocument> => {
+        //remove '/' in end of link Url
+        if (linkUrl.endsWith('/')) linkUrl = linkUrl.substring(0, linkUrl.length - 1);
+
         return this.publishedContentModel.findOne({ linkUrl: linkUrl })
             .populate({
                 path: 'publishedChildItems.content',
@@ -123,9 +122,14 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
         return publishedPage.linkUrl;
     }
 
-    private getSiteDefinitionBySiteUrl = (siteUrl: string): Promise<ISiteDefinitionDocument> => {
+    private getStartPageFromHostname = async (hostname: string): Promise<IPublishedPageDocument> => {
+        const siteDefinition = await this.getSiteDefinitionBySiteUrl(hostname);
+        return siteDefinition != null ? siteDefinition.startPage : null;
+    }
+
+    private getSiteDefinitionBySiteUrl = async (siteUrl: string): Promise<ISiteDefinitionDocument> => {
         return this.siteDefinitionModel.findOne(siteUrl ? { siteUrl: siteUrl } : {})
-            .populate('startPage')
+            .populate('startPage') //TODO check if page is deleted or not
             .exec()
     }
 }

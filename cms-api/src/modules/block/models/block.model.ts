@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
 import { IContentDocument, IContent, IContentHasChildItems, ContentHasChildItemsSchema, ContentSchema, } from '../../content/content.model';
 
-export interface IBlock extends IContent, IContentHasChildItems { }
+export interface IBlock extends IContent { }
 
 export interface IBlockDocument extends IBlock, IContentDocument { }
 

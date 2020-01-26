@@ -21,8 +21,8 @@ export class PageService {
   }
 
   getStartPage(): Observable<Page> {
-    const startPageUrl = 'http://localhost:4200'
-    return this.http.get<Page>(`/api/page/published?url=${startPageUrl}`);
+    const startPageUrl = 'http://localhost:4200';
+    return this.http.get<Page>(`/api/page/published/${btoa(startPageUrl)}`);
   }
 
   getPageContent(pageId: string): Observable<Page> {
@@ -30,7 +30,7 @@ export class PageService {
   }
 
   getPublishedPage(linkUrl: string): Observable<Page> {
-    return this.http.get<Page>(`/api/page/published?url=${linkUrl}`);
+    return this.http.get<Page>(`/api/page/published/${btoa(linkUrl)}`);
   }
 
   getChildren(parentId: string): Observable<Page[]> {

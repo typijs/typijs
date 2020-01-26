@@ -18,7 +18,7 @@ export class BlockCtrl extends ContentCtrl<IBlockDocument, IBlockVersionDocument
     update = (req: express.Request, res: express.Response, next: express.NextFunction) => {
         const pageDocument = this.blockService.createModelInstance(req.body);
 
-        this.blockService.updateAndPublishContent<IBlockDocument>(req.params.id, pageDocument)
+        this.blockService.updateAndPublishContent(req.params.id, pageDocument)
             .then((savedPage: IBlockDocument) => res.status(200).json(savedPage))
             .catch(error => next(error));
     }

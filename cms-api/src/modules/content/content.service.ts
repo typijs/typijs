@@ -1,11 +1,12 @@
 import * as mongoose from 'mongoose';
-import { IContentDocument, RefContent, IContentHasChildItems, IContentVersionDocument, IPublishedContentDocument, IContentVersion, IPublishedContent } from './content.model';
+import { IContentDocument, RefContent, IContentHasChildItems, IContentVersionDocument, IPublishedContentDocument, IContentVersion, IPublishedContent, IContent } from './content.model';
 import { cmsPage } from '../page/models/page.model';
 import { cmsBlock } from '../block/models/block.model';
 import { cmsMedia } from '../media/models/media.model';
 import { cmsPublishedPage } from '../page/models/published-page.model';
 import { cmsPublishedBlock } from '../block/models/published-block.model';
 import { BaseService } from '../shared/base.service';
+import { cmsPublishedMedia } from '../media/models/published-media.model';
 
 export class ContentService<T extends IContentDocument, V extends IContentVersionDocument & T, P extends IPublishedContentDocument & V> extends BaseService<T> {
     protected contentModel: mongoose.Model<T>;
@@ -41,23 +42,24 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
             .exec();
     }
 
-    public executeCreateContentFlow = (content: T): Promise<T> => {
+    public executeCreateContentFlow = async (content: T): Promise<T> => {
         //get page's parent
         //generate url segment
         //create new page
         //update parent page's has children property
-        return this.getModelById(content.parentId)
-            .then((parentContent: T) => this.createContent(content, parentContent))
+        const parentContent = await this.getModelById(content.parentId);
+        const savedContent = await this.createContent(content, parentContent);
+        return savedContent;
     }
 
     public createContent = (newContent: T, parentContent: T): Promise<T> => {
         newContent.created = new Date();
-        //pageObj.createdBy = userId;
+        //TODO: pageObj.createdBy = userId;
         newContent.changed = new Date();
-        //pageObj.changedBy = userId;
+        //TODO: pageObj.changedBy = userId;
         newContent.parentId = parentContent ? parentContent._id : null;
 
-        //create linkUrl and parent path ids
+        //create parent path ids
         if (parentContent) {
             newContent.parentPath = parentContent.parentPath ? `${parentContent.parentPath}${parentContent._id},` : `,${parentContent._id},`;
 
@@ -72,39 +74,42 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
         return newContent.save();
     }
 
-    public updateHasChildren = (content: IContentDocument): Promise<boolean> => {
-        if (!content) return Promise.resolve(false);
-        if (content && content.hasChildren) return Promise.resolve(true);
+    public updateHasChildren = async (content: IContentDocument): Promise<boolean> => {
+        if (!content) return false;
+        if (content && content.hasChildren) return true;
 
         content.changed = new Date();
         content.hasChildren = true;
-        return content.save().then(result => result.hasChildren);
+        const savedContent = await content.save();
+        return savedContent.hasChildren;
     }
 
-    public updateAndPublishContent = <K extends IContentHasChildItems & T>(id: string, contentObj: K): Promise<T> => {
-        return this.getModelById(id)
-            .then((currentContent: K) => contentObj.isDirty ?
-                this.updateContent<K>(currentContent, contentObj) :
-                Promise.resolve(currentContent))
-            .then((currentContent: T) => {
-                if (contentObj.isPublished && currentContent.changed > currentContent.published) return this.executePublishContentFlow(currentContent);
-                return Promise.resolve(currentContent);
-            })
+    public updateAndPublishContent = async (id: string, contentObj: T): Promise<T> => {
+        let currentContent = await this.getModelById(id);
+        if (contentObj.isDirty) {
+            currentContent = await this.updateContent(currentContent, contentObj);
+        }
+
+        if (contentObj.isPublished && (!currentContent.published || currentContent.changed > currentContent.published)) {
+            currentContent = await this.executePublishContentFlow(currentContent);
+        }
+        return currentContent;
     }
 
-    public executePublishContentFlow = (currentContent: T): Promise<P> => {
-        return this.publishContent(currentContent)
-            .then((publishedContent: T) => Promise.all([
-                Promise.resolve(publishedContent),
-                this.createPageVersion(publishedContent)
-            ]))
-            .then(([publishedPage, pageVersion]: [T, V]) => this.createPublishedContent(publishedPage, pageVersion._id));
+    public executePublishContentFlow = async (currentContent: T): Promise<P> => {
+        //set property isPublished = true
+        const updatedContent = await this.publishContent(currentContent);
+        //create page version
+        const pageVersion = await this.createPageVersion(updatedContent);
+        //create published content
+        const publishedContent = await this.createPublishedContent(updatedContent, pageVersion._id);
+        return publishedContent;
     }
 
     private publishContent = (currentContent: T): Promise<T> => {
         currentContent.isPublished = true;
         currentContent.published = new Date();
-        //currentContent.publishedBy = userId;
+        //TODO: currentContent.publishedBy = userId;
         return currentContent.save()
     }
 
@@ -118,32 +123,28 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
         return contentVersionDocument.save();
     }
 
-    private createPublishedContent = (currentContent: T, contentVersionId: string): Promise<P> => {
+    private createPublishedContent = async (currentContent: T, contentVersionId: string): Promise<P> => {
         //find the existing published page
-        //delete the existing published page
-        //create new the published page
-        return this.publishedContentModel.findOneAndDelete({ _id: currentContent._id })
-            .exec()
-            .then(() => {
-                const newPublishedPage: IPublishedContent = {
-                    ...currentContent.toObject(),
-                    contentId: currentContent._id,
-                    contentVersionId: contentVersionId
-                }
+        const deletedContent = await this.publishedContentModel.findOneAndDelete({ _id: currentContent._id });
 
-                const publishedPageDocument = new this.publishedContentModel(newPublishedPage);
-                return publishedPageDocument.save();
-            })
+        const newPublishedPage: IPublishedContent = {
+            ...currentContent.toObject(),
+            contentId: currentContent._id,
+            contentVersionId: contentVersionId
+        }
+
+        const publishedPageDocument = new this.publishedContentModel(newPublishedPage);
+        return publishedPageDocument.save();
     }
 
-    private updateContent = <K extends IContentHasChildItems & T>(currentContent: K, pageObj: K): Promise<T> => {
+    private updateContent = (currentContent: T, pageObj: T): Promise<T> => {
         currentContent.changed = new Date();
-        //currentContent.changedBy = userId
+        //TODO: currentContent.changedBy = userId
         currentContent.name = pageObj.name;
         currentContent.properties = pageObj.properties;
-
         currentContent.childItems = pageObj.childItems;
         currentContent.publishedChildItems = this.getPublishedChildItems(pageObj.childItems);
+
         return currentContent.save();
     }
 
@@ -158,40 +159,44 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
         switch (refPath) {
             case cmsPage: return cmsPublishedPage;
             case cmsBlock: return cmsPublishedBlock;
-            case cmsMedia: return cmsMedia;
+            case cmsMedia: return cmsPublishedMedia;
             default: return refPath;
         }
     }
 
-    public executeDeleteContentFlow = (id: string): Promise<T> => {
+    public executeDeleteContentFlow = async (id: string): Promise<[T, any]> => {
         //find page
+        const currentContent = await this.getModelById(id);
         //soft delete page
         //soft delete published page
         //soft delete page's children
         //update the 'HasChildren' field of page's parent
-        const softDeletePublishedContent = (currentContent: T): Promise<T> =>
-            this.publishedContentModel.findOne({ _id: currentContent._id }).exec()
-                .then((publishedPage: P) => this.softDeleteContent(publishedPage));
+        const result: [T, T, any] = await Promise.all([
+            this.softDeleteContent(currentContent),
+            this.softDeletePublishedContent(currentContent),
+            this.softDeleteContentChildren(currentContent)
+        ]);
 
-        const softDeleteContentChildren = (currentContent: T): Promise<any> =>
-            this.contentModel.updateMany({ parentPath: new RegExp("^" + `${currentContent.parentPath}${currentContent._id},`) }, { isDeleted: true, deleted: new Date() }).exec()
-
-        return this.getModelById(id)
-            .then((currentContent: T) => this.softDeleteContent(currentContent))
-            .then((currentContent: T) => Promise.all([
-                softDeletePublishedContent(currentContent),
-                softDeleteContentChildren(currentContent)
-            ]))
-            .then(([currentContent, result]: [T, any]) => {
-                console.log(result);
-                return Promise.resolve(currentContent);
-            })
+        console.log(result[2]);
+        return [result[0], result[2]];
     }
 
     private softDeleteContent = (currentContent: T): Promise<T> => {
         currentContent.deleted = new Date();
-        //currentContent.deletedBy = userId
+        //TODO: currentContent.deletedBy = userId
         currentContent.isDeleted = true;
         return currentContent.save();
+    }
+
+    private softDeletePublishedContent = async (currentContent: T): Promise<T> => {
+        const publishedPage = await this.publishedContentModel.findOne({ _id: currentContent._id }).exec()
+        return this.softDeleteContent(publishedPage);
+    }
+
+    private softDeleteContentChildren = (currentContent: T): Promise<any> => {
+        const startWithParentPathRegExp = new RegExp("^" + `${currentContent.parentPath}${currentContent._id},`);
+        const conditions = { parentPath: { $regex: startWithParentPathRegExp } };
+        const updateFields: Partial<IContent> = { isDeleted: true, deleted: new Date() };
+        return this.contentModel.updateMany(conditions, updateFields).exec()
     }
 }

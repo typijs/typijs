@@ -34,14 +34,14 @@ export interface IFolder extends ISoftDeletedContent, IHierarchyContent, ICommon
     name: string;
 }
 
-export interface IContent extends IPublishableContent, ISoftDeletedContent, IHierarchyContent, ICommonMetadata, ITimestamps {
+export interface IContent extends IContentHasChildItems, IPublishableContent, ISoftDeletedContent, IHierarchyContent, ICommonMetadata, ITimestamps {
     name: string;
 
     contentType: string;
     properties: any;
 
     //not map to db
-    isDirty?: boolean;
+    isDirty: boolean;
 }
 
 export interface IContentVersion extends IContent {

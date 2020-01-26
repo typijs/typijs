@@ -1,8 +1,8 @@
 import * as mongoose from 'mongoose';
-import { cmsPublishedPage, IPublishedPage } from '../page/models/published-page.model';
+import { cmsPublishedPage, IPublishedPage, IPublishedPageDocument } from '../page/models/published-page.model';
 
 export interface ISiteDefinition {
-    startPage: IPublishedPage;
+    startPage: IPublishedPageDocument;
     siteUrl: string;
 }
 
