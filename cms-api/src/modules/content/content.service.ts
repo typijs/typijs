@@ -225,7 +225,7 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
         if (!sourceContent) throw new NotFoundException(sourceContentId);
 
         //create copy content
-        const newContent = this.createModelInstance(sourceContent);
+        const newContent = this.createModelInstance(sourceContent.toObject());
         newContent._id = null;
         newContent.isPublished = false;
         newContent.parentId = targetParentId;
@@ -241,8 +241,8 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
 
         const newDescendants: T[] = [];
         //update parentPath, ancestor
-        descendants.forEach(childContent => {
-            const newChildContent = this.updateParentPathAndAncestorAndLinkUrl(copiedContent, this.createModelInstance(childContent));
+        descendants.forEach((childContent: T) => {
+            const newChildContent = this.updateParentPathAndAncestorAndLinkUrl(copiedContent, this.createModelInstance(childContent.toObject()));
             newChildContent._id = null;
             newDescendants.push(newChildContent);
         })
