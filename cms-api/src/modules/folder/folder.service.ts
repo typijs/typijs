@@ -15,27 +15,28 @@ export class FolderService<T extends IContentDocument> extends BaseService<T>{
         this.contentService = new ContentService(folderModel, null, null);
     }
 
-    public createContentFolder = (contentFolder: T): Promise<IFolderDocument> => {
+    public createContentFolder = async (contentFolder: T): Promise<IFolderDocument> => {
         contentFolder.contentType = null;
         contentFolder.properties = null;
-        return this.getModelById(contentFolder.parentId)
-            .then((parentFolder: T) => Promise.all([
-                this.contentService.createContent(contentFolder, parentFolder),
-                Promise.resolve(parentFolder)
-            ]))
-            .then(([item, parentContent]: [IContentDocument, IContentDocument]) => this.contentService.updateHasChildren(parentContent).then(() => item))
+        const parentFolder = await this.getModelById(contentFolder.parentId);
+        const savedContent = await this.contentService.createContent(contentFolder, parentFolder);
+        if (savedContent) await this.contentService.updateHasChildren(parentFolder);
+
+        return savedContent;
     }
 
-    public updateFolderName = (id: string, name: string): Promise<IFolderDocument> => {
-        return this.getModelById(id)
-            .then((currentFolder: IContentDocument) => {
-                currentFolder.changed = new Date();
-                //currentPage.changedBy = userId
-                currentFolder.contentType = null;
-                currentFolder.properties = null;
-                currentFolder.name = name;
-                return currentFolder.save();
-            })
+    public updateFolderName = async (id: string, name: string): Promise<IFolderDocument> => {
+        const currentFolder = await this.getModelById(id);
+        if (currentFolder) {
+            currentFolder.changed = new Date();
+            //TODO: currentPage.changedBy = userId
+            currentFolder.contentType = null;
+            currentFolder.properties = null;
+            currentFolder.name = name;
+            return currentFolder.save();
+        }
+
+        return null;
     }
 
     public getFolderChildren = (parentId: string): Promise<IFolderDocument[]> => {
