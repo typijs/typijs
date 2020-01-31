@@ -38,7 +38,7 @@ export class PageCtrl extends ContentCtrl<IPageDocument, IPageVersionDocument, I
   insert = (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const pageDocument = this.pageService.createModelInstance(req.body);
 
-    return this.pageService.beginCreatePageFlow(pageDocument)
+    return this.pageService.executeCreatePageFlow(pageDocument)
       .then(item => res.status(200).json(item))
       .catch(err => next(err))
   }

@@ -56,7 +56,7 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
         return publishedPages;
     }
 
-    public beginCreatePageFlow = async (pageObj: IPageDocument): Promise<IPageDocument> => {
+    public executeCreatePageFlow = async (pageObj: IPageDocument): Promise<IPageDocument> => {
         //get page's parent
         //generate url segment
         //create new page
