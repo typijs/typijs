@@ -7,6 +7,7 @@ import { cmsPublishedPage } from '../page/models/published-page.model';
 import { cmsPublishedBlock } from '../block/models/published-block.model';
 import { BaseService } from '../shared/base.service';
 import { cmsPublishedMedia } from '../media/models/published-media.model';
+import { HttpException, NotFoundException } from '../../errorHandling';
 
 export class ContentService<T extends IContentDocument, V extends IContentVersionDocument & T, P extends IPublishedContentDocument & V> extends BaseService<T> {
     protected contentModel: mongoose.Model<T>;
@@ -199,4 +200,126 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
         const updateFields: Partial<IContent> = { isDeleted: true, deleted: new Date() };
         return this.contentModel.updateMany(conditions, updateFields).exec()
     }
+
+    private getDescendants = async <K extends T>(mongooseModel: mongoose.Model<K>, parentId: string): Promise<K[]> => {
+        //get source content 
+        const parentContent = await this.getModelById(parentId);
+        if (!parentContent) throw new NotFoundException(parentId);
+
+        const startWithParentPathRegExp = new RegExp("^" + `${parentContent.parentPath}${parentContent._id},`);
+        const conditions = { parentPath: { $regex: startWithParentPathRegExp } };
+        return mongooseModel.find(conditions).exec();
+    }
+
+    public executeCopyContentFlow = async (sourceContentId: string, targetParentId: string): Promise<T> => {
+
+        const copiedContent = await this.createCopiedContent(sourceContentId, targetParentId);
+        const copiedResult = await this.createCopiedDescendantsContent(sourceContentId, copiedContent);
+
+        return copiedContent;
+    }
+
+    protected createCopiedContent = async (sourceContentId: string, targetParentId: string): Promise<T> => {
+        //get source content 
+        const sourceContent = await this.getModelById(sourceContentId);
+        if (!sourceContent) throw new NotFoundException(sourceContentId);
+
+        //create copy content
+        const newContent = this.createModelInstance(sourceContent);
+        newContent._id = null;
+        newContent.isPublished = false;
+        newContent.parentId = targetParentId;
+
+        const copiedContent = await this.executeCreateContentFlow(newContent);
+        return copiedContent;
+    }
+
+    private createCopiedDescendantsContent = async (sourceContentId: string, copiedContent: T): Promise<any> => {
+        //get descendants of sourceContent
+        const descendants = await this.getDescendants(this.contentModel, sourceContentId);
+        if (descendants.length == 0) return {};
+
+        const newDescendants: T[] = [];
+        //update parentPath, ancestor
+        descendants.forEach(childContent => {
+            const newChildContent = this.updateParentPathAndAncestorAndLinkUrl(copiedContent, this.createModelInstance(childContent));
+            newChildContent._id = null;
+            newDescendants.push(newChildContent);
+        })
+
+        const insertOperators = newDescendants.map(x => ({
+            insertOne: {
+                document: x.toObject()
+            }
+        }))
+        const bulkWriteResult = await this.contentModel.bulkWrite([insertOperators], { ordered: false });
+        return bulkWriteResult;
+    }
+
+    public executeCutContentFlow = async (sourceContentId: string, targetParentId: string): Promise<T> => {
+        const cutContent = await this.createCutContent(sourceContentId, targetParentId);
+        const copiedResult = await this.createCutDescendantsContent(sourceContentId, cutContent);
+
+        return cutContent;
+    }
+
+    private createCutContent = async (sourceContentId: string, targetParentId: string): Promise<T> => {
+        //get source content 
+        const sourceContent = await this.getModelById(sourceContentId);
+        if (!sourceContent) throw new NotFoundException(sourceContentId);
+
+        const targetParent = await this.getModelById(targetParentId);
+
+        this.updateParentPathAndAncestorAndLinkUrl(targetParent, sourceContent);
+        const updatedContent = await sourceContent.save();
+        return updatedContent;
+    }
+
+    private createCutDescendantsContent = async (sourceContentId: string, cutContent: T): Promise<any> => {
+        //get descendants of sourceContent
+        const descendants = await this.getDescendants<T>(this.contentModel, cutContent._id);
+        if (descendants.length == 0) return {};
+
+        descendants.forEach(childContent => {
+            const updateChildContent = this.updateParentPathAndAncestorAndLinkUrl(cutContent, childContent);
+        })
+
+        const updateOperators = descendants.map(x => ({
+            updateOne: {
+                filter: { _id: x._id },
+                update: x.toObject()
+            }
+        }));
+
+        const bulkWriteResult = await this.contentModel.bulkWrite([updateOperators], { ordered: false });
+        return bulkWriteResult;
+    }
+
+    private updateParentPathAndAncestorAndLinkUrl = (newParentContent: T, currentContent: T): T => {
+        this.updateParentPathAndAncestor(newParentContent, currentContent);
+        this.updateLinkUrl(newParentContent, currentContent);
+
+        return currentContent;
+    }
+
+    private updateParentPathAndAncestor = (newParentContent: T, currentContent: T): T => {
+        const parentId = newParentContent ? newParentContent._id : null;
+        const index = parentId ? currentContent.ancestors.findIndex(p => p == parentId) : 0;
+
+        //update parent path, ancestors
+        const paths = currentContent.parentPath.split(',').filter(x => x);
+        let newPath = newParentContent && newParentContent.parentPath ? newParentContent.parentPath : ',';
+        let newAncestors = newParentContent ? newParentContent.ancestors.slice() : [];
+
+        for (let i = index; i < currentContent.ancestors.length; i++) {
+            newPath = `${newPath}${paths[i]},`;
+            newAncestors.push(currentContent.ancestors[i]);
+        }
+
+        currentContent.parentPath = newPath;
+        currentContent.ancestors = newAncestors;
+        return currentContent;
+    }
+
+    protected updateLinkUrl = (newParentContent: T, currentContent: T): T => currentContent;
 }

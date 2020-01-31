@@ -5,6 +5,7 @@ import { IPageDocument, PageModel } from "./models/page.model";
 import { IPageVersionDocument, PageVersionModel } from "./models/page-version.model";
 import { IPublishedPageDocument, PublishedPageModel } from './models/published-page.model';
 import { ISiteDefinitionDocument, SiteDefinitionModel } from '../site-definition/site-definition.model';
+import { NotFoundException } from '../../errorHandling';
 
 export class PageService extends ContentService<IPageDocument, IPageVersionDocument, IPublishedPageDocument> {
 
@@ -131,5 +132,37 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
         return this.siteDefinitionModel.findOne(siteUrl ? { siteUrl: siteUrl } : {})
             .populate('startPage') //TODO check if page is deleted or not
             .exec()
+    }
+
+    //Override the `createCopiedContent` method in base class
+    protected createCopiedContent = async (sourceContentId: string, targetParentId: string): Promise<IPageDocument> => {
+        //get source content 
+        const sourceContent = await this.getModelById(sourceContentId);
+        if (!sourceContent) throw new NotFoundException(sourceContentId);
+
+        //create copy content
+        const newContent = this.createModelInstance(sourceContent);
+        newContent._id = null;
+        newContent.isPublished = false;
+        newContent.parentId = targetParentId;
+
+        const copiedContent = await this.executeCreatePageFlow(newContent);
+        return copiedContent;
+    }
+
+    //Override the `updateLinkUrl` method in base class
+    protected updateLinkUrl = (newParentContent: IPageDocument, currentContent: IPageDocument): IPageDocument => {
+        const parentId = newParentContent ? newParentContent._id : null;
+        const index = parentId ? currentContent.ancestors.findIndex(p => p == parentId) : 0;
+
+        //update link url
+        const segments = currentContent.linkUrl.split('/').filter(x => x);
+        let newLinkUrl = newParentContent.linkUrl;
+        for (let j = segments.length - 1, k = 1; k <= currentContent.ancestors.length - index; j-- , k++) {
+            newLinkUrl = newLinkUrl == '/' ? `/${segments[j]}` : `${newLinkUrl}/${segments[j]}`;
+        }
+
+        currentContent.linkUrl = newLinkUrl;
+        return currentContent;
     }
 }
