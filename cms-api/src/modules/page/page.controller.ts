@@ -1,18 +1,18 @@
 import * as express from 'express';
 
-import { ContentCtrl } from '../content/content.controller';
+import { ContentController } from '../content/content.controller';
 import { PageService } from './page.service';
 
-import { PageModel, IPageDocument } from './models/page.model';
-import { IPageVersionDocument, PageVersionModel } from './models/page-version.model';
-import { PublishedPageModel, IPublishedPageDocument } from './models/published-page.model';
+import { IPageDocument } from './models/page.model';
+import { IPageVersionDocument } from './models/page-version.model';
+import { IPublishedPageDocument } from './models/published-page.model';
 
-export class PageCtrl extends ContentCtrl<IPageDocument, IPageVersionDocument, IPublishedPageDocument> {
+export class PageController extends ContentController<IPageDocument, IPageVersionDocument, IPublishedPageDocument> {
 
   private pageService: PageService;
-  constructor() {
-    super(PageModel, PageVersionModel, PublishedPageModel);
-    this.pageService = new PageService();
+  constructor(pageService: PageService) {
+    super(pageService);
+    this.pageService = pageService;
   }
 
   getByUrl = (req: express.Request, res: express.Response, next: express.NextFunction) => {

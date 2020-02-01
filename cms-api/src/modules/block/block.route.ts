@@ -1,23 +1,29 @@
 import { Router } from 'express';
-import { BlockCtrl } from './block.controller';
+import { BlockService } from './block.service';
+import { BlockController } from './block.controller';
 
 const block: Router = Router();
-const controller = new BlockCtrl();
+const blockService: BlockService = new BlockService();
+const blockController = new BlockController(blockService);
 
-block.get('/folders/:parentId?', controller.getFoldersByParentId);
+block.get('/folders/:parentId?', blockController.getFoldersByParentId);
 
-block.get('/children/:parentId?', controller.getContentsByFolder);
+block.get('/children/:parentId?', blockController.getContentsByFolder);
 
-block.post('/folder', controller.createFolderContent);
+block.post('/folder', blockController.createFolderContent);
 
-block.put('/folder/:id', controller.updateFolderName);
+block.put('/folder/:id', blockController.updateFolderName);
 
-block.get('/:id', controller.get);
+block.get('/:id', blockController.get);
 
-block.post('/', controller.insert);
+block.post('/cut', blockController.cut);
 
-block.put('/:id', controller.update);
+block.post('/copy', blockController.copy);
 
-block.delete('/:id', controller.delete);
+block.post('/', blockController.insert);
+
+block.put('/:id', blockController.update);
+
+block.delete('/:id', blockController.delete);
 
 export { block };

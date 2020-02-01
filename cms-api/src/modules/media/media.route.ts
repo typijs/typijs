@@ -1,26 +1,32 @@
 import { Router } from 'express';
-import { MediaCtrl } from './media.controller';
+import { MediaService } from './media.service';
+import { MediaController } from './media.controller';
 
 const media: Router = Router();
-const controller = new MediaCtrl();
+const mediaService: MediaService = new MediaService();
+const mediaController = new MediaController(mediaService);
 
-media.get('/folders/:parentId?', controller.getFoldersByParentId);
+media.get('/folders/:parentId?', mediaController.getFoldersByParentId);
 
-media.post('/folder', controller.createFolderContent);
+media.post('/folder', mediaController.createFolderContent);
 
-media.put('/folder/:id', controller.updateFolderName);
+media.put('/folder/:id', mediaController.updateFolderName);
 
-media.get('/children/:parentId?', controller.getContentsByFolder);
+media.get('/children/:parentId?', mediaController.getContentsByFolder);
 
-media.post('/upload/:parentId?', controller.uploadMedia('file'), controller.processMedia)
+media.post('/upload/:parentId?', mediaController.uploadMedia('file'), mediaController.processMedia)
 
-media.get('/:id', controller.get);
+media.post('/cut', mediaController.cut);
 
-media.delete('/:id', controller.delete);
+media.post('/copy', mediaController.copy);
+
+media.get('/:id', mediaController.get);
+
+media.delete('/:id', mediaController.delete);
 
 export { media };
 
 const asset: Router = Router();
-asset.get('/:fileId/:fileName', controller.getMediaById);
+asset.get('/:fileId/:fileName', mediaController.getMediaById);
 
 export { asset };

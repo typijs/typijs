@@ -1,20 +1,20 @@
 import * as express from 'express';
 import * as mime from 'mime-types';
 
-import { MediaModel, IMediaDocument, FileContent, ImageContent, VideoContent } from './models/media.model';
+import { IMediaDocument, FileContent, ImageContent, VideoContent } from './models/media.model';
 import * as upload from './upload';
-import { ContentCtrl } from '../content/content.controller';
-import { IMediaVersionDocument, MediaVersionModel } from './models/media-version.model';
-import { IPublishedMediaDocument, PublishedMediaModel } from './models/published-media.model';
+import { ContentController } from '../content/content.controller';
+import { IMediaVersionDocument } from './models/media-version.model';
+import { IPublishedMediaDocument } from './models/published-media.model';
 import { MediaService } from './media.service';
 
 
-export class MediaCtrl extends ContentCtrl<IMediaDocument, IMediaVersionDocument, IPublishedMediaDocument> {
+export class MediaController extends ContentController<IMediaDocument, IMediaVersionDocument, IPublishedMediaDocument> {
 
     private mediaService: MediaService;
-    constructor() {
-        super(MediaModel, MediaVersionModel, PublishedMediaModel);
-        this.mediaService = new MediaService();
+    constructor(mediaService: MediaService) {
+        super(mediaService);
+        this.mediaService = mediaService;
     }
 
     getMediaById = async (req: express.Request, res: express.Response, next: express.NextFunction) => {

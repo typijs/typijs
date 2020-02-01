@@ -1,19 +1,25 @@
 import { Router } from 'express';
-import { PageCtrl } from './page.controller';
+import { PageService } from './page.service';
+import { PageController } from './page.controller';
 
 const page: Router = Router();
-const controller = new PageCtrl();
+const pageService: PageService = new PageService();
+const pageController = new PageController(pageService);
 
-page.get('/published/:url', controller.getByUrl); //query param url =??
+page.get('/published/:url', pageController.getByUrl); //query param url =??
 
-page.get('/children/:parentId', controller.getPageChildren);
+page.get('/children/:parentId', pageController.getPageChildren);
 
-page.get('/:id', controller.get);
+page.get('/:id', pageController.get);
 
-page.post('/', controller.insert);
+page.post('/cut', pageController.cut);
 
-page.put('/:id', controller.update);
+page.post('/copy', pageController.copy);
 
-page.delete('/:id', controller.delete)
+page.post('/', pageController.insert);
+
+page.put('/:id', pageController.update);
+
+page.delete('/:id', pageController.delete)
 
 export { page };

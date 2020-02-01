@@ -4,7 +4,7 @@ import * as mongoose from 'mongoose';
 import { IContentDocument } from '../content/content.model';
 import { FolderService } from './folder.service';
 
-export abstract class FolderCtrl<T extends IContentDocument> {
+export abstract class FolderController<T extends IContentDocument> {
     private folderService: FolderService<T>;
 
     constructor(contentModel: mongoose.Model<T>) {

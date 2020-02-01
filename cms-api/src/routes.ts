@@ -1,7 +1,5 @@
 import { Router } from 'express';
 
-import { ContentCtrl } from './modules/content/content.controller';
-
 import { asset, media } from './modules/media/media.route';
 import { block } from './modules/block/block.route';
 import { page } from './modules/page/page.route';
