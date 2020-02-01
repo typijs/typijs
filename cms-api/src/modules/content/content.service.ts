@@ -21,6 +21,8 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
         this.publishedContentModel = publishedContentModel;
     }
 
+    public getContentModel = (): mongoose.Model<T> => this.contentModel;
+
     public getPopulatedContentById = (id: string): Promise<T> => {
         if (!id) id = null;
 
@@ -212,13 +214,13 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
     }
 
     public executeCopyContentFlow = async (sourceContentId: string, targetParentId: string): Promise<T> => {
-
         const copiedContent = await this.createCopiedContent(sourceContentId, targetParentId);
         const copiedResult = await this.createCopiedDescendantsContent(sourceContentId, copiedContent);
 
         return copiedContent;
     }
 
+    //Can be override in the inherited class
     protected createCopiedContent = async (sourceContentId: string, targetParentId: string): Promise<T> => {
         //get source content 
         const sourceContent = await this.getModelById(sourceContentId);
@@ -258,12 +260,16 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
 
     public executeCutContentFlow = async (sourceContentId: string, targetParentId: string): Promise<T> => {
         const cutContent = await this.createCutContent(sourceContentId, targetParentId);
-        const copiedResult = await this.createCutDescendantsContent(sourceContentId, cutContent);
-
+        //update published cut content
+        if (cutContent.contentType != null && cutContent.isPublished) {
+            const publishedContent = await this.updatePublishedCutContent(cutContent);
+        }
+        const cutResult = await this.createCutDescendantsContent(sourceContentId, cutContent);
+        const publishedCutResult = await this.updatePublishedCutDescendantsContent(cutResult[0]);
         return cutContent;
     }
 
-    private createCutContent = async (sourceContentId: string, targetParentId: string): Promise<T> => {
+    protected createCutContent = async (sourceContentId: string, targetParentId: string): Promise<T> => {
         //get source content 
         const sourceContent = await this.getModelById(sourceContentId);
         if (!sourceContent) throw new NotFoundException(sourceContentId);
@@ -275,10 +281,20 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
         return updatedContent;
     }
 
-    private createCutDescendantsContent = async (sourceContentId: string, cutContent: T): Promise<any> => {
+    protected updatePublishedCutContent = async (cutContent: T): Promise<T> => {
+        const publishContent = {
+            parentId: cutContent.parentId,
+            parentPath: cutContent.parentPath,
+            ancestors: cutContent.ancestors,
+            linkUrl: cutContent["linkUrl"]
+        }
+        return this.publishedContentModel.findOneAndUpdate({ _id: cutContent._id }, publishContent).exec()
+    }
+
+    private createCutDescendantsContent = async (sourceContentId: string, cutContent: T): Promise<[T[], any]> => {
         //get descendants of sourceContent
         const descendants = await this.getDescendants<T>(this.contentModel, cutContent._id);
-        if (descendants.length == 0) return {};
+        if (descendants.length == 0) return [descendants, null];
 
         descendants.forEach(childContent => {
             const updateChildContent = this.updateParentPathAndAncestorAndLinkUrl(cutContent, childContent);
@@ -292,10 +308,30 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
         }));
 
         const bulkWriteResult = await this.contentModel.bulkWrite([updateOperators], { ordered: false });
-        return bulkWriteResult;
+        return [descendants, bulkWriteResult];
     }
 
-    private updateParentPathAndAncestorAndLinkUrl = (newParentContent: T, currentContent: T): T => {
+    private updatePublishedCutDescendantsContent = async (descendants: T[]): Promise<[T[], any]> => {
+        const publishedDescendants = descendants.filter(x => x.isPublished && x.contentType != null);
+        if (publishedDescendants.length == 0) return null;
+
+        const updateOperators = publishedDescendants.map(x => ({
+            updateOne: {
+                filter: { _id: x._id },
+                update: {
+                    parentId: x.parentId,
+                    parentPath: x.parentPath,
+                    ancestors: x.ancestors,
+                    linkUrl: x["linkUrl"]
+                }
+            }
+        }));
+
+        const bulkWriteResult = await this.publishedContentModel.bulkWrite([updateOperators], { ordered: false });
+        return [publishedDescendants, bulkWriteResult];
+    }
+
+    protected updateParentPathAndAncestorAndLinkUrl = (newParentContent: T, currentContent: T): T => {
         this.updateParentPathAndAncestor(newParentContent, currentContent);
         this.updateLinkUrl(newParentContent, currentContent);
 
@@ -321,5 +357,6 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
         return currentContent;
     }
 
+    //Can be override in the inherited class
     protected updateLinkUrl = (newParentContent: T, currentContent: T): T => currentContent;
 }

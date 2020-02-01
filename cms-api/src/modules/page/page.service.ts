@@ -3,7 +3,7 @@ import { ContentService } from '../content/content.service';
 
 import { IPageDocument, PageModel } from "./models/page.model";
 import { IPageVersionDocument, PageVersionModel } from "./models/page-version.model";
-import { IPublishedPageDocument, PublishedPageModel } from './models/published-page.model';
+import { IPublishedPageDocument, PublishedPageModel, IPublishedPage } from './models/published-page.model';
 import { ISiteDefinitionDocument, SiteDefinitionModel } from '../site-definition/site-definition.model';
 import { NotFoundException } from '../../errorHandling';
 
@@ -148,6 +148,20 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
 
         const copiedContent = await this.executeCreatePageFlow(newContent);
         return copiedContent;
+    }
+
+    protected createCutContent = async (sourceContentId: string, targetParentId: string): Promise<IPageDocument> => {
+        //get source content 
+        const sourceContent = await this.getModelById(sourceContentId);
+        if (!sourceContent) throw new NotFoundException(sourceContentId);
+
+        const targetParent = await this.getModelById(targetParentId);
+
+        sourceContent.urlSegment = await this.generateUrlSegment(0, sourceContent.urlSegment, targetParent ? targetParent._id : null);
+
+        this.updateParentPathAndAncestorAndLinkUrl(targetParent, sourceContent);
+        const updatedContent = await sourceContent.save();
+        return updatedContent;
     }
 
     //Override the `updateLinkUrl` method in base class
