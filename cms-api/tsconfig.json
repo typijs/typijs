@@ -5,6 +5,7 @@
     "sourceMap": true,
     "declaration": true,
     "moduleResolution": "node",
+    "experimentalDecorators": true,
     "target": "es5",
     "module": "commonjs",
     "lib": [
