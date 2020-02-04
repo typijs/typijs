@@ -15,8 +15,4 @@ export class LayoutComponent {
       this.startPage = res.properties;
     })
   }
-
-  clickGutter() {
-    console.log('click footer');
-  }
 }

@@ -1,5 +1,4 @@
-import { Property, PageType, UIHint, ValidationTypes, PageData } from '@angular-cms/core';
-import { FeatureItem } from './feature-item';
+import { Property, PageType, UIHint, PageData } from '@angular-cms/core';
 import { HomeComponent } from './home.component';
 
 @PageType({
@@ -10,49 +9,29 @@ import { HomeComponent } from './home.component';
 export class HomePage extends PageData {
 
     @Property({
-        displayName: "Title",
-        displayType: UIHint.Input,
-        validates: [ValidationTypes.required("This is min required")]
-    })
-    title: string;
-
-    @Property({
         displayName: "Logo",
         displayType: UIHint.Input
     })
     logo: string;
 
     @Property({
-        displayName: "Banner Image",
+        displayName: "Latest Projects Page Root",
         displayType: UIHint.Input
     })
-    bannerImage: string;
+    latestProjectRoot: string;
 
     @Property({
-        displayName: "Banner Text",
-        displayType: UIHint.Xhtml
-    })
-    bannerText: string;
-
-    @Property({
-        displayName: "Highlights",
-        description: "This is highlight item will be in banner area",
+        displayName: "Highlight Features",
+        description: "This is highlight feature will be in banner area",
         displayType: UIHint.ContentArea
     })
-    highlights: Array<any>;
+    features: Array<any>;
 
     @Property({
-        displayName: "Carousel",
-        displayType: UIHint.ContentArea
+        displayName: "Highlight Portfolios",
+        displayType: UIHint.ContentArea,
     })
-    carousel: Array<any>;
-
-    @Property({
-        displayName: "Features",
-        displayType: UIHint.PropertyList,
-        propertyListItemType: FeatureItem,
-    })
-    features: Array<FeatureItem>;
+    portfolios: Array<any>;
 
     @Property({
         displayName: "Footer",
