@@ -112,6 +112,7 @@ https://angular2-tree.readme.io/docs/async-data-1
 
 https://willtaylor.blog/complete-guide-to-angular-libraries/
 https://medium.com/better-programming/angular-7-series-part-2-create-custom-library-8d7a0494b2cc
+https://medium.com/angular-in-depth/creating-a-library-in-angular-6-87799552e7e5
 
 # Rxjs migration
 
