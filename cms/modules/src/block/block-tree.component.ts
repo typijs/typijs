@@ -24,7 +24,8 @@ import { BlockTreeService } from './block-tree.service';
                         <fa-icon class="mr-1" *ngIf="node.id == 0" [icon]="['fas', 'cubes']"></fa-icon>
                         <fa-icon class="mr-1" *ngIf="node.id != 0" [icon]="['fas', 'folder']"></fa-icon>
                         <span class="node-name">{{node.name}}</span>
-                        <span *ngIf="node.id == 0" class="badge badge-info float-right mt-2 mr-1" [routerLink]="['new/block']">NEW</span>
+                        <span *ngIf="node.id == 0" class="badge badge-info float-right mt-2 mr-1" (click)="clickToCreateFolder(node)">New Folder</span>
+                        <span *ngIf="node.id == 0" class="badge badge-info float-right mt-2 mr-1" [routerLink]="['new/block']">New Block</span>
                     </span>
                 </ng-template>
             </cms-tree>
@@ -97,7 +98,7 @@ export class BlockTreeComponent {
     ngOnInit() {
         this.subjectService.blockFolderCreated$.subscribe(blockData => {
             //TODO: need to optimize only reload new node
-            this.cmsTree.reloadNode(blockData._id);
+            this.cmsTree.reloadSubTree(blockData._id);
         });
         this.folderSelected({ id: '0' });
     }
@@ -114,6 +115,10 @@ export class BlockTreeComponent {
             .subscribe(block => {
                 this.subjectService.fireBlockCreated(block);
             });
+    }
+
+    clickToCreateFolder(node: TreeNode) {
+        this.cmsTree.menuItemSelected({ action: NodeMenuItemAction.NewNodeInline, node: node })
     }
 
     nodeCreated(parentNode) {

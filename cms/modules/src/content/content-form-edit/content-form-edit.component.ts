@@ -22,7 +22,7 @@ interface FormProperty {
 export class ContentFormEditComponent implements OnInit {
     private subParams: Subscription;
 
-    contentForm: any = new FormGroup({});
+    contentForm: FormGroup = new FormGroup({});
     formTabs: Array<CmsTab> = [];
     currentContent: any;
 
@@ -41,12 +41,12 @@ export class ContentFormEditComponent implements OnInit {
         private pageService: PageService,
         private blockService: BlockService,
         private subjectService: SubjectService,
-        private _changeDetectionRef: ChangeDetectorRef,
+        private _changeDetectionRef: ChangeDetectorRef
     ) { }
 
     ngOnInit() {
         this.subParams = this.route.params.subscribe(params => {
-            let contentId = params['id'] || '';
+            const contentId = params['id'] || '';
             this.typeOfContent = params['type'];
 
             if (contentId) {
