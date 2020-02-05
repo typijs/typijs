@@ -2,9 +2,9 @@ import { BlockData, BlockType, Property, ValidationTypes, UIHint } from '@angula
 import { PortfolioBlockComponent } from './portfolio-block.component';
 
 @BlockType({
-    displayName: "Feature Block",
+    displayName: "Portfolio Block",
     componentRef: PortfolioBlockComponent,
-    description: "This is feature block type"
+    description: "This is Portfolio block type"
 })
 export class PortfolioBlock extends BlockData {
     @Property({
