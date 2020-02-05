@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { TreeStore } from './tree-store';
 import { TreeNode } from './tree-node';
 import { TreeConfig, TreeNodeTemplate } from './tree-config';
+import { NodeMenuItemAction } from './tree-menu';
 
 @Component({
     selector: 'cms-tree',
@@ -21,7 +22,10 @@ import { TreeConfig, TreeNodeTemplate } from './tree-config';
                     <tree-children 
                         [root]="root" 
                         [config]="config" 
-                        [templates]="templates">
+                        [templates]="templates"
+                        (selectNode)="selectNode($event)"
+                        (menuItemSelected)="menuItemSelected($event)"
+                        (nodeOnBlur)="nodeOnBlur($event)">
                     </tree-children>
                 </div>
             </div>
@@ -50,7 +54,7 @@ export class TreeComponent implements OnInit {
     private subscriptions: Subscription[] = [];
     public templates: TreeNodeTemplate;
 
-    constructor(private store: TreeStore) { }
+    constructor(private treeStore: TreeStore) { }
 
     ngOnInit() {
         this.templates = {
@@ -58,58 +62,71 @@ export class TreeComponent implements OnInit {
             treeNodeTemplate: this.treeNodeTemplate
         }
         if (this.config) {
-            this.store.treeService = this.config.service;
+            if (!this.config.service) throw new Error("The TreeService is undefined");
+            this.treeStore.treeService = this.config.service;
 
-            this.subscriptions.push(this.store.nodeSelected$.subscribe(node => {
+            this.subscriptions.push(this.treeStore.nodeSelected$.subscribe(node => {
                 this.nodeSelected.emit(node);
             }));
 
-            this.subscriptions.push(this.store.nodeCreated$.subscribe(node => {
+            this.subscriptions.push(this.treeStore.nodeCreated$.subscribe(node => {
                 this.nodeCreated.emit(node);
             }));
 
-            this.subscriptions.push(this.store.nodeInlineCreated$.subscribe(node => {
+            this.subscriptions.push(this.treeStore.nodeInlineCreated$.subscribe(node => {
                 this.nodeInlineCreated.emit(node);
             }));
 
-            this.subscriptions.push(this.store.nodeCut$.subscribe(node => {
+            this.subscriptions.push(this.treeStore.nodeCut$.subscribe(node => {
                 this.nodeCut.emit(node);
             }));
 
-            this.subscriptions.push(this.store.nodeCopied$.subscribe(node => {
+            this.subscriptions.push(this.treeStore.nodeCopied$.subscribe(node => {
                 this.nodeCopied.emit(node);
             }));
 
-            this.subscriptions.push(this.store.nodeRenamed$.subscribe(node => {
+            this.subscriptions.push(this.treeStore.nodeRenamed$.subscribe(node => {
                 this.nodeRenamed.emit(node);
             }));
 
-            this.subscriptions.push(this.store.nodePasted$.subscribe(node => {
+            this.subscriptions.push(this.treeStore.nodePasted$.subscribe(node => {
                 this.nodePasted.emit(node);
             }));
 
-            this.subscriptions.push(this.store.nodeDeleted$.subscribe(node => {
+            this.subscriptions.push(this.treeStore.nodeDeleted$.subscribe(node => {
                 this.nodeDeleted.emit(node);
             }));
         }
     }
 
-    //handle event when node is clicked
+    //Set node.isSelected = true when node is clicked and fire node selected event
     selectNode(node: TreeNode) {
-        node.isSelected = true;
-        this.store.fireNodeSelected(node);
+        this.treeStore.setSelectedNode(node);
+        this.treeStore.fireNodeSelectedInner(node);
+        this.treeStore.fireNodeSelected(node);
     }
 
-    menuItemSelected(menuEvent) {
-        this.store.fireNodeActions(menuEvent);
+    nodeOnBlur(node: TreeNode) {
+        if (node.name) {
+            this.treeStore.fireNodeInlineCreated(node);
+        } else {
+            this.treeStore.removeEmptyNode(this.root, node);
+        }
     }
 
-    reloadNode(nodeId) {
-        this.store.reloadNode(nodeId);
+    menuItemSelected(nodeAction: { action: NodeMenuItemAction, node: TreeNode }) {
+        this.treeStore.fireNodeActions(nodeAction);
+    }
+
+    //Reload the node data
+    //Reload node's children
+    //@nodeId: Mongoose ObjectId
+    reloadSubTree(subTreeRootId: string) {
+        this.treeStore.reloadTreeChildrenData(subTreeRootId);
     }
 
     locateToSelectedNode(node: TreeNode) {
-        this.store.locateToSelectedNode(node);
+        this.treeStore.locateToSelectedNode(node);
     }
 
     ngOnDestroy(): void {
