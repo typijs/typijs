@@ -3,31 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { Block } from '../models/block.model';
+import { ContentService } from './content.service';
 @Injectable()
-export class BlockService {
-  constructor(private http: HttpClient) { }
+export class BlockService extends ContentService<Block> {
 
-  getBlockContents(): Observable<Block[]> {
-    return this.http.get<Block[]>('/api/blocks');
-  }
-
-  getBlockFolders(parentId: string): Observable<Block[]> {
-    return this.http.get<Block[]>(`/api/block/folders/${parentId}`);
-  }
-
-  getChildBlocksOfFolder(folderId: string): Observable<Block[]> {
-    return this.http.get<Block[]>(`/api/block/children/${folderId}`);
-  }
-
-  getBlockContent(blockId: string): Observable<Block> {
-    return this.http.get<Block>(`/api/block/${blockId}`);
-  }
-
-  addBlockContent(blockContent: Block): Observable<Block> {
-    return this.http.post<Block>('/api/block', blockContent);
-  }
-
-  editBlockContent(content: Block): Observable<string> {
-    return this.http.put(`/api/block/${content._id}`, content, { responseType: 'text' });
+  protected apiUrl: string = "/api/block";
+  constructor(httpClient: HttpClient) {
+    super(httpClient);
   }
 }

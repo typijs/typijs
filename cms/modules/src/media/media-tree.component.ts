@@ -1,5 +1,4 @@
 import { Component, ViewChild } from '@angular/core';
-import { Subscription } from 'rxjs';
 
 import { SubjectService, ServiceLocator, Media, MediaService } from '@angular-cms/core';
 import { TreeNode } from '../shared/tree/tree-node';
@@ -9,6 +8,7 @@ import { NodeMenuItemAction } from '../shared/tree/tree-menu';
 
 import { MediaTreeService } from './media-tree.service';
 import { UploadService } from './upload/upload.service';
+import { SubscriptionComponent } from '../shared/subscription.component';
 
 @Component({
     template: `
@@ -66,8 +66,7 @@ import { UploadService } from './upload/upload.service';
         }
   `]
 })
-export class MediaTreeComponent {
-    private subscriptions: Subscription[] = [];
+export class MediaTreeComponent extends SubscriptionComponent {
 
     @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
     medias: Array<Media>;
@@ -78,7 +77,7 @@ export class MediaTreeComponent {
         menuItems: [
             {
                 action: NodeMenuItemAction.NewNode,
-                name: "New Block"
+                name: "New Media"
             },
             {
                 action: NodeMenuItemAction.NewNodeInline,
@@ -107,12 +106,13 @@ export class MediaTreeComponent {
         private mediaService: MediaService,
         private subjectService: SubjectService,
         private uploadService: UploadService) {
+        super();
     }
 
     ngOnInit() {
-        this.subscriptions.push(this.subjectService.blockFolderCreated$.subscribe(blockData => {
+        this.subscriptions.push(this.subjectService.mediaFolderCreated$.subscribe(createdFolder => {
             //TODO: need to optimize only reload new node
-            this.cmsTree.reloadSubTree(blockData._id);
+            this.cmsTree.reloadSubTree(createdFolder.parentId);
         }));
 
         this.subscriptions.push(this.uploadService.uploadComplete$.subscribe(nodeId => {
@@ -125,8 +125,8 @@ export class MediaTreeComponent {
     folderSelected(node) {
         this.uploadService.setParentFolder(node);
         //load child block in folder
-        this.mediaService.getFilesInFolder(node.id).subscribe(childBlocks => {
-            this.medias = childBlocks;
+        this.mediaService.getContentInFolder(node.id).subscribe(childMedias => {
+            this.medias = childMedias;
             this.medias.forEach(x => {
                 x["path"] = `/api/assets/${x._id}/${x.name}?w=50`;
             })
@@ -134,13 +134,9 @@ export class MediaTreeComponent {
     }
 
     createMediaFolder(node: TreeNode) {
-        this.mediaService.addMediaFolder({ name: node.name, parentId: node.parentId })
+        this.mediaService.createFolder({ name: node.name, parentId: node.parentId })
             .subscribe(block => {
-                this.subjectService.fireBlockCreated(block);
+                this.subjectService.fireMediaFolderCreated(block);
             });
-    }
-
-    ngOnDestroy(): void {
-        this.subscriptions.forEach(sub => sub && sub.unsubscribe());
     }
 }

@@ -6,6 +6,8 @@ import { TreeNode } from './tree-node';
 import { TreeService } from './tree-service';
 import { TreeConfig } from './tree-config';
 import { NodeMenuItemAction } from './tree-menu';
+import { SubscriptionComponent } from '../subscription.component';
+import { TreeBaseComponent } from './tree-base.component';
 
 @Component({
     selector: 'tree-children',
@@ -19,7 +21,9 @@ import { NodeMenuItemAction } from './tree-menu';
                 [templates]="templates"
                 (selectNode)="selectNode($event)"
                 (menuItemSelected)="menuItemSelected($event)"
-                (nodeOnBlur)="nodeOnBlur($event)">
+                (nodeOnBlur)="nodeOnBlur($event)"
+                (createNewInlineNode)="createNewInlineNode($event)"
+                (cancelNewInlineNode)="cancelNewInlineNode($event)">
             </tree-node>
             <tree-children *ngIf="node.isExpanded" 
                 [root]="node" 
@@ -27,26 +31,23 @@ import { NodeMenuItemAction } from './tree-menu';
                 [templates]="templates"
                 (selectNode)="selectNode($event)"
                 (menuItemSelected)="menuItemSelected($event)"
-                (nodeOnBlur)="nodeOnBlur($event)">
+                (nodeOnBlur)="nodeOnBlur($event)"
+                (createNewInlineNode)="createNewInlineNode($event)"
+                (cancelNewInlineNode)="cancelNewInlineNode($event)">
             </tree-children>
         </li>
     </ul>
 `,
 })
-export class TreeChildrenComponent implements OnInit {
+export class TreeChildrenComponent extends TreeBaseComponent implements OnInit {
     @Input() config: TreeConfig;
     @Input() root: TreeNode;
     @Input() templates: any = {};
 
-    @Output("selectNode") selectNodeEvent: EventEmitter<TreeNode> = new EventEmitter();
-    @Output("nodeOnBlur") nodeOnBlurEvent: EventEmitter<TreeNode> = new EventEmitter();
-    @Output("menuItemSelected") menuItemSelectedEvent: EventEmitter<{ action: NodeMenuItemAction, node: TreeNode }> = new EventEmitter();
-
     public nodeChildren: TreeNode[] = [];
     private treeService: TreeService;
-    private subscriptions: Subscription[] = [];
 
-    constructor(private treeStore: TreeStore) { }
+    constructor(private treeStore: TreeStore) { super() }
 
     ngOnInit() {
         this.subscriptions.push(this.treeStore.getTreeNodesSubjectByKey$(this.root.id).subscribe((nodes: TreeNode[]) => {
@@ -71,21 +72,5 @@ export class TreeChildrenComponent implements OnInit {
                 this.treeStore.getTreeChildrenData(this.root.id);
             }
         }
-    }
-
-    selectNode(node: TreeNode) {
-        this.selectNodeEvent.emit(node);
-    }
-
-    nodeOnBlur(node: TreeNode) {
-        this.nodeOnBlurEvent.emit(node);
-    }
-
-    menuItemSelected(nodeAction: { action: NodeMenuItemAction, node: TreeNode }) {
-        this.menuItemSelectedEvent.emit(nodeAction)
-    }
-
-    ngOnDestroy(): void {
-        this.subscriptions.forEach(sub => sub && sub.unsubscribe());
     }
 }

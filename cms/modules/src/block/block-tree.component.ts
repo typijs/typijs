@@ -7,6 +7,7 @@ import { TreeComponent } from '../shared/tree/tree.component';
 import { TreeConfig } from '../shared/tree/tree-config';
 import { NodeMenuItemAction } from '../shared/tree/tree-menu';
 import { BlockTreeService } from './block-tree.service';
+import { SubscriptionComponent } from '../shared/subscription.component';
 
 @Component({
     template: `
@@ -53,7 +54,7 @@ import { BlockTreeService } from './block-tree.service';
         }
   `]
 })
-export class BlockTreeComponent {
+export class BlockTreeComponent extends SubscriptionComponent {
     @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
     blocks: Array<Block>;
 
@@ -93,27 +94,28 @@ export class BlockTreeComponent {
         private route: ActivatedRoute,
         private blockService: BlockService,
         private subjectService: SubjectService) {
+        super()
     }
 
     ngOnInit() {
-        this.subjectService.blockFolderCreated$.subscribe(blockData => {
+        this.subscriptions.push(this.subjectService.blockFolderCreated$.subscribe(createdFolder => {
             //TODO: need to optimize only reload new node
-            this.cmsTree.reloadSubTree(blockData._id);
-        });
+            this.cmsTree.reloadSubTree(createdFolder.parentId);
+        }));
         this.folderSelected({ id: '0' });
     }
 
     folderSelected(node) {
         //load child block in folder
-        this.blockService.getChildBlocksOfFolder(node.id).subscribe(childBlocks => {
+        this.blockService.getContentInFolder(node.id).subscribe(childBlocks => {
             this.blocks = childBlocks;
         })
     }
 
     createBlockFolder(node: TreeNode) {
-        this.blockService.addBlockContent({ name: node.name, parentId: node.parentId })
+        this.blockService.createFolder({ name: node.name, parentId: node.parentId })
             .subscribe(block => {
-                this.subjectService.fireBlockCreated(block);
+                this.subjectService.fireBlockFolderCreated(block);
             });
     }
 

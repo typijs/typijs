@@ -3,6 +3,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { TreeNode } from './tree-node';
 import { TreeConfig } from './tree-config';
 import { NodeMenuItemAction, TreeMenuItem } from './tree-menu';
+import { TreeBaseComponent } from './tree-base.component';
 
 @Component({
     selector: 'tree-node',
@@ -19,14 +20,22 @@ import { NodeMenuItemAction, TreeMenuItem } from './tree-menu';
             </ng-container>
         </span>
         
-        <div *ngIf="shouldShowInputForTreeNode(node)">
-            <input autofocus type="text" class="form-control" (blur)="nodeOnBlur(node)" [(ngModel)]="node.name"/>
+        <div *ngIf="shouldShowInputForTreeNode(node)" class="form-group row d-inline-block mb-2">
+            <form class="form-inline" (ngSubmit)="createNewInlineNode(node)" #inlineNodeForm="ngForm">
+                <div class="form-group mx-sm-3">
+                    <input type="text" required autofocus class="form-control form-control-sm" 
+                    (blur)="nodeOnBlur(node)" 
+                    [(ngModel)]="node.name" name="name" #name="ngModel"/>
+                </div>
+                <button type="submit" class="btn btn-success btn-sm" [disabled]="!inlineNodeForm.form.valid">Save</button>
+                <button type="button" class="btn btn-default btn-sm" (click)="cancelNewInlineNode(node)">Cancel</button>
+            </form>
         </div>
 
         <div *ngIf="menuItems && node.id != 0" class="node-menu" dropdown>
             <fa-icon class="mr-1" [icon]="['fas', 'bars']" dropdownToggle></fa-icon>
             <div class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
-                <a *ngFor="let menuItem of menuItems" class="dropdown-item" href="javascript:void(0)" (click)="menuItemSelected(menuItem.action, node)">
+                <a *ngFor="let menuItem of menuItems" class="dropdown-item" href="javascript:void(0)" (click)="onMenuItemSelected(menuItem.action, node)">
                     {{menuItem.name}}
                 </a>
             </div>
@@ -34,14 +43,10 @@ import { NodeMenuItemAction, TreeMenuItem } from './tree-menu';
     </div>
     `
 })
-export class TreeNodeComponent {
+export class TreeNodeComponent extends TreeBaseComponent {
     @Input() node: TreeNode;
     @Input() config: TreeConfig;
     @Input() templates: any = {};
-
-    @Output("selectNode") selectNodeEvent: EventEmitter<TreeNode> = new EventEmitter();
-    @Output("nodeOnBlur") nodeOnBlurEvent: EventEmitter<TreeNode> = new EventEmitter();
-    @Output("menuItemSelected") menuItemSelectedEvent: EventEmitter<{ action: NodeMenuItemAction, node: TreeNode }> = new EventEmitter();
 
     menuItems: TreeMenuItem[];
 
@@ -55,16 +60,7 @@ export class TreeNodeComponent {
         return node.isNew || node.isEditing;
     }
 
-    selectNode(node: TreeNode) {
-        if (node.id == '0') return;
-        this.selectNodeEvent.emit(node);
-    }
-
-    menuItemSelected(action: NodeMenuItemAction, node: TreeNode) {
-        this.menuItemSelectedEvent.emit({ action: action, node: node })
-    }
-
-    nodeOnBlur(node: TreeNode) {
-        this.nodeOnBlurEvent.emit(node);
+    onMenuItemSelected(action: NodeMenuItemAction, node: TreeNode) {
+        this.menuItemSelected({ action: action, node: node })
     }
 }

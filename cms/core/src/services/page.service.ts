@@ -3,37 +3,24 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { Page } from '../models/page.model';
+import { ContentService } from './content.service';
 
 @Injectable()
-export class PageService {
-  constructor(private http: HttpClient) { }
+export class PageService extends ContentService<Page> {
 
-  createPage(pageData: Page): Observable<Page> {
-    return this.http.post<Page>('/api/page', pageData);
+  protected apiUrl: string = "/api/page";
+  constructor(httpClient: HttpClient) {
+    super(httpClient);
   }
 
-  editPage(pageData: Page): Observable<string> {
-    return this.http.put(`/api/page/${pageData._id}`, pageData, { responseType: 'text' });
-  }
-
-  deletePage(id: string): Observable<Page> {
-    return this.http.delete<Page>(`/api/page/${id}`)
-  }
-
-  getStartPage(): Observable<Page> {
-    const startPageUrl = 'http://localhost:4200';
-    return this.http.get<Page>(`/api/page/published/${btoa(startPageUrl)}`);
-  }
-
-  getPageContent(pageId: string): Observable<Page> {
-    return this.http.get<Page>(`/api/page/${pageId}`);
+  //TODO: temporary fix hostName
+  getStartPage(hostName: string = 'http://localhost:4200'): Observable<Page> {
+    const startPageUrl = hostName;
+    return this.httpClient.get<Page>(`${this.apiUrl}/published/${btoa(startPageUrl)}`);
   }
 
   getPublishedPage(linkUrl: string): Observable<Page> {
-    return this.http.get<Page>(`/api/page/published/${btoa(linkUrl)}`);
+    return this.httpClient.get<Page>(`${this.apiUrl}/published/${btoa(linkUrl)}`);
   }
 
-  getChildren(parentId: string): Observable<Page[]> {
-    return this.http.get<Page[]>(`/api/page/children/${parentId}`);
-  }
 }

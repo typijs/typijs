@@ -13,7 +13,7 @@ export class BlockTreeService implements TreeService {
     constructor(private blockService: BlockService) { }
 
     getNode(nodeId: string): Observable<TreeNode> {
-        return this.blockService.getBlockContent(nodeId).pipe(
+        return this.blockService.getContent(nodeId).pipe(
             map(x => new TreeNode({
                 id: x._id,
                 name: x.name,
@@ -24,14 +24,14 @@ export class BlockTreeService implements TreeService {
     }
 
     loadChildren(parentNodeId: string): Observable<TreeNode[]> {
-        return this.blockService.getBlockFolders(parentNodeId).pipe(
-            map((res: Block[]) => {
-                return res.map(x => new TreeNode({
-                    id: x._id,
-                    name: x.name,
-                    hasChildren: x.hasChildren,
-                    parentId: x.parentId,
-                    parentPath: x.parentPath
+        return this.blockService.getFolderChildren(parentNodeId).pipe(
+            map((childFolders: Block[]) => {
+                return childFolders.map(folder => new TreeNode({
+                    id: folder._id,
+                    name: folder.name,
+                    hasChildren: folder.hasChildren,
+                    parentId: folder.parentId,
+                    parentPath: folder.parentPath
                 })
                 )
             })

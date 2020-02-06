@@ -5,6 +5,7 @@ import { TreeStore } from './tree-store';
 import { TreeNode } from './tree-node';
 import { TreeConfig, TreeNodeTemplate } from './tree-config';
 import { NodeMenuItemAction } from './tree-menu';
+import { SubscriptionComponent } from '../subscription.component';
 
 @Component({
     selector: 'cms-tree',
@@ -25,7 +26,9 @@ import { NodeMenuItemAction } from './tree-menu';
                         [templates]="templates"
                         (selectNode)="selectNode($event)"
                         (menuItemSelected)="menuItemSelected($event)"
-                        (nodeOnBlur)="nodeOnBlur($event)">
+                        (nodeOnBlur)="nodeOnBlur($event)"
+                        (createNewInlineNode)="createNewInlineNode($event)"
+                        (cancelNewInlineNode)="cancelNewInlineNode($event)">
                     </tree-children>
                 </div>
             </div>
@@ -34,7 +37,7 @@ import { NodeMenuItemAction } from './tree-menu';
     encapsulation: ViewEncapsulation.None,
     providers: [TreeStore]
 })
-export class TreeComponent implements OnInit {
+export class TreeComponent extends SubscriptionComponent implements OnInit {
 
     @ContentChild('treeNodeTemplate', { static: true }) treeNodeTemplate: TemplateRef<any>;
     @ContentChild('loadingTemplate', { static: true }) loadingTemplate: TemplateRef<any>;
@@ -51,10 +54,9 @@ export class TreeComponent implements OnInit {
     @Output() nodePasted: EventEmitter<any> = new EventEmitter();
     @Output() nodeDeleted: EventEmitter<any> = new EventEmitter();
 
-    private subscriptions: Subscription[] = [];
     public templates: TreeNodeTemplate;
 
-    constructor(private treeStore: TreeStore) { }
+    constructor(private treeStore: TreeStore) { super(); }
 
     ngOnInit() {
         this.templates = {
@@ -107,11 +109,15 @@ export class TreeComponent implements OnInit {
     }
 
     nodeOnBlur(node: TreeNode) {
-        if (node.name) {
-            this.treeStore.fireNodeInlineCreated(node);
-        } else {
-            this.treeStore.removeEmptyNode(this.root, node);
-        }
+        if (!node.name) this.cancelNewInlineNode(node);
+    }
+
+    createNewInlineNode(node: TreeNode) {
+        if (node.name) this.treeStore.fireNodeInlineCreated(node);
+    }
+
+    cancelNewInlineNode(node: TreeNode) {
+        this.treeStore.removeEmptyNode(this.root, node);
     }
 
     menuItemSelected(nodeAction: { action: NodeMenuItemAction, node: TreeNode }) {
@@ -127,9 +133,5 @@ export class TreeComponent implements OnInit {
 
     locateToSelectedNode(node: TreeNode) {
         this.treeStore.locateToSelectedNode(node);
-    }
-
-    ngOnDestroy(): void {
-        this.subscriptions.forEach(sub => sub && sub.unsubscribe());
     }
 }

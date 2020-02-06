@@ -1,15 +1,3 @@
-export class Block {
-    _id?: string;
-    name?: string;
+import { Content } from './content.model';
 
-    contentType?: string;
-    parentId?: string;
-    parentPath?: string;
-    hasChildren?: boolean;
-
-    isPublished?: boolean;
-    isDeleted?: boolean;
-
-    childItems?: Array<any>;
-    properties?: object;
-}
+export class Block extends Content { }

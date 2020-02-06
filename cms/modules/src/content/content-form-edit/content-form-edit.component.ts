@@ -52,13 +52,13 @@ export class ContentFormEditComponent implements OnInit {
             if (contentId) {
                 switch (this.typeOfContent) {
                     case PAGE_TYPE:
-                        this.pageService.getPageContent(contentId).subscribe(contentData => {
+                        this.pageService.getContent(contentId).subscribe(contentData => {
                             this.subjectService.firePageSelected(contentData);
                             this.bindDataForContentForm(contentData, CMS.PAGE_TYPES[contentData.contentType])
                         });
                         break;
                     case BLOCK_TYPE:
-                        this.blockService.getBlockContent(contentId).subscribe(contentData => {
+                        this.blockService.getContent(contentId).subscribe(contentData => {
                             this.bindDataForContentForm(contentData, CMS.BLOCK_TYPES[contentData.contentType])
                         });
                         break;
@@ -240,16 +240,14 @@ export class ContentFormEditComponent implements OnInit {
                 switch (this.typeOfContent) {
                     case PAGE_TYPE:
                         if (this.currentContent.isDirty || this.currentContent.isPublished) {
-                            this.pageService.editPage(this.currentContent).subscribe(res => {
-                                console.log(res);
+                            this.pageService.editContent(this.currentContent).subscribe(res => {
                                 formId.control.markAsPristine();
                             })
                         }
                         break;
                     case BLOCK_TYPE:
                         if (this.currentContent.isDirty) {
-                            this.blockService.editBlockContent(this.currentContent).subscribe(res => {
-                                console.log(res);
+                            this.blockService.editContent(this.currentContent).subscribe(res => {
                                 formId.control.markAsPristine();
                             })
                         }
