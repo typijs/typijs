@@ -13,24 +13,26 @@ export class MediaTreeService implements TreeService {
     constructor(private mediaService: MediaService) { }
 
     getNode(nodeId: string): Observable<TreeNode> {
-        return this.mediaService.getMediaFolder(nodeId).pipe(map(x => new TreeNode({
-            id: x._id,
-            name: x.name,
-            hasChildren: x.hasChildren,
-            parentId: x.parentId,
-            parentPath: x.parentPath
-        })));
+        return this.mediaService.getContent(nodeId).pipe(
+            map(media => new TreeNode({
+                id: media._id,
+                name: media.name,
+                hasChildren: media.hasChildren,
+                parentId: media.parentId,
+                parentPath: media.parentPath
+            })));
     }
 
     loadChildren(parentNodeId: string): Observable<TreeNode[]> {
-        return this.mediaService.getMediaFolders(parentNodeId).pipe(map((res: Media[]) => {
-            return res.map(x => new TreeNode({
-                id: x._id,
-                name: x.name,
-                hasChildren: x.hasChildren,
-                parentId: x.parentId,
-                parentPath: x.parentPath
+        return this.mediaService.getFolderChildren(parentNodeId).pipe(
+            map((childFolders: Media[]) => {
+                return childFolders.map(folder => new TreeNode({
+                    id: folder._id,
+                    name: folder.name,
+                    hasChildren: folder.hasChildren,
+                    parentId: folder.parentId,
+                    parentPath: folder.parentPath
+                }));
             }));
-        }));
     }
 }

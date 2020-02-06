@@ -7,6 +7,7 @@ import { TreeComponent } from '../shared/tree/tree.component';
 import { TreeConfig } from '../shared/tree/tree-config';
 import { NodeMenuItemAction } from '../shared/tree/tree-menu'
 import { PageTreeService } from './page-tree.service';
+import { SubscriptionComponent } from '../shared/subscription.component';
 
 @Component({
     template: `
@@ -38,7 +39,7 @@ import { PageTreeService } from './page-tree.service';
         }
   `]
 })
-export class PageTreeComponent {
+export class PageTreeComponent extends SubscriptionComponent {
     @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
 
     root: TreeNode = new TreeNode({ id: '0', name: 'Root', hasChildren: true });
@@ -72,17 +73,18 @@ export class PageTreeComponent {
         private subjectService: SubjectService,
         private router: Router,
         private route: ActivatedRoute) {
+        super()
     }
 
     ngOnInit() {
-        this.subjectService.pageCreated$.subscribe((createdPage: Page) => {
+        this.subscriptions.push(this.subjectService.pageCreated$.subscribe((createdPage: Page) => {
 
             //Reload parent page
             //Reload the children of parent to update the created page
             this.cmsTree.reloadSubTree(createdPage.parentId);
-        });
+        }));
 
-        this.subjectService.pageSelected$.subscribe((selectedPage: Page) => {
+        this.subscriptions.push(this.subjectService.pageSelected$.subscribe((selectedPage: Page) => {
             this.cmsTree.locateToSelectedNode(new TreeNode({
                 id: selectedPage._id,
                 name: selectedPage.name,
@@ -90,7 +92,7 @@ export class PageTreeComponent {
                 parentId: selectedPage.parentId,
                 parentPath: selectedPage.parentPath
             }));
-        });
+        }));
     }
 
     nodeSelected(node) {

@@ -11,24 +11,26 @@ export class PageTreeService implements TreeService {
     constructor(private pageService: PageService) { }
 
     getNode(nodeId: string): any {
-        return this.pageService.getPageContent(nodeId).pipe(map(x => new TreeNode({
-            id: x._id,
-            name: x.name,
-            hasChildren: x.hasChildren,
-            parentId: x.parentId,
-            parentPath: x.parentPath
-        })));
+        return this.pageService.getContent(nodeId).pipe(
+            map(page => new TreeNode({
+                id: page._id,
+                name: page.name,
+                hasChildren: page.hasChildren,
+                parentId: page.parentId,
+                parentPath: page.parentPath
+            })));
     }
 
     loadChildren(parentNodeId: string): any {
-        return this.pageService.getChildren(parentNodeId).pipe(map((res: Page[]) => {
-            return res.map(x => new TreeNode({
-                id: x._id,
-                name: x.name,
-                hasChildren: x.hasChildren,
-                parentId: x.parentId,
-                parentPath: x.parentPath
+        return this.pageService.getContentChildren(parentNodeId).pipe(
+            map((childPages: Page[]) => {
+                return childPages.map(page => new TreeNode({
+                    id: page._id,
+                    name: page.name,
+                    hasChildren: page.hasChildren,
+                    parentId: page.parentId,
+                    parentPath: page.parentPath
+                }));
             }));
-        }));
     }
 }
