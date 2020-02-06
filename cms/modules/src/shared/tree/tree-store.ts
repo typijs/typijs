@@ -24,7 +24,7 @@ export class TreeStore {
 
     //The tree-children component will subscribe the treeNodesRxSubject to reload sub tree
     private treeNodesRxSubject$ = {}; //store Subject of node's children with key = nodeId to load sub tree
-    private treeNodes = {}; //store node's children with key = nodeid, ex nodes[parentId] = children of parentid
+    private treeNodes = {}; //store node's children with key = nodeid, ex nodes[parentId] = array of node's children
     private selectedNode: TreeNode;
 
     getSelectedNode(): TreeNode {
@@ -71,8 +71,8 @@ export class TreeStore {
     removeEmptyNode(parent: TreeNode, node: TreeNode) {
         const childNodes = this.treeNodes[node.parentId ? node.parentId : '0'];
         if (childNodes) {
-            const nodeIndex = childNodes.findIndex(x => x.id == node.id);
-            if (nodeIndex > -1) childNodes.splice(nodeIndex, 1);
+            const newNodeIndex = childNodes.findIndex((x: TreeNode) => !x.id);
+            if (newNodeIndex > -1) childNodes.splice(newNodeIndex, 1);
             if (childNodes.length == 0) {
                 parent.hasChildren = false;
                 parent.isExpanded = false;
@@ -80,19 +80,20 @@ export class TreeStore {
         }
     }
 
-    showInlineEditNode(parentNode: TreeNode) {
+    showNewNodeInline(parentNode: TreeNode) {
         const newInlineNode = new TreeNode({
             isNew: true,
             parentId: parentNode.id == '0' ? null : parentNode.id
         });
 
         if (this.treeNodes[parentNode.id]) {
-            this.treeNodes[parentNode.id].push(newInlineNode);
+            this.treeNodes[parentNode.id].unshift(newInlineNode);
             parentNode.isExpanded = true;
             parentNode.hasChildren = true;
         } else {
             this.getNodeChildren(parentNode.id).subscribe((nodeChildren: TreeNode[]) => {
-                this.treeNodes[parentNode.id].push(newInlineNode);
+                //insert new node to begin of node's children
+                this.treeNodes[parentNode.id].unshift(newInlineNode);
                 parentNode.isExpanded = true;
                 parentNode.hasChildren = true;
                 //reload sub tree
@@ -174,7 +175,7 @@ export class TreeStore {
                 break;
             case NodeMenuItemAction.NewNodeInline:
                 //add temp new node with status is new
-                this.showInlineEditNode(node);
+                this.showNewNodeInline(node);
                 break;
             case NodeMenuItemAction.Rename:
                 //update current node with status is rename
