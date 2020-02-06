@@ -27,7 +27,7 @@
     "ngx-bootstrap": "^5.2.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "~6.4.0",
-    "tinymce": "^5.1.1",
+    "tinymce": "^5.1.4",
     "tslib": "^1.10.0",
     "zone.js": "~0.9.1"
   },

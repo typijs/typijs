@@ -159,12 +159,13 @@ For running examples, we need set up the [symlinks](https://docs.npmjs.com/cli/l
     npm install
     npm run dev
 ```
-
 This command will run script to connect to mongo db, so make sure you have the correct path to your db.
 For example, in my local, I have the db path like as `D:/ProgramData/MongoDB/data/db`
 ```
     mongod --dbpath D:/ProgramData/MongoDB/data/db
 ```
+
+> If you install the MongoDB and run it as the service in Window, you can skip this step
 
 2. Final step, under `cms` folder, run the command
 ```
