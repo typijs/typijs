@@ -112,7 +112,7 @@ export class MediaTreeComponent {
     ngOnInit() {
         this.subscriptions.push(this.subjectService.blockFolderCreated$.subscribe(blockData => {
             //TODO: need to optimize only reload new node
-            this.cmsTree.reloadNode(blockData._id);
+            this.cmsTree.reloadSubTree(blockData._id);
         }));
 
         this.subscriptions.push(this.uploadService.uploadComplete$.subscribe(nodeId => {

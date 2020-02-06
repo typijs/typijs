@@ -84,7 +84,11 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "cms-demo:build"
+            "browserTarget": "cms-demo:build",
+            "sourceMap": {
+              "scripts": true,
+              "vendor": true
+            }
           },
           "configurations": {
             "production": {

@@ -3,9 +3,9 @@ import { ContactUsComponent } from './contact-us.component';
 import { LinkListBlock } from '../link-list/link-list.blocktype';
 
 @BlockType({
-    displayName: "Link List Block",
+    displayName: "Contact Us Block",
     componentRef: ContactUsComponent,
-    description: "This is Link list block type"
+    description: "Contact Us Block"
 })
 export class ContactUsBlock extends LinkListBlock {
 

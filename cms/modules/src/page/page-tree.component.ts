@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { SubjectService, ServiceLocator } from '@angular-cms/core';
+import { SubjectService, ServiceLocator, Page } from '@angular-cms/core';
 import { TreeNode } from '../shared/tree/tree-node';
 import { TreeComponent } from '../shared/tree/tree.component';
 import { TreeConfig } from '../shared/tree/tree-config';
@@ -75,17 +75,20 @@ export class PageTreeComponent {
     }
 
     ngOnInit() {
-        this.subjectService.pageCreated$.subscribe(pageData => {
-            this.cmsTree.reloadNode(pageData.parentId);
+        this.subjectService.pageCreated$.subscribe((createdPage: Page) => {
+
+            //Reload parent page
+            //Reload the children of parent to update the created page
+            this.cmsTree.reloadSubTree(createdPage.parentId);
         });
 
-        this.subjectService.pageSelected$.subscribe(pageData => {
+        this.subjectService.pageSelected$.subscribe((selectedPage: Page) => {
             this.cmsTree.locateToSelectedNode(new TreeNode({
-                id: pageData._id,
-                name: pageData.name,
-                hasChildren: pageData.hasChildren,
-                parentId: pageData.parentId,
-                parentPath: pageData.parentPath
+                id: selectedPage._id,
+                name: selectedPage.name,
+                hasChildren: selectedPage.hasChildren,
+                parentId: selectedPage.parentId,
+                parentPath: selectedPage.parentPath
             }));
         });
     }

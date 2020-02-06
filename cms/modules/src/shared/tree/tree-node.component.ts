@@ -41,8 +41,7 @@ export class TreeNodeComponent {
 
     @Output("selectNode") selectNodeEvent: EventEmitter<TreeNode> = new EventEmitter();
     @Output("nodeOnBlur") nodeOnBlurEvent: EventEmitter<TreeNode> = new EventEmitter();
-    @Output("menuItemSelected") menuItemSelectedEvent: EventEmitter<any> = new EventEmitter();
-
+    @Output("menuItemSelected") menuItemSelectedEvent: EventEmitter<{ action: NodeMenuItemAction, node: TreeNode }> = new EventEmitter();
 
     menuItems: TreeMenuItem[];
 

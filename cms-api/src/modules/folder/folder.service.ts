@@ -48,7 +48,7 @@ export class FolderService<T extends IContentDocument> extends BaseService<T>{
     public getContentsByFolder = (parentId: string): Promise<T[]> => {
         if (parentId == '0') parentId = null;
 
-        return this.folderModel.find({ parentId: parentId, isDeleted: false, contentType: { $ne: null }, mimeType: { $ne: null } }).exec()
+        return this.folderModel.find({ parentId: parentId, isDeleted: false, contentType: { $ne: null } }).exec()
     }
 
 }
