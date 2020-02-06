@@ -1,68 +1,64 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { Content } from '../models/content.model';
-@Injectable()
-export class ContentService {
-  constructor(private http: HttpClient) { }
 
-  contentCreated$: Subject<Content> = new Subject<Content>();
+export abstract class FolderService<T extends Content>  {
 
-  fireContentCreated(content) {
-    this.contentCreated$.next(content);
+  protected abstract apiUrl: string;
+  protected httpClient: HttpClient;
+  constructor(httpClient: HttpClient) {
+    this.httpClient = httpClient;
   }
 
-  getStartPage(): Observable<Content> {
-    const startPageUrl = '/'
-    return this.http.get<Content>(`/api/content-by-url?url=${startPageUrl}`);
+  getFolderChildren(parentId: string): Observable<T[]> {
+    return this.httpClient.get<T[]>(`${this.apiUrl}/folders/${parentId}`);
   }
 
-  getContents(): Observable<Content[]> {
-    return this.http.get<Content[]>('/api/contents');
+  getContentInFolder(folderId: string): Observable<T[]> {
+    return this.httpClient.get<T[]>(`${this.apiUrl}/children/${folderId}`);
   }
 
-  countContents(): Observable<number> {
-    return this.http.get<number>('/api/contents/count');
+  createFolder(content: Partial<T>): Observable<T> {
+    return this.httpClient.post<T>(`${this.apiUrl}/folder`, content);
   }
 
-  addContent(content: Content): Observable<Content> {
-    return this.http.post<Content>('/api/content', content);
+  editFolder(content: Partial<T>): Observable<string> {
+    return this.httpClient.put(`${this.apiUrl}/folder/${content._id}`, content, { responseType: 'text' });
+  }
+}
+
+export abstract class ContentService<T extends Content> extends FolderService<T> {
+
+  constructor(httpClient: HttpClient) {
+    super(httpClient);
   }
 
-  getContent(content: Content): Observable<Content> {
-    return this.http.get<Content>(`/api/content/${content._id}`);
+  createContent(content: Partial<T>): Observable<T> {
+    return this.httpClient.post<T>(this.apiUrl, content);
   }
 
-  getContentByUrl(linkUrl: string): Observable<Content> {
-    return this.http.get<Content>(`/api/content-by-url?url=${linkUrl}`);
+  editContent(content: Partial<T>): Observable<string> {
+    return this.httpClient.put(`${this.apiUrl}/${content._id}`, content, { responseType: 'text' });
   }
 
-  getContentsByParentId(parentId: string): Observable<Content[]> {
-    return this.http.get<Content[]>(`/api/contents-by-parent/${parentId}`);
+  getContentChildren(parentId: string): Observable<T[]> {
+    return this.httpClient.get<T[]>(`${this.apiUrl}/children/${parentId}`);
   }
 
-  editContent(content: Content): Observable<string> {
-    return this.http.put(`/api/content/${content._id}`, content, { responseType: 'text' });
+  getContent(contentId: string): Observable<T> {
+    return this.httpClient.get<T>(`${this.apiUrl}/${contentId}`);
   }
 
-  deleteContent(content: Content): Observable<string> {
-    return this.http.delete(`/api/content/${content._id}`, { responseType: 'text' });
+  softDeleteContent(contentId: string): Observable<[T, any]> {
+    return this.httpClient.delete<[T, any]>(`${this.apiUrl}/${contentId}`)
   }
 
-  getBlockContents(): Observable<Content[]> {
-    return this.http.get<Content[]>('/api/blocks');
+  cutContent(actionParams: { sourceContentId: string, targetParentId: string }): Observable<T> {
+    return this.httpClient.post<T>(`${this.apiUrl}/cut`, actionParams);
   }
 
-  addBlockContent(blockContent: Content): Observable<Content> {
-    return this.http.post<Content>('/api/block', blockContent);
-  }
-
-  getBlockContent(content: Content): Observable<Content> {
-    return this.http.get<Content>(`/api/block/${content._id}`);
-  }
-
-  editBlockContent(content: Content): Observable<string> {
-    return this.http.put(`/api/block/${content._id}`, content, { responseType: 'text' });
+  copyContent(actionParams: { sourceContentId: string, targetParentId: string }): Observable<T> {
+    return this.httpClient.post<T>(`${this.apiUrl}/cut`, actionParams);
   }
 }

@@ -1,16 +1,7 @@
-export class Media {
-    _id?: string;
-    name?: string;
+import { Content } from './content.model';
 
-    mimeType?: string;
-    size?: string;
-
-    parentId?: string;
-    parentPath?: string;
-    hasChildren?: boolean;
-
-    isPublished?: boolean;
-    isDeleted?: boolean;
-
-    childItems?: Array<any>;
+export class Media extends Content {
+    mimeType: string;
+    size: number;
+    thumbnail: string;
 }
