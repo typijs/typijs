@@ -100,6 +100,7 @@ export class BlockTreeComponent extends SubscriptionComponent {
     ngOnInit() {
         this.subscriptions.push(this.subjectService.blockFolderCreated$.subscribe(createdFolder => {
             //TODO: need to optimize only reload new node
+            this.cmsTree.selectNode({ id: createdFolder._id, isNeedToScroll: true })
             this.cmsTree.reloadSubTree(createdFolder.parentId);
         }));
         this.folderSelected({ id: '0' });

@@ -18,7 +18,10 @@ import { SubscriptionComponent } from '../subscription.component';
                         [config]="config" 
                         [templates]="templates"
                         (selectNode)="selectNode($event)"
-                        (menuItemSelected)="menuItemSelected($event)">
+                        (menuItemSelected)="menuItemSelected($event)"
+                        (nodeOnBlur)="nodeOnBlur($event)"
+                        (createNewInlineNode)="createNewInlineNode($event)"
+                        (cancelNewInlineNode)="cancelNewInlineNode($event)">
                     </tree-node>
                     <tree-children 
                         [root]="root" 
@@ -67,45 +70,15 @@ export class TreeComponent extends SubscriptionComponent implements OnInit {
             if (!this.config.service) throw new Error("The TreeService is undefined");
             this.treeStore.treeService = this.config.service;
 
-            this.subscriptions.push(this.treeStore.nodeSelected$.subscribe(node => {
-                this.nodeSelected.emit(node);
-            }));
-
-            this.subscriptions.push(this.treeStore.nodeCreated$.subscribe(node => {
-                this.nodeCreated.emit(node);
-            }));
-
-            this.subscriptions.push(this.treeStore.nodeInlineCreated$.subscribe(node => {
-                this.nodeInlineCreated.emit(node);
-            }));
-
-            this.subscriptions.push(this.treeStore.nodeCut$.subscribe(node => {
-                this.nodeCut.emit(node);
-            }));
-
-            this.subscriptions.push(this.treeStore.nodeCopied$.subscribe(node => {
-                this.nodeCopied.emit(node);
-            }));
-
-            this.subscriptions.push(this.treeStore.nodeRenamed$.subscribe(node => {
-                this.nodeRenamed.emit(node);
-            }));
-
-            this.subscriptions.push(this.treeStore.nodePasted$.subscribe(node => {
-                this.nodePasted.emit(node);
-            }));
-
-            this.subscriptions.push(this.treeStore.nodeDeleted$.subscribe(node => {
-                this.nodeDeleted.emit(node);
-            }));
+            this.subscribeAndEmitNodeMenuItemSelectedEvent();
         }
     }
 
     //Set node.isSelected = true when node is clicked and fire node selected event
-    selectNode(node: TreeNode) {
+    selectNode(node: Partial<TreeNode>) {
         this.treeStore.setSelectedNode(node);
         this.treeStore.fireNodeSelectedInner(node);
-        this.treeStore.fireNodeSelected(node);
+        this.nodeSelected.emit(node);
     }
 
     nodeOnBlur(node: TreeNode) {
@@ -113,7 +86,7 @@ export class TreeComponent extends SubscriptionComponent implements OnInit {
     }
 
     createNewInlineNode(node: TreeNode) {
-        if (node.name) this.treeStore.fireNodeInlineCreated(node);
+        if (node.name) this.nodeInlineCreated.emit(node);;
     }
 
     cancelNewInlineNode(node: TreeNode) {
@@ -121,7 +94,7 @@ export class TreeComponent extends SubscriptionComponent implements OnInit {
     }
 
     menuItemSelected(nodeAction: { action: NodeMenuItemAction, node: TreeNode }) {
-        this.treeStore.fireNodeActions(nodeAction);
+        this.treeStore.handleNodeMenuItemSelected(nodeAction);
     }
 
     //Reload the node data
@@ -132,6 +105,34 @@ export class TreeComponent extends SubscriptionComponent implements OnInit {
     }
 
     locateToSelectedNode(node: TreeNode) {
-        this.treeStore.locateToSelectedNode(node);
+        this.treeStore.locateToSelectedNode(node).subscribe(nodeId => {
+            console.log(`locateToSelectedNode has id = ${nodeId}`)
+        });
+    }
+
+    private subscribeAndEmitNodeMenuItemSelectedEvent() {
+        this.subscriptions.push(this.treeStore.nodeCreated$.subscribe(node => {
+            this.nodeCreated.emit(node);
+        }));
+
+        this.subscriptions.push(this.treeStore.nodeCut$.subscribe(node => {
+            this.nodeCut.emit(node);
+        }));
+
+        this.subscriptions.push(this.treeStore.nodeCopied$.subscribe(node => {
+            this.nodeCopied.emit(node);
+        }));
+
+        this.subscriptions.push(this.treeStore.nodeRenamed$.subscribe(node => {
+            this.nodeRenamed.emit(node);
+        }));
+
+        this.subscriptions.push(this.treeStore.nodePasted$.subscribe(node => {
+            this.nodePasted.emit(node);
+        }));
+
+        this.subscriptions.push(this.treeStore.nodeDeleted$.subscribe(node => {
+            this.nodeDeleted.emit(node);
+        }));
     }
 }

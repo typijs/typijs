@@ -52,9 +52,8 @@ export class TreeChildrenComponent extends TreeBaseComponent implements OnInit {
             const selectedNode = this.treeStore.getSelectedNode();
             this.nodeChildren = this.setExpandStateForNewNodeChildren(nodes);
             this.nodeChildren.forEach(child => {
-                if (selectedNode && selectedNode.id == child.id && child.isSelected == false) {
+                if (selectedNode && selectedNode.id == child.id) {
                     this.treeStore.fireNodeSelectedInner(selectedNode);
-
                 }
             })
         }));
@@ -63,14 +62,17 @@ export class TreeChildrenComponent extends TreeBaseComponent implements OnInit {
         this.subscriptions.push(this.treeStore.nodeSelectedInner$.subscribe(selectedNode => {
             this.nodeChildren.forEach(childNode => {
                 childNode.isSelected = selectedNode.id == childNode.id;
-                if (childNode.isSelected) this.treeStore.fireScrollToSelectedNode(selectedNode);
+                if (childNode.isSelected && selectedNode.isNeedToScroll)
+                    this.treeStore.fireScrollToSelectedNode(childNode);
             })
         }));
 
         if (this.config) {
             this.treeService = this.config.service;
             if (this.treeService) {
-                this.treeStore.getTreeChildrenData(this.root.id);
+                this.treeStore.getTreeChildrenData(this.root.id).subscribe((nodeChildren: TreeNode[]) => {
+                    this.treeStore.getTreeNodesSubjectByKey$(this.root.id).next(nodeChildren);
+                });
             }
         }
     }

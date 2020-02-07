@@ -15,8 +15,8 @@ import { SubscriptionComponent } from '../shared/subscription.component';
             class="tree-root pl-1 pt-2 d-block" 
             [root]="root"
             [config]="treeConfig"
-            (nodeSelected)="nodeSelected($event)"
-            (nodeCreated)="nodeCreated($event)">
+            (nodeSelected)="pageSelected($event)"
+            (nodeCreated)="pageCreated($event)">
             <ng-template #treeNodeTemplate let-node>
                 <span [ngClass]="{'page-node': node.id != 0}">
                     <fa-icon class="mr-1" *ngIf="node.id == 0" [icon]="['fas', 'sitemap']"></fa-icon>
@@ -81,12 +81,14 @@ export class PageTreeComponent extends SubscriptionComponent {
 
             //Reload parent page
             //Reload the children of parent to update the created page
+            this.cmsTree.selectNode({ id: createdPage._id, isNeedToScroll: true });
             this.cmsTree.reloadSubTree(createdPage.parentId);
         }));
 
         this.subscriptions.push(this.subjectService.pageSelected$.subscribe((selectedPage: Page) => {
             this.cmsTree.locateToSelectedNode(new TreeNode({
                 id: selectedPage._id,
+                isNeedToScroll: true,
                 name: selectedPage.name,
                 hasChildren: selectedPage.hasChildren,
                 parentId: selectedPage.parentId,
@@ -95,11 +97,12 @@ export class PageTreeComponent extends SubscriptionComponent {
         }));
     }
 
-    nodeSelected(node) {
+    pageSelected(node: TreeNode) {
+        if (node.id == '0') return;
         this.router.navigate(["content/page", node.id], { relativeTo: this.route })
     }
 
-    nodeCreated(parentNode) {
+    pageCreated(parentNode: TreeNode) {
         this.router.navigate(["new/page", parentNode.id], { relativeTo: this.route })
     }
 }

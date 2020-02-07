@@ -5,6 +5,7 @@ export class TreeNode {
   icon: string;
   url: string;
 
+  isNeedToScroll: boolean = false;
   isExpanded: boolean = false;;
   isSelected: boolean = false;
   isEditing: boolean = false;
