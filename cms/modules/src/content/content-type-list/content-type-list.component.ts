@@ -2,7 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
-import { PAGE_TYPE_METADATA_KEY, BLOCK_TYPE_METADATA_KEY } from '@angular-cms/core';
+import { PAGE_TYPE_METADATA_KEY, BLOCK_TYPE_METADATA_KEY, Page, Block } from '@angular-cms/core';
 import { PageService, BlockService, SubjectService } from '@angular-cms/core';
 import { CMS, slugify } from '@angular-cms/core';
 
@@ -50,6 +50,7 @@ export class ContentTypeListComponent implements OnDestroy {
                 name: this.contentName,
                 contentType: contentType.typeRef.name,
                 parentId: this.parentId,
+                //TODO: should move generate the url segment to back-end
                 urlSegment: slugify(this.contentName)
             }
 
@@ -90,9 +91,9 @@ export class ContentTypeListComponent implements OnDestroy {
 
     private savePage(content: any) {
         this.pageService.createContent(content).subscribe(
-            res => {
-                this.subjectService.firePageCreated(content);
-                this.router.navigate(["/cms/editor/content/", PAGE_TYPE, res._id])
+            (createdPage: Page) => {
+                this.subjectService.firePageCreated(createdPage);
+                //this.router.navigate(["/cms/editor/content/", PAGE_TYPE, res._id])
             },
             error => console.log(error)
         )
@@ -100,8 +101,9 @@ export class ContentTypeListComponent implements OnDestroy {
 
     private saveBlock(content: any) {
         this.blockService.createContent(content).subscribe(
-            res => {
-                this.router.navigate(["/cms/editor/content/", BLOCK_TYPE, res._id])
+            (createdBlock: Block) => {
+                this.subjectService.fireBlockCreated(createdBlock);
+                this.router.navigate(["/cms/editor/content/", BLOCK_TYPE, createdBlock._id])
             },
             error => console.log(error)
         )

@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { SubjectService, ServiceLocator, Page } from '@angular-cms/core';
+import { SubjectService, ServiceLocator, Page, PageService } from '@angular-cms/core';
 import { TreeNode } from '../shared/tree/tree-node';
 import { TreeComponent } from '../shared/tree/tree.component';
 import { TreeConfig } from '../shared/tree/tree-config';
@@ -15,14 +15,15 @@ import { SubscriptionComponent } from '../shared/subscription.component';
             class="tree-root pl-1 pt-2 d-block" 
             [root]="root"
             [config]="treeConfig"
-            (nodeSelected)="nodeSelected($event)"
-            (nodeCreated)="nodeCreated($event)">
+            (nodeSelected)="pageSelected($event)"
+            (nodeCreated)="pageCreated($event)"
+            (nodeDeleteEvent)="pageDelete($event)">
             <ng-template #treeNodeTemplate let-node>
-                <span [ngClass]="{'page-node': node.id != 0}">
-                    <fa-icon class="mr-1" *ngIf="node.id == 0" [icon]="['fas', 'sitemap']"></fa-icon>
-                    <fa-icon class="mr-1" *ngIf="node.id != 0" [icon]="['fas', 'file']"></fa-icon>
+                <span [ngClass]="{'page-node': node.id != '0', 'border-bottom': node.isSelected && node.id != '0'}">
+                    <fa-icon class="mr-1" *ngIf="node.id == '0'" [icon]="['fas', 'sitemap']"></fa-icon>
+                    <fa-icon class="mr-1" *ngIf="node.id != '0'" [icon]="['fas', 'file']"></fa-icon>
                     <span>{{node.name}}</span>
-                    <span *ngIf="node.id == 0" class="badge badge-info float-right mt-2 mr-1" [routerLink]="['new/page']">NEW</span>
+                    <span *ngIf="node.id == '0'" class="badge badge-info float-right mt-2 mr-1" [routerLink]="['new/page']">NEW</span>
                 </span>
             </ng-template>
         </cms-tree>
@@ -36,6 +37,7 @@ import { SubscriptionComponent } from '../shared/subscription.component';
 
         .page-node:hover {
             font-weight: bold;
+            border-bottom: 1px solid #a4b7c1!important;
         }
   `]
 })
@@ -70,6 +72,7 @@ export class PageTreeComponent extends SubscriptionComponent {
     }
 
     constructor(
+        private pageService: PageService,
         private subjectService: SubjectService,
         private router: Router,
         private route: ActivatedRoute) {
@@ -78,15 +81,16 @@ export class PageTreeComponent extends SubscriptionComponent {
 
     ngOnInit() {
         this.subscriptions.push(this.subjectService.pageCreated$.subscribe((createdPage: Page) => {
-
             //Reload parent page
             //Reload the children of parent to update the created page
+            this.cmsTree.selectNode({ id: createdPage._id, isNeedToScroll: true });
             this.cmsTree.reloadSubTree(createdPage.parentId);
         }));
 
         this.subscriptions.push(this.subjectService.pageSelected$.subscribe((selectedPage: Page) => {
             this.cmsTree.locateToSelectedNode(new TreeNode({
                 id: selectedPage._id,
+                isNeedToScroll: true,
                 name: selectedPage.name,
                 hasChildren: selectedPage.hasChildren,
                 parentId: selectedPage.parentId,
@@ -95,11 +99,20 @@ export class PageTreeComponent extends SubscriptionComponent {
         }));
     }
 
-    nodeSelected(node) {
+    pageSelected(node: TreeNode) {
+        if (node.id == '0') return;
         this.router.navigate(["content/page", node.id], { relativeTo: this.route })
     }
 
-    nodeCreated(parentNode) {
+    pageCreated(parentNode: TreeNode) {
         this.router.navigate(["new/page", parentNode.id], { relativeTo: this.route })
+    }
+
+    pageDelete(nodeToDelete: TreeNode) {
+        if (nodeToDelete.id == '0') return;
+        this.pageService.softDeleteContent(nodeToDelete.id).subscribe(([pageToDelete, deleteResult]: [Page, any]) => {
+            console.log(deleteResult);
+            this.cmsTree.reloadSubTree(pageToDelete.parentId);
+        });
     }
 }

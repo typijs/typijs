@@ -13,7 +13,7 @@ function getMongoConnection() {
 export const connectToTheDatabase = (async () => {
   try {
     var mongodbConnection = getMongoConnection();
-    await mongoose.connect(mongodbConnection, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
+    await mongoose.connect(mongodbConnection, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true, useFindAndModify: false });
     console.log('Connected to MongoDB on', mongodbConnection);
     logger.info(`Connected to MongoDB on ${mongodbConnection}`);
   } catch (err) {

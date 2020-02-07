@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject, from, of, empty } from 'rxjs';
-import { concatMap, map, tap } from 'rxjs/operators';
+import { Observable, Subject, from, of, BehaviorSubject, combineLatest, empty } from 'rxjs';
+import { concatMap, map, tap, switchMap } from 'rxjs/operators';
 
 import { TreeNode } from './tree-node';
 import { TreeService } from './tree-service';
@@ -8,30 +8,28 @@ import { NodeMenuItemAction } from './tree-menu';
 
 @Injectable()
 export class TreeStore {
-    nodeSelectedInner$: Subject<TreeNode> = new Subject<TreeNode>();
-    nodeSelected$: Subject<TreeNode> = new Subject<TreeNode>();
+    nodeSelectedInner$: Subject<Partial<TreeNode>> = new Subject<Partial<TreeNode>>();
     nodeCreated$: Subject<TreeNode> = new Subject<TreeNode>();
     nodeInlineCreated$: Subject<TreeNode> = new Subject<TreeNode>();
     nodeRenamed$: Subject<TreeNode> = new Subject<TreeNode>();
     nodeCut$: Subject<TreeNode> = new Subject<TreeNode>();
     nodeCopied$: Subject<TreeNode> = new Subject<TreeNode>();
     nodePasted$: Subject<TreeNode> = new Subject<TreeNode>();
-    nodeDeleted$: Subject<TreeNode> = new Subject<TreeNode>();
+    nodeDelete$: Subject<TreeNode> = new Subject<TreeNode>();
+    scrollToSelectedNode$: BehaviorSubject<TreeNode> = new BehaviorSubject<TreeNode>(new TreeNode());
 
     treeService: TreeService;
 
-    id: Number = Math.floor(Math.random() * 10);
-
     //The tree-children component will subscribe the treeNodesRxSubject to reload sub tree
     private treeNodesRxSubject$ = {}; //store Subject of node's children with key = nodeId to load sub tree
-    private treeNodes = {}; //store node's children with key = nodeid, ex nodes[parentId] = array of node's children
-    private selectedNode: TreeNode;
+    private treeNodes = {}; //store node's children with key = nodeId, ex nodes[parentId] = array of node's children
+    private selectedNode: Partial<TreeNode>;
 
-    getSelectedNode(): TreeNode {
+    getSelectedNode(): Partial<TreeNode> {
         return this.selectedNode;
     }
 
-    setSelectedNode(node: TreeNode) {
+    setSelectedNode(node: Partial<TreeNode>) {
         node.isSelected = true;
         this.selectedNode = node;
     }
@@ -44,15 +42,10 @@ export class TreeStore {
         return this.treeNodesRxSubject$[key];
     }
 
-    getTreeChildrenData(nodeId: string) {
-        if (this.treeNodes[nodeId]) {
-            this.getTreeNodesSubjectByKey$(nodeId).next(this.treeNodes[nodeId]);
-        }
-        else {
-            this.getNodeChildren(nodeId).subscribe((nodeChildren: TreeNode[]) => {
-                this.getTreeNodesSubjectByKey$(nodeId).next(nodeChildren);
-            });
-        }
+    getTreeChildrenData(nodeId: string): Observable<TreeNode[]> {
+        if (this.treeNodes[nodeId]) return of(this.treeNodes[nodeId]);
+
+        return this.getNodeChildren(nodeId);
     }
 
     //Reload node's children
@@ -60,12 +53,12 @@ export class TreeStore {
     reloadTreeChildrenData(subTreeRootId: string) {
         if (!subTreeRootId) subTreeRootId = '0'
         //Reload the root node of sub tree
-        this.getNodeData(subTreeRootId).subscribe();
-        //Reload the children data
-        this.getNodeChildren(subTreeRootId).subscribe((nodeChildren: TreeNode[]) => {
-            //Reload the sub tree
-            this.getTreeNodesSubjectByKey$(subTreeRootId).next(nodeChildren);
-        });
+
+        combineLatest(this.getNodeData(subTreeRootId), this.getNodeChildren(subTreeRootId))
+            .subscribe(([subTreeRootNode, nodeChildren]: [TreeNode, TreeNode[]]) => {
+                this.getTreeNodesSubjectByKey$(subTreeRootId).next(nodeChildren);
+                subTreeRootNode.isExpanded = subTreeRootNode.hasChildren;
+            });
     }
 
     removeEmptyNode(parent: TreeNode, node: TreeNode) {
@@ -102,57 +95,56 @@ export class TreeStore {
         }
     }
 
-    locateToSelectedNode(newSelectedNode: TreeNode) {
-        if (!this.selectedNode || this.selectedNode.id != newSelectedNode.id) {
+    locateToSelectedNode(newSelectedNode: TreeNode): Observable<string> {
+        if (this.selectedNode && this.selectedNode.id == newSelectedNode.id) return empty();
 
-            this.setSelectedNode(newSelectedNode);
-            this.fireNodeSelectedInner(newSelectedNode);
-            const parentPath = newSelectedNode.parentPath ? `0${newSelectedNode.parentPath}` : '0';
-            const parentIds = parentPath.split(',').filter(id => id);
+        this.setSelectedNode(newSelectedNode);
+        this.fireNodeSelectedInner(newSelectedNode);
 
-            if (parentIds.length > 0) {
-                from(parentIds).pipe(
-                    concatMap(id => this.treeNodes[id] ? of(this.treeNodes[id]) : this.treeService.loadChildren(id),
-                        (id, nodes, outIndex, innerIndex) => [id, nodes]
-                    ),
-                    map(([nodeId, nodes]: [string, TreeNode[]]) => {
-                        if (!this.treeNodes[nodeId]) this.treeNodes[nodeId] = nodes;
-                        const index = parentIds.findIndex(id => id == nodeId);
-                        if (index > 0) {
-                            const currentNodeIndex = this.treeNodes[parentIds[index - 1]].findIndex(x => x.id == nodeId);
-                            if (currentNodeIndex != -1)
-                                this.treeNodes[parentIds[index - 1]][currentNodeIndex].isExpanded = true;
-                        }
-                        return index;
-                    })
-                ).subscribe(index => {
-                    console.log('pointToSelectedNode: ' + parentIds[index]);
-                });
-            }
+        const parentPath = newSelectedNode.parentPath ? `0${newSelectedNode.parentPath}` : '0';
+        const parentIds = parentPath.split(',').filter(id => id);
+
+        if (parentIds.length > 0) {
+            return from(parentIds).pipe(
+                concatMap((nodeId: string, index: number) => (this.treeNodes[nodeId] ? of(this.treeNodes[nodeId]) : this.treeService.loadChildren(nodeId))
+                    .pipe(map((nodes: TreeNode[]) => [nodeId, index, nodes]))
+                ),
+                map(([nodeId, index, nodes]: [string, number, TreeNode[]]) => {
+                    if (!this.treeNodes[nodeId]) this.treeNodes[nodeId] = nodes;
+
+                    if (index > 0) {
+                        const currentNodeIndex = this.treeNodes[parentIds[index - 1]].findIndex(x => x.id == nodeId);
+                        if (currentNodeIndex != -1)
+                            this.treeNodes[parentIds[index - 1]][currentNodeIndex].isExpanded = true;
+                    }
+                    return nodeId;
+                })
+            );
         }
     }
 
     private getNodeData(nodeId: string): Observable<TreeNode> {
-        if (nodeId == '0') return empty();
+        if (nodeId == '0') return of(new TreeNode({ id: nodeId }));
         return this.treeService.getNode(nodeId).pipe(
-            tap((nodeData: TreeNode) => this.updateTreeNodesData(nodeData))
+            switchMap((nodeData: TreeNode) => this.updateTreeNodesData(nodeData))
         );
     }
 
-    private updateTreeNodesData = (currentNode: TreeNode): void => {
-        if (!currentNode) return;
+    private updateTreeNodesData = (currentNode: TreeNode): Observable<TreeNode> => {
+        if (!currentNode) return of(new TreeNode({ id: '0' }))
 
         const key = currentNode.parentId ? currentNode.parentId : '0';
-        if (!this.treeNodes[key]) return;
+        if (!this.treeNodes[key]) return of(currentNode);
 
         const matchIndex = this.treeNodes[key].findIndex((x: TreeNode) => x.id == currentNode.id || (x.isNew && x.name == currentNode.name));
-        if (matchIndex != -1) {
-            this.treeNodes[key][matchIndex].id = currentNode.id;
-            this.treeNodes[key][matchIndex].parentPath = currentNode.parentPath;
-            this.treeNodes[key][matchIndex].isNew = false;
-            this.treeNodes[key][matchIndex].isEditing = false;
-            this.treeNodes[key][matchIndex].hasChildren = currentNode.hasChildren;
-        }
+        if (matchIndex == -1) return of(currentNode);
+
+        this.treeNodes[key][matchIndex].id = currentNode.id;
+        this.treeNodes[key][matchIndex].parentPath = currentNode.parentPath;
+        this.treeNodes[key][matchIndex].isNew = false;
+        this.treeNodes[key][matchIndex].isEditing = false;
+        this.treeNodes[key][matchIndex].hasChildren = currentNode.hasChildren;
+        return of(this.treeNodes[key][matchIndex]);
     }
 
     private getNodeChildren(parentId: string): Observable<TreeNode[]> {
@@ -167,7 +159,7 @@ export class TreeStore {
         );
     }
 
-    fireNodeActions(nodeAction: { action: NodeMenuItemAction, node: TreeNode }) {
+    handleNodeMenuItemSelected(nodeAction: { action: NodeMenuItemAction, node: TreeNode }) {
         const { action, node } = nodeAction;
         switch (action) {
             case NodeMenuItemAction.NewNode:
@@ -191,7 +183,7 @@ export class TreeStore {
                 this.fireNodePasted(node);
                 break;
             case NodeMenuItemAction.Delete:
-                this.fireNodeDeleted(node);
+                this.fireNodeToDeleteAction(node);
                 break;
             default:
                 throw new Error(`Chosen menu item doesn't exist`);
@@ -199,40 +191,35 @@ export class TreeStore {
     }
 
     //fire all tree events
-    fireNodeSelectedInner(node: TreeNode) {
+    fireNodeSelectedInner(node: Partial<TreeNode>) {
         this.nodeSelectedInner$.next(node);
     }
 
-    //fire all tree events
-    fireNodeSelected(node: TreeNode) {
-        this.nodeSelected$.next(node);
-    }
-
-    fireNodeCreated(node) {
+    fireNodeCreated(node: TreeNode) {
         this.nodeCreated$.next(node);
     }
 
-    fireNodeInlineCreated(node) {
-        this.nodeInlineCreated$.next(node);
-    }
-
-    fireNodeRenamed(node) {
+    fireNodeRenamed(node: TreeNode) {
         this.nodeRenamed$.next(node);
     }
 
-    fireNodeCut(node) {
+    fireNodeCut(node: TreeNode) {
         this.nodeCut$.next(node);
     }
 
-    fireNodeCopied(node) {
+    fireNodeCopied(node: TreeNode) {
         this.nodeCopied$.next(node);
     }
 
-    fireNodePasted(node) {
+    fireNodePasted(node: TreeNode) {
         this.nodePasted$.next(node);
     }
 
-    fireNodeDeleted(node) {
-        this.nodeDeleted$.next(node);
+    fireNodeToDeleteAction(node: TreeNode) {
+        this.nodeDelete$.next(node);
+    }
+
+    fireScrollToSelectedNode(node: TreeNode) {
+        this.scrollToSelectedNode$.next(node);
     }
 }

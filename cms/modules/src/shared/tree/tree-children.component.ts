@@ -1,12 +1,9 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Component, Input, OnInit } from '@angular/core';
 
 import { TreeStore } from './tree-store';
 import { TreeNode } from './tree-node';
 import { TreeService } from './tree-service';
 import { TreeConfig } from './tree-config';
-import { NodeMenuItemAction } from './tree-menu';
-import { SubscriptionComponent } from '../subscription.component';
 import { TreeBaseComponent } from './tree-base.component';
 
 @Component({
@@ -51,26 +48,42 @@ export class TreeChildrenComponent extends TreeBaseComponent implements OnInit {
 
     ngOnInit() {
         this.subscriptions.push(this.treeStore.getTreeNodesSubjectByKey$(this.root.id).subscribe((nodes: TreeNode[]) => {
+            //Trigger render the the sub tree
             const selectedNode = this.treeStore.getSelectedNode();
-            this.nodeChildren = nodes;
+            this.nodeChildren = this.setExpandStateForNewNodeChildren(nodes);
             this.nodeChildren.forEach(child => {
-                if (selectedNode && selectedNode.id == child.id && child.isSelected == false) {
+                if (selectedNode && selectedNode.id == child.id) {
                     this.treeStore.fireNodeSelectedInner(selectedNode);
                 }
             })
         }));
 
+        //using this event to set all other child node is false
         this.subscriptions.push(this.treeStore.nodeSelectedInner$.subscribe(selectedNode => {
             this.nodeChildren.forEach(childNode => {
                 childNode.isSelected = selectedNode.id == childNode.id;
+                if (childNode.isSelected && selectedNode.isNeedToScroll)
+                    this.treeStore.fireScrollToSelectedNode(childNode);
             })
         }));
 
         if (this.config) {
             this.treeService = this.config.service;
             if (this.treeService) {
-                this.treeStore.getTreeChildrenData(this.root.id);
+                this.treeStore.getTreeChildrenData(this.root.id).subscribe((nodeChildren: TreeNode[]) => {
+                    this.treeStore.getTreeNodesSubjectByKey$(this.root.id).next(nodeChildren);
+                });
             }
         }
+    }
+
+    private setExpandStateForNewNodeChildren(newNodes: TreeNode[]) {
+        if (!this.nodeChildren) return newNodes;
+
+        this.nodeChildren.forEach((node: TreeNode) => {
+            const matchIndex = newNodes.findIndex(x => x.id == node.id);
+            if (matchIndex != -1) newNodes[matchIndex].isExpanded = node.isExpanded;
+        })
+        return newNodes;
     }
 }

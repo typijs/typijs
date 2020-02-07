@@ -18,15 +18,16 @@ import { SubscriptionComponent } from '../shared/subscription.component';
                 [root]="root"
                 [config]="treeConfig"
                 (nodeSelected)="folderSelected($event)"
-                (nodeCreated)="nodeCreated($event)"
-                (nodeInlineCreated)="createBlockFolder($event)">
+                (nodeCreated)="blockCreated($event)"
+                (nodeInlineCreated)="createBlockFolder($event)"
+                (nodeDeleteEvent)="folderDelete($event)">
                 <ng-template #treeNodeTemplate let-node>
-                    <span [ngClass]="{'block-node': node.id != 0}">
-                        <fa-icon class="mr-1" *ngIf="node.id == 0" [icon]="['fas', 'cubes']"></fa-icon>
-                        <fa-icon class="mr-1" *ngIf="node.id != 0" [icon]="['fas', 'folder']"></fa-icon>
+                    <span [ngClass]="{'block-node': node.id != '0', 'border-bottom': node.isSelected && node.id != '0'}">
+                        <fa-icon class="mr-1" *ngIf="node.id == '0'" [icon]="['fas', 'cubes']"></fa-icon>
+                        <fa-icon class="mr-1" *ngIf="node.id != '0'" [icon]="['fas', 'folder']"></fa-icon>
                         <span class="node-name">{{node.name}}</span>
-                        <span *ngIf="node.id == 0" class="badge badge-info float-right mt-2 mr-1" (click)="clickToCreateFolder(node)">New Folder</span>
-                        <span *ngIf="node.id == 0" class="badge badge-info float-right mt-2 mr-1" [routerLink]="['new/block']">New Block</span>
+                        <span *ngIf="node.id == '0'" class="badge badge-info float-right mt-2 mr-1" (click)="clickToCreateFolder(node)">New Folder</span>
+                        <span *ngIf="node.id == '0'" class="badge badge-info float-right mt-2 mr-1" [routerLink]="['new/block']">New Block</span>
                     </span>
                 </ng-template>
             </cms-tree>
@@ -51,6 +52,7 @@ import { SubscriptionComponent } from '../shared/subscription.component';
 
         .block-node:hover {
             font-weight: bold;
+            border-bottom: 1px solid #a4b7c1!important;
         }
   `]
 })
@@ -99,8 +101,11 @@ export class BlockTreeComponent extends SubscriptionComponent {
 
     ngOnInit() {
         this.subscriptions.push(this.subjectService.blockFolderCreated$.subscribe(createdFolder => {
-            //TODO: need to optimize only reload new node
+            this.cmsTree.selectNode({ id: createdFolder._id, isNeedToScroll: true })
             this.cmsTree.reloadSubTree(createdFolder.parentId);
+        }));
+        this.subscriptions.push(this.subjectService.blockCreated$.subscribe(createdBlock => {
+            this.cmsTree.selectNode({ id: createdBlock.parentId })
         }));
         this.folderSelected({ id: '0' });
     }
@@ -123,8 +128,16 @@ export class BlockTreeComponent extends SubscriptionComponent {
         this.cmsTree.menuItemSelected({ action: NodeMenuItemAction.NewNodeInline, node: node })
     }
 
-    nodeCreated(parentNode) {
+    blockCreated(parentNode) {
         this.router.navigate(["new/block", parentNode.id], { relativeTo: this.route })
+    }
+
+    folderDelete(nodeToDelete: TreeNode) {
+        if (nodeToDelete.id == '0') return;
+        this.blockService.softDeleteContent(nodeToDelete.id).subscribe(([blockToDelete, deleteResult]: [Block, any]) => {
+            console.log(deleteResult);
+            this.cmsTree.reloadSubTree(nodeToDelete.parentId);
+        });
     }
 
 }
