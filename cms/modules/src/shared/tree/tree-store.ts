@@ -15,7 +15,7 @@ export class TreeStore {
     nodeCut$: Subject<TreeNode> = new Subject<TreeNode>();
     nodeCopied$: Subject<TreeNode> = new Subject<TreeNode>();
     nodePasted$: Subject<TreeNode> = new Subject<TreeNode>();
-    nodeDeleted$: Subject<TreeNode> = new Subject<TreeNode>();
+    nodeDelete$: Subject<TreeNode> = new Subject<TreeNode>();
     scrollToSelectedNode$: BehaviorSubject<TreeNode> = new BehaviorSubject<TreeNode>(new TreeNode());
 
     treeService: TreeService;
@@ -183,7 +183,7 @@ export class TreeStore {
                 this.fireNodePasted(node);
                 break;
             case NodeMenuItemAction.Delete:
-                this.fireNodeDeleted(node);
+                this.fireNodeToDeleteAction(node);
                 break;
             default:
                 throw new Error(`Chosen menu item doesn't exist`);
@@ -215,8 +215,8 @@ export class TreeStore {
         this.nodePasted$.next(node);
     }
 
-    fireNodeDeleted(node: TreeNode) {
-        this.nodeDeleted$.next(node);
+    fireNodeToDeleteAction(node: TreeNode) {
+        this.nodeDelete$.next(node);
     }
 
     fireScrollToSelectedNode(node: TreeNode) {

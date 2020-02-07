@@ -173,18 +173,26 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
         //soft delete page
         //soft delete published page
         //soft delete page's children
-        //update the 'HasChildren' field of page's parent
+        //TODO: update the 'HasChildren' field of page's parent
         const result: [T, T, any] = await Promise.all([
             this.softDeleteContent(currentContent),
             this.softDeletePublishedContent(currentContent),
             this.softDeleteContentChildren(currentContent)
         ]);
 
+        const childCount = await this.countChildrenOfContent(currentContent.parentId);
+        if (childCount == 0) await this.contentModel.findOneAndUpdate({ _id: currentContent.parentId }, { hasChildren: false }).exec()
+
         console.log(result[2]);
         return [result[0], result[2]];
     }
 
-    private softDeleteContent = (currentContent: T): Promise<T> => {
+    private countChildrenOfContent = async (parentId: string): Promise<number> => {
+        return this.contentModel.countDocuments({ parentId: parentId, isDeleted: false }).exec()
+    }
+
+    private softDeleteContent = async (currentContent: T): Promise<T> => {
+        if (!currentContent) return null;
         currentContent.deleted = new Date();
         //TODO: currentContent.deletedBy = userId
         currentContent.isDeleted = true;
@@ -193,10 +201,12 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
 
     private softDeletePublishedContent = async (currentContent: T): Promise<T> => {
         const publishedPage = await this.publishedContentModel.findOne({ _id: currentContent._id }).exec()
-        return this.softDeleteContent(publishedPage);
+        return await this.softDeleteContent(publishedPage);
     }
 
     private softDeleteContentChildren = (currentContent: T): Promise<any> => {
+        if (!currentContent.parentPath) currentContent.parentPath = ',';
+
         const startWithParentPathRegExp = new RegExp("^" + `${currentContent.parentPath}${currentContent._id},`);
         const conditions = { parentPath: { $regex: startWithParentPathRegExp } };
         const updateFields: Partial<IContent> = { isDeleted: true, deleted: new Date() };
@@ -207,6 +217,7 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
         //get source content 
         const parentContent = await this.getModelById(parentId);
         if (!parentContent) throw new NotFoundException(parentId);
+        if (!parentContent.parentPath) parentContent.parentPath = ',';
 
         const startWithParentPathRegExp = new RegExp("^" + `${parentContent.parentPath}${parentContent._id},`);
         const conditions = { parentPath: { $regex: startWithParentPathRegExp } };

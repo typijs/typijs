@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { SubjectService, ServiceLocator, Page } from '@angular-cms/core';
+import { SubjectService, ServiceLocator, Page, PageService } from '@angular-cms/core';
 import { TreeNode } from '../shared/tree/tree-node';
 import { TreeComponent } from '../shared/tree/tree.component';
 import { TreeConfig } from '../shared/tree/tree-config';
@@ -16,7 +16,8 @@ import { SubscriptionComponent } from '../shared/subscription.component';
             [root]="root"
             [config]="treeConfig"
             (nodeSelected)="pageSelected($event)"
-            (nodeCreated)="pageCreated($event)">
+            (nodeCreated)="pageCreated($event)"
+            (nodeDeleteEvent)="pageDelete($event)">
             <ng-template #treeNodeTemplate let-node>
                 <span [ngClass]="{'page-node': node.id != '0', 'border-bottom': node.isSelected && node.id != '0'}">
                     <fa-icon class="mr-1" *ngIf="node.id == '0'" [icon]="['fas', 'sitemap']"></fa-icon>
@@ -71,6 +72,7 @@ export class PageTreeComponent extends SubscriptionComponent {
     }
 
     constructor(
+        private pageService: PageService,
         private subjectService: SubjectService,
         private router: Router,
         private route: ActivatedRoute) {
@@ -79,7 +81,6 @@ export class PageTreeComponent extends SubscriptionComponent {
 
     ngOnInit() {
         this.subscriptions.push(this.subjectService.pageCreated$.subscribe((createdPage: Page) => {
-
             //Reload parent page
             //Reload the children of parent to update the created page
             this.cmsTree.selectNode({ id: createdPage._id, isNeedToScroll: true });
@@ -105,5 +106,13 @@ export class PageTreeComponent extends SubscriptionComponent {
 
     pageCreated(parentNode: TreeNode) {
         this.router.navigate(["new/page", parentNode.id], { relativeTo: this.route })
+    }
+
+    pageDelete(nodeToDelete: TreeNode) {
+        if (nodeToDelete.id == '0') return;
+        this.pageService.softDeleteContent(nodeToDelete.id).subscribe(([pageToDelete, deleteResult]: [Page, any]) => {
+            console.log(deleteResult);
+            this.cmsTree.reloadSubTree(pageToDelete.parentId);
+        });
     }
 }

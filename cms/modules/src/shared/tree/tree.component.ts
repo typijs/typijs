@@ -55,7 +55,7 @@ export class TreeComponent extends SubscriptionComponent implements OnInit {
     @Output() nodeCopied: EventEmitter<any> = new EventEmitter();
     @Output() nodeRenamed: EventEmitter<any> = new EventEmitter();
     @Output() nodePasted: EventEmitter<any> = new EventEmitter();
-    @Output() nodeDeleted: EventEmitter<any> = new EventEmitter();
+    @Output() nodeDeleteEvent: EventEmitter<any> = new EventEmitter();
 
     public templates: TreeNodeTemplate;
 
@@ -131,8 +131,8 @@ export class TreeComponent extends SubscriptionComponent implements OnInit {
             this.nodePasted.emit(node);
         }));
 
-        this.subscriptions.push(this.treeStore.nodeDeleted$.subscribe(node => {
-            this.nodeDeleted.emit(node);
+        this.subscriptions.push(this.treeStore.nodeDelete$.subscribe(node => {
+            this.nodeDeleteEvent.emit(node);
         }));
     }
 }

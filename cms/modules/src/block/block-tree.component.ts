@@ -18,8 +18,9 @@ import { SubscriptionComponent } from '../shared/subscription.component';
                 [root]="root"
                 [config]="treeConfig"
                 (nodeSelected)="folderSelected($event)"
-                (nodeCreated)="nodeCreated($event)"
-                (nodeInlineCreated)="createBlockFolder($event)">
+                (nodeCreated)="blockCreated($event)"
+                (nodeInlineCreated)="createBlockFolder($event)"
+                (nodeDeleteEvent)="folderDelete($event)">
                 <ng-template #treeNodeTemplate let-node>
                     <span [ngClass]="{'block-node': node.id != '0', 'border-bottom': node.isSelected && node.id != '0'}">
                         <fa-icon class="mr-1" *ngIf="node.id == '0'" [icon]="['fas', 'cubes']"></fa-icon>
@@ -127,8 +128,16 @@ export class BlockTreeComponent extends SubscriptionComponent {
         this.cmsTree.menuItemSelected({ action: NodeMenuItemAction.NewNodeInline, node: node })
     }
 
-    nodeCreated(parentNode) {
+    blockCreated(parentNode) {
         this.router.navigate(["new/block", parentNode.id], { relativeTo: this.route })
+    }
+
+    folderDelete(nodeToDelete: TreeNode) {
+        if (nodeToDelete.id == '0') return;
+        this.blockService.softDeleteContent(nodeToDelete.id).subscribe(([blockToDelete, deleteResult]: [Block, any]) => {
+            console.log(deleteResult);
+            this.cmsTree.reloadSubTree(nodeToDelete.parentId);
+        });
     }
 
 }
