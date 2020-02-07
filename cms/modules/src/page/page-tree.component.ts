@@ -18,11 +18,11 @@ import { SubscriptionComponent } from '../shared/subscription.component';
             (nodeSelected)="pageSelected($event)"
             (nodeCreated)="pageCreated($event)">
             <ng-template #treeNodeTemplate let-node>
-                <span [ngClass]="{'page-node': node.id != 0}">
-                    <fa-icon class="mr-1" *ngIf="node.id == 0" [icon]="['fas', 'sitemap']"></fa-icon>
-                    <fa-icon class="mr-1" *ngIf="node.id != 0" [icon]="['fas', 'file']"></fa-icon>
+                <span [ngClass]="{'page-node': node.id != '0', 'border-bottom': node.isSelected && node.id != '0'}">
+                    <fa-icon class="mr-1" *ngIf="node.id == '0'" [icon]="['fas', 'sitemap']"></fa-icon>
+                    <fa-icon class="mr-1" *ngIf="node.id != '0'" [icon]="['fas', 'file']"></fa-icon>
                     <span>{{node.name}}</span>
-                    <span *ngIf="node.id == 0" class="badge badge-info float-right mt-2 mr-1" [routerLink]="['new/page']">NEW</span>
+                    <span *ngIf="node.id == '0'" class="badge badge-info float-right mt-2 mr-1" [routerLink]="['new/page']">NEW</span>
                 </span>
             </ng-template>
         </cms-tree>
@@ -36,6 +36,7 @@ import { SubscriptionComponent } from '../shared/subscription.component';
 
         .page-node:hover {
             font-weight: bold;
+            border-bottom: 1px solid #a4b7c1!important;
         }
   `]
 })

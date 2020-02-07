@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject, from, of, BehaviorSubject, combineLatest } from 'rxjs';
+import { Observable, Subject, from, of, BehaviorSubject, combineLatest, empty } from 'rxjs';
 import { concatMap, map, tap, switchMap } from 'rxjs/operators';
 
 import { TreeNode } from './tree-node';
@@ -19,8 +19,6 @@ export class TreeStore {
     scrollToSelectedNode$: BehaviorSubject<TreeNode> = new BehaviorSubject<TreeNode>(new TreeNode());
 
     treeService: TreeService;
-
-    id: Number = Math.floor(Math.random() * 10);
 
     //The tree-children component will subscribe the treeNodesRxSubject to reload sub tree
     private treeNodesRxSubject$ = {}; //store Subject of node's children with key = nodeId to load sub tree
@@ -98,31 +96,30 @@ export class TreeStore {
     }
 
     locateToSelectedNode(newSelectedNode: TreeNode): Observable<string> {
-        if (!this.selectedNode || this.selectedNode.id != newSelectedNode.id) {
+        if (this.selectedNode && this.selectedNode.id == newSelectedNode.id) return empty();
 
-            this.setSelectedNode(newSelectedNode);
-            this.fireNodeSelectedInner(newSelectedNode);
+        this.setSelectedNode(newSelectedNode);
+        this.fireNodeSelectedInner(newSelectedNode);
 
-            const parentPath = newSelectedNode.parentPath ? `0${newSelectedNode.parentPath}` : '0';
-            const parentIds = parentPath.split(',').filter(id => id);
+        const parentPath = newSelectedNode.parentPath ? `0${newSelectedNode.parentPath}` : '0';
+        const parentIds = parentPath.split(',').filter(id => id);
 
-            if (parentIds.length > 0) {
-                return from(parentIds).pipe(
-                    concatMap((nodeId: string, index: number) => (this.treeNodes[nodeId] ? of(this.treeNodes[nodeId]) : this.treeService.loadChildren(nodeId))
-                        .pipe(map((nodes: TreeNode[]) => [nodeId, index, nodes]))
-                    ),
-                    map(([nodeId, index, nodes]: [string, number, TreeNode[]]) => {
-                        if (!this.treeNodes[nodeId]) this.treeNodes[nodeId] = nodes;
+        if (parentIds.length > 0) {
+            return from(parentIds).pipe(
+                concatMap((nodeId: string, index: number) => (this.treeNodes[nodeId] ? of(this.treeNodes[nodeId]) : this.treeService.loadChildren(nodeId))
+                    .pipe(map((nodes: TreeNode[]) => [nodeId, index, nodes]))
+                ),
+                map(([nodeId, index, nodes]: [string, number, TreeNode[]]) => {
+                    if (!this.treeNodes[nodeId]) this.treeNodes[nodeId] = nodes;
 
-                        if (index > 0) {
-                            const currentNodeIndex = this.treeNodes[parentIds[index - 1]].findIndex(x => x.id == nodeId);
-                            if (currentNodeIndex != -1)
-                                this.treeNodes[parentIds[index - 1]][currentNodeIndex].isExpanded = true;
-                        }
-                        return nodeId;
-                    })
-                );
-            }
+                    if (index > 0) {
+                        const currentNodeIndex = this.treeNodes[parentIds[index - 1]].findIndex(x => x.id == nodeId);
+                        if (currentNodeIndex != -1)
+                            this.treeNodes[parentIds[index - 1]][currentNodeIndex].isExpanded = true;
+                    }
+                    return nodeId;
+                })
+            );
         }
     }
 
@@ -156,7 +153,6 @@ export class TreeStore {
         //the 'tap' operator same as 'do'
         return this.treeService.loadChildren(parentId).pipe(
             tap((childNodes: TreeNode[]) => {
-                //TODO: need to optimize to reload only new node and keep Expand state of other child nodes
                 this.treeNodes[parentId] = childNodes;
                 return this.treeNodes[parentId];
             })

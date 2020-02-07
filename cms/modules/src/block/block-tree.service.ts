@@ -14,12 +14,12 @@ export class BlockTreeService implements TreeService {
 
     getNode(nodeId: string): Observable<TreeNode> {
         return this.blockService.getContent(nodeId).pipe(
-            map(x => new TreeNode({
-                id: x._id,
-                name: x.name,
-                hasChildren: x.hasChildren,
-                parentId: x.parentId,
-                parentPath: x.parentPath
+            map(block => new TreeNode({
+                id: block._id,
+                name: block.name,
+                hasChildren: block.hasChildren,
+                parentId: block.parentId,
+                parentPath: block.parentPath
             })));
     }
 
