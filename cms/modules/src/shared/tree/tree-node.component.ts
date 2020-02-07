@@ -1,9 +1,10 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ElementRef } from '@angular/core';
 
 import { TreeNode } from './tree-node';
 import { TreeConfig } from './tree-config';
 import { NodeMenuItemAction, TreeMenuItem } from './tree-menu';
 import { TreeBaseComponent } from './tree-base.component';
+import { TreeStore } from './tree-store';
 
 @Component({
     selector: 'tree-node',
@@ -50,10 +51,29 @@ export class TreeNodeComponent extends TreeBaseComponent {
 
     menuItems: TreeMenuItem[];
 
+    constructor(
+        private treeStore: TreeStore,
+        private hostElement: ElementRef<HTMLElement>) {
+        super();
+    }
+
     ngOnInit() {
+        this.subscriptions.push(this.treeStore.scrollToSelectedNode$.subscribe((scrollToNode: TreeNode) => {
+            if (scrollToNode.id == this.node.id) this.scrollIntoNode();
+        }));
+
         if (this.config) {
             this.menuItems = this.config.menuItems;
         }
+    }
+
+    scrollIntoNode() {
+        //scroll to middle of viewport
+        this.hostElement.nativeElement.scrollIntoView({
+            behavior: 'auto',
+            block: 'center',
+            inline: 'center'
+        });
     }
 
     shouldShowInputForTreeNode(node: TreeNode) {

@@ -17,6 +17,8 @@ export class TreeStore {
     nodeCopied$: Subject<TreeNode> = new Subject<TreeNode>();
     nodePasted$: Subject<TreeNode> = new Subject<TreeNode>();
     nodeDeleted$: Subject<TreeNode> = new Subject<TreeNode>();
+    scrollToSelectedNode$: Subject<TreeNode> = new Subject<TreeNode>();
+
 
     treeService: TreeService;
 
@@ -24,7 +26,7 @@ export class TreeStore {
 
     //The tree-children component will subscribe the treeNodesRxSubject to reload sub tree
     private treeNodesRxSubject$ = {}; //store Subject of node's children with key = nodeId to load sub tree
-    private treeNodes = {}; //store node's children with key = nodeid, ex nodes[parentId] = array of node's children
+    private treeNodes = {}; //store node's children with key = nodeId, ex nodes[parentId] = array of node's children
     private selectedNode: TreeNode;
 
     getSelectedNode(): TreeNode {
@@ -161,6 +163,7 @@ export class TreeStore {
         //the 'tap' operator same as 'do'
         return this.treeService.loadChildren(parentId).pipe(
             tap((childNodes: TreeNode[]) => {
+                //TODO: need to optimize to reload only new node and keep Expand state of other child nodes
                 this.treeNodes[parentId] = childNodes;
                 return this.treeNodes[parentId];
             })
@@ -208,31 +211,35 @@ export class TreeStore {
         this.nodeSelected$.next(node);
     }
 
-    fireNodeCreated(node) {
+    fireNodeCreated(node: TreeNode) {
         this.nodeCreated$.next(node);
     }
 
-    fireNodeInlineCreated(node) {
+    fireNodeInlineCreated(node: TreeNode) {
         this.nodeInlineCreated$.next(node);
     }
 
-    fireNodeRenamed(node) {
+    fireNodeRenamed(node: TreeNode) {
         this.nodeRenamed$.next(node);
     }
 
-    fireNodeCut(node) {
+    fireNodeCut(node: TreeNode) {
         this.nodeCut$.next(node);
     }
 
-    fireNodeCopied(node) {
+    fireNodeCopied(node: TreeNode) {
         this.nodeCopied$.next(node);
     }
 
-    fireNodePasted(node) {
+    fireNodePasted(node: TreeNode) {
         this.nodePasted$.next(node);
     }
 
-    fireNodeDeleted(node) {
+    fireNodeDeleted(node: TreeNode) {
         this.nodeDeleted$.next(node);
+    }
+
+    fireScrollToSelectedNode(node: TreeNode) {
+        this.scrollToSelectedNode$.next(node);
     }
 }
