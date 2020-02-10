@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
 import { ContentService } from '../content/content.service';
 
-import { IPageDocument, PageModel } from "./models/page.model";
+import { IPageDocument, PageModel, IPage } from "./models/page.model";
 import { IPageVersionDocument, PageVersionModel } from "./models/page-version.model";
 import { IPublishedPageDocument, PublishedPageModel, IPublishedPage } from './models/published-page.model';
 import { ISiteDefinitionDocument, SiteDefinitionModel } from '../site-definition/site-definition.model';
@@ -37,24 +37,24 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
         return null;
     }
 
-    public getPageChildren = async (parentId: string): Promise<IPageDocument[]> => {
+    public getPageChildren = async (parentId: string): Promise<IPage[]> => {
         if (parentId == '0') parentId = null;
 
-        return this.contentModel.find({ parentId: parentId, isDeleted: false }).exec()
+        return this.contentModel.find({ parentId: parentId, isDeleted: false }).lean().exec()
     }
 
-    public getPublishedPageChildren = async (parentId: string): Promise<IPublishedPageDocument[]> => {
+    public getPublishedPageChildren = async (parentId: string): Promise<IPublishedPage[]> => {
         if (parentId == '0') parentId = null;
 
         //TODO: Temporary get first site definition
-        const publishedPages = await this.publishedContentModel.find({ parentId: parentId, isDeleted: false }).exec()
+        const publishedPages = await this.publishedContentModel.find({ parentId: parentId, isDeleted: false }).lean().exec()
         if (publishedPages.length == 0) return [];
 
         const startPage = await this.getStartPageFromHostname(null);
         const startPageLinkUrl = startPage != null ? startPage.linkUrl : '';
         publishedPages.forEach(page => page.publishedLinkUrl = this.getPublishedLinkUrl(startPageLinkUrl, page));
 
-        return publishedPages;
+        return publishedPages
     }
 
     public executeCreatePageFlow = async (pageObj: IPageDocument): Promise<IPageDocument> => {

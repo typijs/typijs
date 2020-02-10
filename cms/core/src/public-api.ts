@@ -28,7 +28,6 @@ export * from './decorators/validate.decorator';
 export * from './directives/insert-point.directive';
 export * from './directives/content-area.directive';
 
-export * from './models/content.model';
 export * from './models/block.model';
 export * from './models/content.model';
 export * from './models/media.model';
