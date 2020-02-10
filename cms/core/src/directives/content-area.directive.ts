@@ -1,4 +1,4 @@
-import { Input, Directive, ViewContainerRef, ComponentFactoryResolver, Inject, OnDestroy } from '@angular/core';
+import { Input, Directive, ViewContainerRef, ComponentFactoryResolver, Inject, OnDestroy, ComponentRef } from '@angular/core';
 
 import { BLOCK_TYPE_METADATA_KEY } from '../constants/meta-keys';
 import { CMS } from './../cms';
@@ -9,7 +9,7 @@ import { CmsComponent } from './../bases/cms-component';
     selector: '[cmsContentArea]'
 })
 export class ContentAreaDirective implements OnDestroy {
-    private componentRefs: Array<any> = [];
+    private componentRefs: Array<ComponentRef<any>> = [];
 
     private _value: any;
     @Input('cmsContentArea')
@@ -23,15 +23,13 @@ export class ContentAreaDirective implements OnDestroy {
         return this._value;
     }
 
-    constructor( 
+    constructor(
         @Inject(ViewContainerRef) private viewContainerRef: ViewContainerRef,
         @Inject(ComponentFactoryResolver) private componentFactoryResolver: ComponentFactoryResolver) { }
 
     ngOnDestroy() {
-        if(this.componentRefs) {
-            this.componentRefs.forEach(cmpref=> {
-                cmpref.destroy();
-            })
+        if (this.componentRefs) {
+            this.componentRefs.forEach(cmpref => cmpref.destroy());
             this.componentRefs = [];
         }
     }
