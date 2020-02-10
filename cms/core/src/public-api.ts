@@ -38,13 +38,7 @@ export { slugify, sortTabByTitle, uniqueId, clone } from './helpers/common';
 
 export * from './services/block.service';
 export * from './services/page.service';
-export * from './services/subject.service';
 export * from './services/media.service';
-
-export * from './shared/dnd/droppable.directive';
-export * from './shared/dnd/draggable.directive';
-export * from './shared/dnd/dnd-placeholder.directive';
-export * from './shared/dnd/dnd.module';
 
 export * from './cms';
 export * from './core.module';

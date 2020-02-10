@@ -8,7 +8,6 @@ import { InsertPointDirective } from './directives/insert-point.directive';
 import { BlockService } from './services/block.service';
 import { PageService } from './services/page.service';
 import { MediaService } from './services/media.service';
-import { SubjectService } from './services/subject.service';
 
 import { CmsRenderContentComponent } from './render/cms-content';
 
@@ -31,8 +30,7 @@ import { CmsRenderContentComponent } from './render/cms-content';
   providers: [
     BlockService,
     PageService,
-    MediaService,
-    SubjectService
+    MediaService
   ]
 })
 export class CoreModule { }

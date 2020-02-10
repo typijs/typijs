@@ -1,14 +1,15 @@
 import { Component, ViewChild } from '@angular/core';
 
-import { SubjectService, ServiceLocator, Media, MediaService } from '@angular-cms/core';
-import { TreeNode } from '../shared/tree/tree-node';
-import { TreeComponent } from '../shared/tree/tree.component';
-import { TreeConfig } from '../shared/tree/tree-config';
-import { NodeMenuItemAction } from '../shared/tree/tree-menu';
+import { ServiceLocator, Media, MediaService } from '@angular-cms/core';
+import { TreeNode } from '../shared/tree/interfaces/tree-node';
+import { TreeComponent } from '../shared/tree/components/tree.component';
+import { TreeConfig } from '../shared/tree/interfaces/tree-config';
+import { NodeMenuItemAction } from '../shared/tree/interfaces/tree-menu';
 
 import { MediaTreeService } from './media-tree.service';
 import { UploadService } from './upload/upload.service';
 import { SubscriptionComponent } from '../shared/subscription.component';
+import { SubjectService } from '../shared/services/subject.service';
 
 @Component({
     template: `

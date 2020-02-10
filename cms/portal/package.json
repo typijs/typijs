@@ -7,7 +7,6 @@
     "@angular/router": "~8.2.13",
     "@angular/forms": "~8.2.13",
     "@angular-cms/core": "0.0.1",
-    "@angular-cms/properties": "0.0.1",
     "@angular-cms/modules": "0.0.1",
     "@fortawesome/angular-fontawesome": "^0.5.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.26",

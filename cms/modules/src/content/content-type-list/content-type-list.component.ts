@@ -3,10 +3,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { PAGE_TYPE_METADATA_KEY, BLOCK_TYPE_METADATA_KEY, Page, Block } from '@angular-cms/core';
-import { PageService, BlockService, SubjectService } from '@angular-cms/core';
+import { PageService, BlockService } from '@angular-cms/core';
 import { CMS, slugify } from '@angular-cms/core';
 
 import { PAGE_TYPE, BLOCK_TYPE } from './../../constants';
+import { SubjectService } from '../../shared/services/subject.service';
 
 @Component({
     templateUrl: './content-type-list.component.html',

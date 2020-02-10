@@ -5,12 +5,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 import { CoreModule } from '@angular-cms/core';
-import { PropertiesModule } from '@angular-cms/properties';
 
-import { SharedModule } from '../shared/shared.module';
 import { SiteManageEntryComponent } from './site-manage-entry.component';
 import { SiteManageComponent } from './site-manage.component';
 import { SiteManageService } from './site-manage.service';
+import { PropertiesModule } from '../properties/properties.module';
 
 @NgModule({
     imports: [
@@ -18,9 +17,9 @@ import { SiteManageService } from './site-manage.service';
         HttpClientModule,
         FormsModule,
         ReactiveFormsModule,
-        CoreModule,
-        SharedModule,
         RouterModule,
+
+        CoreModule,
         PropertiesModule
     ],
     declarations: [

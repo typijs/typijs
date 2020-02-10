@@ -4,8 +4,8 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { BlockService, Block } from '@angular-cms/core';
-import { TreeService } from '../shared/tree/tree-service';
-import { TreeNode } from '../shared/tree/tree-node';
+import { TreeService } from '../shared/tree/interfaces/tree-service';
+import { TreeNode } from '../shared/tree/interfaces/tree-node';
 
 @Injectable()
 export class BlockTreeService implements TreeService {

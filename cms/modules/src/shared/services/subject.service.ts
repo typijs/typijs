@@ -1,9 +1,12 @@
+import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+import { Page, Block, Media } from '@angular-cms/core';
 
-import { Page } from '../models/page.model';
-import { Block } from '../models/block.model';
-import { Media } from '../models/media.model';
-
+@Injectable({
+  // we declare that this service should be created
+  // by the root application injector.
+  providedIn: 'root',
+})
 export class SubjectService {
 
   blockFolderCreated$: Subject<Block> = new Subject<Block>();

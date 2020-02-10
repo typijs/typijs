@@ -5,11 +5,13 @@ import { Subscription } from 'rxjs';
 
 import { PROPERTY_METADATA_KEY, PROPERTIES_METADATA_KEY } from '@angular-cms/core';
 import { CMS, UIHint, CmsProperty, InsertPointDirective, ISelectionFactory, PropertyMetadata, CmsTab, sortTabByTitle, clone } from '@angular-cms/core';
-import { PageService, BlockService, SubjectService } from '@angular-cms/core';
+import { PageService, BlockService } from '@angular-cms/core';
 
-import { PropertyListComponent, SelectProperty } from '@angular-cms/properties';
+import { PropertyListComponent } from '../../properties/property-list/property-list.component';
+import { SelectProperty } from '../../properties/select/select-property';
 
 import { PAGE_TYPE, BLOCK_TYPE } from './../../constants';
+import { SubjectService } from '../../shared/services/subject.service';
 
 interface FormProperty {
     name: string,

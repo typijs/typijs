@@ -2,24 +2,22 @@
  * Public API Surface of modules
  */
 
-export * from './shared/shared.module';
-export * from './shared/tree/tree.component';
-
 export * from './shared/ngx-bootstrap/bs-dropdown.module';
 export * from './shared/ngx-bootstrap/tabs.module';
 
-export * from './shared/angular-split/module';
+export * from './shared/angular-split/angular-split.module';
 export * from './shared/angular-split/component/split.component';
 export * from './shared/angular-split/directive/splitArea.directive';
+export * from './shared/dnd/dnd.module';
 
 export * from './content/content.module';
 export * from './content/content-type-list/content-type-list.component';
 export * from './content/content-form-edit/content-form-edit.component';
 
+export * from './page/registerPageModule';
 export * from './page/page.module';
 export * from './page/page-tree.component';
 export * from './page/page-tree-readonly.component';
-export * from './page/registerPageModule';
 
 export * from './block/registerBlockModule';
 export * from './block/block.module';
