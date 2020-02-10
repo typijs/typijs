@@ -36,7 +36,7 @@ export class AngularCmsModule {
                 children: [
                     {
                         path: '**',
-                        data: { reuse: false },
+                        data: { reuse: false }, //pass reuse param to CustomRouteReuseStrategy
                         component: CmsRenderContentComponent,
                     }
                 ]

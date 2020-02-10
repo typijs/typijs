@@ -3,7 +3,7 @@ import "reflect-metadata";
 
 import { PROPERTIES_METADATA_KEY, PROPERTY_METADATA_KEY } from '../constants/meta-keys';
 
-interface ValidateMetadata{
+interface ValidateMetadata {
     validateFn: Function;
     message?: string
 }
@@ -21,7 +21,7 @@ export interface PropertyMetadata {
 
 export function Property(metadata: PropertyMetadata) {
     return function (target: object, propertyKey: string) {
-        let properties: string[] = Reflect.getMetadata(PROPERTIES_METADATA_KEY, target.constructor) || [];
+        const properties: string[] = Reflect.getMetadata(PROPERTIES_METADATA_KEY, target.constructor) || [];
         properties.push(propertyKey);
         Reflect.defineMetadata(PROPERTIES_METADATA_KEY, properties, target.constructor);
         return Reflect.defineMetadata(PROPERTY_METADATA_KEY, metadata, target.constructor, propertyKey);
@@ -29,15 +29,15 @@ export function Property(metadata: PropertyMetadata) {
 }
 
 export class ValidationTypes {
-    static required(message?: string): ValidateMetadata{
-        return {validateFn: Validators.required, message}
+    static required(message?: string): ValidateMetadata {
+        return { validateFn: Validators.required, message }
     }
 
-    static minLength(value: number, message?: string): ValidateMetadata{
-        return {validateFn: Validators.minLength(value), message}
+    static minLength(value: number, message?: string): ValidateMetadata {
+        return { validateFn: Validators.minLength(value), message }
     }
 
-    static maxLength(value: number, message?: string): ValidateMetadata{
-        return {validateFn: Validators.maxLength(value), message}
+    static maxLength(value: number, message?: string): ValidateMetadata {
+        return { validateFn: Validators.maxLength(value), message }
     }
 }

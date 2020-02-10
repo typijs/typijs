@@ -101,7 +101,7 @@ export class TreeStore {
         this.setSelectedNode(newSelectedNode);
         this.fireNodeSelectedInner(newSelectedNode);
 
-        const parentPath = newSelectedNode.parentPath ? `0${newSelectedNode.parentPath}` : '0';
+        const parentPath = newSelectedNode.parentPath ? `0${newSelectedNode.parentPath}${newSelectedNode.id},` : `0,${newSelectedNode.id},`;
         const parentIds = parentPath.split(',').filter(id => id);
 
         if (parentIds.length > 0) {
