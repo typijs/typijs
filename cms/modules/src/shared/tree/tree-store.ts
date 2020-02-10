@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { Observable, Subject, from, of, BehaviorSubject, combineLatest, empty } from 'rxjs';
 import { concatMap, map, tap, switchMap } from 'rxjs/operators';
 
-import { TreeNode } from './tree-node';
-import { TreeService } from './tree-service';
-import { NodeMenuItemAction } from './tree-menu';
+import { TreeNode } from './interfaces/tree-node';
+import { TreeService } from './interfaces/tree-service';
+import { NodeMenuItemAction } from './interfaces/tree-menu';
 
 @Injectable()
 export class TreeStore {

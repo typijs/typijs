@@ -1,8 +1,8 @@
 import { Output, EventEmitter } from '@angular/core';
 
-import { TreeNode } from './tree-node';
-import { NodeMenuItemAction } from './tree-menu';
-import { SubscriptionComponent } from '../subscription.component';
+import { TreeNode } from '../interfaces/tree-node';
+import { NodeMenuItemAction } from '../interfaces/tree-menu';
+import { SubscriptionComponent } from '../../subscription.component';
 
 export abstract class TreeBaseComponent extends SubscriptionComponent {
     @Output("selectNode") selectNodeEvent: EventEmitter<TreeNode> = new EventEmitter();

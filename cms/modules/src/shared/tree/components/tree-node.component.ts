@@ -1,10 +1,10 @@
 import { Component, Input, Output, EventEmitter, ElementRef } from '@angular/core';
 
-import { TreeNode } from './tree-node';
-import { TreeConfig } from './tree-config';
-import { NodeMenuItemAction, TreeMenuItem } from './tree-menu';
+import { TreeNode } from '../interfaces/tree-node';
+import { TreeConfig } from '../interfaces/tree-config';
+import { NodeMenuItemAction, TreeMenuItem } from '../interfaces/tree-menu';
 import { TreeBaseComponent } from './tree-base.component';
-import { TreeStore } from './tree-store';
+import { TreeStore } from '../tree-store';
 
 @Component({
     selector: 'tree-node',

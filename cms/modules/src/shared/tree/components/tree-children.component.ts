@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 
-import { TreeStore } from './tree-store';
-import { TreeNode } from './tree-node';
-import { TreeService } from './tree-service';
-import { TreeConfig } from './tree-config';
+import { TreeStore } from '../tree-store';
+import { TreeNode } from '../interfaces/tree-node';
+import { TreeService } from '../interfaces/tree-service';
+import { TreeConfig } from '../interfaces/tree-config';
 import { TreeBaseComponent } from './tree-base.component';
 
 @Component({

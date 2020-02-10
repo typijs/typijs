@@ -1,11 +1,11 @@
 import { Component, Input, Output, EventEmitter, OnInit, ContentChild, TemplateRef, ViewEncapsulation } from '@angular/core';
 import { Subscription } from 'rxjs';
 
-import { TreeStore } from './tree-store';
-import { TreeNode } from './tree-node';
-import { TreeConfig, TreeNodeTemplate } from './tree-config';
-import { NodeMenuItemAction } from './tree-menu';
-import { SubscriptionComponent } from '../subscription.component';
+import { TreeStore } from '../tree-store';
+import { TreeNode } from '../interfaces/tree-node';
+import { TreeConfig, TreeNodeTemplate } from '../interfaces/tree-config';
+import { NodeMenuItemAction } from '../interfaces/tree-menu';
+import { SubscriptionComponent } from '../../subscription.component';
 
 @Component({
     selector: 'cms-tree',
