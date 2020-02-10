@@ -4,15 +4,16 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
-import { CoreModule, DndModule } from '@angular-cms/core';
+import { CoreModule } from '@angular-cms/core';
 
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { faFolder, faCubes } from '@fortawesome/free-solid-svg-icons';
 
-import { SharedModule } from '../shared/shared.module';
 import { BlockTreeComponent } from './block-tree.component';
 import { BlockTreeService } from './block-tree.service';
-import { AngularSplitModule } from '../shared/angular-split/module';
+import { AngularSplitModule } from '../shared/angular-split/angular-split.module';
+import { DndModule } from '../shared/dnd/dnd.module';
+import { TreeModule } from '../shared/tree/tree.module';
 
 
 @NgModule({
@@ -21,10 +22,11 @@ import { AngularSplitModule } from '../shared/angular-split/module';
         HttpClientModule,
         FormsModule,
         ReactiveFormsModule,
+        RouterModule,
         FontAwesomeModule,
         CoreModule,
-        SharedModule,
-        RouterModule,
+
+        TreeModule,
         AngularSplitModule,
         DndModule
     ],

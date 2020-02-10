@@ -4,9 +4,8 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { CoreModule, DndModule, CMS } from '@angular-cms/core';
-import { PropertiesModule } from '@angular-cms/properties';
-import { AngularSplitModule, CmsTabsModule, CmsBsDropdownModule } from '@angular-cms/modules';
+import { CoreModule, CMS } from '@angular-cms/core';
+import { AngularSplitModule, CmsTabsModule, CmsBsDropdownModule, DndModule } from '@angular-cms/modules';
 
 import { CmsComponent } from './cms.component';
 import { CmsRoutingModule } from './cms.routing';
@@ -26,7 +25,6 @@ import { ReplaceDirective } from './shared/directives/replace/replace.directive'
     ReactiveFormsModule,
 
     CoreModule,
-    PropertiesModule,
     AngularSplitModule,
 
     CmsTabsModule.forRoot(),

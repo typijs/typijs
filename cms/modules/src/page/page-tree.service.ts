@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { PageService, Page } from '@angular-cms/core';
 import { map } from 'rxjs/operators';
 
-import { TreeService } from '../shared/tree/tree-service';
-import { TreeNode } from '../shared/tree/tree-node';
+import { TreeService } from '../shared/tree/interfaces/tree-service';
+import { TreeNode } from '../shared/tree/interfaces/tree-node';
 
 @Injectable()
 export class PageTreeService implements TreeService {

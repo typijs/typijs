@@ -6,6 +6,8 @@ const page: Router = Router();
 const pageService: PageService = new PageService();
 const pageController = new PageController(pageService);
 
+page.get('/published/children/:parentId', pageController.getPublishedPageChildren); //query param url =??
+
 page.get('/published/:url', pageController.getByUrl); //query param url =??
 
 page.get('/children/:parentId', pageController.getPageChildren);

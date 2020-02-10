@@ -1,13 +1,14 @@
 import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { SubjectService, ServiceLocator, Page, PageService } from '@angular-cms/core';
-import { TreeNode } from '../shared/tree/tree-node';
-import { TreeComponent } from '../shared/tree/tree.component';
-import { TreeConfig } from '../shared/tree/tree-config';
-import { NodeMenuItemAction } from '../shared/tree/tree-menu'
+import { ServiceLocator, Page, PageService } from '@angular-cms/core';
+import { TreeNode } from '../shared/tree/interfaces/tree-node';
+import { TreeComponent } from '../shared/tree/components/tree.component';
+import { TreeConfig } from '../shared/tree/interfaces/tree-config';
+import { NodeMenuItemAction } from '../shared/tree/interfaces/tree-menu'
 import { PageTreeService } from './page-tree.service';
 import { SubscriptionComponent } from '../shared/subscription.component';
+import { SubjectService } from '../shared/services/subject.service';
 
 @Component({
     template: `
@@ -112,6 +113,7 @@ export class PageTreeComponent extends SubscriptionComponent {
         if (nodeToDelete.id == '0') return;
         this.pageService.softDeleteContent(nodeToDelete.id).subscribe(([pageToDelete, deleteResult]: [Page, any]) => {
             console.log(deleteResult);
+            this.cmsTree.selectNode({ id: pageToDelete.parentId, isNeedToScroll: true });
             this.cmsTree.reloadSubTree(pageToDelete.parentId);
         });
     }

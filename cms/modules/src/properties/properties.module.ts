@@ -3,7 +3,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 import { EditorModule } from '@tinymce/tinymce-angular';
-import { CoreModule, DndModule } from '@angular-cms/core';
+import { CoreModule } from '@angular-cms/core';
+
+import { DndModule } from '../shared/dnd/dnd.module';
 
 import { InputComponent } from './input/input.component';
 

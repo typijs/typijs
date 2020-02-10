@@ -4,27 +4,22 @@
             <!-- start header-->
             <div class="header">
                 <div class="logo">
-                    <a href="index.html"><img src="assets/images/logo.png" alt=""></a>
+                    <a href="javascript:void(0)" [routerLink]="['/']"><img [src]="startPage?.logo" alt=""></a>
                 </div>
                 <div class="cssmenu">
-                    <ul>
-                        <li class="active"><a href="index.html">Home</a></li>
-                        <li><a href="portfolio.html">Portfolio</a></li>
-                        <li><a href="blog.html">Blog</a></li>
-                        <li><a href="about.html">About</a></li>
-                        <li><a href="contact.html">Contact</a></li>
+                    <ul *ngIf="menuItems">
+                        <li *ngFor="let item of menuItems">
+                            <a href="javascript:void(0)" [routerLink]="[item.link]">{{item.name}}</a>
+                        </li>
                         <div class="clear"></div>
                     </ul>
                 </div>
                 <div class="clear"></div>
                 <div class="top-nav">
                     <nav class="clearfix">
-                        <ul>
-                            <li><a href="index.html">Home</a></li>
-                            <li><a href="portfolio.html">Portfolio</a></li>
-                            <li><a href="blog.html">Blog</a></li>
-                            <li><a href="about.html">About</a></li>
-                            <li><a href="contact.html">Contact</a></li>
+                        <ul *ngIf="menuItems">
+                            <li *ngFor="let item of menuItems"><a href="javascript:void(0)"
+                                    [routerLink]="[item.link]">{{item.name}}</a></li>
                         </ul>
                         <a href="#" id="pull">Menu</a>
                     </nav>
@@ -127,9 +122,8 @@
     <!-- start footer copy -->
     <div class="wrap">
         <div class="wrapper">
-            <div class="copy">
-                <p class="w3-link">Copyright © 2012 Designer First. All Rights Reserved. Template by&nbsp; <a
-                        href="http://w3layouts.com/"> W3Layouts</a></p>
+            <div *ngIf="startPage" class="copy" [innerHTML]="startPage.footerText">
+
             </div>
         </div>
     </div>

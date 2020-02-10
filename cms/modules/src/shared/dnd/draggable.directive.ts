@@ -1,6 +1,6 @@
 import { Directive, ElementRef, HostListener, Input, Output, EventEmitter, OnInit, HostBinding, Renderer2, NgZone, OnDestroy } from '@angular/core';
 import { DndService } from './dnd.service';
-import { DomHelper } from '../../helpers/dom-helper';
+import { DomHelper } from './dom-helper';
 
 @Directive({
     selector: '[draggable]'

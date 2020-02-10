@@ -9,10 +9,11 @@ import { faFolder, faPhotoVideo } from '@fortawesome/free-solid-svg-icons';
 
 import { CmsProgressbarModule } from '../shared/ngx-bootstrap/progressbar.module';
 
-import { CoreModule, DndModule } from '@angular-cms/core';
+import { CoreModule } from '@angular-cms/core';
 
-import { SharedModule } from '../shared/shared.module';
-import { AngularSplitModule } from '../shared/angular-split/module';
+import { TreeModule } from '../shared/tree/tree.module';
+import { AngularSplitModule } from '../shared/angular-split/angular-split.module';
+import { DndModule } from '../shared/dnd/dnd.module';
 
 import { MediaTreeComponent } from './media-tree.component';
 import { MediaTreeService } from './media-tree.service';
@@ -28,10 +29,11 @@ import { DragLeaveDirective } from './upload/drag-leave.directive';
         HttpClientModule,
         FormsModule,
         ReactiveFormsModule,
+        RouterModule,
+
         FontAwesomeModule,
         CoreModule,
-        SharedModule,
-        RouterModule,
+        TreeModule,
         DndModule,
         AngularSplitModule,
         CmsProgressbarModule.forRoot()

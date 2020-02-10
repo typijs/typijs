@@ -28,7 +28,6 @@ export * from './decorators/validate.decorator';
 export * from './directives/insert-point.directive';
 export * from './directives/content-area.directive';
 
-export * from './models/content.model';
 export * from './models/block.model';
 export * from './models/content.model';
 export * from './models/media.model';
@@ -38,13 +37,7 @@ export { slugify, sortTabByTitle, uniqueId, clone } from './helpers/common';
 
 export * from './services/block.service';
 export * from './services/page.service';
-export * from './services/subject.service';
 export * from './services/media.service';
-
-export * from './shared/dnd/droppable.directive';
-export * from './shared/dnd/draggable.directive';
-export * from './shared/dnd/dnd-placeholder.directive';
-export * from './shared/dnd/dnd.module';
 
 export * from './cms';
 export * from './core.module';

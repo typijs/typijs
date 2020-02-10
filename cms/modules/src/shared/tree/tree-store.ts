@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { Observable, Subject, from, of, BehaviorSubject, combineLatest, empty } from 'rxjs';
 import { concatMap, map, tap, switchMap } from 'rxjs/operators';
 
-import { TreeNode } from './tree-node';
-import { TreeService } from './tree-service';
-import { NodeMenuItemAction } from './tree-menu';
+import { TreeNode } from './interfaces/tree-node';
+import { TreeService } from './interfaces/tree-service';
+import { NodeMenuItemAction } from './interfaces/tree-menu';
 
 @Injectable()
 export class TreeStore {
@@ -101,7 +101,7 @@ export class TreeStore {
         this.setSelectedNode(newSelectedNode);
         this.fireNodeSelectedInner(newSelectedNode);
 
-        const parentPath = newSelectedNode.parentPath ? `0${newSelectedNode.parentPath}` : '0';
+        const parentPath = newSelectedNode.parentPath ? `0${newSelectedNode.parentPath}${newSelectedNode.id},` : `0,${newSelectedNode.id},`;
         const parentIds = parentPath.split(',').filter(id => id);
 
         if (parentIds.length > 0) {

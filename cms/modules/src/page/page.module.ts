@@ -4,15 +4,17 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
-import { CoreModule, setAppInjector, DndModule } from '@angular-cms/core';
+import { CoreModule, setAppInjector } from '@angular-cms/core';
 
-import { SharedModule } from '../shared/shared.module';
+import { DndModule } from '../shared/dnd/dnd.module';
+
 import { PageTreeComponent } from './page-tree.component';
 import { PageTreeReadonlyComponent } from './page-tree-readonly.component';
 import { ContentModule } from '../content/content.module';
 import { PageTreeService } from './page-tree.service';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { faFolder, faFile, faSitemap } from '@fortawesome/free-solid-svg-icons';
+import { TreeModule } from '../shared/tree/tree.module';
 
 @NgModule({
     imports: [
@@ -20,11 +22,12 @@ import { faFolder, faFile, faSitemap } from '@fortawesome/free-solid-svg-icons';
         HttpClientModule,
         FormsModule,
         ReactiveFormsModule,
+        RouterModule,
         FontAwesomeModule,
+
         CoreModule,
         ContentModule,
-        SharedModule,
-        RouterModule,
+        TreeModule,
         DndModule
     ],
     declarations: [

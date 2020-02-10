@@ -127,10 +127,9 @@ Need to install
 
 ```mermaid
     graph TD
-    A(cms core)-->B(cms properties)
-    B-->C(cms modules)
-    C-->D(cms portal)
-    D-->Z(cms demo)
+    A(cms core)-->B(cms modules)
+    B-->C(cms portal)
+    C-->Z(cms demo)
     X(cms api)-->Z
 
 ```
@@ -167,11 +166,10 @@ For example, in my local, I have the db path like as `D:/ProgramData/MongoDB/dat
 
 > If you install the MongoDB and run it as the service in Window, you can skip this step
 
-2. Final step, under `cms` folder, run the command
+2. Final step, under `cms` folder, run the command sequentially
 ```
     npm install
     ng build core
-    ng build properties
     ng build modules
     ng build portal
     npm run dev

@@ -2,9 +2,9 @@ import { Component, ViewChild } from '@angular/core';
 
 import { ServiceLocator } from '@angular-cms/core';
 
-import { TreeNode } from '../shared/tree/tree-node';
-import { TreeComponent } from '../shared/tree/tree.component';
-import { TreeConfig } from '../shared/tree/tree-config';
+import { TreeNode } from '../shared/tree/interfaces/tree-node';
+import { TreeComponent } from '../shared/tree/components/tree.component';
+import { TreeConfig } from '../shared/tree/interfaces/tree-config';
 import { PageTreeService } from './page-tree.service';
 
 @Component({

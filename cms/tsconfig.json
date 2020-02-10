@@ -25,12 +25,6 @@
       "@angular-cms/core/*": [
         "dist/core/*"
       ],
-      "@angular-cms/properties": [
-        "dist/properties"
-      ],
-      "@angular-cms/properties/*": [
-        "dist/properties/*"
-      ],
       "@angular-cms/modules": [
         "dist/modules"
       ],

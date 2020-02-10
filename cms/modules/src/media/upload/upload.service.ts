@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpRequest, HttpEventType, HttpResponse } from '@angular/common/http';
 
 import { BehaviorSubject, Subject, forkJoin } from 'rxjs';
-import { TreeNode } from '../../shared/tree/tree-node';
+import { TreeNode } from '../../shared/tree/interfaces/tree-node';
 
-//Temp hardcode url
+//TODO: Temp hard code url
 const url = 'http://localhost:4200/api/media/upload/';
 
 @Injectable()
