@@ -1,5 +1,4 @@
 import { Component, ComponentFactoryResolver, Inject, ViewChild, OnDestroy, ComponentRef } from '@angular/core';
-import { Router } from '@angular/router';
 import 'reflect-metadata';
 
 import { PAGE_TYPE_METADATA_KEY, PROPERTIES_METADATA_KEY, PROPERTY_METADATA_KEY } from '../constants/meta-keys';
@@ -10,10 +9,11 @@ import { CMS } from './../cms';
 import { PageData } from './../bases/page-data';
 import { CmsComponent } from './../bases/cms-component';
 import { PropertyMetadata } from '../decorators/property.decorator';
-import { Page } from '../models/page.model';
+import { Page, mapToPageData } from '../models/page.model';
 import { clone } from '../helpers/common';
 import { UIHint } from '../constants/ui-hint';
 import { ContentTypeMetadata } from '../decorators/content-type-metadata';
+import { LocationRef, LOCATION } from '../services/browser-location.service';
 
 @Component({
     selector: 'cms-content',
@@ -22,21 +22,14 @@ import { ContentTypeMetadata } from '../decorators/content-type-metadata';
 export class CmsRenderContentComponent implements OnDestroy {
 
     private pageComponentRef: ComponentRef<any>;
-
     @ViewChild(InsertPointDirective, { static: true }) pageEditHost: InsertPointDirective;
 
     constructor(
+        @Inject(LOCATION) private location: LocationRef,
         private componentFactoryResolver: ComponentFactoryResolver,
-        private pageService: PageService,
-        private router: Router) { }
+        private pageService: PageService) { }
 
     ngOnInit() {
-        // this.router.events.subscribe((event) => {
-        //     if (event.constructor.name === "NavigationEnd") {
-        //         console.log(window.location.pathname);
-        //         this.resolveContentDataByUrl();
-        //     }
-        // });
         this.resolveContentDataByUrl();
     }
 
@@ -47,14 +40,15 @@ export class CmsRenderContentComponent implements OnDestroy {
     }
 
     private resolveContentDataByUrl() {
-        const currentUrl = window.location.href;
+        const currentUrl = `${this.location.origin}${this.location.pathname}`;
         this.pageService.getPublishedPage(currentUrl).subscribe((currentPage: Page) => {
             if (currentPage) {
                 const contentType = CMS.PAGE_TYPES[currentPage.contentType];
                 const pageMetadata = Reflect.getMetadata(PAGE_TYPE_METADATA_KEY, contentType);
                 const propertiesMetadata = this.getPropertiesMetadata(contentType);
-                propertiesMetadata.forEach(property => this.populateReferenceProperty(currentPage, property))
-                this.createPageComponent(currentPage.properties, pageMetadata);
+                propertiesMetadata.forEach(property => this.populateReferenceProperty(currentPage, property));
+
+                this.pageComponentRef = this.createPageComponent(mapToPageData(currentPage), pageMetadata);
             }
         })
     }
@@ -85,14 +79,15 @@ export class CmsRenderContentComponent implements OnDestroy {
         }
     }
 
-    private createPageComponent(content, pageMetadata: ContentTypeMetadata) {
+    private createPageComponent(pageData: PageData, pageMetadata: ContentTypeMetadata): ComponentRef<any> {
         if (pageMetadata) {
             const viewContainerRef = this.pageEditHost.viewContainerRef;
             viewContainerRef.clear();
 
             const pageFactory = this.componentFactoryResolver.resolveComponentFactory(pageMetadata.componentRef);
-            this.pageComponentRef = viewContainerRef.createComponent(pageFactory);
-            (<CmsComponent<PageData>>this.pageComponentRef.instance).currentContent = content;
+            const pageComponentRef = viewContainerRef.createComponent(pageFactory);
+            (<CmsComponent<PageData>>pageComponentRef.instance).currentContent = pageData;
+            return pageComponentRef;
         }
     }
 }

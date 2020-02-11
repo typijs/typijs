@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, InjectionToken, PLATFORM_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -10,7 +10,7 @@ import { PageService } from './services/page.service';
 import { MediaService } from './services/media.service';
 
 import { CmsRenderContentComponent } from './render/cms-content';
-
+import { locationFactory, LOCATION } from './services/browser-location.service';
 
 @NgModule({
   imports: [
@@ -28,6 +28,7 @@ import { CmsRenderContentComponent } from './render/cms-content';
     ContentAreaDirective
   ],
   providers: [
+    { provide: LOCATION, useFactory: locationFactory },
     BlockService,
     PageService,
     MediaService
