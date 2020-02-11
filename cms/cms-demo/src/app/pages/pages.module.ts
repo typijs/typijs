@@ -8,6 +8,7 @@ import { HomeComponent } from './home/home.component';
 import { ArticleComponent } from './article/article.component';
 import { BlogComponent } from './blog/blog.component';
 import { PortfolioComponent } from './portfolio/portfolio.component';
+import { RouterModule } from '@angular/router';
 
 const PAGES_COMPONENT = [
     HomeComponent,
@@ -20,6 +21,7 @@ const PAGES_COMPONENT = [
     imports: [
         CommonModule,
         FormsModule,
+        RouterModule,
         CoreModule
     ],
     entryComponents: [

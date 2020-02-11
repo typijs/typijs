@@ -1,58 +1,22 @@
-<div class="main1">
+<div class="main1" *ngIf="portfolioPages$ | async as portfolioPages">
     <div class="content">
-        <h2>list of projects</h2>
+        <h2>{{currentContent.header}}</h2>
     </div>
     <div class="grids_of_4">
-        <div class="grid_1_of_4 images_1_of_4">
-            <a href="#"><img src="images/pic1.jpg" title="Project1" alt=""></a>
-            <h3><a href="#">PIX web design</a></h3>
-            <p class="para">There are many variations of passages of Lorem Ipsum available,</p>
-            <h4><a href="#">Graphics Design</a></h4>
-        </div>
-        <div class="grid_1_of_4 images_1_of_4">
-            <a href="#"><img src="images/pic2.jpg" title="Project2" alt=""></a>
-            <h3><a href="#">Plugin Planet-WordPress</a></h3>
-            <p class="para">Our website design and development provides quality web solutions,</p>
-            <h4><a href="#">print Design</a></h4>
-        </div>
-        <div class="grid_1_of_4 images_1_of_4">
-            <a href="#"><img src="images/pic3.jpg" title="Project3" alt=""></a>
-            <h3><a href="#">Free Application</a></h3>
-            <p class="para">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do EIUSMOD tempor,</p>
-            <h4><a href="#">WordPress Theme</a></h4>
-        </div>
-        <div class="grid_1_of_4 images_1_of_4">
-            <a href="#"><img src="images/pic4.jpg" title="Project4" alt=""></a>
-            <h3><a href="#">iPhone Mail App</a></h3>
-            <p class="para">There are many variations of passages of Lorem Ipsum available,</p>
-            <h4><a href="#">Branding</a></h4>
+        <div *ngFor="let item of portfolioPages.slice(0, 4)" class="grid_1_of_4 images_1_of_4">
+            <a href="javascript:void(0)"><img src="images/pic1.jpg" title="Project1" alt=""></a>
+            <h3><a [routerLink]="[item.linkUrl]">{{item.title}}</a></h3>
+            <p class="para" [innerHTML]="item.summary"></p>
+            <h4><a href="javascript:void(0)" [routerLink]="[item.linkUrl]">Read More</a></h4>
         </div>
         <div class="clear"></div>
     </div>
     <div class="grids_of_4">
-        <div class="grid_1_of_4 images_1_of_4">
-            <a href="#"><img src="images/pic5.jpg" title="Project5" alt=""></a>
-            <h3><a href="#">PIX web design</a></h3>
-            <p class="para">There are many variations of passages of Lorem Ipsum available,</p>
-            <h4><a href="#">Graphics Design</a></h4>
-        </div>
-        <div class="grid_1_of_4 images_1_of_4">
-            <a href="#"><img src="images/pic6.jpg" title="Project6" alt=""></a>
-            <h3>Plugin Planet-WordPress</h3>
-            <p class="para">Our website design and development provides quality web solutions,</p>
-            <h4><a href="#">print Design</a></h4>
-        </div>
-        <div class="grid_1_of_4 images_1_of_4">
-            <a href="#"><img src="images/pic7.jpg" title="Project7" alt=""></a>
-            <h3><a href="#">Free Application </a></h3>
-            <p class="para">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do EIUSMOD tempor,</p>
-            <h4><a href="#">WordPress Theme</a></h4>
-        </div>
-        <div class="grid_1_of_4 images_1_of_4">
-            <a href="#"><img src="images/pic8.jpg" title="Project8" alt=""></a>
-            <h3><a href="#">iPhone Mail App</a></h3>
-            <p class="para">There are many variations of passages of Lorem Ipsum available,</p>
-            <h4><a href="#">Branding</a></h4>
+        <div *ngFor="let item of portfolioPages.slice(4, 8)" class="grid_1_of_4 images_1_of_4">
+            <a href="javascript:void(0)"><img src="images/pic1.jpg" title="Project1" alt=""></a>
+            <h3><a [routerLink]="[item.linkUrl]">{{item.title}}</a></h3>
+            <p class="para" [innerHTML]="item.summary"></p>
+            <h4><a href="javascript:void(0)" [routerLink]="[item.linkUrl]">Read More</a></h4>
         </div>
         <div class="clear"></div>
     </div>
