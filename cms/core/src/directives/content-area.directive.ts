@@ -2,8 +2,9 @@ import { Input, Directive, ViewContainerRef, ComponentFactoryResolver, Inject, O
 
 import { BLOCK_TYPE_METADATA_KEY } from '../constants/meta-keys';
 import { CMS } from './../cms';
-import { ContentData } from './../bases/content-data';
+import { ContentData, BlockData } from './../bases/content-data';
 import { CmsComponent } from './../bases/cms-component';
+import { Block, mapToBlockData } from '../models/block.model';
 
 @Directive({
     selector: '[cmsContentArea]'
@@ -11,39 +12,38 @@ import { CmsComponent } from './../bases/cms-component';
 export class ContentAreaDirective implements OnDestroy {
     private componentRefs: Array<ComponentRef<any>> = [];
 
-    private _value: any;
+    private _value: Array<any>;
     @Input('cmsContentArea')
-    set value(value: any) {
+    set value(value: Array<any>) {
+        this.viewContainerRef.clear();
         this._value = value;
         if (this._value) {
-            this.createBlockComponent()
+            this._value.forEach(block => this.componentRefs.push(this.createBlockComponent(block)))
         }
     }
-    get value(): any {
+    get value(): Array<any> {
         return this._value;
     }
 
     constructor(
-        @Inject(ViewContainerRef) private viewContainerRef: ViewContainerRef,
-        @Inject(ComponentFactoryResolver) private componentFactoryResolver: ComponentFactoryResolver) { }
+        private viewContainerRef: ViewContainerRef,
+        private componentFactoryResolver: ComponentFactoryResolver) { }
 
     ngOnDestroy() {
         if (this.componentRefs) {
-            this.componentRefs.forEach(cmpref => cmpref.destroy());
+            this.componentRefs.forEach(component => component.destroy());
             this.componentRefs = [];
         }
     }
 
-    private createBlockComponent() {
-        this.viewContainerRef.clear();
-        this._value.forEach(element => {
-            let contentType = CMS.BLOCK_TYPES[element.contentType];
-            let metadata = Reflect.getMetadata(BLOCK_TYPE_METADATA_KEY, contentType);
+    private createBlockComponent(block: Block): ComponentRef<any> {
+        const contentType = CMS.BLOCK_TYPES[block.contentType];
+        const metadata = Reflect.getMetadata(BLOCK_TYPE_METADATA_KEY, contentType);
 
-            let blockFactory = this.componentFactoryResolver.resolveComponentFactory(metadata.componentRef);
-            let blockComponent = this.viewContainerRef.createComponent(blockFactory);
-            (<CmsComponent<ContentData>>blockComponent.instance).currentContent = element.properties;
-            this.componentRefs.push(blockComponent);
-        });
+        const blockFactory = this.componentFactoryResolver.resolveComponentFactory(metadata.componentRef);
+        const blockComponent = this.viewContainerRef.createComponent(blockFactory);
+
+        (<CmsComponent<ContentData>>blockComponent.instance).currentContent = mapToBlockData(block);
+        return blockComponent
     }
 }

@@ -1,3 +1,9 @@
+export interface ChildItemRef {
+    _id?: string;
+    refPath: string;
+    content: any;
+}
+
 export class Content {
     //mongoose id
     _id?: string;
@@ -14,8 +20,8 @@ export class Content {
 
     isPublished: boolean;
     //IContentHasChildItems
-    childItems: any[];
-    publishedChildItems: any[];
+    childItems: ChildItemRef[];
+    publishedChildItems: ChildItemRef[];
 
     //IContent
     contentType: string;
