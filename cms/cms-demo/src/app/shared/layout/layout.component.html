@@ -1,14 +1,15 @@
-<div class="body">
+<div class="body" *ngIf="startPage$ | async as startPage">
     <div class="wrap">
         <div class="wrapper">
             <!-- start header-->
-            <div class="header">
+            <div class="header" *ngIf="menuItems$ | async as menuItems">
                 <div class="logo">
-                    <a href="javascript:void(0)" [routerLink]="['/']"><img [src]="startPage?.logo" alt=""></a>
+                    <a href="javascript:void(0)" [routerLink]="['']"><img [src]="startPage.logo" alt=""></a>
                 </div>
                 <div class="cssmenu">
-                    <ul *ngIf="menuItems">
-                        <li *ngFor="let item of menuItems">
+                    <ul>
+                        <li><a [routerLink]="['']" routerLinkActive="active">Home</a></li>
+                        <li *ngFor="let item of menuItems" routerLinkActive="active">
                             <a href="javascript:void(0)" [routerLink]="[item.link]">{{item.name}}</a>
                         </li>
                         <div class="clear"></div>
@@ -17,9 +18,11 @@
                 <div class="clear"></div>
                 <div class="top-nav">
                     <nav class="clearfix">
-                        <ul *ngIf="menuItems">
-                            <li *ngFor="let item of menuItems"><a href="javascript:void(0)"
-                                    [routerLink]="[item.link]">{{item.name}}</a></li>
+                        <ul>
+                            <li><a [routerLink]="['/']" routerLinkActive="active">Home</a></li>
+                            <li *ngFor="let item of menuItems">
+                                <a href="javascript:void(0)" [routerLink]="[item.link]">{{item.name}}</a>
+                            </li>
                         </ul>
                         <a href="#" id="pull">Menu</a>
                     </nav>
@@ -122,8 +125,9 @@
     <!-- start footer copy -->
     <div class="wrap">
         <div class="wrapper">
-            <div *ngIf="startPage" class="copy" [innerHTML]="startPage.footerText">
+            <div class="copy" [innerHTML]="startPage.footerText">
 
             </div>
         </div>
     </div>
+</div>
