@@ -14,12 +14,7 @@ import { CmsProperty } from '@angular-cms/core';
             </div>
         </div>
     </div>
-  `,
-    styles: [`
-        .show {
-            display: block;
-        }
-    `]
+  `
 })
 
 export class ContentReferenceComponent extends CmsProperty {}
