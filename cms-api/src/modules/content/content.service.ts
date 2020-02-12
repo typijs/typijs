@@ -23,10 +23,12 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
 
     public getContentModel = (): mongoose.Model<T> => this.contentModel;
 
+    //return plain json object instead of mongoose document
     public getPopulatedContentById = (id: string): Promise<T> => {
         if (!id) id = null;
 
         return this.contentModel.findOne({ _id: id })
+            .lean()
             .populate({
                 path: 'childItems.content',
                 match: { isDeleted: false }
@@ -34,10 +36,12 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
             .exec();
     }
 
+    //return plain json object instead of mongoose document
     public getPopulatedPublishedContentById = (id: string): Promise<P> => {
         if (!id) id = null;
 
         return this.publishedContentModel.findOne({ _id: id })
+            .lean()
             .populate({
                 path: 'publishedChildItems.content',
                 match: { isDeleted: false }
@@ -50,7 +54,7 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
         //generate url segment
         //create new page
         //update parent page's has children property
-        const parentContent = await this.getModelById(content.parentId);
+        const parentContent = await this.getDocumentById(content.parentId);
         const savedContent = await this.createContent(content, parentContent);
         return savedContent;
     }
@@ -88,7 +92,7 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
     }
 
     public updateAndPublishContent = async (id: string, contentObj: T): Promise<T> => {
-        let currentContent = await this.getModelById(id);
+        let currentContent = await this.getDocumentById(id);
         if (contentObj.isDirty) {
             currentContent = await this.updateContent(currentContent, contentObj);
         }
@@ -169,7 +173,7 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
 
     public executeDeleteContentFlow = async (id: string): Promise<[T, any]> => {
         //find page
-        const currentContent = await this.getModelById(id);
+        const currentContent = await this.getDocumentById(id);
         //soft delete page
         //soft delete published page
         //soft delete page's children
@@ -215,7 +219,7 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
 
     private getDescendants = async <K extends T>(mongooseModel: mongoose.Model<K>, parentId: string): Promise<K[]> => {
         //get source content 
-        const parentContent = await this.getModelById(parentId);
+        const parentContent = await this.getDocumentById(parentId);
         if (!parentContent) throw new NotFoundException(parentId);
         if (!parentContent.parentPath) parentContent.parentPath = ',';
 
@@ -234,7 +238,7 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
     //Can be override in the inherited class
     protected createCopiedContent = async (sourceContentId: string, targetParentId: string): Promise<T> => {
         //get source content 
-        const sourceContent = await this.getModelById(sourceContentId);
+        const sourceContent = await this.getDocumentById(sourceContentId);
         if (!sourceContent) throw new NotFoundException(sourceContentId);
 
         //create copy content
@@ -282,10 +286,10 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
 
     protected createCutContent = async (sourceContentId: string, targetParentId: string): Promise<T> => {
         //get source content 
-        const sourceContent = await this.getModelById(sourceContentId);
+        const sourceContent = await this.getDocumentById(sourceContentId);
         if (!sourceContent) throw new NotFoundException(sourceContentId);
 
-        const targetParent = await this.getModelById(targetParentId);
+        const targetParent = await this.getDocumentById(targetParentId);
 
         this.updateParentPathAndAncestorAndLinkUrl(targetParent, sourceContent);
         const updatedContent = await sourceContent.save();
