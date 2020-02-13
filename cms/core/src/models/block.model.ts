@@ -5,9 +5,9 @@ export class Block extends Content { }
 
 export const mapToBlockData = (block: Block): BlockData => {
     return Object.assign(block.properties, <BlockData>{
-        _id: block._id,
+        id: block._id,
         parentId: block.parentId,
         contentType: block.contentType,
-        contentName: block.name
+        name: block.name
     })
 }

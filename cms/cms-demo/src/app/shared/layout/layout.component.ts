@@ -1,5 +1,5 @@
 import { Component, ViewEncapsulation } from '@angular/core';
-import { PageService } from '@angular-cms/core';
+import { PageService, PageData } from '@angular-cms/core';
 import { HomePage } from '../../pages/home/home.pagetype';
 import { tap, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -11,7 +11,7 @@ import { Observable } from 'rxjs';
 })
 export class LayoutComponent {
   startPage$: Observable<HomePage>;
-  menuItems$: Observable<Array<{ name: string, link: string }>>;
+  menuItems$: Observable<Array<PageData>>;
 
   constructor(private contentService: PageService) { }
 
@@ -19,10 +19,10 @@ export class LayoutComponent {
     this.startPage$ = this.contentService.getStartPage().pipe(
       tap(page => {
         this.menuItems$ = this.contentService.getPublishedPageChildren(page._id).pipe(
-          map(children => children.map(child => ({ name: child.name, link: child.publishedLinkUrl })))
+          map(children => children.map(childPage => new PageData(childPage)))
         );
       }),
-      map(page => page.properties)
+      map(page => new HomePage(page))
     );
   }
 }

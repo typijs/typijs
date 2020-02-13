@@ -1,4 +1,7 @@
-import { SelectItem } from './select-item';
+export type SelectItem = {
+    text: string;
+    value: string;
+}
 export interface ISelectionFactory {
     GetSelections(): SelectItem[]
 }

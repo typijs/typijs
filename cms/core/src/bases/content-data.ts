@@ -1,11 +1,42 @@
+import { Page } from '../models/page.model';
+import { Block } from '../models/block.model';
 
-export class ContentData {
-    public _id?: string;
+export abstract class ContentData {
+    public id: string;
     public parentId?: string;
     public contentType: string;
-    public contentName: string;
+    public name: string;
 }
 
 export class BlockData extends ContentData {
+    constructor(block: Partial<Block>) {
+        super();
+        const blockData = Object.assign(<BlockData>{
+            id: block._id,
+            parentId: block.parentId,
+            contentType: block.contentType,
+            name: block.name
+        }, block.properties);
 
+        Object.assign(this, blockData);
+    }
+}
+
+export class PageData extends ContentData {
+    public linkUrl: string;
+    public urlSegment: string;
+
+    constructor(page: Partial<Page>) {
+        super();
+        const pageData = Object.assign(<PageData>{
+            id: page._id,
+            linkUrl: page.publishedLinkUrl,
+            parentId: page.parentId,
+            urlSegment: page.urlSegment,
+            contentType: page.contentType,
+            name: page.name
+        }, page.properties);
+
+        Object.assign(this, pageData);
+    }
 }

@@ -10,7 +10,7 @@
                     <ul>
                         <li><a [routerLink]="['']" routerLinkActive="active">Home</a></li>
                         <li *ngFor="let item of menuItems" routerLinkActive="active">
-                            <a href="javascript:void(0)" [routerLink]="[item.link]">{{item.name}}</a>
+                            <a href="javascript:void(0)" [routerLink]="[item.linkUrl]">{{item.name}}</a>
                         </li>
                         <div class="clear"></div>
                     </ul>
@@ -21,7 +21,7 @@
                         <ul>
                             <li><a [routerLink]="['/']" routerLinkActive="active">Home</a></li>
                             <li *ngFor="let item of menuItems">
-                                <a href="javascript:void(0)" [routerLink]="[item.link]">{{item.name}}</a>
+                                <a href="javascript:void(0)" [routerLink]="[item.linkUrl]">{{item.name}}</a>
                             </li>
                         </ul>
                         <a href="#" id="pull">Menu</a>
