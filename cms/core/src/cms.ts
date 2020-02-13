@@ -2,7 +2,7 @@ import { Routes, Route } from '@angular/router';
 import { PAGE_TYPE_INDICATOR, BLOCK_TYPE_INDICATOR } from './constants/meta-keys';
 import { CmsModuleConfig, CmsModuleRoot, CmsComponentConfig } from './constants/module-config';
 
-export interface CmsModel {
+export type CmsModel = {
     PAGE_TYPES: object;
     BLOCK_TYPES: object;
     PROPERTIES: object;
@@ -66,6 +66,7 @@ export const CMS: CmsModel = {
 };
 
 //register multi content types with cms
+//https://www.laurivan.com/scan-decorated-classes-in-typescript/
 export function registerContentTypes(theEntryScope: any) {
     for (let prop in theEntryScope) {
         if (theEntryScope[prop][PAGE_TYPE_INDICATOR]) {

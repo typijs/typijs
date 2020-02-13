@@ -2,7 +2,7 @@ import * as mongoose from 'mongoose';
 import { cmsUser } from '../user/user.model';
 import { ICommonMetadata, ITimestamps } from '../shared/base.model';
 
-export interface RefContent {
+export type RefContent = {
     refPath: string;
     content: any;
 }

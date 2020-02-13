@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { VALIDATION_METADATA_KEY } from '../constants/meta-keys';
 
-interface ValidateMetadata {
+type ValidateMetadata = {
     require?: boolean;
     length?: any;
     min?: number;
