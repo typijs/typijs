@@ -1,7 +1,7 @@
-export interface ChildItemRef {
+export type ChildItemRef = {
     _id?: string;
     refPath: string;
-    content: any;
+    content: string | any;
 }
 
 export class Content {
@@ -25,7 +25,9 @@ export class Content {
 
     //IContent
     contentType: string;
-    properties: any;
+    //contain all property's values which are defined as property (using decorator @Property) of content type
+    //@key will be property name of content type
+    properties: { [key: string]: any };
 
     isDirty: boolean;
 }

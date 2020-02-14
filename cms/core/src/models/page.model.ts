@@ -1,5 +1,5 @@
 import { Content } from './content.model';
-import { PageData } from '../bases/page-data';
+import { PageData } from '../bases/content-data';
 
 export class Page extends Content {
     urlSegment: string;
@@ -12,12 +12,12 @@ export class Page extends Content {
 }
 
 export const mapToPageData = (page: Page): PageData => {
-    return Object.assign(page.properties, <PageData>{
-        _id: page._id,
+    return Object.assign(<PageData>{
+        id: page._id,
         linkUrl: page.publishedLinkUrl,
         parentId: page.parentId,
-        nameInUrl: page.urlSegment,
+        urlSegment: page.urlSegment,
         contentType: page.contentType,
-        contentName: page.name
-    })
+        name: page.name
+    }, page.properties)
 }

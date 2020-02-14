@@ -4,7 +4,7 @@ import { BLOCK_TYPE_METADATA_KEY } from '../constants/meta-keys';
 import { CMS } from './../cms';
 import { ContentData, BlockData } from './../bases/content-data';
 import { CmsComponent } from './../bases/cms-component';
-import { Block, mapToBlockData } from '../models/block.model';
+import { Block } from '../models/block.model';
 
 @Directive({
     selector: '[cmsContentArea]'
@@ -43,7 +43,7 @@ export class ContentAreaDirective implements OnDestroy {
         const blockFactory = this.componentFactoryResolver.resolveComponentFactory(metadata.componentRef);
         const blockComponent = this.viewContainerRef.createComponent(blockFactory);
 
-        (<CmsComponent<ContentData>>blockComponent.instance).currentContent = mapToBlockData(block);
+        (<CmsComponent<ContentData>>blockComponent.instance).currentContent = new BlockData(block);
         return blockComponent
     }
 }

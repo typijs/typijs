@@ -3,12 +3,12 @@ import "reflect-metadata";
 
 import { PROPERTIES_METADATA_KEY, PROPERTY_METADATA_KEY } from '../constants/meta-keys';
 
-interface ValidateMetadata {
+type ValidateMetadata = {
     validateFn: Function;
     message?: string
 }
 
-export interface PropertyMetadata {
+export type PropertyMetadata = {
     displayName?: string;
     description?: string;
     displayType?: string;

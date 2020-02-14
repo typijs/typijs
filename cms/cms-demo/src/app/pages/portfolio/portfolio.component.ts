@@ -16,8 +16,8 @@ export class PortfolioComponent extends CmsComponent<PortfolioPage> {
     }
 
     ngOnInit() {
-        this.portfolioPages$ = this.contentService.getPublishedPageChildren(this.currentContent._id).pipe(
-            map(children => children.map(childPage => Object.assign(childPage.properties, { linkUrl: childPage.publishedLinkUrl })))
+        this.portfolioPages$ = this.contentService.getPublishedPageChildren(this.currentContent.id).pipe(
+            map(children => children.map(childPage => new ArticlePage(childPage)))
         )
     }
 }

@@ -9,8 +9,6 @@ export * from './utils/route-reuse-strategy';
 export * from './bases/cms-component';
 export * from './bases/cms-property';
 export * from './bases/content-data';
-export * from './bases/page-data'
-export * from './bases/select-item';
 export * from './bases/selection-factory';
 
 export * from './render/cms-content';

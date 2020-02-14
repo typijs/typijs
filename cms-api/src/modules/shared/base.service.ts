@@ -13,7 +13,7 @@ export class BaseService<T extends mongoose.Document> {
         return Object.assign(modelInstance, doc);
     }
 
-    public getModelById = async (id: string): Promise<T> => {
+    public getDocumentById = async (id: string): Promise<T> => {
         if (!id) id = null;
         const content = await this.mongooseModel.findOne({ _id: id }).exec();
         return content ? content : null;

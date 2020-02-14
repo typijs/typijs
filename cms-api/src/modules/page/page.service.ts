@@ -15,7 +15,7 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
         this.siteDefinitionModel = SiteDefinitionModel;
     }
 
-    public getPublishedPageByUrl = async (encodedUrl: string): Promise<IPublishedPageDocument> => {
+    public getPublishedPageByUrl = async (encodedUrl: string): Promise<IPublishedPage> => {
         //need to check isPageDeleted = false
         //get domain from url
         //get start page from domain
@@ -31,7 +31,7 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
 
         const publishedPage = await this.getPublishedPageByLinkUrl(linkUrl);
         if (publishedPage) return publishedPage;
-        //if the current page is not startpage's child, resolve directly by its url
+        //if the current page is not start page's child, resolve directly by its url
         if (startPageLinkUrl != '') return await this.getPublishedPageByLinkUrl(`${pathUrl}`);
 
         return null;
@@ -62,7 +62,7 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
         //generate url segment
         //create new page
         //update parent page's has children property
-        const parentPage = await this.getModelById(pageObj.parentId);
+        const parentPage = await this.getDocumentById(pageObj.parentId);
         const urlSegment = await this.generateUrlSegment(0, pageObj.urlSegment, parentPage ? parentPage._id : null);
         const savedPage = await this.createPage(pageObj, parentPage, urlSegment);
 
@@ -105,7 +105,7 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
         return await newPage.save();
     }
 
-    private getPublishedPageByLinkUrl = async (linkUrl: string): Promise<IPublishedPageDocument> => {
+    private getPublishedPageByLinkUrl = async (linkUrl: string): Promise<IPublishedPage> => {
         //remove '/' in end of link Url
         if (linkUrl.endsWith('/')) linkUrl = linkUrl.substring(0, linkUrl.length - 1);
 
@@ -114,6 +114,7 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
                 path: 'publishedChildItems.content',
                 match: { isDeleted: false }
             })
+            .lean()
             .exec()
     }
 
@@ -137,7 +138,7 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
     //Override the `createCopiedContent` method in base class
     protected createCopiedContent = async (sourceContentId: string, targetParentId: string): Promise<IPageDocument> => {
         //get source content 
-        const sourceContent = await this.getModelById(sourceContentId);
+        const sourceContent = await this.getDocumentById(sourceContentId);
         if (!sourceContent) throw new NotFoundException(sourceContentId);
 
         //create copy content
@@ -152,10 +153,10 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
 
     protected createCutContent = async (sourceContentId: string, targetParentId: string): Promise<IPageDocument> => {
         //get source content 
-        const sourceContent = await this.getModelById(sourceContentId);
+        const sourceContent = await this.getDocumentById(sourceContentId);
         if (!sourceContent) throw new NotFoundException(sourceContentId);
 
-        const targetParent = await this.getModelById(targetParentId);
+        const targetParent = await this.getDocumentById(targetParentId);
 
         sourceContent.urlSegment = await this.generateUrlSegment(0, sourceContent.urlSegment, targetParent ? targetParent._id : null);
 

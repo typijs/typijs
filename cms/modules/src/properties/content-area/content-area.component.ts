@@ -9,17 +9,12 @@ import { CmsProperty } from '@angular-cms/core';
         <div class="col-sm-8">
             <div class="card">
                 <div class="card-body" >
-                    <content-group [formControlName]="propertyName" [name]="propertyName"></content-group>
+                    <content-area [formControlName]="propertyName" [name]="propertyName"></content-area>
                 </div>
             </div>
         </div>
     </div>
-  `,
-    styles: [`
-        .show {
-            display: block;
-        }
-    `]
+  `
 })
 
 export class ContentAreaComponent extends CmsProperty {}

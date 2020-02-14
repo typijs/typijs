@@ -12,24 +12,24 @@ export enum CmsWidgetPosition {
     Right
 }
 
-export interface CmsComponentConfig {
+export type CmsComponentConfig = {
     component: any,
     position: CmsWidgetPosition,
     group?: string
 }
 
-export interface CmsRootConfig {
+export type CmsRootConfig = {
     name: CmsModuleRoot,
     routes?: Routes,
     widgets?: CmsComponentConfig[]
 }
 
-export interface CmsModuleConfig {
+export type CmsModuleConfig = {
     module: any,
     roots: Array<CmsRootConfig>
 }
 
-export interface CmsTab {
+export type CmsTab = {
     title: string,
     content: string
 }

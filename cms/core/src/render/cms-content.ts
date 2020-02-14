@@ -6,10 +6,10 @@ import { PageService } from './../services/page.service';
 import { InsertPointDirective } from './../directives/insert-point.directive';
 
 import { CMS } from './../cms';
-import { PageData } from './../bases/page-data';
+import { PageData } from './../bases/content-data';
 import { CmsComponent } from './../bases/cms-component';
 import { PropertyMetadata } from '../decorators/property.decorator';
-import { Page, mapToPageData } from '../models/page.model';
+import { Page } from '../models/page.model';
 import { clone } from '../helpers/common';
 import { UIHint } from '../constants/ui-hint';
 import { ContentTypeMetadata } from '../decorators/content-type-metadata';
@@ -48,7 +48,7 @@ export class CmsRenderContentComponent implements OnDestroy {
                 const propertiesMetadata = this.getPropertiesMetadata(contentType);
                 propertiesMetadata.forEach(property => this.populateReferenceProperty(currentPage, property));
 
-                this.pageComponentRef = this.createPageComponent(mapToPageData(currentPage), pageMetadata);
+                this.pageComponentRef = this.createPageComponent(new PageData(currentPage), pageMetadata);
             }
         })
     }

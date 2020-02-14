@@ -1,4 +1,4 @@
-export interface CmsPropertyType {
+export type CmsPropertyType = {
     Input: string;
     Textarea: string;
     Select: string;

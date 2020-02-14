@@ -18,7 +18,7 @@ export class FolderService<T extends IContentDocument> extends BaseService<T>{
     public createContentFolder = async (contentFolder: T): Promise<IFolderDocument> => {
         contentFolder.contentType = null;
         contentFolder.properties = null;
-        const parentFolder = await this.getModelById(contentFolder.parentId);
+        const parentFolder = await this.getDocumentById(contentFolder.parentId);
         const savedContent = await this.contentService.createContent(contentFolder, parentFolder);
         if (savedContent) await this.contentService.updateHasChildren(parentFolder);
 
@@ -26,7 +26,7 @@ export class FolderService<T extends IContentDocument> extends BaseService<T>{
     }
 
     public updateFolderName = async (id: string, name: string): Promise<IFolderDocument> => {
-        const currentFolder = await this.getModelById(id);
+        const currentFolder = await this.getDocumentById(id);
         if (currentFolder) {
             currentFolder.changed = new Date();
             //TODO: currentPage.changedBy = userId
@@ -42,13 +42,13 @@ export class FolderService<T extends IContentDocument> extends BaseService<T>{
     public getFolderChildren = (parentId: string): Promise<IFolderDocument[]> => {
         if (parentId == '0') parentId = null;
 
-        return this.folderModel.find({ parentId: parentId, isDeleted: false, contentType: null, mimeType: null }).exec()
+        return this.folderModel.find({ parentId: parentId, isDeleted: false, contentType: null, mimeType: null }).lean().exec()
     }
 
     public getContentsByFolder = (parentId: string): Promise<T[]> => {
         if (parentId == '0') parentId = null;
 
-        return this.folderModel.find({ parentId: parentId, isDeleted: false, contentType: { $ne: null } }).exec()
+        return this.folderModel.find({ parentId: parentId, isDeleted: false, contentType: { $ne: null } }).lean().exec()
     }
 
 }

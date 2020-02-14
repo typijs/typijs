@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import { BLOCK_TYPE_METADATA_KEY, BLOCK_TYPE_INDICATOR } from '../constants/meta-keys';
 import { ContentTypeMetadata } from './content-type-metadata';
 
+//https://www.laurivan.com/scan-decorated-classes-in-typescript/
 function registerBlockTypeDecorator(item: any) {
     item[BLOCK_TYPE_INDICATOR] = true;
 }
