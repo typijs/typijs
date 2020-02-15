@@ -11,7 +11,6 @@ export class TreeStore {
     nodeSelectedInner$: Subject<Partial<TreeNode>> = new Subject<Partial<TreeNode>>();
     nodeCreated$: Subject<TreeNode> = new Subject<TreeNode>();
     nodeInlineCreated$: Subject<TreeNode> = new Subject<TreeNode>();
-    nodeRenamed$: Subject<TreeNode> = new Subject<TreeNode>();
     nodeCut$: Subject<TreeNode> = new Subject<TreeNode>();
     nodeCopied$: Subject<TreeNode> = new Subject<TreeNode>();
     nodePasted$: Subject<TreeNode> = new Subject<TreeNode>();
@@ -21,9 +20,10 @@ export class TreeStore {
     treeService: TreeService;
 
     //The tree-children component will subscribe the treeNodesRxSubject to reload sub tree
-    private treeNodesRxSubject$ = {}; //store Subject of node's children with key = nodeId to load sub tree
-    private treeNodes = {}; //store node's children with key = nodeId, ex nodes[parentId] = array of node's children
+    private treeNodesRxSubject$: { [key: string]: Subject<TreeNode[]> } = {}; //store Subject of node's children with key = nodeId to load sub tree
+    private treeNodes: { [key: string]: TreeNode[] } = {}; //store node's children with key = nodeId, ex nodes[parentId] = array of node's children
     private selectedNode: Partial<TreeNode>;
+    private editingNode: Partial<TreeNode>;
 
     getSelectedNode(): Partial<TreeNode> {
         return this.selectedNode;
@@ -61,7 +61,7 @@ export class TreeStore {
             });
     }
 
-    removeEmptyNode(parent: TreeNode, node: TreeNode) {
+    cancelNewNodeInline(parent: TreeNode, node: TreeNode) {
         const childNodes = this.treeNodes[node.parentId ? node.parentId : '0'];
         if (childNodes) {
             const newNodeIndex = childNodes.findIndex((x: TreeNode) => !x.id);
@@ -123,6 +123,17 @@ export class TreeStore {
         }
     }
 
+    showNodeInlineEdit(node: TreeNode) {
+        node.isEditing = true;
+        this.editingNode = Object.assign({}, node);
+    }
+
+    cancelNodeInlineEdit(node: TreeNode) {
+        node.isEditing = false;
+        if(this.editingNode) node.name = this.editingNode.name;
+        this.editingNode = null;
+    }
+
     private getNodeData(nodeId: string): Observable<TreeNode> {
         if (nodeId == '0') return of(new TreeNode({ id: nodeId }));
         return this.treeService.getNode(nodeId).pipe(
@@ -169,9 +180,9 @@ export class TreeStore {
                 //add temp new node with status is new
                 this.showNewNodeInline(node);
                 break;
-            case NodeMenuItemAction.Rename:
+            case NodeMenuItemAction.EditNowInline:
                 //update current node with status is rename
-                this.fireNodeRenamed(node);
+                this.showNodeInlineEdit(node);
                 break;
             case NodeMenuItemAction.Cut:
                 this.fireNodeCut(node);
@@ -197,10 +208,6 @@ export class TreeStore {
 
     fireNodeCreated(node: TreeNode) {
         this.nodeCreated$.next(node);
-    }
-
-    fireNodeRenamed(node: TreeNode) {
-        this.nodeRenamed$.next(node);
     }
 
     fireNodeCut(node: TreeNode) {

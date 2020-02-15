@@ -7,8 +7,8 @@ import { SubscriptionComponent } from '../../subscription.component';
 export abstract class TreeBaseComponent extends SubscriptionComponent {
     @Output("selectNode") selectNodeEvent: EventEmitter<TreeNode> = new EventEmitter();
     @Output("nodeOnBlur") nodeOnBlurEvent: EventEmitter<TreeNode> = new EventEmitter();
-    @Output("createNewInlineNode") createNewInlineNodeEvent: EventEmitter<TreeNode> = new EventEmitter();
-    @Output("cancelNewInlineNode") cancelNewInlineNodeEvent: EventEmitter<TreeNode> = new EventEmitter();
+    @Output("submitInlineNode") submitInlineNodeEvent: EventEmitter<TreeNode> = new EventEmitter();
+    @Output("cancelInlineNode") cancelInlineNodeEvent: EventEmitter<TreeNode> = new EventEmitter();
     @Output("menuItemSelected") menuItemSelectedEvent: EventEmitter<{ action: NodeMenuItemAction, node: TreeNode }> = new EventEmitter();
 
     selectNode(node: TreeNode) {
@@ -23,11 +23,11 @@ export abstract class TreeBaseComponent extends SubscriptionComponent {
         this.menuItemSelectedEvent.emit(nodeAction)
     }
 
-    createNewInlineNode(node: TreeNode) {
-        this.createNewInlineNodeEvent.emit(node);
+    submitInlineNode(node: TreeNode) {
+        this.submitInlineNodeEvent.emit(node);
     }
 
-    cancelNewInlineNode(node: TreeNode) {
-        this.cancelNewInlineNodeEvent.emit(node);
+    cancelInlineNode(node: TreeNode) {
+        this.cancelInlineNodeEvent.emit(node);
     }
 }

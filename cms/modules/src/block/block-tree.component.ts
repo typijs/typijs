@@ -21,6 +21,7 @@ import { SubjectService } from '../shared/services/subject.service';
                 (nodeSelected)="folderSelected($event)"
                 (nodeCreated)="blockCreated($event)"
                 (nodeInlineCreated)="createBlockFolder($event)"
+                (nodeInlineUpdated)="updateBlockFolder($event)"
                 (nodeDeleteEvent)="folderDelete($event)">
                 <ng-template #treeNodeTemplate let-node>
                     <span [ngClass]="{'block-node': node.id != '0', 'border-bottom': node.isSelected && node.id != '0'}">
@@ -74,8 +75,8 @@ export class BlockTreeComponent extends SubscriptionComponent {
                 name: "New Folder"
             },
             {
-                action: NodeMenuItemAction.Cut,
-                name: "Cut"
+                action: NodeMenuItemAction.EditNowInline,
+                name: "Rename"
             },
             {
                 action: NodeMenuItemAction.Copy,
@@ -120,8 +121,15 @@ export class BlockTreeComponent extends SubscriptionComponent {
 
     createBlockFolder(node: TreeNode) {
         this.blockService.createFolder({ name: node.name, parentId: node.parentId })
-            .subscribe(block => {
-                this.subjectService.fireBlockFolderCreated(block);
+            .subscribe(folder => {
+                this.subjectService.fireBlockFolderCreated(folder);
+            });
+    }
+
+    updateBlockFolder(node: TreeNode) {
+        this.blockService.editFolder({ name: node.name, _id: node.id })
+            .subscribe(folder => {
+                //this.subjectService.fireBlockFolderCreated(folder);
             });
     }
 
