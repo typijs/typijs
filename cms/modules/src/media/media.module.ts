@@ -36,8 +36,7 @@ import { UploadService } from './upload/upload.service';
         DndModule,
         CmsAngularSplitModule.forRoot(),
         CmsProgressbarModule.forRoot(),
-        AngularSplitModule,
-        CmsProgressbarModule.forRoot()
+        CmsModalModule.forRoot()
     ],
     declarations: [
         MediaTreeComponent,
