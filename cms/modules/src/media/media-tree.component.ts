@@ -1,21 +1,22 @@
 import { Component, ViewChild } from '@angular/core';
 
-import { ServiceLocator, Media, MediaService } from '@angular-cms/core';
-import { TreeNode } from '../shared/tree/interfaces/tree-node';
+import { Media, MediaService, ServiceLocator } from '@angular-cms/core';
+
+import { SubjectService } from '../shared/services/subject.service';
+import { SubscriptionComponent } from '../shared/subscription.component';
 import { TreeComponent } from '../shared/tree/components/tree.component';
 import { TreeConfig } from '../shared/tree/interfaces/tree-config';
 import { NodeMenuItemAction } from '../shared/tree/interfaces/tree-menu';
+import { TreeNode } from '../shared/tree/interfaces/tree-node';
 
 import { MediaTreeService } from './media-tree.service';
 import { UploadService } from './upload/upload.service';
-import { SubscriptionComponent } from '../shared/subscription.component';
-import { SubjectService } from '../shared/services/subject.service';
 
 @Component({
     template: `
         <div dragOver class="media-container">
             <div class="drop-zone" dragLeave>
-                <file-upload [uploadFieldName]='"files"'></file-upload>
+                <file-drop [uploadFieldName]='"files"'></file-drop>
             </div>
             <as-split direction="vertical" gutterSize="4">
                 <as-split-area size="50">
@@ -24,11 +25,16 @@ import { SubjectService } from '../shared/services/subject.service';
                         [root]="root"
                         [config]="treeConfig"
                         (nodeSelected)="folderSelected($event)"
-                        (nodeInlineCreated)="createMediaFolder($event)">
+                        (nodeInlineCreated)="createMediaFolder($event)"
+                        (nodeInlineUpdated)="updateMediaFolder($event)"
+                        (nodeDeleteEvent)="folderDelete($event)">
                         <ng-template #treeNodeTemplate let-node>
-                            <fa-icon class="mr-1" *ngIf="node.id == 0" [icon]="['fas', 'photo-video']"></fa-icon>
-                            <fa-icon class="mr-1" *ngIf="node.id != 0" [icon]="['fas', 'folder']"></fa-icon>
-                            <span class="node-name">{{node.name}}</span>
+                            <span [ngClass]="{'media-node': node.id != '0', 'border-bottom': node.isSelected && node.id != '0'}">
+                                <fa-icon class="mr-1" *ngIf="node.id == 0" [icon]="['fas', 'photo-video']"></fa-icon>
+                                <fa-icon class="mr-1" *ngIf="node.id != 0" [icon]="['fas', 'folder']"></fa-icon>
+                                <span class="node-name">{{node.name}}</span>
+                                <span *ngIf="node.id == '0'" class="badge badge-info float-right mt-2 mr-1" (click)="clickToCreateFolder(node)">New Folder</span>
+                            </span>
                         </ng-template>
                     </cms-tree>
                 </as-split-area>
@@ -47,6 +53,17 @@ import { SubjectService } from '../shared/services/subject.service';
     styles: [`
         .media-container{
             height:100%;
+        }
+
+        .media-node {
+            width: calc(100% - 20px);
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .media-node:hover {
+            font-weight: bold;
+            border-bottom: 1px solid #a4b7c1!important;
         }
         
         .drop-zone {
@@ -77,16 +94,12 @@ export class MediaTreeComponent extends SubscriptionComponent {
         service: ServiceLocator.Instance.get(MediaTreeService),
         menuItems: [
             {
-                action: NodeMenuItemAction.NewNode,
-                name: "New Media"
-            },
-            {
                 action: NodeMenuItemAction.NewNodeInline,
                 name: "New Folder"
             },
             {
-                action: NodeMenuItemAction.Cut,
-                name: "Cut"
+                action: NodeMenuItemAction.EditNowInline,
+                name: "Rename"
             },
             {
                 action: NodeMenuItemAction.Copy,
@@ -112,7 +125,7 @@ export class MediaTreeComponent extends SubscriptionComponent {
 
     ngOnInit() {
         this.subscriptions.push(this.subjectService.mediaFolderCreated$.subscribe(createdFolder => {
-            //TODO: need to optimize only reload new node
+            this.cmsTree.selectNode({ id: createdFolder._id, isNeedToScroll: true })
             this.cmsTree.reloadSubTree(createdFolder.parentId);
         }));
 
@@ -129,15 +142,34 @@ export class MediaTreeComponent extends SubscriptionComponent {
         this.mediaService.getContentInFolder(node.id).subscribe(childMedias => {
             this.medias = childMedias;
             this.medias.forEach(x => {
-                x["path"] = `/api/assets/${x._id}/${x.name}?w=50`;
+                x["path"] = `/api/assets/${x._id}/${x.name}?w=50&h=50`;
             })
         })
     }
 
+    clickToCreateFolder(node: TreeNode) {
+        this.cmsTree.menuItemSelected({ action: NodeMenuItemAction.NewNodeInline, node: node })
+    }
+
     createMediaFolder(node: TreeNode) {
         this.mediaService.createFolder({ name: node.name, parentId: node.parentId })
-            .subscribe(block => {
-                this.subjectService.fireMediaFolderCreated(block);
+            .subscribe(folder => {
+                this.subjectService.fireMediaFolderCreated(folder);
             });
+    }
+
+    updateMediaFolder(node: TreeNode) {
+        this.mediaService.editFolder({ name: node.name, _id: node.id })
+            .subscribe(folder => {
+                //this.subjectService.fireBlockFolderCreated(folder);
+            });
+    }
+
+    folderDelete(nodeToDelete: TreeNode) {
+        if (nodeToDelete.id == '0') return;
+        this.mediaService.softDeleteContent(nodeToDelete.id).subscribe(([folderToDelete, deleteResult]: [Media, any]) => {
+            console.log(deleteResult);
+            this.cmsTree.reloadSubTree(nodeToDelete.parentId);
+        });
     }
 }
