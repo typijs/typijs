@@ -3,7 +3,7 @@
         <ng-template [cmsInsertPoint]="'top'"></ng-template>
     </cms-header>
     <div class="app-body">
-        <as-split gutterSize="1">
+        <as-split gutterSize="2">
             <as-split-area size="30">
                 <tabset class="tab-container-left">
                     <tab *ngFor="let tabz of leftTabs" [heading]="tabz.title">
@@ -29,5 +29,4 @@
             </as-split-area>
         </as-split>
     </div>
-    <cms-footer></cms-footer>
 </div>
