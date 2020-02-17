@@ -14,4 +14,15 @@ export class CmsLayoutComponent {
     @Input() rightTabs: Array<CmsTab> = [];
     @Input() leftTabs: Array<CmsTab> = [];
 
+    leftPanelVisible: boolean = true;
+    rightPanelVisible: boolean = true;
+
+    toggleLeftPanel() {
+        this.leftPanelVisible = !this.leftPanelVisible;
+    }
+
+    toggleRightPanel() {
+        this.rightPanelVisible = !this.rightPanelVisible;
+    }
+
 }
