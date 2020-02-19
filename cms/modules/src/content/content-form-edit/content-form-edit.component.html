@@ -5,7 +5,8 @@
                 <div class="card-header">
                     <dl class="row" *ngIf="currentContent">
                         <dt class="col-sm-3">Name</dt>
-                        <dd class="col-sm-9">{{currentContent.name}}</dd>
+                        <dd class="col-sm-9">
+                            <input type="text" class="form-control" name="name" formControlName="name"></dd>
                         <dt class="col-sm-3">Name in url</dt>
                         <dd class="col-sm-9">{{currentContent.urlSegment}}</dd>
                         <dt class="col-sm-3">Link url</dt>

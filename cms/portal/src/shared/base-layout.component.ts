@@ -1,14 +1,9 @@
-import { OnInit, ChangeDetectorRef, ViewChild, QueryList } from '@angular/core';
-import { CmsLayoutComponent } from './components/cms-layout/cms-layout.component';
+import { ChangeDetectorRef, OnInit, QueryList, ViewChild } from '@angular/core';
 
-import {
-    InsertPointDirective,
-    CmsComponentConfig,
-    CmsWidgetPosition,
-    CmsTab
-} from '@angular-cms/core';
+import { CmsComponentConfig, CmsTab, CmsWidgetPosition, InsertPointDirective } from '@angular-cms/core';
 
 import { WidgetService } from '../services/widget.service';
+import { CmsLayoutComponent } from './components/cms-layout/cms-layout.component';
 
 export abstract class BaseLayoutComponent implements OnInit {
     @ViewChild(CmsLayoutComponent, { static: false }) private cmsLayout: CmsLayoutComponent;

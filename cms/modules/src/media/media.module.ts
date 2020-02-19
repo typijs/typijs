@@ -1,27 +1,26 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-
-import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faFolder, faPhotoVideo } from '@fortawesome/free-solid-svg-icons';
-
-import { CmsProgressbarModule } from '../shared/ngx-bootstrap/progressbar.module';
 
 import { CoreModule } from '@angular-cms/core';
 
-import { TreeModule } from '../shared/tree/tree.module';
-import { AngularSplitModule } from '../shared/angular-split/angular-split.module';
 import { DndModule } from '../shared/dnd/dnd.module';
+import { CmsProgressbarModule } from '../shared/ngx-bootstrap/progressbar.module';
+import { CmsModalModule } from '../shared/ngx-bootstrap/modal.module';
+import { CmsAngularSplitModule } from '../shared/angular-split/module';
+import { TreeModule } from '../shared/tree/tree.module';
 
 import { MediaTreeComponent } from './media-tree.component';
 import { MediaTreeService } from './media-tree.service';
-import { FileDropComponent } from './upload/file-drop.component';
-import { FileDialogComponent } from './upload/file-dialog.component'
-import { UploadService } from './upload/upload.service';
-import { DragOverDirective } from './upload/drag-over.directive';
 import { DragLeaveDirective } from './upload/drag-leave.directive';
+import { DragOverDirective } from './upload/drag-over.directive';
+import { FileDialogComponent } from './upload/file-dialog.component';
+import { FileDropComponent } from './upload/file-drop.component';
+import { UploadService } from './upload/upload.service';
 
 @NgModule({
     imports: [
@@ -35,8 +34,9 @@ import { DragLeaveDirective } from './upload/drag-leave.directive';
         CoreModule,
         TreeModule,
         DndModule,
-        AngularSplitModule,
-        CmsProgressbarModule.forRoot()
+        CmsAngularSplitModule.forRoot(),
+        CmsProgressbarModule.forRoot(),
+        CmsModalModule.forRoot()
     ],
     declarations: [
         MediaTreeComponent,

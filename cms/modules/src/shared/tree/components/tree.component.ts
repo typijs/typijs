@@ -20,8 +20,8 @@ import { SubscriptionComponent } from '../../subscription.component';
                         (selectNode)="selectNode($event)"
                         (menuItemSelected)="menuItemSelected($event)"
                         (nodeOnBlur)="nodeOnBlur($event)"
-                        (createNewInlineNode)="createNewInlineNode($event)"
-                        (cancelNewInlineNode)="cancelNewInlineNode($event)">
+                        (submitInlineNode)="submitInlineNode($event)"
+                        (cancelInlineNode)="cancelInlineNode($event)">
                     </tree-node>
                     <tree-children 
                         [root]="root" 
@@ -30,8 +30,8 @@ import { SubscriptionComponent } from '../../subscription.component';
                         (selectNode)="selectNode($event)"
                         (menuItemSelected)="menuItemSelected($event)"
                         (nodeOnBlur)="nodeOnBlur($event)"
-                        (createNewInlineNode)="createNewInlineNode($event)"
-                        (cancelNewInlineNode)="cancelNewInlineNode($event)">
+                        (submitInlineNode)="submitInlineNode($event)"
+                        (cancelInlineNode)="cancelInlineNode($event)">
                     </tree-children>
                 </div>
             </div>
@@ -48,12 +48,12 @@ export class TreeComponent extends SubscriptionComponent implements OnInit {
     @Input() config: TreeConfig;
     @Input() root: TreeNode;
 
-    @Output() nodeSelected: EventEmitter<any> = new EventEmitter();
-    @Output() nodeCreated: EventEmitter<any> = new EventEmitter();
-    @Output() nodeInlineCreated: EventEmitter<any> = new EventEmitter();
+    @Output() nodeSelected: EventEmitter<Partial<TreeNode>> = new EventEmitter();
+    @Output() nodeCreated: EventEmitter<TreeNode> = new EventEmitter();
+    @Output() nodeInlineCreated: EventEmitter<TreeNode> = new EventEmitter();
+    @Output() nodeInlineUpdated: EventEmitter<TreeNode> = new EventEmitter();
     @Output() nodeCut: EventEmitter<any> = new EventEmitter();
     @Output() nodeCopied: EventEmitter<any> = new EventEmitter();
-    @Output() nodeRenamed: EventEmitter<any> = new EventEmitter();
     @Output() nodePasted: EventEmitter<any> = new EventEmitter();
     @Output() nodeDeleteEvent: EventEmitter<any> = new EventEmitter();
 
@@ -82,15 +82,31 @@ export class TreeComponent extends SubscriptionComponent implements OnInit {
     }
 
     nodeOnBlur(node: TreeNode) {
-        if (!node.name) this.cancelNewInlineNode(node);
+        if(!node.name) this.cancelInlineNode(node);
     }
 
-    createNewInlineNode(node: TreeNode) {
-        if (node.name) this.nodeInlineCreated.emit(node);;
+    submitInlineNode(node: TreeNode) {
+        if (node.name && node.isNew) {
+            this.nodeInlineCreated.emit(node);
+            return;
+        } 
+        if (node.name && !node.isNew && node.isEditing) {
+            this.nodeInlineUpdated.emit(node);
+            node.isEditing = false;
+            return;
+        } 
     }
 
-    cancelNewInlineNode(node: TreeNode) {
-        this.treeStore.removeEmptyNode(this.root, node);
+    cancelInlineNode(node: TreeNode) {
+        if(node.isNew) {
+            this.treeStore.cancelNewNodeInline(this.root, node);
+            return;
+        }
+
+        if(!node.isNew && node.isEditing) {
+            this.treeStore.cancelNodeInlineEdit(node);
+            return;
+        }
     }
 
     menuItemSelected(nodeAction: { action: NodeMenuItemAction, node: TreeNode }) {
@@ -121,10 +137,6 @@ export class TreeComponent extends SubscriptionComponent implements OnInit {
 
         this.subscriptions.push(this.treeStore.nodeCopied$.subscribe(node => {
             this.nodeCopied.emit(node);
-        }));
-
-        this.subscriptions.push(this.treeStore.nodeRenamed$.subscribe(node => {
-            this.nodeRenamed.emit(node);
         }));
 
         this.subscriptions.push(this.treeStore.nodePasted$.subscribe(node => {

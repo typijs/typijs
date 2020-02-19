@@ -5,9 +5,7 @@
 export * from './shared/ngx-bootstrap/bs-dropdown.module';
 export * from './shared/ngx-bootstrap/tabs.module';
 
-export * from './shared/angular-split/angular-split.module';
-export * from './shared/angular-split/component/split.component';
-export * from './shared/angular-split/directive/splitArea.directive';
+export * from './shared/angular-split/module';
 export * from './shared/dnd/dnd.module';
 
 export * from './content/content.module';

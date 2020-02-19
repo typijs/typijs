@@ -1,54 +1,70 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpRequest, HttpEventType, HttpResponse } from '@angular/common/http';
+import { HttpEventType } from '@angular/common/http';
+import { BehaviorSubject, Subject, forkJoin, Observable } from 'rxjs';
 
-import { BehaviorSubject, Subject, forkJoin } from 'rxjs';
+import { MediaService } from '@angular-cms/core';
 import { TreeNode } from '../../shared/tree/interfaces/tree-node';
 
-//TODO: Temp hard code url
-const url = 'http://localhost:4200/api/media/upload/';
+export type UploadProgress = {
+    [key: string]: { progress: Observable<number> }
+}
+
+export type FileUploadProgress = {
+    folder: TreeNode, files: File[], uploadProgress: UploadProgress
+}
 
 @Injectable()
 export class UploadService {
+    private parentFolder: TreeNode;
 
-    parentFolder: TreeNode;
-    openFileDialog$: Subject<any> = new Subject<any>();
-    uploadComplete$: Subject<any> = new Subject<any>();
+    fileUploadProgress$: Subject<FileUploadProgress> = new Subject<FileUploadProgress>();
+    uploadComplete$: Subject<string> = new Subject<string>();
 
-    constructor(private http: HttpClient) { }
+    constructor(private mediaService: MediaService) { }
 
-    private uploadFiles(files: Array<File>): { [key: string]: any } {
+    public setFilesToUpload(files: Array<File>) {
+        const uploadProgress = this.uploadFiles(files);
+        this.fileUploadProgress$.next({
+            folder: this.parentFolder,
+            files: files,
+            uploadProgress: uploadProgress
+        });
+
+        // convert the progress map into an array
+        let allProgressObservables = [];
+        for (let key in uploadProgress) {
+            allProgressObservables.push(uploadProgress[key].progress);
+        }
+        // When all progress-observables are completed...
+        forkJoin(allProgressObservables).subscribe(() => {
+            let nodeId = this.parentFolder ? this.parentFolder.id : '0';
+            this.uploadComplete$.next(nodeId);
+        });
+    }
+
+    private uploadFiles(files: Array<File>): UploadProgress {
         // this will be the our resulting map
-        const uploadStatus = {};
-        var requestUrl = this.parentFolder ? `${url}${this.parentFolder.id}` : `${url}`;
+        const uploadStatus: UploadProgress = {};
+        const parentFolderId = this.parentFolder ? this.parentFolder.id : '';
 
         files.forEach(file => {
-            // create a new multipart-form for every file
-            const formData: FormData = new FormData();
-            formData.append('file', file, file.name);
-
-            // create a http-post request and pass the form
-            // tell it to report the upload progress
-            const req = new HttpRequest('POST', requestUrl, formData, {
-                reportProgress: true
-            });
-
             // create a new progress-subject for every file
             const progress = new BehaviorSubject<number>(0);
 
             // send the http-request and subscribe for progress-updates
-            this.http.request(req).subscribe(event => {
-                if (event.type === HttpEventType.UploadProgress) {
-
-                    // calculate the progress percentage
-                    const percentDone = Math.round(100 * event.loaded / event.total);
-
-                    // pass the percentage into the progress-stream
-                    progress.next(percentDone);
-                } else if (event instanceof HttpResponse) {
-
-                    // Close the progress-stream if we get an answer form the API
-                    // The upload is complete
-                    progress.complete();
+            this.mediaService.uploadMedia(parentFolderId, file).subscribe(event => {
+                switch (event.type) {
+                    case HttpEventType.UploadProgress:
+                        // Compute and show the % done:
+                        const percentDone = Math.round(100 * event.loaded / event.total);
+                        // pass the percentage into the progress-stream
+                        progress.next(percentDone);
+                        break;
+                    case HttpEventType.Response:
+                        // Close the progress-stream if we get an answer form the API
+                        // The upload is complete
+                        progress.complete();
+                        break;
                 }
             });
 
@@ -60,22 +76,6 @@ export class UploadService {
 
         // return the map of progress.observables
         return uploadStatus;
-    }
-
-    public setFilesToUpload(files: Array<File>) {
-        let uploadProgress = this.uploadFiles(files);
-        this.openFileDialog$.next({ files: files, uploadProgress: uploadProgress });
-
-        // convert the progress map into an array
-        let allProgressObservables = [];
-        for (let key in uploadProgress) {
-            allProgressObservables.push(uploadProgress[key].progress);
-        }
-        // When all progress-observables are completed...
-        forkJoin(allProgressObservables).subscribe(end => {
-            let nodeId = this.parentFolder ? this.parentFolder.id : '0';
-            this.uploadComplete$.next(nodeId);
-        });
     }
 
     public setParentFolder(parentNode: TreeNode) {

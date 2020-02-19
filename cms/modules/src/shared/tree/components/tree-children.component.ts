@@ -19,8 +19,8 @@ import { TreeBaseComponent } from './tree-base.component';
                 (selectNode)="selectNode($event)"
                 (menuItemSelected)="menuItemSelected($event)"
                 (nodeOnBlur)="nodeOnBlur($event)"
-                (createNewInlineNode)="createNewInlineNode($event)"
-                (cancelNewInlineNode)="cancelNewInlineNode($event)">
+                (submitInlineNode)="submitInlineNode($event)"
+                (cancelInlineNode)="cancelInlineNode($event)">
             </tree-node>
             <tree-children *ngIf="node.isExpanded" 
                 [root]="node" 
@@ -29,8 +29,8 @@ import { TreeBaseComponent } from './tree-base.component';
                 (selectNode)="selectNode($event)"
                 (menuItemSelected)="menuItemSelected($event)"
                 (nodeOnBlur)="nodeOnBlur($event)"
-                (createNewInlineNode)="createNewInlineNode($event)"
-                (cancelNewInlineNode)="cancelNewInlineNode($event)">
+                (submitInlineNode)="submitInlineNode($event)"
+                (cancelInlineNode)="cancelInlineNode($event)">
             </tree-children>
         </li>
     </ul>

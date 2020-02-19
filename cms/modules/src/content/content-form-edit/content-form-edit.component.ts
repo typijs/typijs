@@ -1,9 +1,9 @@
 import { Component, ViewChildren, QueryList, ComponentFactoryResolver, Inject, Injector, OnInit, ChangeDetectorRef, ComponentRef } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 
-import { PROPERTY_METADATA_KEY, PROPERTIES_METADATA_KEY, Media, Block, Page, ChildItemRef } from '@angular-cms/core';
+import { PROPERTY_METADATA_KEY, PROPERTIES_METADATA_KEY, Media, Block, Page, ChildItemRef, Content } from '@angular-cms/core';
 import { CMS, UIHint, CmsProperty, InsertPointDirective, ISelectionFactory, PropertyMetadata, CmsTab, sortTabByTitle, clone } from '@angular-cms/core';
 import { PageService, BlockService } from '@angular-cms/core';
 
@@ -26,7 +26,7 @@ export class ContentFormEditComponent implements OnInit {
 
     contentForm: FormGroup = new FormGroup({});
     formTabs: Array<CmsTab> = [];
-    currentContent: Page | Block | Media;
+    currentContent: Partial<Page> & Content;
 
     private typeOfContent: string;
     private propertyMetadatas: Array<FormProperty> = [];
@@ -36,14 +36,14 @@ export class ContentFormEditComponent implements OnInit {
     @ViewChildren(InsertPointDirective) insertPoints: QueryList<InsertPointDirective>;
 
     constructor(
-        @Inject(ComponentFactoryResolver) private componentFactoryResolver: ComponentFactoryResolver,
+        private componentFactoryResolver: ComponentFactoryResolver,
         private injector: Injector,
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
         private pageService: PageService,
         private blockService: BlockService,
         private subjectService: SubjectService,
-        private _changeDetectionRef: ChangeDetectorRef
+        private changeDetectionRef: ChangeDetectorRef
     ) { }
 
     ngOnInit() {
@@ -72,8 +72,8 @@ export class ContentFormEditComponent implements OnInit {
     ngAfterViewInit() {
         this.insertPoints.changes.subscribe((newValue: QueryList<InsertPointDirective>) => {
             if (newValue.length > 0) {
-                this.componentRefs = this.createFormControls(this.propertyMetadatas);
-                this._changeDetectionRef.detectChanges();
+                this.componentRefs = this.createPropertyComponents(this.propertyMetadatas);
+                this.changeDetectionRef.detectChanges();
             }
         });
     }
@@ -129,24 +129,30 @@ export class ContentFormEditComponent implements OnInit {
 
     private createFormGroup(properties: Array<FormProperty>): FormGroup {
         if (properties) {
-            let formModel = this.currentContent.properties ? this.currentContent.properties : {};
-            let group = {};
+            const formModel = this.currentContent.properties ? this.currentContent.properties : {};
+            const formControls: { [key: string]: any } = this.createDefaultFormControls();
             properties.forEach(property => {
-                let validators = [];
+                const validators = [];
                 if (property.metadata.validates) {
                     property.metadata.validates.forEach(validate => {
                         validators.push(validate.validateFn);
                     })
                 }
 
-                group[property.name] = [formModel[property.name], validators]
+                formControls[property.name] = [formModel[property.name], validators]
             });
-            return this.formBuilder.group(group);
+            return this.formBuilder.group(formControls);
         }
         return new FormGroup({})
     }
 
-    private createFormControls(properties: Array<FormProperty>): ComponentRef<any>[] {
+    private createDefaultFormControls(): { [key: string]: any } {
+        const formControls: { [key: string]: any } = {};
+        formControls["name"] = [this.currentContent.name, Validators.required];
+        return formControls;
+    }
+
+    private createPropertyComponents(properties: Array<FormProperty>): ComponentRef<any>[] {
         const formControls: ComponentRef<any>[] = [];
 
         if (this.formTabs) {
@@ -234,7 +240,16 @@ export class ContentFormEditComponent implements OnInit {
 
         if (this.contentForm.valid) {
             if (this.currentContent) {
-                this.currentContent.properties = this.contentForm.value;
+                const properties = {};
+                Object.keys(this.contentForm.value).forEach(key => {
+                    if (this.currentContent.hasOwnProperty(key)) {
+                        this.currentContent[key] = this.contentForm.value[key]
+                    }
+                    else {
+                        properties[key] = this.contentForm.value[key];
+                    }
+                });
+                this.currentContent.properties = properties;
                 this.currentContent.isDirty = formId.dirty;
                 this.currentContent.isPublished = isPublished;
                 this.currentContent.childItems = this.getChildItems();

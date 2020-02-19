@@ -22,14 +22,14 @@ import { TreeStore } from '../tree-store';
         </span>
         
         <div *ngIf="shouldShowInputForTreeNode(node)" class="form-group row d-inline-block mb-2">
-            <form class="form-inline" (ngSubmit)="createNewInlineNode(node)" #inlineNodeForm="ngForm">
+            <form class="form-inline" (ngSubmit)="submitInlineNode(node)" #inlineNodeForm="ngForm">
                 <div class="form-group mx-sm-3">
                     <input type="text" required autofocus class="form-control form-control-sm" 
                     (blur)="nodeOnBlur(node)" 
                     [(ngModel)]="node.name" name="name" #name="ngModel"/>
                 </div>
                 <button type="submit" class="btn btn-success btn-sm" [disabled]="!inlineNodeForm.form.valid">Save</button>
-                <button type="button" class="btn btn-default btn-sm" (click)="cancelNewInlineNode(node)">Cancel</button>
+                <button type="button" class="btn btn-default btn-sm" (click)="cancelInlineNode(node)">Cancel</button>
             </form>
         </div>
 

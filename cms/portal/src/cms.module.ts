@@ -1,20 +1,19 @@
 import "reflect-metadata";
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CMS, CoreModule } from '@angular-cms/core';
+import { CmsAngularSplitModule, CmsBsDropdownModule, CmsTabsModule, DndModule } from '@angular-cms/modules';
 
-import { CoreModule, CMS } from '@angular-cms/core';
-import { AngularSplitModule, CmsTabsModule, CmsBsDropdownModule, DndModule } from '@angular-cms/modules';
-
+import { AdminLayoutComponent } from './admin-layout/admin-layout.component';
 import { CmsComponent } from './cms.component';
 import { CmsRoutingModule } from './cms.routing';
-import { CmsLayoutComponent } from './shared/components/cms-layout/cms-layout.component';
 import { EditorLayoutComponent } from './editor-layout/editor-layout.component';
-import { AdminLayoutComponent } from './admin-layout/admin-layout.component';
 import { WidgetService } from './services/widget.service';
-import { CmsHeaderComponent } from './shared/components/cms-header/cms-header.component';
 import { CmsFooterComponent } from './shared/components/cms-footer/cms-footer.component';
+import { CmsHeaderComponent } from './shared/components/cms-header/cms-header.component';
+import { CmsLayoutComponent } from './shared/components/cms-layout/cms-layout.component';
 import { ReplaceDirective } from './shared/directives/replace/replace.directive';
 
 @NgModule({
@@ -25,8 +24,7 @@ import { ReplaceDirective } from './shared/directives/replace/replace.directive'
     ReactiveFormsModule,
 
     CoreModule,
-    AngularSplitModule,
-
+    CmsAngularSplitModule.forRoot(),
     CmsTabsModule.forRoot(),
     CmsBsDropdownModule.forRoot(),
     DndModule.forRoot(),

@@ -1,20 +1,20 @@
-import { NgModule, Injector } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { Injector, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faFile, faFolder, faSitemap } from '@fortawesome/free-solid-svg-icons';
 
 import { CoreModule, setAppInjector } from '@angular-cms/core';
 
-import { DndModule } from '../shared/dnd/dnd.module';
-
-import { PageTreeComponent } from './page-tree.component';
-import { PageTreeReadonlyComponent } from './page-tree-readonly.component';
 import { ContentModule } from '../content/content.module';
-import { PageTreeService } from './page-tree.service';
-import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
-import { faFolder, faFile, faSitemap } from '@fortawesome/free-solid-svg-icons';
+import { DndModule } from '../shared/dnd/dnd.module';
 import { TreeModule } from '../shared/tree/tree.module';
+
+import { PageTreeReadonlyComponent } from './page-tree-readonly.component';
+import { PageTreeComponent } from './page-tree.component';
+import { PageTreeService } from './page-tree.service';
 
 @NgModule({
     imports: [

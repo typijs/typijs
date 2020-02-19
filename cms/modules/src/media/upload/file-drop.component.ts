@@ -2,7 +2,7 @@ import { Component, Output, Input, EventEmitter } from '@angular/core';
 import { UploadService } from './upload.service';
 
 @Component({
-    selector: 'file-upload',
+    selector: 'file-drop',
     template: `
         <!--UPLOAD-->
         <form #f="ngForm" enctype="multipart/form-data" novalidate>

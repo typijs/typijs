@@ -1,7 +1,7 @@
 export enum NodeMenuItemAction {
     NewNode,
     NewNodeInline,
-    Rename,
+    EditNowInline,
     Cut,
     Copy,
     Paste,

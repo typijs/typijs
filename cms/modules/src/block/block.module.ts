@@ -1,20 +1,19 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faCubes, faFolder } from '@fortawesome/free-solid-svg-icons';
 
 import { CoreModule } from '@angular-cms/core';
 
-import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
-import { faFolder, faCubes } from '@fortawesome/free-solid-svg-icons';
-
-import { BlockTreeComponent } from './block-tree.component';
-import { BlockTreeService } from './block-tree.service';
-import { AngularSplitModule } from '../shared/angular-split/angular-split.module';
+import { CmsAngularSplitModule } from '../shared/angular-split/module';
 import { DndModule } from '../shared/dnd/dnd.module';
 import { TreeModule } from '../shared/tree/tree.module';
 
+import { BlockTreeComponent } from './block-tree.component';
+import { BlockTreeService } from './block-tree.service';
 
 @NgModule({
     imports: [
@@ -27,7 +26,7 @@ import { TreeModule } from '../shared/tree/tree.module';
         CoreModule,
 
         TreeModule,
-        AngularSplitModule,
+        CmsAngularSplitModule.forRoot(),
         DndModule
     ],
     declarations: [
