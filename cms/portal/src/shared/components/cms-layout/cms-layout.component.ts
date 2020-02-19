@@ -1,6 +1,30 @@
-import { Input, ViewEncapsulation, ViewChildren, Component, QueryList } from '@angular/core';
+import { Input, ViewEncapsulation, ViewChildren, Component, QueryList, Inject } from '@angular/core';
 
-import { CmsTab, InsertPointDirective } from '@angular-cms/core';
+import { CmsTab, InsertPointDirective, BrowserStorageService } from '@angular-cms/core';
+
+type PanelConfig = {
+    visible: boolean,
+    size: number | string
+}
+
+type LayoutConfig = {
+    panels: PanelConfig[]
+}
+
+const defaultPanelConfigs: PanelConfig[] = [
+    {
+        visible: true,
+        size: 300
+    },
+    {
+        visible: true,
+        size: '*'
+    },
+    {
+        visible: true,
+        size: 300
+    }
+]
 
 @Component({
     selector: 'cms-layout',
@@ -14,15 +38,44 @@ export class CmsLayoutComponent {
     @Input() rightTabs: Array<CmsTab> = [];
     @Input() leftTabs: Array<CmsTab> = [];
 
-    leftPanelVisible: boolean = true;
-    rightPanelVisible: boolean = true;
+    layoutConfig: LayoutConfig;
+    private readonly layoutConfigKey: string = 'cms-layout-config-key';
+
+    constructor(private storageService: BrowserStorageService) { }
+
+    ngOnInit() {
+        if (this.storageService.get(this.layoutConfigKey)) {
+            this.layoutConfig = JSON.parse(this.storageService.get(this.layoutConfigKey))
+        } else {
+            this.resetConfig();
+        }
+    }
+
+    private resetConfig() {
+        this.layoutConfig = Object.assign({}, { panels: defaultPanelConfigs });
+
+        this.storageService.remove(this.layoutConfigKey);
+    }
+
+    private saveLocalStorage() {
+        this.storageService.set(this.layoutConfigKey, JSON.stringify(this.layoutConfig));
+    }
 
     toggleLeftPanel() {
-        this.leftPanelVisible = !this.leftPanelVisible;
+        this.layoutConfig.panels[0].visible = !this.layoutConfig.panels[0].visible;
+        this.saveLocalStorage();
     }
 
     toggleRightPanel() {
-        this.rightPanelVisible = !this.rightPanelVisible;
+        this.layoutConfig.panels[2].visible = !this.layoutConfig.panels[2].visible;
+        this.saveLocalStorage();
+    }
+
+    onDragEnd(eventData: { gutterNum: number, sizes: Array<number> }) {
+        // Set size for all visible columns
+        this.layoutConfig.panels.filter(x => x.visible == true).forEach((row, index) => row.size = eventData.sizes[index])
+
+        this.saveLocalStorage();
     }
 
 }

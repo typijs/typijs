@@ -3,23 +3,24 @@
         <ng-template [cmsInsertPoint]="'top'"></ng-template>
     </cms-header>
     <div class="app-body">
-        <as-split gutterSize="2">
-            <as-split-area size="30" order="1" [visible]="leftPanelVisible">
+        <as-split unit="pixel" gutterSize="2" (dragEnd)="onDragEnd($event)">
+            <as-split-area [size]="layoutConfig.panels[0].size" order="1"
+                [visible]="layoutConfig.panels[0].visible">
                 <tabset class="tab-container-left">
                     <tab *ngFor="let tabz of leftTabs" [heading]="tabz.title">
                         <ng-template [cmsInsertPoint]="tabz.content"></ng-template>
                     </tab>
                 </tabset>
             </as-split-area>
-            <as-split-area size="40" order="2">
+            <as-split-area size="*" order="2">
                 <as-split gutterSize="0" unit="pixel" direction="vertical">
                     <as-split-area size="40" lockSize="true">
                         <div>
                             <button type="button" class="btn btn-sm"
-                                [ngClass]="{'btn-outline-primary': leftPanelVisible, 'btn-primary': !leftPanelVisible}"
+                                [ngClass]="{'btn-outline-primary': layoutConfig.panels[0].visible, 'btn-primary': !layoutConfig.panels[0].visible}"
                                 (click)="toggleLeftPanel()">Left</button>
                             <button type="button" class="btn btn-sm float-right"
-                                [ngClass]="{'btn-outline-primary': rightPanelVisible, 'btn-primary': !rightPanelVisible}"
+                                [ngClass]="{'btn-outline-primary': layoutConfig.panels[2].visible, 'btn-primary': !layoutConfig.panels[2].visible}"
                                 (click)="toggleRightPanel()">Right</button>
                         </div>
                     </as-split-area>
@@ -30,7 +31,8 @@
                     </as-split-area>
                 </as-split>
             </as-split-area>
-            <as-split-area size="30" order="3" [visible]="rightPanelVisible">
+            <as-split-area [size]="layoutConfig.panels[2].size" order="3"
+                [visible]="layoutConfig.panels[2].visible">
                 <tabset class="tab-container-right">
                     <tab *ngFor="let tabz of rightTabs" [heading]="tabz.title">
                         <ng-template [cmsInsertPoint]="tabz.content"></ng-template>
