@@ -36,6 +36,8 @@ export { slugify, sortTabByTitle, uniqueId, clone } from './helpers/common';
 export * from './services/block.service';
 export * from './services/page.service';
 export * from './services/media.service';
+export * from './services/browser-location.service';
+export * from './services/browser-storage.service';
 
 export * from './cms';
 export * from './core.module';

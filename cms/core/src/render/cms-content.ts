@@ -13,7 +13,7 @@ import { Page } from '../models/page.model';
 import { clone } from '../helpers/common';
 import { UIHint } from '../constants/ui-hint';
 import { ContentTypeMetadata } from '../decorators/content-type-metadata';
-import { LocationRef, LOCATION } from '../services/browser-location.service';
+import { LocationRef, WINDOW_LOCATION } from '../services/browser-location.service';
 
 @Component({
     selector: 'cms-content',
@@ -25,7 +25,7 @@ export class CmsRenderContentComponent implements OnDestroy {
     @ViewChild(InsertPointDirective, { static: true }) pageEditHost: InsertPointDirective;
 
     constructor(
-        @Inject(LOCATION) private location: LocationRef,
+        @Inject(WINDOW_LOCATION) private location: LocationRef,
         private componentFactoryResolver: ComponentFactoryResolver,
         private pageService: PageService) { }
 

@@ -4,13 +4,13 @@ import { Observable } from 'rxjs';
 
 import { Page } from '../models/page.model';
 import { ContentService } from './content.service';
-import { LOCATION, LocationRef } from './browser-location.service';
+import { WINDOW_LOCATION, LocationRef } from './browser-location.service';
 
 @Injectable()
 export class PageService extends ContentService<Page> {
 
   protected apiUrl: string = "/api/page";
-  constructor(httpClient: HttpClient, @Inject(LOCATION) private location: LocationRef) {
+  constructor(httpClient: HttpClient, @Inject(WINDOW_LOCATION) private location: LocationRef) {
     super(httpClient);
   }
 

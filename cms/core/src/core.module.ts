@@ -10,7 +10,6 @@ import { PageService } from './services/page.service';
 import { MediaService } from './services/media.service';
 
 import { CmsRenderContentComponent } from './render/cms-content';
-import { locationFactory, LOCATION } from './services/browser-location.service';
 
 @NgModule({
   imports: [
@@ -28,7 +27,6 @@ import { locationFactory, LOCATION } from './services/browser-location.service';
     ContentAreaDirective
   ],
   providers: [
-    { provide: LOCATION, useFactory: locationFactory },
     BlockService,
     PageService,
     MediaService
