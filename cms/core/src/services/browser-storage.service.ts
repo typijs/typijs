@@ -1,7 +1,13 @@
 import { Injectable, Inject, InjectionToken, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
-export abstract class StorageRef extends Storage { }
+//export abstract class StorageRef extends Storage { }
+export interface StorageRef {
+    getItem(key: string);
+    setItem(key: string, value: string);
+    removeItem(key: string);
+    clear();
+}
 
 export function localStorageFactory(platformId: Object): StorageRef {
     if (isPlatformBrowser(platformId)) {

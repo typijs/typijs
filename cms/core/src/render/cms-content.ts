@@ -1,4 +1,4 @@
-import { Component, ComponentFactoryResolver, Inject, ViewChild, OnDestroy, ComponentRef } from '@angular/core';
+import { Component, ComponentFactoryResolver, ViewChild, OnDestroy, ComponentRef } from '@angular/core';
 import 'reflect-metadata';
 
 import { PAGE_TYPE_METADATA_KEY, PROPERTIES_METADATA_KEY, PROPERTY_METADATA_KEY } from '../constants/meta-keys';
@@ -13,7 +13,7 @@ import { Page } from '../models/page.model';
 import { clone } from '../helpers/common';
 import { UIHint } from '../constants/ui-hint';
 import { ContentTypeMetadata } from '../decorators/content-type-metadata';
-import { LocationRef, WINDOW_LOCATION } from '../services/browser-location.service';
+import { BrowserLocationService } from '../services/browser-location.service';
 
 @Component({
     selector: 'cms-content',
@@ -25,7 +25,7 @@ export class CmsRenderContentComponent implements OnDestroy {
     @ViewChild(InsertPointDirective, { static: true }) pageEditHost: InsertPointDirective;
 
     constructor(
-        @Inject(WINDOW_LOCATION) private location: LocationRef,
+        private locationService: BrowserLocationService,
         private componentFactoryResolver: ComponentFactoryResolver,
         private pageService: PageService) { }
 
@@ -40,7 +40,8 @@ export class CmsRenderContentComponent implements OnDestroy {
     }
 
     private resolveContentDataByUrl() {
-        const currentUrl = `${this.location.origin}${this.location.pathname}`;
+        const location = this.locationService.getLocation();
+        const currentUrl = `${location.origin}${location.pathname}`;
         this.pageService.getPublishedPage(currentUrl).subscribe((currentPage: Page) => {
             if (currentPage) {
                 const contentType = CMS.PAGE_TYPES[currentPage.contentType];
