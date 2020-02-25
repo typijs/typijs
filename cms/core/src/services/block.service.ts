@@ -7,7 +7,7 @@ import { ContentService } from './content.service';
 @Injectable()
 export class BlockService extends ContentService<Block> {
 
-  protected apiUrl: string = "/api/block";
+  protected apiUrl: string = "http://localhost:3000/api/block";
   constructor(httpClient: HttpClient) {
     super(httpClient);
   }

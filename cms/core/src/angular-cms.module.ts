@@ -6,7 +6,6 @@ import * as CMS from './cms';
 import { CmsModuleConfig } from './constants/module-config';
 import { CoreModule } from "./core.module";
 import { CmsRenderContentComponent } from './render/cms-content';
-import { locationFactory, WINDOW_LOCATION } from './services/browser-location.service';
 import { localStorageFactory, LOCAL_STORAGE } from './services/browser-storage.service';
 import { OutsideZoneEventPlugin } from './utils/outside-zone-event-plugin';
 import { CustomRouteReuseStrategy } from './utils/route-reuse-strategy';
@@ -26,11 +25,6 @@ export class AngularCmsModule {
                 {
                     provide: RouteReuseStrategy,
                     useClass: CustomRouteReuseStrategy
-                },
-                {
-                    provide: WINDOW_LOCATION,
-                    useFactory: locationFactory,
-                    deps: [PLATFORM_ID]
                 },
                 {
                     provide: LOCAL_STORAGE,

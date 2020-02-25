@@ -24,7 +24,9 @@ export class App {
   }
 
   private setMiddlewares(): void {
-    //this.express.use(cors());
+    this.express.use(cors({
+      origin: 'http://localhost:4200'
+    }));
     this.express.use(httpLoggerMiddleware());
     this.express.use(bodyParser.json());
     this.express.use(bodyParser.urlencoded({ extended: false }));

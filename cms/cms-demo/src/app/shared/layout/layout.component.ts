@@ -1,8 +1,9 @@
-import { Component, ViewEncapsulation } from '@angular/core';
-import { PageService, PageData } from '@angular-cms/core';
-import { HomePage } from '../../pages/home/home.pagetype';
-import { tap, map } from 'rxjs/operators';
+import { PageData, PageService } from '@angular-cms/core';
+import { Component, ViewEncapsulation, Inject } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+
+import { HomePage } from '../../pages/home/home.pagetype';
 
 @Component({
   templateUrl: './layout.component.html',
@@ -18,9 +19,11 @@ export class LayoutComponent {
   ngOnInit() {
     this.startPage$ = this.contentService.getStartPage().pipe(
       tap(page => {
-        this.menuItems$ = this.contentService.getPublishedPageChildren(page._id).pipe(
-          map(children => children.map(childPage => new PageData(childPage)))
-        );
+        if (page) {
+          this.menuItems$ = this.contentService.getPublishedPageChildren(page._id).pipe(
+            map(children => children.map(childPage => new PageData(childPage)))
+          );
+        }
       }),
       map(page => new HomePage(page))
     );

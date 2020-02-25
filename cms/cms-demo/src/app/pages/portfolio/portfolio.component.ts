@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { CmsComponent, PageService } from '@angular-cms/core';
 import { PortfolioPage } from './portfolio.pagetype';
 import { Observable } from 'rxjs';

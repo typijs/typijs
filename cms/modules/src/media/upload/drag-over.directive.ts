@@ -6,7 +6,8 @@ import { Directive, Renderer2, HostListener, ElementRef } from '@angular/core';
 export class DragOverDirective {
     constructor(private renderer: Renderer2, private hostElement: ElementRef) { }
 
-    @HostListener('dragover', ['$event']) public onDragOver(event) {
+    @HostListener('dragover', ['$event'])
+    public onDragOver(event) {
         if (!this.containsFiles(event)) return;
         event.preventDefault();
         event.stopPropagation();

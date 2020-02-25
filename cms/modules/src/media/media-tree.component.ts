@@ -142,7 +142,7 @@ export class MediaTreeComponent extends SubscriptionComponent {
         this.mediaService.getContentInFolder(node.id).subscribe(childMedias => {
             this.medias = childMedias;
             this.medias.forEach(x => {
-                x["path"] = `/api/assets/${x._id}/${x.name}?w=50&h=50`;
+                x["path"] = `http://localhost:3000/api/assets/${x._id}/${x.name}?w=50&h=50`;
             })
         })
     }
