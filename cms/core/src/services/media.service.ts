@@ -8,7 +8,7 @@ import { ContentService } from './content.service';
 @Injectable()
 export class MediaService extends ContentService<Media> {
 
-  protected apiUrl: string = "/api/media";
+  protected apiUrl: string = "http://localhost:3000/api/media";
   constructor(httpClient: HttpClient) {
     super(httpClient);
   }
@@ -16,7 +16,7 @@ export class MediaService extends ContentService<Media> {
   uploadMedia(folderId: string = '', file: File): Observable<HttpEvent<any>> {
     const formData: FormData = new FormData();
     formData.append('file', file, file.name);
-    
+
     const requestUrl = `${this.apiUrl}/upload/${folderId}`;
     // create a http-post request and pass the form
     // tell it to report the upload progress
