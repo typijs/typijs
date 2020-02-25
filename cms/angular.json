@@ -143,6 +143,29 @@
               "devServerTarget": "cms-demo:serve:production"
             }
           }
+        },
+        "server": {
+          "builder": "@angular-devkit/build-angular:server",
+          "options": {
+            "outputPath": "dist/cms-demo-server",
+            "main": "cms-demo/src/main.server.ts",
+            "tsConfig": "cms-demo/tsconfig.server.json"
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "cms-demo/src/environments/environment.ts",
+                  "with": "cms-demo/src/environments/environment.prod.ts"
+                }
+              ],
+              "sourceMap": false,
+              "optimization": {
+                "scripts": false,
+                "styles": true
+              }
+            }
+          }
         }
       }
     },
