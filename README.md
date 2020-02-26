@@ -142,6 +142,7 @@ For running examples, we need set up the [symlinks](https://docs.npmjs.com/cli/l
 
 1. Go to `cms-api` folders and run command 
 ```
+    npm install
     npm link
 ``` 
 
@@ -158,6 +159,8 @@ For running examples, we need set up the [symlinks](https://docs.npmjs.com/cli/l
     npm install
     npm run dev
 ```
+> If you have the issue installing such as the `@angular-cms/api` package is not found, temporary remove it in package.json, run install command then add it again
+
 This command will run script to connect to mongo db, so make sure you have the correct path to your db.
 For example, in my local, I have the db path like as `D:/ProgramData/MongoDB/data/db`
 ```
