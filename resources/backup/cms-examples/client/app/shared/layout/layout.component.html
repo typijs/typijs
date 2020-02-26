@@ -1,0 +1,72 @@
+<div id="page">
+    <div id="header">
+        <div id="sidebar">
+            <a id="logo" href="javascript:void(0)" [routerLink]="['/']">
+                <img src="assets/images/logo.png" alt="LOGO">
+            </a>
+            <div id="navigation">
+                <ul>
+                    <li>
+                        <a href="javascript:void(0)" [routerLink]="['/cms/editor']">CMS</a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" [routerLink]="['/new-page-3']">Home</a>
+                    </li>
+                    <li class="menu">
+                        <a href="javascript:void(0)" [routerLink]="['/new-page-12/new-page-1']">Menu</a>
+                        <div class="sub">
+                            <a href="menu.html">Lorem Ipsum</a>
+                            <a href="menu.html">Dolor Sit Amet</a>
+                            <a href="menu.html">Nulla Pretium</a>
+                            <a href="menu.html" class="last-child">Curabitur</a>
+                        </div>
+                        <span></span>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)" [routerLink]="['/new-page-12/new-page/new-page-1']">Blog</a>
+                    </li>
+                    <li class="last">
+                        <a href="javascript:void(0)" [routerLink]="['/new-page-1']">About</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div id="contents">
+        <router-outlet></router-outlet>
+        <!-- <cms-content></cms-content> -->
+    </div>
+    <div id="footer">
+        <div class="header">
+            <div class="body">
+                <ul *ngIf="startPage">
+                    <li *ngFor="let item of startPage.footers">
+                        <h4>{{item.header}}</h4>
+                        <span *ngFor="let link of item.linkItems">&gt;
+                            <a href="#header">{{link.linkText}}</a>
+                        </span>
+
+                    </li>
+                </ul>
+            </div>
+            <div class="footer">
+                <div id="connect">
+                    <a href="http://freewebsitetemplates.com/go/facebook/" target="_blank" class="facebook"></a>
+                    <a href="http://freewebsitetemplates.com/go/twitter/" target="_blank" class="twitter"></a>
+                    <a href="http://freewebsitetemplates.com/go/googleplus/" target="_blank" class="googleplus"></a>
+                    <a href="http://freewebsitetemplates.com/go/vimeo/" target="_blank" class="vimeo"></a>
+                </div>
+                <p>
+                    Copyright 2023 Company Name. All Rights Reserved.
+                </p>
+            </div>
+        </div>
+        <p id="footnote">
+            This website template has been designed by
+            <a href="http://www.freewebsitetemplates.com/">Free Website Templates</a> for you, for free. You can replace all this text with your own text. You can remove
+            any link to our website from this website template, you're free to use this website template without linking
+            back to us. If you're having problems editing this website template, then don't hesitate to ask for help on the
+            <a href="javascript:void(0)" (outside-angular-zone.click)="clickGutter()">Forum</a>.
+        </p>
+    </div>
+</div>

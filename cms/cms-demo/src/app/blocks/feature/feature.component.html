@@ -1,0 +1,10 @@
+<div class="banner-division d_img">
+    <img *ngIf="currentContent.image" [src]="currentContent.image" alt="">
+</div>
+
+<div class="banner-division">
+    <h3>{{currentContent.header}}</h3>
+    <div [innerHTML]="currentContent.summary"></div>
+    <a [href]="currentContent.link">Read more</a>
+</div>
+<div class="clear"></div>

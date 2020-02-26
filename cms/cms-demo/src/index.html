@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Angular Cms</title>
+  <base href="/">
+
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <!-- google fonts -->
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Pontano+Sans' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Shadows+Into+Light' rel='stylesheet' type='text/css'>
+
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link href="assets/css/style.css" rel="stylesheet" type="text/css" media="all" />
+</head>
+
+<body>
+  <app-root></app-root>
+  <!--nav-->F
+  <script src="assets/js/jquery.min.js"></script>
+  <script>
+    $(function () {
+      var pull = $('#pull');
+      menu = $('nav ul');
+      menuHeight = menu.height();
+
+      $(pull).on('click', function (e) {
+        e.preventDefault();
+        menu.slideToggle();
+      });
+
+      $(window).resize(function () {
+        var w = $(window).width();
+        if (w > 320 && menu.is(':hidden')) {
+          menu.removeAttr('style');
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

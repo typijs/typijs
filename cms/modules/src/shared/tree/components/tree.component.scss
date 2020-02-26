@@ -1,0 +1,63 @@
+.tree {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  .tree {
+    padding-left: 20px;
+  }
+
+  >.tree-item {
+    margin: 0;
+
+    .node-value {
+      line-height: 32px;
+      position: relative;
+
+      .tree-icon {
+        width: 10px;
+      }
+
+      .node-menu {
+        display: none;
+        position: absolute;
+        right: 0;
+        cursor: pointer;
+
+        .dropdown-menu {
+          margin: 0;
+
+          a.dropdown-item {
+            text-decoration: none;
+            padding: 1px 1px 1px 5px;
+          }
+        }
+      }
+
+      &:hover {
+        .node-menu {
+          display: inline-block;
+        }
+      }
+
+      &.node-selected {
+        .node-menu {
+          display: inline-block;
+        }
+      }
+
+
+
+      .indicator {
+        cursor: pointer;
+        padding: 5px 5px 5px 10px;
+      }
+
+      .no-children {
+        width: 10px;
+        height: 19px;
+        display: inline-block;
+      }
+    }
+  }
+}

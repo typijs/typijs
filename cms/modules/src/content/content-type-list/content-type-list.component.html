@@ -1,0 +1,36 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">Create content</div>
+            <div class="card-body">
+                <div class="form-group ">
+                    <div class="input-group ">
+                        <div class="input-group-prepend ">
+                            <span class="input-group-text ">Name</span>
+                        </div>
+                        <input type="text" class="form-control" id="content-name" [(ngModel)]="contentName" required #name="ngModel" />
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-primary">Cancel</button>
+                        </div>
+                    </div>
+                    <div [hidden]="name.valid || name.pristine" class="alert alert-danger">
+                        Name is required
+                    </div>
+                </div>
+                <div class="row">
+                    <h5 class="col-lg-12">Select type</h5>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6 col-md-4 col-lg-3" *ngFor="let contentType of contentTypes">
+                        <div class="card bg-primary" (click)="createNewContent(contentType)">
+                            <div class="card-body">
+                                <div class="h4 m-0">{{contentType.metadata.displayName}}</div>
+                                <div>{{contentType.metadata.description}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

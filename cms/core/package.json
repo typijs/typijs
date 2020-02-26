@@ -1,0 +1,13 @@
+{
+  "name": "@angular-cms/core",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/common": "^8.2.13",
+    "@angular/core": "^8.2.13",
+    "@angular/platform-browser": "~8.2.13",
+    "@angular/router": "~8.2.13",
+    "@angular/forms": "~8.2.13",
+    "rxjs": "~6.4.0",
+    "reflect-metadata": "^0.1.13"
+  }
+}

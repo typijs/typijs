@@ -1,0 +1,48 @@
+<div id="adbox">
+    <h1>{{currentContent.title}}</h1>
+    <div class="frame">
+        <div class="section" [innerHTML] ="currentContent.summary"></div>
+        <div class="section">
+            <h2>Lorem ipsum dolor sit</h2>
+            <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed aliquet nulla ac purus iaculis quis fermentum lacus sodales.
+                Nulla facilisi.
+            </p>
+        </div>
+    </div>
+</div>
+<div id="articles">
+    <div>
+        <ng-template [cmsContentArea]="currentContent.features"></ng-template>
+        <div id="featured">
+            <ul>
+                <li>
+                    <a href="index.html">
+                        <img src="assets/images/sushi1.png" alt="Img">
+                        <h3>Lorem Ipsum</h3>
+                    </a>
+                </li>
+                <li>
+                    <a href="index.html">
+                        <img src="assets/images/sushi2.png" alt="Img">
+                        <h3>Dolor sit amet</h3>
+                    </a>
+                </li>
+                <li>
+                    <a href="index.html">
+                        <img src="assets/images/sushi3.png" alt="Img">
+                        <h3>Nulla Pretium</h3>
+                    </a>
+                </li>
+                <li>
+                    <a href="index.html">
+                        <img src="assets/images/sushi4.png" alt="Img">
+                        <h3>Curabitur</h3>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div id="dummy">
+</div>
