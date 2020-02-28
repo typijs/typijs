@@ -8,7 +8,7 @@ import { faCubes, faFolder } from '@fortawesome/free-solid-svg-icons';
 
 import { CoreModule } from '@angular-cms/core';
 
-import { CmsAngularSplitModule } from '../shared/angular-split/module';
+import { CmsAngularSplitModule } from '../shared/libs/angular-split/module';
 import { DndModule } from '../shared/dnd/dnd.module';
 import { TreeModule } from '../shared/tree/tree.module';
 

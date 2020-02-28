@@ -40,7 +40,5 @@ export class PageTreeReadonlyComponent {
         service: ServiceLocator.Instance.get(PageTreeService),
     }
 
-    constructor(
-    ) {
-    }
+    constructor() { }
 }
