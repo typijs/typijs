@@ -44,3 +44,8 @@ input {
   transition: all .2s ease-in-out;
   transform: scale(1.05);
 }
+
+.node-menu-dropdown {
+  right: -15px !important;
+  top: -8px;
+}
