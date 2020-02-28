@@ -2,10 +2,10 @@
  * Public API Surface of modules
  */
 
-export * from './shared/ngx-bootstrap/bs-dropdown.module';
-export * from './shared/ngx-bootstrap/tabs.module';
+export * from './shared/libs/ngx-bootstrap/bs-dropdown.module';
+export * from './shared/libs/ngx-bootstrap/tabs.module';
+export * from './shared/libs/angular-split/module';
 
-export * from './shared/angular-split/module';
 export * from './shared/dnd/dnd.module';
 
 export * from './content/content.module';
