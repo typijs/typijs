@@ -4,17 +4,16 @@ import { concatMap, map, tap, switchMap } from 'rxjs/operators';
 
 import { TreeNode } from './interfaces/tree-node';
 import { TreeService } from './interfaces/tree-service';
-import { NodeMenuItemAction } from './interfaces/tree-menu';
+import { NodeMenuItemAction, TreeMenuActionEvent } from './interfaces/tree-menu';
 
 @Injectable()
 export class TreeStore {
+    nodeMenuActionEvent$: Subject<TreeMenuActionEvent> = new Subject<TreeMenuActionEvent>();
     nodeSelectedInner$: Subject<Partial<TreeNode>> = new Subject<Partial<TreeNode>>();
-    nodeCreated$: Subject<TreeNode> = new Subject<TreeNode>();
     nodeInlineCreated$: Subject<TreeNode> = new Subject<TreeNode>();
     nodeCut$: Subject<TreeNode> = new Subject<TreeNode>();
     nodeCopied$: Subject<TreeNode> = new Subject<TreeNode>();
     nodePasted$: Subject<TreeNode> = new Subject<TreeNode>();
-    nodeDelete$: Subject<TreeNode> = new Subject<TreeNode>();
     scrollToSelectedNode$: BehaviorSubject<TreeNode> = new BehaviorSubject<TreeNode>(new TreeNode());
 
     treeService: TreeService;
@@ -61,38 +60,40 @@ export class TreeStore {
             });
     }
 
-    cancelNewNodeInline(parent: TreeNode, node: TreeNode) {
-        const childNodes = this.treeNodes[node.parentId ? node.parentId : '0'];
-        if (childNodes) {
-            const newNodeIndex = childNodes.findIndex((x: TreeNode) => !x.id);
-            if (newNodeIndex > -1) childNodes.splice(newNodeIndex, 1);
-            if (childNodes.length == 0) {
-                parent.hasChildren = false;
-                parent.isExpanded = false;
-            }
-        }
+    private getNodeChildren(parentId: string): Observable<TreeNode[]> {
+
+        if (!parentId) parentId = '0';
+        //the 'tap' operator same as 'do'
+        return this.treeService.loadChildren(parentId).pipe(
+            tap((childNodes: TreeNode[]) => {
+                this.treeNodes[parentId] = childNodes;
+                return this.treeNodes[parentId];
+            })
+        );
     }
 
-    showNewNodeInline(parentNode: TreeNode) {
-        const newInlineNode = new TreeNode({
-            isNew: true,
-            parentId: parentNode.id == '0' ? null : parentNode.id
-        });
+    private getNodeData(nodeId: string): Observable<TreeNode> {
+        if (nodeId == '0') return of(new TreeNode({ id: nodeId }));
+        return this.treeService.getNode(nodeId).pipe(
+            switchMap((nodeData: TreeNode) => this.updateTreeNodesData(nodeData))
+        );
+    }
 
-        if (this.treeNodes[parentNode.id]) {
-            this.treeNodes[parentNode.id].unshift(newInlineNode);
-            parentNode.isExpanded = true;
-            parentNode.hasChildren = true;
-        } else {
-            this.getNodeChildren(parentNode.id).subscribe((nodeChildren: TreeNode[]) => {
-                //insert new node to begin of node's children
-                this.treeNodes[parentNode.id].unshift(newInlineNode);
-                parentNode.isExpanded = true;
-                parentNode.hasChildren = true;
-                //reload sub tree
-                this.getTreeNodesSubjectByKey$(parentNode.id).next(this.treeNodes[parentNode.id]);
-            });
-        }
+    private updateTreeNodesData = (currentNode: TreeNode): Observable<TreeNode> => {
+        if (!currentNode) return of(new TreeNode({ id: '0' }))
+
+        const key = currentNode.parentId ? currentNode.parentId : '0';
+        if (!this.treeNodes[key]) return of(currentNode);
+
+        const matchIndex = this.treeNodes[key].findIndex((x: TreeNode) => x.id == currentNode.id || (x.isNew && x.name == currentNode.name));
+        if (matchIndex == -1) return of(currentNode);
+
+        this.treeNodes[key][matchIndex].id = currentNode.id;
+        this.treeNodes[key][matchIndex].parentPath = currentNode.parentPath;
+        this.treeNodes[key][matchIndex].isNew = false;
+        this.treeNodes[key][matchIndex].isEditing = false;
+        this.treeNodes[key][matchIndex].hasChildren = currentNode.hasChildren;
+        return of(this.treeNodes[key][matchIndex]);
     }
 
     locateToSelectedNode(newSelectedNode: TreeNode): Observable<string> {
@@ -123,59 +124,18 @@ export class TreeStore {
         }
     }
 
-    showNodeInlineEdit(node: TreeNode) {
-        node.isEditing = true;
-        this.editingNode = Object.assign({}, node);
+    //fire all tree events
+    fireNodeSelectedInner(node: Partial<TreeNode>) {
+        this.nodeSelectedInner$.next(node);
     }
 
-    cancelNodeInlineEdit(node: TreeNode) {
-        node.isEditing = false;
-        if(this.editingNode) node.name = this.editingNode.name;
-        this.editingNode = null;
+    fireScrollToSelectedNode(node: TreeNode) {
+        this.scrollToSelectedNode$.next(node);
     }
 
-    private getNodeData(nodeId: string): Observable<TreeNode> {
-        if (nodeId == '0') return of(new TreeNode({ id: nodeId }));
-        return this.treeService.getNode(nodeId).pipe(
-            switchMap((nodeData: TreeNode) => this.updateTreeNodesData(nodeData))
-        );
-    }
-
-    private updateTreeNodesData = (currentNode: TreeNode): Observable<TreeNode> => {
-        if (!currentNode) return of(new TreeNode({ id: '0' }))
-
-        const key = currentNode.parentId ? currentNode.parentId : '0';
-        if (!this.treeNodes[key]) return of(currentNode);
-
-        const matchIndex = this.treeNodes[key].findIndex((x: TreeNode) => x.id == currentNode.id || (x.isNew && x.name == currentNode.name));
-        if (matchIndex == -1) return of(currentNode);
-
-        this.treeNodes[key][matchIndex].id = currentNode.id;
-        this.treeNodes[key][matchIndex].parentPath = currentNode.parentPath;
-        this.treeNodes[key][matchIndex].isNew = false;
-        this.treeNodes[key][matchIndex].isEditing = false;
-        this.treeNodes[key][matchIndex].hasChildren = currentNode.hasChildren;
-        return of(this.treeNodes[key][matchIndex]);
-    }
-
-    private getNodeChildren(parentId: string): Observable<TreeNode[]> {
-
-        if (!parentId) parentId = '0';
-        //the 'tap' operator same as 'do'
-        return this.treeService.loadChildren(parentId).pipe(
-            tap((childNodes: TreeNode[]) => {
-                this.treeNodes[parentId] = childNodes;
-                return this.treeNodes[parentId];
-            })
-        );
-    }
-
-    handleNodeMenuItemSelected(nodeAction: { action: NodeMenuItemAction, node: TreeNode }) {
+    handleNodeMenuItemSelected(nodeAction: TreeMenuActionEvent) {
         const { action, node } = nodeAction;
         switch (action) {
-            case NodeMenuItemAction.NewNode:
-                this.fireNodeCreated(node);
-                break;
             case NodeMenuItemAction.NewNodeInline:
                 //add temp new node with status is new
                 this.showNewNodeInline(node);
@@ -193,40 +153,71 @@ export class TreeStore {
             case NodeMenuItemAction.Paste:
                 this.fireNodePasted(node);
                 break;
-            case NodeMenuItemAction.Delete:
-                this.fireNodeToDeleteAction(node);
-                break;
             default:
-                throw new Error(`Chosen menu item doesn't exist`);
+                this.fireMenuActionSelected(nodeAction)
+                break;
         }
     }
 
-    //fire all tree events
-    fireNodeSelectedInner(node: Partial<TreeNode>) {
-        this.nodeSelectedInner$.next(node);
+    showNewNodeInline(parentNode: TreeNode) {
+        const newInlineNode = new TreeNode({
+            isNew: true,
+            parentId: parentNode.id == '0' ? null : parentNode.id
+        });
+
+        if (this.treeNodes[parentNode.id]) {
+            this.treeNodes[parentNode.id].unshift(newInlineNode);
+            parentNode.isExpanded = true;
+            parentNode.hasChildren = true;
+        } else {
+            this.getNodeChildren(parentNode.id).subscribe((nodeChildren: TreeNode[]) => {
+                //insert new node to begin of node's children
+                this.treeNodes[parentNode.id].unshift(newInlineNode);
+                parentNode.isExpanded = true;
+                parentNode.hasChildren = true;
+                //reload sub tree
+                this.getTreeNodesSubjectByKey$(parentNode.id).next(this.treeNodes[parentNode.id]);
+            });
+        }
     }
 
-    fireNodeCreated(node: TreeNode) {
-        this.nodeCreated$.next(node);
+    cancelNewNodeInline(parent: TreeNode, node: TreeNode) {
+        const childNodes = this.treeNodes[node.parentId ? node.parentId : '0'];
+        if (childNodes) {
+            const newNodeIndex = childNodes.findIndex((x: TreeNode) => !x.id);
+            if (newNodeIndex > -1) childNodes.splice(newNodeIndex, 1);
+            if (childNodes.length == 0) {
+                parent.hasChildren = false;
+                parent.isExpanded = false;
+            }
+        }
     }
 
-    fireNodeCut(node: TreeNode) {
+    showNodeInlineEdit(node: TreeNode) {
+        node.isEditing = true;
+        this.editingNode = Object.assign({}, node);
+    }
+
+    cancelNodeInlineEdit(node: TreeNode) {
+        node.isEditing = false;
+        if (this.editingNode) node.name = this.editingNode.name;
+        this.editingNode = null;
+    }
+
+    private fireNodeCut(node: TreeNode) {
         this.nodeCut$.next(node);
     }
 
-    fireNodeCopied(node: TreeNode) {
+    private fireNodeCopied(node: TreeNode) {
         this.nodeCopied$.next(node);
     }
 
-    fireNodePasted(node: TreeNode) {
+    private fireNodePasted(node: TreeNode) {
         this.nodePasted$.next(node);
     }
 
-    fireNodeToDeleteAction(node: TreeNode) {
-        this.nodeDelete$.next(node);
-    }
-
-    fireScrollToSelectedNode(node: TreeNode) {
-        this.scrollToSelectedNode$.next(node);
+    //fire and forward menu action click event
+    private fireMenuActionSelected(actionEvent: TreeMenuActionEvent) {
+        this.nodeMenuActionEvent$.next(actionEvent);
     }
 }

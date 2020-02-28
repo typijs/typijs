@@ -5,10 +5,15 @@ import { ServiceLocator, Block, BlockService } from '@angular-cms/core';
 import { TreeNode } from '../shared/tree/interfaces/tree-node';
 import { TreeComponent } from '../shared/tree/components/tree.component';
 import { TreeConfig } from '../shared/tree/interfaces/tree-config';
-import { NodeMenuItemAction } from '../shared/tree/interfaces/tree-menu';
+import { NodeMenuItemAction, TreeMenuActionEvent } from '../shared/tree/interfaces/tree-menu';
 import { BlockTreeService } from './block-tree.service';
 import { SubscriptionComponent } from '../shared/subscription.component';
 import { SubjectService } from '../shared/services/subject.service';
+
+const BlockMenuItemAction = {
+    DeleteFolder: 'DeleteFolder',
+    NewBlock: 'NewBlock'
+}
 
 @Component({
     template: `
@@ -19,10 +24,9 @@ import { SubjectService } from '../shared/services/subject.service';
                 [root]="root"
                 [config]="treeConfig"
                 (nodeSelected)="folderSelected($event)"
-                (nodeCreated)="blockCreated($event)"
                 (nodeInlineCreated)="createBlockFolder($event)"
                 (nodeInlineUpdated)="updateBlockFolder($event)"
-                (nodeDeleteEvent)="folderDelete($event)">
+                (menuItemSelected)="menuItemSelected($event)">
                 <ng-template #treeNodeTemplate let-node>
                     <span [ngClass]="{'block-node': node.id != '0', 'border-bottom': node.isSelected && node.id != '0'}">
                         <fa-icon class="mr-1" *ngIf="node.id == '0'" [icon]="['fas', 'cubes']"></fa-icon>
@@ -67,7 +71,7 @@ export class BlockTreeComponent extends SubscriptionComponent {
         service: ServiceLocator.Instance.get(BlockTreeService),
         menuItems: [
             {
-                action: NodeMenuItemAction.NewNode,
+                action: BlockMenuItemAction.NewBlock,
                 name: "New Block"
             },
             {
@@ -87,7 +91,7 @@ export class BlockTreeComponent extends SubscriptionComponent {
                 name: "Paste"
             },
             {
-                action: NodeMenuItemAction.Delete,
+                action: BlockMenuItemAction.DeleteFolder,
                 name: "Delete"
             },
         ]
@@ -112,6 +116,10 @@ export class BlockTreeComponent extends SubscriptionComponent {
         this.folderSelected({ id: '0' });
     }
 
+    clickToCreateFolder(node: TreeNode) {
+        this.cmsTree.handleNodeMenuItemSelected({ action: NodeMenuItemAction.NewNodeInline, node: node })
+    }
+
     folderSelected(node) {
         //load child block in folder
         this.blockService.getContentInFolder(node.id).subscribe(childBlocks => {
@@ -128,25 +136,30 @@ export class BlockTreeComponent extends SubscriptionComponent {
 
     updateBlockFolder(node: TreeNode) {
         this.blockService.editFolder({ name: node.name, _id: node.id })
-            .subscribe(folder => {
-                //this.subjectService.fireBlockFolderCreated(folder);
-            });
+            .subscribe();
     }
 
-    clickToCreateFolder(node: TreeNode) {
-        this.cmsTree.menuItemSelected({ action: NodeMenuItemAction.NewNodeInline, node: node })
+    menuItemSelected(nodeAction: TreeMenuActionEvent) {
+        const { action, node } = nodeAction;
+        switch (action) {
+            case BlockMenuItemAction.NewBlock:
+                this.blockCreated(node);
+                break;
+            case BlockMenuItemAction.DeleteFolder:
+                this.folderDelete(node);
+                break;
+        }
     }
 
-    blockCreated(parentNode) {
+    private blockCreated(parentNode) {
         this.router.navigate(["new/block", parentNode.id], { relativeTo: this.route })
     }
 
-    folderDelete(nodeToDelete: TreeNode) {
+    private folderDelete(nodeToDelete: TreeNode) {
         if (nodeToDelete.id == '0') return;
         this.blockService.softDeleteContent(nodeToDelete.id).subscribe(([blockToDelete, deleteResult]: [Block, any]) => {
             console.log(deleteResult);
             this.cmsTree.reloadSubTree(nodeToDelete.parentId);
         });
     }
-
 }
