@@ -24,23 +24,19 @@ export function app() {
     server.set('view engine', 'html');
     // specify the views directory
     server.set('views', distFolder);
-
-    // TODO: implement data requests securely
-    server.get('/api/*', (req, res) => {
-        res.status(404).send('data requests are not supported');
-    });
-
+    // Ignore the router to /cms/* in angular universal
     server.get('/cms/*', (req, res) => {
         res.sendFile(join(distFolder, 'index.html'));
     });
 
-    // Serve static files from /browser
+    // Serve static files from ./dist/cms-demo folder
     server.get('*.*', express.static(distFolder, {
         maxAge: '1y'
     }));
 
     // All regular routes use the Universal engine
     server.get('*', (req, res) => {
+        // select the the index file in views folder
         res.render('index', { req, res });
     });
 
