@@ -8,11 +8,7 @@ The single app CMS based on Angular, Express, NodeJs and MongoDB.
 
 ## How it work?
 
-Let assume you need build the dynamic website like this:
-
-![cms-demo-site](resources/images/cms-demo-site.png)
-
-Let thinking in Angular CMS, we need to breakdown this page to properties, blocks like this
+Let assume you need build the dynamic website, in Angular CMS, we need to breakdown this page to properties, blocks like this
 
 ![cms-demo-site-breakdown](resources/images/cms-demo-site-breakdown.png)
 
@@ -91,8 +87,11 @@ export class HomeComponent extends CmsComponent<HomePage> {
 
 Now when create the page with page type of `Home Page`, the `HomeComponent` is charge of rending the page's template
 
-So after we done all things above, how to we create a page. In Angular CMS, we have the admin UI to manage all pages like this
+So after we done all things above, how to we create a page. In Angular CMS, we have the admin/editor UI to manage all pages like this
 
+The Editor UI can be accessed via router: http://localhost:4200/cms/editor
+
+The Admin UI can be accessed via router: http://localhost:4200/cms/admin
 
 ![cms-demo-site](resources/images/cms-editor-ui.png)
 
