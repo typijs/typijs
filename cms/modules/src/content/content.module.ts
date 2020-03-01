@@ -6,7 +6,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { CoreModule } from '@angular-cms/core';
 
-import { CmsTabsModule } from '../shared/ngx-bootstrap/tabs.module';
+import { CmsAngularSplitModule } from '../shared/libs/angular-split/module';
+import { CmsTabsModule } from '../shared/libs/ngx-bootstrap/tabs.module';
 import { PropertiesModule } from '../properties/properties.module';
 import { ContentTypeListComponent } from './content-type-list/content-type-list.component';
 import { ContentFormEditComponent } from './content-form-edit/content-form-edit.component';
@@ -19,7 +20,7 @@ import { ContentFormEditComponent } from './content-form-edit/content-form-edit.
         ReactiveFormsModule,
         RouterModule,
         CoreModule,
-
+        CmsAngularSplitModule.forRoot(),
         CmsTabsModule.forRoot(),
         PropertiesModule,
     ],

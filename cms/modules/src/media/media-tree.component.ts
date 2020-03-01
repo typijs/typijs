@@ -6,17 +6,23 @@ import { SubjectService } from '../shared/services/subject.service';
 import { SubscriptionComponent } from '../shared/subscription.component';
 import { TreeComponent } from '../shared/tree/components/tree.component';
 import { TreeConfig } from '../shared/tree/interfaces/tree-config';
-import { NodeMenuItemAction } from '../shared/tree/interfaces/tree-menu';
+import { NodeMenuItemAction, TreeMenuActionEvent } from '../shared/tree/interfaces/tree-menu';
 import { TreeNode } from '../shared/tree/interfaces/tree-node';
 
 import { MediaTreeService } from './media-tree.service';
 import { UploadService } from './upload/upload.service';
+import { FileModalComponent } from './upload/file-modal.component';
+
+const MediaMenuItemAction = {
+    DeleteFolder: 'DeleteFolder',
+    NewFileUpload: 'NewFile'
+}
 
 @Component({
     template: `
         <div dragOver class="media-container">
             <div class="drop-zone" dragLeave>
-                <file-drop [uploadFieldName]='"files"'></file-drop>
+                <file-drop [uploadFieldName]='"files"' [targetFolder]="selectedFolder"></file-drop>
             </div>
             <as-split direction="vertical" gutterSize="4">
                 <as-split-area size="50">
@@ -27,7 +33,7 @@ import { UploadService } from './upload/upload.service';
                         (nodeSelected)="folderSelected($event)"
                         (nodeInlineCreated)="createMediaFolder($event)"
                         (nodeInlineUpdated)="updateMediaFolder($event)"
-                        (nodeDeleteEvent)="folderDelete($event)">
+                        (menuItemSelected)="menuItemSelected($event)">
                         <ng-template #treeNodeTemplate let-node>
                             <span [ngClass]="{'media-node': node.id != '0', 'border-bottom': node.isSelected && node.id != '0'}">
                                 <fa-icon class="mr-1" *ngIf="node.id == 0" [icon]="['fas', 'photo-video']"></fa-icon>
@@ -47,7 +53,7 @@ import { UploadService } from './upload/upload.service';
                     </div>
                 </as-split-area>
             </as-split>
-            <file-dialog></file-dialog>
+            <file-modal></file-modal>
         </div>
         `,
     styles: [`
@@ -87,8 +93,9 @@ import { UploadService } from './upload/upload.service';
 export class MediaTreeComponent extends SubscriptionComponent {
 
     @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
-    medias: Array<Media>;
+    @ViewChild(FileModalComponent, { static: false }) fileModal: FileModalComponent;
 
+    medias: Array<Media>;
     root: TreeNode = new TreeNode({ id: '0', name: 'Media', hasChildren: true });
     treeConfig: TreeConfig = {
         service: ServiceLocator.Instance.get(MediaTreeService),
@@ -96,6 +103,10 @@ export class MediaTreeComponent extends SubscriptionComponent {
             {
                 action: NodeMenuItemAction.NewNodeInline,
                 name: "New Folder"
+            },
+            {
+                action: MediaMenuItemAction.NewFileUpload,
+                name: "Upload"
             },
             {
                 action: NodeMenuItemAction.EditNowInline,
@@ -110,11 +121,14 @@ export class MediaTreeComponent extends SubscriptionComponent {
                 name: "Paste"
             },
             {
-                action: NodeMenuItemAction.Delete,
+                action: MediaMenuItemAction.DeleteFolder,
                 name: "Delete"
             },
         ]
     }
+
+    selectedFolder: Partial<TreeNode>;
+
 
     constructor(
         private mediaService: MediaService,
@@ -131,15 +145,19 @@ export class MediaTreeComponent extends SubscriptionComponent {
 
         this.subscriptions.push(this.uploadService.uploadComplete$.subscribe(nodeId => {
             //Reload current node
-            this.folderSelected({ id: nodeId });
+            if (this.selectedFolder.id == nodeId) this.reloadSelectedFolder(nodeId);
         }));
-        this.folderSelected({ id: '0' });
+        this.folderSelected(this.root);
     }
 
-    folderSelected(node) {
-        this.uploadService.setParentFolder(node);
+    folderSelected(node: Partial<TreeNode>) {
+        this.selectedFolder = node;
+        this.reloadSelectedFolder(node.id);
+    }
+
+    private reloadSelectedFolder(folderId: string) {
         //load child block in folder
-        this.mediaService.getContentInFolder(node.id).subscribe(childMedias => {
+        this.mediaService.getContentInFolder(folderId).subscribe(childMedias => {
             this.medias = childMedias;
             this.medias.forEach(x => {
                 x["path"] = `http://localhost:3000/api/assets/${x._id}/${x.name}?w=50&h=50`;
@@ -148,7 +166,7 @@ export class MediaTreeComponent extends SubscriptionComponent {
     }
 
     clickToCreateFolder(node: TreeNode) {
-        this.cmsTree.menuItemSelected({ action: NodeMenuItemAction.NewNodeInline, node: node })
+        this.cmsTree.handleNodeMenuItemSelected({ action: NodeMenuItemAction.NewNodeInline, node: node })
     }
 
     createMediaFolder(node: TreeNode) {
@@ -160,12 +178,22 @@ export class MediaTreeComponent extends SubscriptionComponent {
 
     updateMediaFolder(node: TreeNode) {
         this.mediaService.editFolder({ name: node.name, _id: node.id })
-            .subscribe(folder => {
-                //this.subjectService.fireBlockFolderCreated(folder);
-            });
+            .subscribe();
     }
 
-    folderDelete(nodeToDelete: TreeNode) {
+    menuItemSelected(nodeAction: TreeMenuActionEvent) {
+        const { action, node } = nodeAction;
+        switch (action) {
+            case MediaMenuItemAction.NewFileUpload:
+                this.fileModal.openFileUploadModal(node);
+                break;
+            case MediaMenuItemAction.DeleteFolder:
+                this.folderDelete(node);
+                break;
+        }
+    }
+
+    private folderDelete(nodeToDelete: TreeNode) {
         if (nodeToDelete.id == '0') return;
         this.mediaService.softDeleteContent(nodeToDelete.id).subscribe(([folderToDelete, deleteResult]: [Media, any]) => {
             console.log(deleteResult);

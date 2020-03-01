@@ -8,6 +8,7 @@ type PanelConfig = {
 }
 
 type LayoutConfig = {
+    headerSize: number
     panels: PanelConfig[]
 }
 
@@ -40,6 +41,7 @@ export class CmsLayoutComponent {
 
     layoutConfig: LayoutConfig;
     private readonly layoutConfigKey: string = 'cms-layout-config-key';
+    private readonly headerSizeDefault: number = 55;
 
     constructor(private storageService: BrowserStorageService) { }
 
@@ -52,13 +54,9 @@ export class CmsLayoutComponent {
     }
 
     private resetConfig() {
-        this.layoutConfig = Object.assign({}, { panels: defaultPanelConfigs });
+        this.layoutConfig = Object.assign({}, { headerSize: this.headerSizeDefault, panels: defaultPanelConfigs });
 
         this.storageService.remove(this.layoutConfigKey);
-    }
-
-    private saveLocalStorage() {
-        this.storageService.set(this.layoutConfigKey, JSON.stringify(this.layoutConfig));
     }
 
     toggleLeftPanel() {
@@ -71,6 +69,11 @@ export class CmsLayoutComponent {
         this.saveLocalStorage();
     }
 
+    toggleHeader() { 
+        this.layoutConfig.headerSize = this.headerSizeDefault - this.layoutConfig.headerSize;
+        this.saveLocalStorage();
+    }
+
     onDragEnd(eventData: { gutterNum: number, sizes: Array<number> }) {
         // Set size for all visible columns
         this.layoutConfig.panels.filter(x => x.visible == true).forEach((row, index) => row.size = eventData.sizes[index])
@@ -78,4 +81,7 @@ export class CmsLayoutComponent {
         this.saveLocalStorage();
     }
 
+    private saveLocalStorage() {
+        this.storageService.set(this.layoutConfigKey, JSON.stringify(this.layoutConfig));
+    }
 }

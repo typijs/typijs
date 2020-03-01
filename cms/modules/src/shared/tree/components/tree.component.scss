@@ -23,15 +23,6 @@
         position: absolute;
         right: 0;
         cursor: pointer;
-
-        .dropdown-menu {
-          margin: 0;
-
-          a.dropdown-item {
-            text-decoration: none;
-            padding: 1px 1px 1px 5px;
-          }
-        }
       }
 
       &:hover {

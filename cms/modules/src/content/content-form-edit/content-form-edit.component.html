@@ -1,35 +1,44 @@
-<div class="row">
-    <div class="col-lg-12">
-        <form (ngSubmit)="onSubmit($event, formId)" [formGroup]="contentForm" #formId="ngForm">
-            <div class="card">
-                <div class="card-header">
-                    <dl class="row" *ngIf="currentContent">
-                        <dt class="col-sm-3">Name</dt>
-                        <dd class="col-sm-9">
-                            <input type="text" class="form-control" name="name" formControlName="name"></dd>
-                        <dt class="col-sm-3">Name in url</dt>
-                        <dd class="col-sm-9">{{currentContent.urlSegment}}</dd>
-                        <dt class="col-sm-3">Link url</dt>
-                        <dd class="col-sm-9">{{currentContent.linkUrl}}</dd>
-                        <dt class="col-sm-3">Type</dt>
-                        <dd class="col-sm-9">{{currentContent.contentType}}</dd>
-                    </dl>
-                </div>
-                <div class="card-body">
-                    <!-- <ng-template cmsInsertPoint></ng-template> -->
-                    <tabset>
-                        <tab *ngFor="let tabz of formTabs" [heading]="tabz.title">
-                            <ng-template [cmsInsertPoint]="tabz.content"></ng-template>
-                        </tab>
-                    </tabset>
-                </div>
-                <div class="card-footer ">
-                    <button type="button" class="btn btn-sm btn-primary" (click)="formId.ngSubmit.emit(false)">
-                        <i class="fa fa-dot-circle-o "></i> Save as draft</button>
-                    <button type="button" class="btn btn-sm btn-success" (click)="formId.ngSubmit.emit(true)">
-                        <i class="fa fa-ban "></i> Publish</button>
+<div style="height: 100%;">
+    <as-split gutterSize="0" unit="pixel" direction="vertical" class="has-lock-area">
+        <as-split-area size="40" lockSize="true">
+            <div>
+                <button type="button" class="btn btn-sm btn-primary" (click)="formId.ngSubmit.emit(false)">
+                    <i class="fa fa-dot-circle-o "></i> Save as draft</button>
+                <button type="button" class="btn btn-sm btn-success" (click)="formId.ngSubmit.emit(true)">
+                    <i class="fa fa-ban "></i> Publish</button>
+            </div>
+        </as-split-area>
+        <as-split-area size="*">
+            <div class="row">
+                <div class="col-lg-12">
+                    <form (ngSubmit)="onSubmit($event, formId)" [formGroup]="contentForm" #formId="ngForm">
+                        <div class="card">
+                            <div class="card-header">
+                                <dl class="row" *ngIf="currentContent">
+                                    <dt class="col-sm-3">Name</dt>
+                                    <dd class="col-sm-9">
+                                        <input type="text" class="form-control" name="name" formControlName="name"></dd>
+                                    <dt class="col-sm-3">Name in url</dt>
+                                    <dd class="col-sm-9">{{currentContent.urlSegment}}</dd>
+                                    <dt class="col-sm-3">Link url</dt>
+                                    <dd class="col-sm-9">{{currentContent.linkUrl}}</dd>
+                                    <dt class="col-sm-3">Type</dt>
+                                    <dd class="col-sm-9">{{currentContent.contentType}}</dd>
+                                </dl>
+                            </div>
+                            <div class="card-body">
+                                <!-- <ng-template cmsInsertPoint></ng-template> -->
+                                <tabset>
+                                    <tab *ngFor="let tabz of formTabs" [heading]="tabz.title">
+                                        <ng-template [cmsInsertPoint]="tabz.content"></ng-template>
+                                    </tab>
+                                </tabset>
+                            </div>
+                            
+                        </div>
+                    </form>
                 </div>
             </div>
-        </form>
-    </div>
+        </as-split-area>
+    </as-split>
 </div>

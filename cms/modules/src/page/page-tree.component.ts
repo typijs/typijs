@@ -5,10 +5,15 @@ import { ServiceLocator, Page, PageService } from '@angular-cms/core';
 import { TreeNode } from '../shared/tree/interfaces/tree-node';
 import { TreeComponent } from '../shared/tree/components/tree.component';
 import { TreeConfig } from '../shared/tree/interfaces/tree-config';
-import { NodeMenuItemAction } from '../shared/tree/interfaces/tree-menu'
+import { NodeMenuItemAction, TreeMenuActionEvent } from '../shared/tree/interfaces/tree-menu'
 import { PageTreeService } from './page-tree.service';
 import { SubscriptionComponent } from '../shared/subscription.component';
 import { SubjectService } from '../shared/services/subject.service';
+
+const PageMenuItemAction = {
+    DeletePage: 'DeletePage',
+    NewPage: 'NewPage'
+}
 
 @Component({
     template: `
@@ -17,8 +22,7 @@ import { SubjectService } from '../shared/services/subject.service';
             [root]="root"
             [config]="treeConfig"
             (nodeSelected)="pageSelected($event)"
-            (nodeCreated)="pageCreated($event)"
-            (nodeDeleteEvent)="pageDelete($event)">
+            (menuItemSelected)="menuItemSelected($event)">
             <ng-template #treeNodeTemplate let-node>
                 <span [ngClass]="{'page-node': node.id != '0', 'border-bottom': node.isSelected && node.id != '0'}">
                     <fa-icon class="mr-1" *ngIf="node.id == '0'" [icon]="['fas', 'sitemap']"></fa-icon>
@@ -50,7 +54,7 @@ export class PageTreeComponent extends SubscriptionComponent {
         service: ServiceLocator.Instance.get(PageTreeService),
         menuItems: [
             {
-                action: NodeMenuItemAction.NewNode,
+                action: PageMenuItemAction.NewPage,
                 name: "New Page"
             },
             {
@@ -66,7 +70,7 @@ export class PageTreeComponent extends SubscriptionComponent {
                 name: "Paste"
             },
             {
-                action: NodeMenuItemAction.Delete,
+                action: PageMenuItemAction.DeletePage,
                 name: "Delete"
             },
         ]
@@ -105,11 +109,23 @@ export class PageTreeComponent extends SubscriptionComponent {
         this.router.navigate(["content/page", node.id], { relativeTo: this.route })
     }
 
-    pageCreated(parentNode: TreeNode) {
+    menuItemSelected(nodeAction: TreeMenuActionEvent) {
+        const { action, node } = nodeAction;
+        switch (action) {
+            case PageMenuItemAction.NewPage:
+                this.pageCreating(node);
+                break;
+            case PageMenuItemAction.DeletePage:
+                this.pageDelete(node);
+                break;
+        }
+    }
+
+    private pageCreating(parentNode: TreeNode) {
         this.router.navigate(["new/page", parentNode.id], { relativeTo: this.route })
     }
 
-    pageDelete(nodeToDelete: TreeNode) {
+    private pageDelete(nodeToDelete: TreeNode) {
         if (nodeToDelete.id == '0') return;
         this.pageService.softDeleteContent(nodeToDelete.id).subscribe(([pageToDelete, deleteResult]: [Page, any]) => {
             console.log(deleteResult);

@@ -1,5 +1,4 @@
-// Import Core UI style
-@import 'assets/scss/style';
+@import '~bootstrap/scss/bootstrap';
 
 html,
 body {
@@ -43,4 +42,9 @@ input {
 .drag-over-expand {
   transition: all .2s ease-in-out;
   transform: scale(1.05);
+}
+
+.node-menu-dropdown {
+  right: -15px !important;
+  top: -8px;
 }

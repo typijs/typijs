@@ -10,42 +10,44 @@ export type UploadProgress = {
 }
 
 export type FileUploadProgress = {
-    folder: TreeNode, files: File[], uploadProgress: UploadProgress
+    folder: Partial<TreeNode>;
+    files: File[];
+    uploadProgress: UploadProgress;
 }
 
 @Injectable()
 export class UploadService {
-    private parentFolder: TreeNode;
 
     fileUploadProgress$: Subject<FileUploadProgress> = new Subject<FileUploadProgress>();
     uploadComplete$: Subject<string> = new Subject<string>();
 
     constructor(private mediaService: MediaService) { }
 
-    public setFilesToUpload(files: Array<File>) {
-        const uploadProgress = this.uploadFiles(files);
+    public uploadFiles(files: Array<File>, targetFolder: Partial<TreeNode>) {
+        const uploadProgress = this.getUploadProgress(files, targetFolder);
+
         this.fileUploadProgress$.next({
-            folder: this.parentFolder,
+            folder: targetFolder,
             files: files,
             uploadProgress: uploadProgress
         });
 
         // convert the progress map into an array
-        let allProgressObservables = [];
+        const allProgressObservables = [];
         for (let key in uploadProgress) {
             allProgressObservables.push(uploadProgress[key].progress);
         }
         // When all progress-observables are completed...
         forkJoin(allProgressObservables).subscribe(() => {
-            let nodeId = this.parentFolder ? this.parentFolder.id : '0';
+            const nodeId = targetFolder ? targetFolder.id : '0';
             this.uploadComplete$.next(nodeId);
         });
     }
 
-    private uploadFiles(files: Array<File>): UploadProgress {
+    private getUploadProgress(files: Array<File>, targetFolder: Partial<TreeNode>): UploadProgress {
         // this will be the our resulting map
-        const uploadStatus: UploadProgress = {};
-        const parentFolderId = this.parentFolder ? this.parentFolder.id : '';
+        const uploadProgress: UploadProgress = {};
+        const parentFolderId = targetFolder ? targetFolder.id : '';
 
         files.forEach(file => {
             // create a new progress-subject for every file
@@ -69,16 +71,12 @@ export class UploadService {
             });
 
             // Save every progress-observable in a map of all observables
-            uploadStatus[file.name] = {
+            uploadProgress[file.name] = {
                 progress: progress.asObservable()
             };
         });
 
         // return the map of progress.observables
-        return uploadStatus;
-    }
-
-    public setParentFolder(parentNode: TreeNode) {
-        this.parentFolder = parentNode;
+        return uploadProgress;
     }
 }

@@ -11,7 +11,7 @@ import { CoreModule } from '@angular-cms/core';
 import { TreeNodeComponent } from './components/tree-node.component';
 import { TreeChildrenComponent } from './components/tree-children.component';
 import { TreeComponent } from './components/tree.component';
-import { CmsBsDropdownModule } from '../ngx-bootstrap/bs-dropdown.module';
+import { CmsBsDropdownModule } from '../libs/ngx-bootstrap/bs-dropdown.module';
 import { DndModule } from '../dnd/dnd.module';
 
 @NgModule({
