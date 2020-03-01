@@ -18,7 +18,9 @@ import { ModalComponent } from '../../shared//modal.component';
         <div dragOver class="modal-body">
             <div class="mb-3">
                 <div class="custom-file col-5">
-                    <input type="file" id="modalInputFile" multiple class="custom-file-input"/>
+                    <input type="file" id="modalInputFile" class="custom-file-input" multiple
+                        cmsFileSelect 
+                        (onFileSelected)="filesSelected($event)"/>
                     <label class="custom-file-label" for="modalInputFile">Choose files</label>
                 </div>
                 <span class="align-middle"> Or drop files here</span>
@@ -98,6 +100,10 @@ export class FileModalComponent extends ModalComponent {
             this.chooseFiles = data.files;
             if (!this.isModalShown) this.showModal();
         }));
+    }
+
+    filesSelected(files: File[]) {
+        this.uploadService.uploadFiles(files, this.targetFolder);
     }
 
     openFileUploadModal(folder: Partial<TreeNode>) {

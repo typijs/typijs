@@ -21,6 +21,7 @@ import { DragOverDirective } from './upload/drag-over.directive';
 import { FileModalComponent } from './upload/file-modal.component';
 import { FileDropComponent } from './upload/file-drop.component';
 import { UploadService } from './upload/upload.service';
+import { FileSelectDirective } from './upload/file-select.directive';
 
 @NgModule({
     imports: [
@@ -42,6 +43,7 @@ import { UploadService } from './upload/upload.service';
         MediaTreeComponent,
         FileDropComponent,
         FileModalComponent,
+        FileSelectDirective,
         DragOverDirective,
         DragLeaveDirective
     ],
