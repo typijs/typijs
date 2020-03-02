@@ -2,7 +2,7 @@ import { Component, ViewEncapsulation } from '@angular/core';
 
 @Component({
     template: `<router-outlet></router-outlet>`,
-    styleUrls: ['./cms.component.scss'],
+    styleUrls: ['./scss/style.scss'],
     encapsulation: ViewEncapsulation.None
 })
 export class CmsComponent {

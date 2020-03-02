@@ -29,9 +29,7 @@ const defaultPanelConfigs: PanelConfig[] = [
 
 @Component({
     selector: 'cms-layout',
-    templateUrl: './cms-layout.component.html',
-    styleUrls: ['./cms-layout.component.scss'],
-    encapsulation: ViewEncapsulation.None
+    templateUrl: './cms-layout.component.html'
 })
 export class CmsLayoutComponent {
     @ViewChildren(InsertPointDirective) insertPoints: QueryList<InsertPointDirective>;
@@ -69,7 +67,7 @@ export class CmsLayoutComponent {
         this.saveLocalStorage();
     }
 
-    toggleHeader() { 
+    toggleHeader() {
         this.layoutConfig.headerSize = this.headerSizeDefault - this.layoutConfig.headerSize;
         this.saveLocalStorage();
     }

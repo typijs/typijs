@@ -11,7 +11,6 @@ import { CmsComponent } from './cms.component';
 import { CmsRoutingModule } from './cms.routing';
 import { EditorLayoutComponent } from './editor-layout/editor-layout.component';
 import { WidgetService } from './services/widget.service';
-import { CmsFooterComponent } from './shared/components/cms-footer/cms-footer.component';
 import { CmsHeaderComponent } from './shared/components/cms-header/cms-header.component';
 import { CmsLayoutComponent } from './shared/components/cms-layout/cms-layout.component';
 import { ReplaceDirective } from './shared/directives/replace/replace.directive';
@@ -36,7 +35,6 @@ import { ReplaceDirective } from './shared/directives/replace/replace.directive'
     CmsComponent,
     CmsLayoutComponent,
     CmsHeaderComponent,
-    CmsFooterComponent,
     ReplaceDirective,
     EditorLayoutComponent,
     AdminLayoutComponent

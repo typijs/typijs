@@ -1,11 +1,13 @@
-<div style="height: 100%;">
+<div class="h-100">
     <as-split gutterSize="0" unit="pixel" direction="vertical" class="has-lock-area">
         <as-split-area size="40" lockSize="true">
-            <div>
-                <button type="button" class="btn btn-sm btn-primary" (click)="formId.ngSubmit.emit(false)">
-                    <i class="fa fa-dot-circle-o "></i> Save as draft</button>
-                <button type="button" class="btn btn-sm btn-success" (click)="formId.ngSubmit.emit(true)">
-                    <i class="fa fa-ban "></i> Publish</button>
+            <div class="float-right">
+                <button type="button" class="btn btn-sm btn-primary mr-1" [disabled]="!formId.dirty"
+                    (click)="formId.ngSubmit.emit(false)">
+                    <i class="fa fa-dot-circle-o "></i>Update</button>
+                <button type="button" class="btn btn-sm btn-success" [disabled]="!formId.valid"
+                    (click)="formId.ngSubmit.emit(true)">
+                    <i class="fa fa-ban "></i>Publish</button>
             </div>
         </as-split-area>
         <as-split-area size="*">
@@ -26,15 +28,14 @@
                                     <dd class="col-sm-9">{{currentContent.contentType}}</dd>
                                 </dl>
                             </div>
-                            <div class="card-body">
-                                <!-- <ng-template cmsInsertPoint></ng-template> -->
+                            <div>
                                 <tabset>
                                     <tab *ngFor="let tabz of formTabs" [heading]="tabz.title">
                                         <ng-template [cmsInsertPoint]="tabz.content"></ng-template>
                                     </tab>
                                 </tabset>
                             </div>
-                            
+
                         </div>
                     </form>
                 </div>
