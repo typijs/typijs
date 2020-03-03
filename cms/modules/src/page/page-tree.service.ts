@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { PageService, Page } from '@angular-cms/core';
 import { map } from 'rxjs/operators';
+
+import { PageService, Page } from '@angular-cms/core';
 
 import { TreeService } from '../shared/tree/interfaces/tree-service';
 import { TreeNode } from '../shared/tree/interfaces/tree-node';

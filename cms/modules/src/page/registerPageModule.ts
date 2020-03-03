@@ -1,9 +1,9 @@
-import { registerModule, CmsModuleRoot, CmsWidgetPosition } from '@angular-cms/core';
-import { PageModule } from './page.module';
-import { PageTreeComponent } from './page-tree.component';
-import { PageTreeReadonlyComponent } from './page-tree-readonly.component';
-import { ContentTypeListComponent } from '../content/content-type-list/content-type-list.component';
+import { CmsModuleRoot, CmsWidgetPosition, registerModule } from '@angular-cms/core';
 import { ContentFormEditComponent } from '../content/content-form-edit/content-form-edit.component';
+import { ContentTypeListComponent } from '../content/content-type-list/content-type-list.component';
+import { PageTreeReadonlyComponent } from './page-tree-readonly.component';
+import { PageTreeComponent } from './page-tree.component';
+import { PageModule } from './page.module';
 
 
 export function registerPageModule() {
@@ -14,15 +14,15 @@ export function registerPageModule() {
                 name: CmsModuleRoot.Editor,
                 routes: [
                     {
-                        path: 'new/:type', //type is 'block' or 'page'
+                        path: 'new/page',
                         component: ContentTypeListComponent
                     },
                     {
-                        path: 'new/:type/:parentId', //type is 'block' or 'page'
+                        path: 'new/page/:parentId',
                         component: ContentTypeListComponent
                     },
                     {
-                        path: 'content/:type/:id', //type is 'block' or 'page'
+                        path: 'content/page/:id',
                         component: ContentFormEditComponent
                     }
                 ],
