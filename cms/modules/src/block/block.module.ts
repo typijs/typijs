@@ -4,11 +4,12 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faCubes, faFolder } from '@fortawesome/free-solid-svg-icons';
+import { faCubes, faFolder, faCube, faFolderPlus, faPlusSquare, faBars } from '@fortawesome/free-solid-svg-icons';
 
 import { CoreModule } from '@angular-cms/core';
 
 import { CmsAngularSplitModule } from '../shared/libs/angular-split/module';
+import { CmsBsDropdownModule } from '../shared/libs/ngx-bootstrap/bs-dropdown.module';
 import { DndModule } from '../shared/dnd/dnd.module';
 import { TreeModule } from '../shared/tree/tree.module';
 
@@ -27,6 +28,7 @@ import { BlockTreeService } from './block-tree.service';
 
         TreeModule,
         CmsAngularSplitModule.forRoot(),
+        CmsBsDropdownModule.forRoot(),
         DndModule
     ],
     declarations: [
@@ -42,6 +44,6 @@ import { BlockTreeService } from './block-tree.service';
 })
 export class BlockModule {
     constructor(private library: FaIconLibrary) {
-        library.addIcons(faFolder, faCubes);
+        library.addIcons(faFolder, faCubes, faCube, faFolderPlus, faPlusSquare, faBars);
     }
 }

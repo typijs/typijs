@@ -1,6 +1,6 @@
 import { Component, ViewChildren, QueryList, ComponentFactoryResolver, Inject, Injector, OnInit, ChangeDetectorRef, ComponentRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, UrlSegment } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { PROPERTY_METADATA_KEY, PROPERTIES_METADATA_KEY, Media, Block, Page, ChildItemRef, Content } from '@angular-cms/core';
@@ -49,7 +49,8 @@ export class ContentFormEditComponent implements OnInit {
     ngOnInit() {
         this.subParams = this.route.params.subscribe(params => {
             const contentId = params['id'] || '';
-            this.typeOfContent = params['type'];
+            const url: UrlSegment[] = this.route.snapshot.url;
+            this.typeOfContent = url.length >= 2 && url[0].path == 'content' ? url[1].path : '';
 
             if (contentId) {
                 switch (this.typeOfContent) {

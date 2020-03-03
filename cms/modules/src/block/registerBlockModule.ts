@@ -1,6 +1,8 @@
-import { registerModule, CmsModuleRoot, CmsWidgetPosition } from '@angular-cms/core';
-import { BlockModule } from './block.module';
+import { CmsModuleRoot, CmsWidgetPosition, registerModule } from '@angular-cms/core';
+import { ContentFormEditComponent } from '../content/content-form-edit/content-form-edit.component';
+import { ContentTypeListComponent } from '../content/content-type-list/content-type-list.component';
 import { BlockTreeComponent } from './block-tree.component';
+import { BlockModule } from './block.module';
 
 export function registerBlockModule() {
     registerModule({
@@ -8,6 +10,20 @@ export function registerBlockModule() {
         roots: [
             {
                 name: CmsModuleRoot.Editor,
+                routes: [
+                    {
+                        path: 'new/block',
+                        component: ContentTypeListComponent
+                    },
+                    {
+                        path: 'new/block/:parentId',
+                        component: ContentTypeListComponent
+                    },
+                    {
+                        path: 'content/block/:id',
+                        component: ContentFormEditComponent
+                    }
+                ],
                 widgets: [
                     {
                         component: BlockTreeComponent,
