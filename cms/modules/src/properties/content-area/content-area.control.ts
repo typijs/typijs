@@ -25,23 +25,50 @@ export interface ContentAreaItem {
 @Component({
     selector: 'content-area',
     template: `
-            <ul class="list-group" droppable (onDrop)="onDropItem($event)">
-                <li class="list-group-item d-flex list-group-item-action justify-content-between align-items-center" 
+            <ul class="content-area list-group border p-2" droppable (onDrop)="onDropItem($event)">
+                <li class="list-group-item list-group-item-action rounded mb-1 p-2" 
                     *ngFor="let item of model;" 
                     draggable 
                     [dragData]="item">
-                    <div>
-                        <i class="fa fa-comment fa-fw"></i> {{item.name}}
+                    <div class="d-flex align-items-center">
+                        <fa-icon class="mr-1" [icon]="['fas', 'cube']"></fa-icon>
+                        <div class="w-100 mr-2 text-truncate">{{item.name}}</div>
+                        <div class="item-menu ml-auto" dropdown container="body">
+                            <fa-icon class="mr-1" [icon]="['fas', 'bars']" dropdownToggle></fa-icon>
+                            <div class="node-menu-dropdown dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
+                                <a class="dropdown-item p-2" href="javascript:void(0)">
+                                    Edit
+                                </a>
+                                <a class="dropdown-item p-2" href="javascript:void(0)" (click)="removeItem(item)">
+                                    Remove
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </li>
-                <li class="list-group-item d-flex list-group-item-action justify-content-between align-items-center"
-                    dndPlaceholder>
-                    <div>
-                        <i class="fa fa-comment fa-fw"></i> Drop here
-                    </div>
-                </li>
+                <li class="list-group-item d-flex list-group-item-action rounded mb-1 p-1 bg-info"
+                    dndPlaceholder></li>
             </ul>
-`,
+    `,
+    styles: [`
+        .content-area {
+            min-height: 100px;
+        }
+
+        .item-menu {
+            display: none;
+        }
+
+        .list-group-item-action:focus,
+        .list-group-item-action:hover {
+            z-index: 0;
+            }
+
+        .list-group-item-action:focus .item-menu, 
+        .list-group-item-action:hover .item-menu {
+            display: block;
+        }
+    `],
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -80,18 +107,30 @@ export class ContentAreaControl implements ControlValueAccessor {
         this.onTouched = fn;
     }
 
+    removeItem(item: Partial<ContentAreaItem>) {
+        const existIndex = this._model.findIndex(x => x.guid == item.guid);
+        if (existIndex != -1) {
+            this._model.splice(existIndex, 1);
+        }
+        this.onChange(this._model);
+    }
+
     onDropItem(e: any) {
         if (!this._model) this._model = [];
         //TODO: emit unnecessary field when drop 
         const itemIndex = e.index;
-        const { _id, name, contentType, isPublished }: Partial<Content> = e.dragData;
+        const { _id, name, contentType, owner, guid, type }: Partial<Content> & { owner: string, guid: string } = e.dragData;
         const item: Partial<ContentAreaItem> = {
             _id: _id,
             name: name,
             contentType: contentType,
+            owner: owner,
+            guid: guid,
+            type: type
         };
 
         if (item.owner == this.name) {
+            // Sort item in content area by dnd
             const oldGuid = item.guid;
             item.guid = generateUUID();
 
@@ -100,7 +139,9 @@ export class ContentAreaControl implements ControlValueAccessor {
             if (existIndex != -1) {
                 this._model.splice(existIndex, 1);
             }
-        } else {
+        }
+        else {
+            // Insert new item
             item.guid = generateUUID();
             item.owner = this.name;
             this._model.splice(itemIndex, 0, item);

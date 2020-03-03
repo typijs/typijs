@@ -2,6 +2,9 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
+import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faFile, faFolder, faCube, faImage, faBars } from '@fortawesome/free-solid-svg-icons';
+
 import { EditorModule } from '@tinymce/tinymce-angular';
 import { CoreModule } from '@angular-cms/core';
 
@@ -27,6 +30,7 @@ import { ContentReferenceControl } from './content-reference/content-reference.c
 import { ContentReferenceComponent } from './content-reference/content-reference.component';
 
 import { registerCmsProperties } from './registerCmsProperties';
+import { CmsBsDropdownModule } from '../shared/libs/ngx-bootstrap/bs-dropdown.module';
 
 registerCmsProperties();
 
@@ -36,6 +40,8 @@ registerCmsProperties();
         FormsModule,
         ReactiveFormsModule,
         EditorModule,
+        FontAwesomeModule,
+        CmsBsDropdownModule.forRoot(),
         CoreModule,
         DndModule
     ],
@@ -77,6 +83,10 @@ registerCmsProperties();
         ContentReferenceComponent
     ]
 })
-export class PropertiesModule { }
+export class PropertiesModule {
+    constructor(private library: FaIconLibrary) {
+        library.addIcons(faFolder, faFile, faImage, faCube, faBars);
+    }
+}
 
 
