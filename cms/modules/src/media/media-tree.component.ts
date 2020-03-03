@@ -45,11 +45,18 @@ const MediaMenuItemAction = {
                     </cms-tree>
                 </as-split-area>
                 <as-split-area size="50">
-                    <div class="media-content list-group"  *ngIf="medias" #mediaItem>
-                        <div *ngFor="let media of medias" [draggable] [dragData]="media" class="list-group-item">
-                            <img [src]='media["path"]'/>
-                            {{media.name}}
-                        </div>
+                    <div class="list-group media-content"  *ngIf="medias" #mediaItem>
+                        <a *ngFor="let media of medias" 
+                            [draggable] 
+                            [dragData]="media"  
+                            class="list-group-item list-group-item-action flex-column align-items-start p-1" 
+                            [routerLink]="['content/media', media._id]">
+                            <div class="d-flex align-items-center">
+                                <img class="mr-1" [src]='media["path"]'/>
+                                <div class="w-100 mr-2 text-truncate">{{media.name}}</div>
+                                <fa-icon class="ml-auto" [icon]="['fas', 'bars']"></fa-icon>
+                            </div>
+                        </a>
                     </div>
                 </as-split-area>
             </as-split>
@@ -159,8 +166,9 @@ export class MediaTreeComponent extends SubscriptionComponent {
         //load child block in folder
         this.mediaService.getContentInFolder(folderId).subscribe(childMedias => {
             this.medias = childMedias;
-            this.medias.forEach(x => {
-                x["path"] = `http://localhost:3000/api/assets/${x._id}/${x.name}?w=50&h=50`;
+            this.medias.forEach(file => {
+                file.type = 'Media';
+                file["path"] = `http://localhost:3000/api/assets/${file._id}/${file.name}?w=50&h=50`;
             })
         })
     }

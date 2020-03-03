@@ -25,6 +25,8 @@ export class Content {
 
     //IContent
     contentType: string;
+
+    type: 'Page' | 'Block' | 'Media' | 'Folder';
     //contain all property's values which are defined as property (using decorator @Property) of content type
     //@key will be property name of content type
     properties: { [key: string]: any };
