@@ -10,8 +10,9 @@ import { PageService, BlockService } from '@angular-cms/core';
 import { PropertyListComponent } from '../../properties/property-list/property-list.component';
 import { SelectProperty } from '../../properties/select/select-property';
 
-import { PAGE_TYPE, BLOCK_TYPE } from './../../constants';
+import { PAGE_TYPE, BLOCK_TYPE, MEDIA_TYPE, FOLDER_BLOCK, FOLDER_MEDIA } from './../../constants';
 import { SubjectService } from '../../shared/services/subject.service';
+import { ContentAreaItem } from "../../properties/content-area/ContentAreaItem";
 
 type FormProperty = {
     name: string,
@@ -110,6 +111,26 @@ export class ContentFormEditComponent implements OnInit {
         return metadatas;
     }
 
+    private populateReferenceProperty(property: FormProperty): void {
+        if (this.currentContent.properties) {
+            const childItems = this.currentContent.childItems;
+            const fieldType = property.metadata.displayType;
+            switch (fieldType) {
+                // Content Area
+                case UIHint.ContentArea:
+                    const contentAreaItems: ContentAreaItem[] = this.currentContent.properties[property.name]
+                    if (Array.isArray(contentAreaItems)) {
+                        contentAreaItems.forEach(areaItem => {
+                            const matchItem = childItems.find(x => x.content._id == areaItem._id);
+                            Object.assign(areaItem, { name: matchItem.content.name, isPublished: matchItem.content.isPublished })
+                        })
+                    }
+                    this.currentContent.properties[property.name] = contentAreaItems;
+                    break;
+            }
+        }
+    }
+
     private createFormTabs(properties: Array<FormProperty>): Array<CmsTab> {
         const tabs: CmsTab[] = [];
 
@@ -186,59 +207,7 @@ export class ContentFormEditComponent implements OnInit {
         return formControls;
     }
 
-    //get all reference id of blocks in all content area
-    private getChildItems(): ChildItemRef[] {
-        const childItems: ChildItemRef[] = [];
-
-        Object.keys(this.currentContent.properties).forEach(fieldName => {
-            const fieldMeta = this.propertyMetadatas.find(x => x.name == fieldName);
-            if (fieldMeta) {
-                const fieldType = fieldMeta.metadata.displayType;
-
-                switch (fieldType) {
-                    case UIHint.ContentArea:
-                        const fieldValue = this.currentContent.properties[fieldName]
-                        if (Array.isArray(fieldValue)) {
-                            fieldValue.forEach(item => {
-                                if (childItems.findIndex(x => x.content && x.content == item._id) == -1)
-                                    childItems.push({
-                                        refPath: 'cms_Block', //TODO: need to get path based on item which drop on content area
-                                        content: item._id
-                                    })
-                            })
-                        }
-                        break;
-                }
-            }
-        })
-        return childItems;
-    }
-
-    private populateReferenceProperty(property: FormProperty): void {
-        if (this.currentContent.properties) {
-            const childItems = this.currentContent.childItems;
-            const fieldType = property.metadata.displayType;
-            switch (fieldType) {
-                // Content Area
-                case UIHint.ContentArea:
-                    const fieldValue = this.currentContent.properties[property.name]
-                    if (Array.isArray(fieldValue)) {
-                        for (let i = 0; i < fieldValue.length; i++) {
-                            const matchItem = childItems.find(x => x.content._id == fieldValue[i]._id);
-                            if (matchItem) {
-                                fieldValue[i] = clone(matchItem.content);
-                            }
-                        }
-                    }
-                    this.currentContent.properties[property.name] = fieldValue;
-                    break;
-            }
-        }
-    }
-
-    onSubmit(isPublished: boolean, formId: any) {
-        console.log(this.contentForm.value);
-
+    updateContent(isPublished: boolean, formId: any) {
         if (this.contentForm.valid) {
             if (this.currentContent) {
                 const properties = {};
@@ -273,6 +242,44 @@ export class ContentFormEditComponent implements OnInit {
                 }
 
             }
+        }
+    }
+
+    //get all reference id of blocks in all content area
+    private getChildItems(): ChildItemRef[] {
+        const childItems: ChildItemRef[] = [];
+
+        Object.keys(this.currentContent.properties).forEach(fieldName => {
+            const fieldMeta = this.propertyMetadatas.find(x => x.name == fieldName);
+            if (fieldMeta) {
+                const fieldType = fieldMeta.metadata.displayType;
+
+                switch (fieldType) {
+                    case UIHint.ContentArea:
+                        const contentAreaItems: ContentAreaItem[] = this.currentContent.properties[fieldName]
+                        if (Array.isArray(contentAreaItems)) {
+                            contentAreaItems.forEach(areaItem => {
+                                if (childItems.findIndex(x => x.content && x.content == areaItem._id) == -1) {
+                                    const refPath = this.getRefPathFromContentType(areaItem.type);
+                                    if (refPath) childItems.push({ refPath: refPath, content: areaItem._id })
+                                }
+                            })
+                        }
+                        break;
+                }
+            }
+        })
+        return childItems;
+    }
+
+    private getRefPathFromContentType(contentAreaItemType: 'page' | 'block' | 'media' | 'folder_block' | 'folder_media'): 'cms_Block' | 'cms_Page' | 'cms_Media' {
+        switch (contentAreaItemType) {
+            case PAGE_TYPE: return 'cms_Page';
+            case BLOCK_TYPE: return 'cms_Block';
+            case FOLDER_BLOCK: return 'cms_Block';
+            case MEDIA_TYPE: return 'cms_Media';
+            case FOLDER_MEDIA: return 'cms_Media';
+            default: return null;
         }
     }
 

@@ -13,7 +13,7 @@
         <as-split-area size="*">
             <div class="row">
                 <div class="col-lg-12">
-                    <form (ngSubmit)="onSubmit($event, formId)" [formGroup]="contentForm" #formId="ngForm">
+                    <form (ngSubmit)="updateContent($event, formId)" [formGroup]="contentForm" #formId="ngForm">
                         <div class="card">
                             <div class="card-header">
                                 <dl class="row" *ngIf="currentContent">

@@ -1,25 +1,12 @@
 import { Component, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { Content } from '@angular-cms/core';
+import { ContentAreaItem } from './ContentAreaItem';
 
 function generateUUID() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
     });
-}
-
-export interface ContentAreaItem {
-    //mongoose Object id
-    _id?: string;
-    //guid id in this content area
-    guid?: string;
-    //belong to which content area
-    owner?: string;
-    name?: string;
-    contentType?: string;
-    //type of content area item
-    type?: string;
 }
 
 @Component({
@@ -31,7 +18,13 @@ export interface ContentAreaItem {
                     draggable 
                     [dragData]="item">
                     <div class="d-flex align-items-center">
-                        <fa-icon class="mr-1" [icon]="['fas', 'cube']"></fa-icon>
+                        <ng-container [ngSwitch]="item.type">
+                            <fa-icon *ngSwitchCase="'page'" class="mr-1" [icon]="['fas', 'file']"></fa-icon>
+                            <fa-icon *ngSwitchCase="'media'" class="mr-1" [icon]="['fas', 'image']"></fa-icon>
+                            <fa-icon *ngSwitchCase="'folder_block'" class="mr-1" [icon]="['fas', 'folder']"></fa-icon>
+                            <fa-icon *ngSwitchCase="'folder_media'" class="mr-1" [icon]="['fas', 'folder']"></fa-icon>
+                            <fa-icon *ngSwitchDefault class="mr-1" [icon]="['fas', 'cube']"></fa-icon>
+                        </ng-container>
                         <div class="w-100 mr-2 text-truncate">{{item.name}}</div>
                         <div class="item-menu ml-auto" dropdown container="body">
                             <fa-icon class="mr-1" [icon]="['fas', 'bars']" dropdownToggle></fa-icon>
@@ -119,14 +112,15 @@ export class ContentAreaControl implements ControlValueAccessor {
         if (!this._model) this._model = [];
         //TODO: emit unnecessary field when drop 
         const itemIndex = e.index;
-        const { _id, name, contentType, owner, guid, type }: Partial<Content> & { owner: string, guid: string } = e.dragData;
-        const item: Partial<ContentAreaItem> = {
-            _id: _id,
+        const { _id, id, name, owner, guid, extendProperties, type, contentType, isPublished } = e.dragData;
+        const item: ContentAreaItem = {
+            _id: _id ? _id : id,
             name: name,
-            contentType: contentType,
             owner: owner,
             guid: guid,
-            type: type
+            type: extendProperties ? extendProperties.type : type,
+            contentType: extendProperties ? extendProperties.contentType : contentType,
+            isPublished: extendProperties ? extendProperties.isPublished : isPublished
         };
 
         if (item.owner == this.name) {

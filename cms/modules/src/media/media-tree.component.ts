@@ -12,6 +12,7 @@ import { TreeNode } from '../shared/tree/interfaces/tree-node';
 import { MediaTreeService } from './media-tree.service';
 import { UploadService } from './upload/upload.service';
 import { FileModalComponent } from './upload/file-modal.component';
+import { ContentTreeNode, MEDIA_TYPE } from '../constants';
 
 const MediaMenuItemAction = {
     DeleteFolder: 'DeleteFolder',
@@ -165,9 +166,15 @@ export class MediaTreeComponent extends SubscriptionComponent {
     private reloadSelectedFolder(folderId: string) {
         //load child block in folder
         this.mediaService.getContentInFolder(folderId).subscribe(childMedias => {
+            childMedias.forEach(media => Object.assign(media, {
+                extendProperties: <ContentTreeNode>{
+                    type: MEDIA_TYPE,
+                    contentType: media.contentType,
+                    isPublished: media.isPublished
+                }
+            }));
             this.medias = childMedias;
             this.medias.forEach(file => {
-                file.type = 'Media';
                 file["path"] = `http://localhost:3000/api/assets/${file._id}/${file.name}?w=50&h=50`;
             })
         })

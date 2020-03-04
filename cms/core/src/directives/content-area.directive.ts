@@ -18,7 +18,10 @@ export class ContentAreaDirective implements OnDestroy {
         this.viewContainerRef.clear();
         this._value = value;
         if (this._value) {
-            this._value.forEach(block => this.componentRefs.push(this.createBlockComponent(block)))
+            this._value.forEach(block => {
+                const createdComponent = this.createBlockComponent(block);
+                if (createdComponent) this.componentRefs.push(createdComponent);
+            })
         }
     }
     get value(): Array<any> {
@@ -38,12 +41,13 @@ export class ContentAreaDirective implements OnDestroy {
 
     private createBlockComponent(block: Block): ComponentRef<any> {
         const contentType = CMS.BLOCK_TYPES[block.contentType];
+        if (!contentType) return;
         const metadata = Reflect.getMetadata(BLOCK_TYPE_METADATA_KEY, contentType);
 
         const blockFactory = this.componentFactoryResolver.resolveComponentFactory(metadata.componentRef);
         const blockComponent = this.viewContainerRef.createComponent(blockFactory);
 
         (<CmsComponent<ContentData>>blockComponent.instance).currentContent = new BlockData(block);
-        return blockComponent
+        return blockComponent;
     }
 }
