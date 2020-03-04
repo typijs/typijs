@@ -4,9 +4,9 @@ import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { clone } from '@angular-cms/core';
 
-import { DropEvent } from './drop-event.model';
-import { DndService } from './dnd.service';
-import { DomHelper } from './dom-helper';
+import { DropEvent } from '../drop-event.model';
+import { DndService } from '../dnd.service';
+import { DomHelper } from '../dom-helper';
 
 @Directive({
     selector: '[droppable]'

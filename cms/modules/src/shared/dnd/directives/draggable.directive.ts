@@ -1,6 +1,6 @@
 import { Directive, ElementRef, HostListener, Input, Output, EventEmitter, OnInit, HostBinding, Renderer2, NgZone, OnDestroy } from '@angular/core';
-import { DndService } from './dnd.service';
-import { DomHelper } from './dom-helper';
+import { DndService } from '../dnd.service';
+import { DomHelper } from '../dom-helper';
 
 @Directive({
     selector: '[draggable]'
@@ -10,7 +10,7 @@ import { DomHelper } from './dom-helper';
  */
 export class Draggable implements OnInit, OnDestroy {
     /**
-     * The data that will be avaliable to the droppable directive on its `onDrop()` event.
+     * The data that will be available to the droppable directive on its `onDrop()` event.
      */
     @Input() dragData: any;
 
@@ -19,11 +19,6 @@ export class Draggable implements OnInit, OnDestroy {
      * If defined drag will only be allowed if dragged from the selector element.
      */
     @Input() dragHandle: string;
-
-    /**
-     * Currently not used
-     */
-    @Input() dragEffect = 'move';
 
     /**
      * Defines compatible drag drop pairs. Values must match both in draggable and droppable.dropScope.
@@ -88,36 +83,36 @@ export class Draggable implements OnInit, OnDestroy {
     @Output() onDragEnd: EventEmitter<any> = new EventEmitter();
 
     /**
-     * 
+     * @private
      * Keeps track of mouse over element that is used to determine drag handles
      */
-    mouseDownElement: any;
+    private mouseDownElement: any;
 
     /**
-     * 
+     * @private
      * Backing field for the dragEnabled property
      */
-    _dragEnabled = true;
+    private _dragEnabled = true;
 
     /**
-     * 
+     * @private
      * Backing field for the dragImage property
      */
-    _dragImage: string;
+    private _dragImage: string;
 
     /**
-     * 
+     * @private
      * Image element for the dragImage
      */
-    dragImageElement: HTMLImageElement;
+    private dragImageElement: HTMLImageElement;
 
     /**
-     * 
+     * @private
      * Function for unbinding the drag listener
      */
-    unbindDragListener: Function;
+    private unbindDragListener: Function;
 
-    constructor(protected el: ElementRef, private renderer: Renderer2,
+    constructor(protected hostElement: ElementRef, private renderer: Renderer2,
         private dndService: DndService, private zone: NgZone) {
     }
 
@@ -133,11 +128,10 @@ export class Draggable implements OnInit, OnDestroy {
     dragStart(e) {
         if (this.allowDrag()) {
 
-            // This is a kludgy approach to apply CSS to the drag helper element when an image is being dragged.
-            DomHelper.addClass(this.el, this.dragTransitClass);
+            this.renderer.addClass(this.hostElement.nativeElement, this.dragTransitClass);
             setTimeout(() => {
-                DomHelper.addClass(this.el, this.dragClass);
-                DomHelper.removeClass(this.el, this.dragTransitClass);
+                this.renderer.addClass(this.hostElement.nativeElement, this.dragClass);
+                this.renderer.removeClass(this.hostElement.nativeElement, this.dragTransitClass);
             }, 10);
 
             this.dndService.dragData = this.dragData;
@@ -159,7 +153,7 @@ export class Draggable implements OnInit, OnDestroy {
             this.dndService.onDragStart.next();
 
             this.zone.runOutsideAngular(() => {
-                this.unbindDragListener = this.renderer.listen(this.el.nativeElement, 'drag', (dragEvent) => {
+                this.unbindDragListener = this.renderer.listen(this.hostElement.nativeElement, 'drag', (dragEvent) => {
                     this.drag(dragEvent);
                 });
             });
@@ -175,7 +169,7 @@ export class Draggable implements OnInit, OnDestroy {
     @HostListener('dragend', ['$event'])
     dragEnd(e) {
         this.unbindDragListeners();
-        DomHelper.removeClass(this.el, this.dragClass);
+        DomHelper.removeClass(this.hostElement, this.dragClass);
         this.dndService.onDragEnd.next();
         this.onDragEnd.emit(e);
         e.stopPropagation();
@@ -206,14 +200,14 @@ export class Draggable implements OnInit, OnDestroy {
         if (this.dragEnabled) {
             DomHelper.addClass(dragElement, this.dragHandleClass);
         } else {
-            DomHelper.removeClass(this.el, this.dragHandleClass);
+            DomHelper.removeClass(this.hostElement, this.dragHandleClass);
         }
     }
 
     private getDragHandleElement() {
-        let dragElement = this.el;
+        let dragElement = this.hostElement;
         if (this.dragHandle) {
-            dragElement = this.el.nativeElement.querySelector(this.dragHandle);
+            dragElement = this.hostElement.nativeElement.querySelector(this.dragHandle);
         }
 
         return dragElement;
