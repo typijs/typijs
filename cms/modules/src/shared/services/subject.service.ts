@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { Page, Block, Media } from '@angular-cms/core';
+import { ContentAreaItem } from '../../properties/content-area/ContentAreaItem';
 
 @Injectable({
   // we declare that this service should be created
@@ -17,6 +18,8 @@ export class SubjectService {
 
   pageCreated$: Subject<Page> = new Subject<Page>();
   pageSelected$: Subject<Page> = new Subject<Page>();
+
+  contentAreaDropFinished$: Subject<ContentAreaItem> = new Subject<ContentAreaItem>();
 
   fireBlockFolderCreated(createdBlockFolder: Block) {
     this.blockFolderCreated$.next(createdBlockFolder);
@@ -40,5 +43,9 @@ export class SubjectService {
 
   firePageSelected(selectedPage: Page) {
     this.pageSelected$.next(selectedPage);
+  }
+
+  fireContentAreaDropFinished(contentAreaItem: ContentAreaItem) {
+    this.contentAreaDropFinished$.next(contentAreaItem);
   }
 }

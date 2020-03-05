@@ -1,6 +1,9 @@
 import { Component, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ContentAreaItem } from './ContentAreaItem';
+import { DropEvent } from '../../shared/drag-drop/drop-event.model';
+import { SubjectService } from '../../shared/services/subject.service';
+import { SubscriptionDestroy } from '../../shared/subscription-destroy';
 
 function generateUUID() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -40,7 +43,7 @@ function generateUUID() {
                     </div>
                 </li>
                 <li class="list-group-item d-flex list-group-item-action rounded mb-1 p-1 bg-info"
-                    dndPlaceholder></li>
+                    dragPlaceholder></li>
             </ul>
     `,
     styles: [`
@@ -113,13 +116,13 @@ export class ContentAreaControl extends SubscriptionDestroy implements ControlVa
         const existIndex = this._model.findIndex(x => x.guid == item.guid);
         if (existIndex != -1) {
             this._model.splice(existIndex, 1);
+            this.onChange(this._model);
         }
-        this.onChange(this._model);
     }
 
-    onDropItem(e: any) {
+    onDropItem(e: DropEvent) {
         if (!this._model) this._model = [];
-        //TODO: emit unnecessary field when drop 
+
         const itemIndex = e.index;
         const { _id, id, name, owner, guid, extendProperties, type, contentType, isPublished } = e.dragData;
         const item: ContentAreaItem = {
@@ -142,14 +145,15 @@ export class ContentAreaControl extends SubscriptionDestroy implements ControlVa
             if (existIndex != -1) {
                 this._model.splice(existIndex, 1);
             }
+            this.onChange(this._model);
         }
         else {
             // Insert new item
+            this.subjectService.fireContentAreaDropFinished(Object.assign({}, item));
             item.guid = generateUUID();
             item.owner = this.name;
             this._model.splice(itemIndex, 0, item);
+            this.onChange(this._model);
         }
-
-        this.onChange(this._model);
     }
 }
