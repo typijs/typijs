@@ -1,6 +1,9 @@
 import { Component, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { Content } from '@angular-cms/core';
+import { ContentAreaItem } from './ContentAreaItem';
+import { DropEvent } from '../../shared/drag-drop/drop-event.model';
+import { SubjectService } from '../../shared/services/subject.service';
+import { SubscriptionDestroy } from '../../shared/subscription-destroy';
 
 function generateUUID() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -9,39 +12,59 @@ function generateUUID() {
     });
 }
 
-export interface ContentAreaItem {
-    //mongoose Object id
-    _id?: string;
-    //guid id in this content area
-    guid?: string;
-    //belong to which content area
-    owner?: string;
-    name?: string;
-    contentType?: string;
-    //type of content area item
-    type?: string;
-}
-
 @Component({
     selector: 'content-area',
     template: `
-            <ul class="list-group" droppable (onDrop)="onDropItem($event)">
-                <li class="list-group-item d-flex list-group-item-action justify-content-between align-items-center" 
+            <ul class="content-area list-group border p-2" droppable (onDrop)="onDropItem($event)">
+                <li class="list-group-item list-group-item-action rounded mb-1 p-2" 
                     *ngFor="let item of model;" 
                     draggable 
                     [dragData]="item">
-                    <div>
-                        <i class="fa fa-comment fa-fw"></i> {{item.name}}
+                    <div class="d-flex align-items-center">
+                        <ng-container [ngSwitch]="item.type">
+                            <fa-icon *ngSwitchCase="'page'" class="mr-1" [icon]="['fas', 'file']"></fa-icon>
+                            <fa-icon *ngSwitchCase="'media'" class="mr-1" [icon]="['fas', 'image']"></fa-icon>
+                            <fa-icon *ngSwitchCase="'folder_block'" class="mr-1" [icon]="['fas', 'folder']"></fa-icon>
+                            <fa-icon *ngSwitchCase="'folder_media'" class="mr-1" [icon]="['fas', 'folder']"></fa-icon>
+                            <fa-icon *ngSwitchDefault class="mr-1" [icon]="['fas', 'cube']"></fa-icon>
+                        </ng-container>
+                        <div class="w-100 mr-2 text-truncate">{{item.name}}</div>
+                        <div class="item-menu ml-auto" dropdown container="body">
+                            <fa-icon class="mr-1" [icon]="['fas', 'bars']" dropdownToggle></fa-icon>
+                            <div class="node-menu-dropdown dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
+                                <a class="dropdown-item p-2" href="javascript:void(0)">
+                                    Edit
+                                </a>
+                                <a class="dropdown-item p-2" href="javascript:void(0)" (click)="removeItem(item)">
+                                    Remove
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </li>
-                <li class="list-group-item d-flex list-group-item-action justify-content-between align-items-center"
-                    dndPlaceholder>
-                    <div>
-                        <i class="fa fa-comment fa-fw"></i> Drop here
-                    </div>
-                </li>
+                <li class="list-group-item d-flex list-group-item-action rounded mb-1 p-1 bg-info"
+                    dragPlaceholder></li>
             </ul>
-`,
+    `,
+    styles: [`
+        .content-area {
+            min-height: 100px;
+        }
+
+        .item-menu {
+            display: none;
+        }
+
+        .list-group-item-action:focus,
+        .list-group-item-action:hover {
+            z-index: 0;
+            }
+
+        .list-group-item-action:focus .item-menu, 
+        .list-group-item-action:hover .item-menu {
+            display: block;
+        }
+    `],
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -50,7 +73,7 @@ export interface ContentAreaItem {
         }
     ]
 })
-export class ContentAreaControl implements ControlValueAccessor {
+export class ContentAreaControl extends SubscriptionDestroy implements ControlValueAccessor {
     private _model: ContentAreaItem[];
     private onChange: (m: any) => void;
     private onTouched: (m: any) => void;
@@ -59,6 +82,15 @@ export class ContentAreaControl implements ControlValueAccessor {
 
     get model(): ContentAreaItem[] {
         return this._model;
+    }
+
+    constructor(private subjectService: SubjectService) {
+        super();
+        this.subscriptions.push(this.subjectService.contentAreaDropFinished$.subscribe((item: ContentAreaItem) => {
+            if (item.owner == this.name) {
+                this.removeItem(item);
+            }
+        }));
     }
     //Writes a new value to the element.
     //This method is called by the forms API to write to the view when programmatic changes from model to view are requested.
@@ -80,18 +112,31 @@ export class ContentAreaControl implements ControlValueAccessor {
         this.onTouched = fn;
     }
 
-    onDropItem(e: any) {
+    removeItem(item: Partial<ContentAreaItem>) {
+        const existIndex = this._model.findIndex(x => x.guid == item.guid);
+        if (existIndex != -1) {
+            this._model.splice(existIndex, 1);
+            this.onChange(this._model);
+        }
+    }
+
+    onDropItem(e: DropEvent) {
         if (!this._model) this._model = [];
-        //TODO: emit unnecessary field when drop 
+
         const itemIndex = e.index;
-        const { _id, name, contentType, isPublished }: Partial<Content> = e.dragData;
-        const item: Partial<ContentAreaItem> = {
-            _id: _id,
+        const { _id, id, name, owner, guid, extendProperties, type, contentType, isPublished } = e.dragData;
+        const item: ContentAreaItem = {
+            _id: _id ? _id : id,
             name: name,
-            contentType: contentType,
+            owner: owner,
+            guid: guid,
+            type: extendProperties ? extendProperties.type : type,
+            contentType: extendProperties ? extendProperties.contentType : contentType,
+            isPublished: extendProperties ? extendProperties.isPublished : isPublished
         };
 
         if (item.owner == this.name) {
+            // Sort item in content area by dnd
             const oldGuid = item.guid;
             item.guid = generateUUID();
 
@@ -100,12 +145,15 @@ export class ContentAreaControl implements ControlValueAccessor {
             if (existIndex != -1) {
                 this._model.splice(existIndex, 1);
             }
-        } else {
+            this.onChange(this._model);
+        }
+        else {
+            // Insert new item
+            this.subjectService.fireContentAreaDropFinished(Object.assign({}, item));
             item.guid = generateUUID();
             item.owner = this.name;
             this._model.splice(itemIndex, 0, item);
+            this.onChange(this._model);
         }
-
-        this.onChange(this._model);
     }
 }

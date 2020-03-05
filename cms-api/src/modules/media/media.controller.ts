@@ -66,10 +66,12 @@ export class MediaController extends ContentController<IMediaDocument, IMediaVer
     }
 
     private getMediaContentType = (fileName: string) => {
-        if (fileName.match(/\.(jpg|jpeg|png|gif)$/)) {
+        if (!fileName) return FileContent;
+
+        if (fileName.toLowerCase().match(/\.(jpg|jpeg|png|gif)$/)) {
             return ImageContent;
         }
-        if (fileName.match(/\.(avi|flv|wmv|mov|mp4)$/)) {
+        if (fileName.toLowerCase().match(/\.(avi|flv|wmv|mov|mp4)$/)) {
             return VideoContent;
         }
 

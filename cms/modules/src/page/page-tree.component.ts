@@ -7,7 +7,7 @@ import { TreeComponent } from '../shared/tree/components/tree.component';
 import { TreeConfig } from '../shared/tree/interfaces/tree-config';
 import { NodeMenuItemAction, TreeMenuActionEvent } from '../shared/tree/interfaces/tree-menu'
 import { PageTreeService } from './page-tree.service';
-import { SubscriptionComponent } from '../shared/subscription.component';
+import { SubscriptionDestroy } from '../shared/subscription-destroy';
 import { SubjectService } from '../shared/services/subject.service';
 
 const PageMenuItemAction = {
@@ -46,7 +46,7 @@ const PageMenuItemAction = {
         }
   `]
 })
-export class PageTreeComponent extends SubscriptionComponent {
+export class PageTreeComponent extends SubscriptionDestroy {
     @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
 
     root: TreeNode = new TreeNode({ id: '0', name: 'Root', hasChildren: true });

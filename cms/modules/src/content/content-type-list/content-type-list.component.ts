@@ -1,19 +1,17 @@
 import { Component, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
 
-import { PAGE_TYPE_METADATA_KEY, BLOCK_TYPE_METADATA_KEY, Page, Block } from '@angular-cms/core';
-import { PageService, BlockService } from '@angular-cms/core';
-import { CMS, slugify } from '@angular-cms/core';
+import { Block, BlockService, BLOCK_TYPE_METADATA_KEY, CMS, Page, PageService, PAGE_TYPE_METADATA_KEY, slugify } from '@angular-cms/core';
 
-import { PAGE_TYPE, BLOCK_TYPE } from './../../constants';
 import { SubjectService } from '../../shared/services/subject.service';
+import { BLOCK_TYPE, PAGE_TYPE } from './../../constants';
+import { SubscriptionDestroy } from '../../shared/subscription-destroy';
+
 
 @Component({
     templateUrl: './content-type-list.component.html',
 })
-export class ContentTypeListComponent implements OnDestroy {
-    subParams: Subscription;
+export class ContentTypeListComponent extends SubscriptionDestroy implements OnDestroy {
 
     type: string;
     contentName: string;
@@ -25,12 +23,13 @@ export class ContentTypeListComponent implements OnDestroy {
         private blockService: BlockService,
         private subjectService: SubjectService,
         private router: Router,
-        private route: ActivatedRoute) { }
+        private route: ActivatedRoute) { super() }
 
     ngOnInit() {
-        this.subParams = this.route.params.subscribe(params => {
+        this.subscriptions.push(this.route.params.subscribe(params => {
             this.parentId = params['parentId'] || undefined;
-            this.type = params['type'];
+            const url: UrlSegment[] = this.route.snapshot.url;
+            this.type = url.length >= 2 && url[0].path == 'new' ? url[1].path : '';
 
             switch (this.type) {
                 case PAGE_TYPE:
@@ -42,7 +41,7 @@ export class ContentTypeListComponent implements OnDestroy {
                     this.getAllBlockTypes();
                     break;
             }
-        })
+        }));
     }
 
     createNewContent(contentType) {
@@ -108,9 +107,5 @@ export class ContentTypeListComponent implements OnDestroy {
             },
             error => console.log(error)
         )
-    }
-
-    ngOnDestroy() {
-        this.subParams.unsubscribe();
     }
 }

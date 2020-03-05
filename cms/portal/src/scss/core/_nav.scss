@@ -1,0 +1,39 @@
+.nav-tabs {
+  .nav-link {
+    color: $gray-600;
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    &.active {
+      color: $gray-800;
+      background: #fff;
+      border-color: $border-color;
+      border-bottom-color: #fff;
+
+      &:focus {
+        background: #fff;
+        border-color: $border-color;
+        border-bottom-color: #fff;
+      }
+    }
+  }
+}
+
+.navbar {
+  background: #fff;
+
+  .navbar-brand {
+    display: inline-block;
+    width: $navbar-brand-width;
+    height: $navbar-height;
+    padding: $navbar-padding-y $navbar-padding-x;
+    margin-right: 0;
+    background-color: $navbar-brand-bg;
+    background-image: $navbar-brand-logo;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: $navbar-brand-logo-size;
+  }
+}

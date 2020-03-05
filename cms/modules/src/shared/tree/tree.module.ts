@@ -12,7 +12,7 @@ import { TreeNodeComponent } from './components/tree-node.component';
 import { TreeChildrenComponent } from './components/tree-children.component';
 import { TreeComponent } from './components/tree.component';
 import { CmsBsDropdownModule } from '../libs/ngx-bootstrap/bs-dropdown.module';
-import { DndModule } from '../dnd/dnd.module';
+import { DndModule } from '../drag-drop/dnd.module';
 
 @NgModule({
     imports: [
@@ -21,9 +21,10 @@ import { DndModule } from '../dnd/dnd.module';
         FormsModule,
         ReactiveFormsModule,
         FontAwesomeModule,
+        CmsBsDropdownModule.forRoot(),
+
         CoreModule,
-        DndModule,
-        CmsBsDropdownModule.forRoot()
+        DndModule
     ],
     declarations: [
         TreeNodeComponent,

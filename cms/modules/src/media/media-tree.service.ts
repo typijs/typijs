@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 
 import { TreeNode } from '../shared/tree/interfaces/tree-node';
 import { TreeService } from '../shared/tree/interfaces/tree-service';
+import { ContentTreeNode, FOLDER_MEDIA } from '../constants';
 
 @Injectable()
 export class MediaTreeService implements TreeService {
@@ -18,7 +19,12 @@ export class MediaTreeService implements TreeService {
                 name: media.name,
                 hasChildren: media.hasChildren,
                 parentId: media.parentId,
-                parentPath: media.parentPath
+                parentPath: media.parentPath,
+                extendProperties: <ContentTreeNode>{
+                    type: FOLDER_MEDIA,
+                    contentType: media.contentType,
+                    isPublished: media.isPublished
+                }
             })));
     }
 
@@ -30,7 +36,12 @@ export class MediaTreeService implements TreeService {
                     name: folder.name,
                     hasChildren: folder.hasChildren,
                     parentId: folder.parentId,
-                    parentPath: folder.parentPath
+                    parentPath: folder.parentPath,
+                    extendProperties: <ContentTreeNode>{
+                        type: FOLDER_MEDIA,
+                        contentType: folder.contentType,
+                        isPublished: folder.isPublished
+                    }
                 }));
             }));
     }

@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 import { BlockService, Block } from '@angular-cms/core';
 import { TreeService } from '../shared/tree/interfaces/tree-service';
 import { TreeNode } from '../shared/tree/interfaces/tree-node';
+import { ContentTreeNode, FOLDER_BLOCK } from '../constants';
 
 @Injectable()
 export class BlockTreeService implements TreeService {
@@ -19,7 +20,12 @@ export class BlockTreeService implements TreeService {
                 name: block.name,
                 hasChildren: block.hasChildren,
                 parentId: block.parentId,
-                parentPath: block.parentPath
+                parentPath: block.parentPath,
+                extendProperties: <ContentTreeNode>{
+                    type: FOLDER_BLOCK,
+                    contentType: block.contentType,
+                    isPublished: block.isPublished
+                }
             })));
     }
 
@@ -31,7 +37,12 @@ export class BlockTreeService implements TreeService {
                     name: folder.name,
                     hasChildren: folder.hasChildren,
                     parentId: folder.parentId,
-                    parentPath: folder.parentPath
+                    parentPath: folder.parentPath,
+                    extendProperties: <ContentTreeNode>{
+                        type: FOLDER_BLOCK,
+                        contentType: folder.contentType,
+                        isPublished: folder.isPublished
+                    }
                 })
                 )
             })

@@ -7,8 +7,9 @@ import { TreeComponent } from '../shared/tree/components/tree.component';
 import { TreeConfig } from '../shared/tree/interfaces/tree-config';
 import { NodeMenuItemAction, TreeMenuActionEvent } from '../shared/tree/interfaces/tree-menu';
 import { BlockTreeService } from './block-tree.service';
-import { SubscriptionComponent } from '../shared/subscription.component';
+import { SubscriptionDestroy } from '../shared/subscription-destroy';
 import { SubjectService } from '../shared/services/subject.service';
+import { ContentTreeNode, BLOCK_TYPE } from '../constants';
 
 const BlockMenuItemAction = {
     DeleteFolder: 'DeleteFolder',
@@ -32,37 +33,42 @@ const BlockMenuItemAction = {
                         <fa-icon class="mr-1" *ngIf="node.id == '0'" [icon]="['fas', 'cubes']"></fa-icon>
                         <fa-icon class="mr-1" *ngIf="node.id != '0'" [icon]="['fas', 'folder']"></fa-icon>
                         <span class="node-name">{{node.name}}</span>
-                        <span *ngIf="node.id == '0'" class="badge badge-info float-right mt-2 mr-1" (click)="clickToCreateFolder(node)">New Folder</span>
-                        <span *ngIf="node.id == '0'" class="badge badge-info float-right mt-2 mr-1" [routerLink]="['new/block']">New Block</span>
+                        <fa-icon [icon]="['fas', 'folder-plus']" *ngIf="node.id == '0'" class="float-right mr-1" size="lg" (click)="clickToCreateFolder(node)"></fa-icon>
+                        <fa-icon [icon]="['fas', 'plus-square']" *ngIf="node.id == '0'" class="float-right mr-1" size="lg" [routerLink]="['new/block']"></fa-icon>
                     </span>
                 </ng-template>
             </cms-tree>
         </as-split-area>
         <as-split-area size="50">
-            <div>
-                <div class="list-group" *ngIf="blocks">
-                    <div *ngFor="let block of blocks" [draggable] [dragData]="block"  class="list-group-item" [routerLink]="['content/block', block._id]">
-                        {{block.name}}
+            <div class="list-group" *ngIf="blocks">
+                <a *ngFor="let block of blocks" 
+                    [draggable] 
+                    [dragData]="block"  
+                    href="javascript:void(0)"
+                    class="list-group-item list-group-item-action p-2">
+                    <div class="d-flex align-items-center">
+                        <fa-icon class="mr-1" [icon]="['fas', 'cube']"></fa-icon>
+                        <div class="w-100 mr-2 text-truncate" [routerLink]="['content/block', block._id]">{{block.name}}</div>
+                        <div class="item-menu ml-auto" dropdown container="body">
+                            <fa-icon class="mr-1" [icon]="['fas', 'bars']" dropdownToggle></fa-icon>
+                            <div class="node-menu-dropdown dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
+                                <a class="dropdown-item p-2" href="javascript:void(0)" [routerLink]="['content/block', block._id]">
+                                    Edit
+                                </a>
+                                <a class="dropdown-item p-2" href="javascript:void(0)">
+                                    Delete
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
         </as-split-area>
     </as-split>
         `,
-    styles: [`
-        .block-node {
-            width: calc(100% - 20px);
-            cursor: pointer;
-            display: inline-block;
-        }
-
-        .block-node:hover {
-            font-weight: bold;
-            border-bottom: 1px solid #a4b7c1!important;
-        }
-  `]
+    styleUrls: ['./block-tree.component.scss']
 })
-export class BlockTreeComponent extends SubscriptionComponent {
+export class BlockTreeComponent extends SubscriptionDestroy {
     @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
     blocks: Array<Block>;
 
@@ -122,8 +128,15 @@ export class BlockTreeComponent extends SubscriptionComponent {
 
     folderSelected(node) {
         //load child block in folder
-        this.blockService.getContentInFolder(node.id).subscribe(childBlocks => {
-            this.blocks = childBlocks;
+        this.blockService.getContentInFolder(node.id).subscribe((childBlocks: Block[]) => {
+            childBlocks.forEach(block => Object.assign(block, {
+                extendProperties: <ContentTreeNode>{
+                    type: BLOCK_TYPE,
+                    contentType: block.contentType,
+                    isPublished: block.isPublished
+                }
+            }));
+            this.blocks = childBlocks
         })
     }
 

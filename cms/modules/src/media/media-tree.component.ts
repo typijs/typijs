@@ -3,7 +3,7 @@ import { Component, ViewChild } from '@angular/core';
 import { Media, MediaService, ServiceLocator } from '@angular-cms/core';
 
 import { SubjectService } from '../shared/services/subject.service';
-import { SubscriptionComponent } from '../shared/subscription.component';
+import { SubscriptionDestroy } from '../shared/subscription-destroy';
 import { TreeComponent } from '../shared/tree/components/tree.component';
 import { TreeConfig } from '../shared/tree/interfaces/tree-config';
 import { NodeMenuItemAction, TreeMenuActionEvent } from '../shared/tree/interfaces/tree-menu';
@@ -12,6 +12,7 @@ import { TreeNode } from '../shared/tree/interfaces/tree-node';
 import { MediaTreeService } from './media-tree.service';
 import { UploadService } from './upload/upload.service';
 import { FileModalComponent } from './upload/file-modal.component';
+import { ContentTreeNode, MEDIA_TYPE } from '../constants';
 
 const MediaMenuItemAction = {
     DeleteFolder: 'DeleteFolder',
@@ -45,11 +46,18 @@ const MediaMenuItemAction = {
                     </cms-tree>
                 </as-split-area>
                 <as-split-area size="50">
-                    <div class="media-content list-group"  *ngIf="medias" #mediaItem>
-                        <div *ngFor="let media of medias" [draggable] [dragData]="media" class="list-group-item">
-                            <img [src]='media["path"]'/>
-                            {{media.name}}
-                        </div>
+                    <div class="list-group media-content"  *ngIf="medias" #mediaItem>
+                        <a *ngFor="let media of medias" 
+                            [draggable] 
+                            [dragData]="media"  
+                            class="list-group-item list-group-item-action flex-column align-items-start p-1" 
+                            [routerLink]="['content/media', media._id]">
+                            <div class="d-flex align-items-center">
+                                <img class="mr-1" [src]='media["path"]'/>
+                                <div class="w-100 mr-2 text-truncate">{{media.name}}</div>
+                                <fa-icon class="ml-auto" [icon]="['fas', 'bars']"></fa-icon>
+                            </div>
+                        </a>
                     </div>
                 </as-split-area>
             </as-split>
@@ -90,7 +98,7 @@ const MediaMenuItemAction = {
         }
   `]
 })
-export class MediaTreeComponent extends SubscriptionComponent {
+export class MediaTreeComponent extends SubscriptionDestroy {
 
     @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
     @ViewChild(FileModalComponent, { static: false }) fileModal: FileModalComponent;
@@ -158,9 +166,16 @@ export class MediaTreeComponent extends SubscriptionComponent {
     private reloadSelectedFolder(folderId: string) {
         //load child block in folder
         this.mediaService.getContentInFolder(folderId).subscribe(childMedias => {
+            childMedias.forEach(media => Object.assign(media, {
+                extendProperties: <ContentTreeNode>{
+                    type: MEDIA_TYPE,
+                    contentType: media.contentType,
+                    isPublished: media.isPublished
+                }
+            }));
             this.medias = childMedias;
-            this.medias.forEach(x => {
-                x["path"] = `http://localhost:3000/api/assets/${x._id}/${x.name}?w=50&h=50`;
+            this.medias.forEach(file => {
+                file["path"] = `http://localhost:3000/api/assets/${file._id}/${file.name}?w=50&h=50`;
             })
         })
     }

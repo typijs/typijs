@@ -1,19 +1,22 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { DndService } from './dnd.service';
-import { Droppable, } from './droppable.directive';
-import { Draggable } from './draggable.directive';
-import { DndPlaceholder } from './dnd-placeholder.directive';
+import { Droppable, } from './directives/droppable.directive';
+import { Draggable } from './directives/draggable.directive';
+import { DragPlaceholder } from './directives/drag-placeholder.directive';
+import { DragHandle } from './directives/drag-handle.directive';
 
 @NgModule({
   declarations: [
     Draggable,
     Droppable,
-    DndPlaceholder
+    DragPlaceholder,
+    DragHandle
   ],
   exports: [
     Draggable,
     Droppable,
-    DndPlaceholder
+    DragPlaceholder,
+    DragHandle
   ]
 })
 export class DndModule {

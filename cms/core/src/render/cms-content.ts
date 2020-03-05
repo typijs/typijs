@@ -1,19 +1,19 @@
-import { Component, ComponentFactoryResolver, ViewChild, OnDestroy, ComponentRef } from '@angular/core';
 import 'reflect-metadata';
+import { Component, ComponentFactoryResolver, ComponentRef, OnDestroy, ViewChild } from '@angular/core';
 
 import { PAGE_TYPE_METADATA_KEY, PROPERTIES_METADATA_KEY, PROPERTY_METADATA_KEY } from '../constants/meta-keys';
-import { PageService } from './../services/page.service';
-import { InsertPointDirective } from './../directives/insert-point.directive';
-
-import { CMS } from './../cms';
-import { PageData } from './../bases/content-data';
-import { CmsComponent } from './../bases/cms-component';
-import { PropertyMetadata } from '../decorators/property.decorator';
-import { Page } from '../models/page.model';
-import { clone } from '../helpers/common';
 import { UIHint } from '../constants/ui-hint';
 import { ContentTypeMetadata } from '../decorators/content-type-metadata';
+import { PropertyMetadata } from '../decorators/property.decorator';
+import { clone } from '../helpers/common';
+import { Page } from '../models/page.model';
 import { BrowserLocationService } from '../services/browser-location.service';
+import { CmsComponent } from './../bases/cms-component';
+import { PageData } from './../bases/content-data';
+import { CMS } from './../cms';
+import { InsertPointDirective } from './../directives/insert-point.directive';
+import { PageService } from './../services/page.service';
+
 
 @Component({
     selector: 'cms-content',

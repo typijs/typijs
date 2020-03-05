@@ -12,7 +12,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
                         </span>
                     </div>
                 </div>
-                <div dndPlaceholder></div>
+                <div dragPlaceholder></div>
             </div>
 `,
     providers: [
@@ -52,7 +52,7 @@ export class ContentReferenceControl implements ControlValueAccessor {
     onDropItem(e: any) {
         this._model = e.dragData;
         this._model.owner = this.name;
-        
+
         this.onChange(this._model);
     }
 }

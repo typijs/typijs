@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
-import { PageService, Page } from '@angular-cms/core';
 import { map } from 'rxjs/operators';
+
+import { PageService, Page } from '@angular-cms/core';
 
 import { TreeService } from '../shared/tree/interfaces/tree-service';
 import { TreeNode } from '../shared/tree/interfaces/tree-node';
+import { ContentTreeNode, PAGE_TYPE } from '../constants';
 
 @Injectable()
 export class PageTreeService implements TreeService {
@@ -17,7 +19,12 @@ export class PageTreeService implements TreeService {
                 name: page.name,
                 hasChildren: page.hasChildren,
                 parentId: page.parentId,
-                parentPath: page.parentPath
+                parentPath: page.parentPath,
+                extendProperties: <ContentTreeNode>{
+                    type: PAGE_TYPE,
+                    contentType: page.contentType,
+                    isPublished: page.isPublished
+                }
             })));
     }
 
@@ -29,7 +36,12 @@ export class PageTreeService implements TreeService {
                     name: page.name,
                     hasChildren: page.hasChildren,
                     parentId: page.parentId,
-                    parentPath: page.parentPath
+                    parentPath: page.parentPath,
+                    extendProperties: <ContentTreeNode>{
+                        type: PAGE_TYPE,
+                        contentType: page.contentType,
+                        isPublished: page.isPublished
+                    }
                 }));
             }));
     }

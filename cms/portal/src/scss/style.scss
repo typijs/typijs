@@ -1,0 +1,20 @@
+@import "bootstrap-variables";
+
+@import '~bootstrap/scss/bootstrap';
+
+@import 'core/core';
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+
+  .app {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+  }
+}

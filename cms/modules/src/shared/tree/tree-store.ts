@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject, from, of, BehaviorSubject, combineLatest, empty } from 'rxjs';
+import { Observable, Subject, from, of, BehaviorSubject, forkJoin, empty } from 'rxjs';
 import { concatMap, map, tap, switchMap } from 'rxjs/operators';
 
 import { TreeNode } from './interfaces/tree-node';
@@ -53,7 +53,7 @@ export class TreeStore {
         if (!subTreeRootId) subTreeRootId = '0'
         //Reload the root node of sub tree
 
-        combineLatest(this.getNodeData(subTreeRootId), this.getNodeChildren(subTreeRootId))
+        forkJoin(this.getNodeData(subTreeRootId), this.getNodeChildren(subTreeRootId))
             .subscribe(([subTreeRootNode, nodeChildren]: [TreeNode, TreeNode[]]) => {
                 this.getTreeNodesSubjectByKey$(subTreeRootId).next(nodeChildren);
                 subTreeRootNode.isExpanded = subTreeRootNode.hasChildren;
