@@ -4,7 +4,7 @@ import { TreeStore } from '../tree-store';
 import { TreeNode } from '../interfaces/tree-node';
 import { TreeConfig, TreeNodeTemplate } from '../interfaces/tree-config';
 import { NodeMenuItemAction, TreeMenuActionEvent } from '../interfaces/tree-menu';
-import { SubscriptionComponent } from '../../subscription.component';
+import { SubscriptionDestroy } from '../../subscription-destroy';
 
 @Component({
     selector: 'cms-tree',
@@ -39,7 +39,7 @@ import { SubscriptionComponent } from '../../subscription.component';
     encapsulation: ViewEncapsulation.None,
     providers: [TreeStore]
 })
-export class TreeComponent extends SubscriptionComponent implements OnInit {
+export class TreeComponent extends SubscriptionDestroy implements OnInit {
 
     @ContentChild('treeNodeTemplate', { static: true }) treeNodeTemplate: TemplateRef<any>;
     @ContentChild('loadingTemplate', { static: true }) loadingTemplate: TemplateRef<any>;

@@ -7,7 +7,7 @@ import { TreeComponent } from '../shared/tree/components/tree.component';
 import { TreeConfig } from '../shared/tree/interfaces/tree-config';
 import { NodeMenuItemAction, TreeMenuActionEvent } from '../shared/tree/interfaces/tree-menu';
 import { BlockTreeService } from './block-tree.service';
-import { SubscriptionComponent } from '../shared/subscription.component';
+import { SubscriptionDestroy } from '../shared/subscription-destroy';
 import { SubjectService } from '../shared/services/subject.service';
 import { ContentTreeNode, BLOCK_TYPE } from '../constants';
 
@@ -68,7 +68,7 @@ const BlockMenuItemAction = {
         `,
     styleUrls: ['./block-tree.component.scss']
 })
-export class BlockTreeComponent extends SubscriptionComponent {
+export class BlockTreeComponent extends SubscriptionDestroy {
     @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
     blocks: Array<Block>;
 

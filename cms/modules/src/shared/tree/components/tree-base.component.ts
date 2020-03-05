@@ -2,9 +2,9 @@ import { Output, EventEmitter } from '@angular/core';
 
 import { TreeNode } from '../interfaces/tree-node';
 import { NodeMenuItemAction } from '../interfaces/tree-menu';
-import { SubscriptionComponent } from '../../subscription.component';
+import { SubscriptionDestroy } from '../../subscription-destroy';
 
-export abstract class TreeBaseComponent extends SubscriptionComponent {
+export abstract class TreeBaseComponent extends SubscriptionDestroy {
     @Output("selectNode") selectNodeEvent: EventEmitter<TreeNode> = new EventEmitter();
     @Output("nodeOnBlur") nodeOnBlurEvent: EventEmitter<TreeNode> = new EventEmitter();
     @Output("submitInlineNode") submitInlineNodeEvent: EventEmitter<TreeNode> = new EventEmitter();

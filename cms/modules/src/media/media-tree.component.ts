@@ -3,7 +3,7 @@ import { Component, ViewChild } from '@angular/core';
 import { Media, MediaService, ServiceLocator } from '@angular-cms/core';
 
 import { SubjectService } from '../shared/services/subject.service';
-import { SubscriptionComponent } from '../shared/subscription.component';
+import { SubscriptionDestroy } from '../shared/subscription-destroy';
 import { TreeComponent } from '../shared/tree/components/tree.component';
 import { TreeConfig } from '../shared/tree/interfaces/tree-config';
 import { NodeMenuItemAction, TreeMenuActionEvent } from '../shared/tree/interfaces/tree-menu';
@@ -98,7 +98,7 @@ const MediaMenuItemAction = {
         }
   `]
 })
-export class MediaTreeComponent extends SubscriptionComponent {
+export class MediaTreeComponent extends SubscriptionDestroy {
 
     @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
     @ViewChild(FileModalComponent, { static: false }) fileModal: FileModalComponent;

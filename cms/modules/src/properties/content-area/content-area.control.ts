@@ -70,7 +70,7 @@ function generateUUID() {
         }
     ]
 })
-export class ContentAreaControl implements ControlValueAccessor {
+export class ContentAreaControl extends SubscriptionDestroy implements ControlValueAccessor {
     private _model: ContentAreaItem[];
     private onChange: (m: any) => void;
     private onTouched: (m: any) => void;
@@ -79,6 +79,15 @@ export class ContentAreaControl implements ControlValueAccessor {
 
     get model(): ContentAreaItem[] {
         return this._model;
+    }
+
+    constructor(private subjectService: SubjectService) {
+        super();
+        this.subscriptions.push(this.subjectService.contentAreaDropFinished$.subscribe((item: ContentAreaItem) => {
+            if (item.owner == this.name) {
+                this.removeItem(item);
+            }
+        }));
     }
     //Writes a new value to the element.
     //This method is called by the forms API to write to the view when programmatic changes from model to view are requested.

@@ -1,7 +1,6 @@
 import { Component, ViewChildren, QueryList, ComponentFactoryResolver, Inject, Injector, OnInit, ChangeDetectorRef, ComponentRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, UrlSegment } from '@angular/router';
-import { Subscription } from 'rxjs';
 
 import { PROPERTY_METADATA_KEY, PROPERTIES_METADATA_KEY, Media, Block, Page, ChildItemRef, Content } from '@angular-cms/core';
 import { CMS, UIHint, CmsProperty, InsertPointDirective, ISelectionFactory, PropertyMetadata, CmsTab, sortTabByTitle, clone } from '@angular-cms/core';
@@ -13,6 +12,7 @@ import { SelectProperty } from '../../properties/select/select-property';
 import { PAGE_TYPE, BLOCK_TYPE, MEDIA_TYPE, FOLDER_BLOCK, FOLDER_MEDIA } from './../../constants';
 import { SubjectService } from '../../shared/services/subject.service';
 import { ContentAreaItem } from "../../properties/content-area/ContentAreaItem";
+import { SubscriptionDestroy } from '../../shared/subscription-destroy';
 
 type FormProperty = {
     name: string,
@@ -22,8 +22,9 @@ type FormProperty = {
 @Component({
     templateUrl: './content-form-edit.component.html'
 })
-export class ContentFormEditComponent implements OnInit {
-    private subParams: Subscription;
+export class ContentFormEditComponent extends SubscriptionDestroy implements OnInit {
+
+    @ViewChildren(InsertPointDirective) insertPoints: QueryList<InsertPointDirective>;
 
     contentForm: FormGroup = new FormGroup({});
     formTabs: Array<CmsTab> = [];
@@ -34,8 +35,6 @@ export class ContentFormEditComponent implements OnInit {
     private componentRefs: Array<any> = [];
     private defaultGroup: string = "Content";
 
-    @ViewChildren(InsertPointDirective) insertPoints: QueryList<InsertPointDirective>;
-
     constructor(
         private componentFactoryResolver: ComponentFactoryResolver,
         private injector: Injector,
@@ -45,10 +44,10 @@ export class ContentFormEditComponent implements OnInit {
         private blockService: BlockService,
         private subjectService: SubjectService,
         private changeDetectionRef: ChangeDetectorRef
-    ) { }
+    ) { super(); }
 
     ngOnInit() {
-        this.subParams = this.route.params.subscribe(params => {
+        this.subscriptions.push(this.route.params.subscribe(params => {
             const contentId = params['id'] || '';
             const url: UrlSegment[] = this.route.snapshot.url;
             this.typeOfContent = url.length >= 2 && url[0].path == 'content' ? url[1].path : '';
@@ -68,7 +67,7 @@ export class ContentFormEditComponent implements OnInit {
                         break;
                 }
             }
-        });
+        }));
     }
 
     ngAfterViewInit() {
@@ -284,7 +283,7 @@ export class ContentFormEditComponent implements OnInit {
     }
 
     ngOnDestroy() {
-        this.subParams.unsubscribe();
+        this.unsubscribe();
 
         if (this.componentRefs) {
             this.componentRefs.forEach(cmpref => {
