@@ -1,6 +1,6 @@
-import { Directive, ElementRef, HostListener, Input, Output, EventEmitter, OnInit, HostBinding, Renderer2, NgZone, OnDestroy } from '@angular/core';
+import { Directive, ElementRef, HostListener, Input, Output, EventEmitter, OnInit, HostBinding, Renderer2, NgZone, OnDestroy, ViewChild } from '@angular/core';
 import { DndService } from '../dnd.service';
-import { DomHelper } from '../dom-helper';
+import { DragHandle } from './drag-handle.directive';
 
 @Directive({
     selector: '[draggable]'
@@ -8,28 +8,23 @@ import { DomHelper } from '../dom-helper';
 /**
  * Makes an element draggable by adding the draggable html attribute
  */
-export class Draggable implements OnInit, OnDestroy {
+export class Draggable implements OnDestroy {
+
+    /**
+     * The element that defines the drag Handle.
+     * If defined drag will only be allowed if dragged from the selector element.
+     */
+    @ViewChild(DragHandle, { static: true, read: ElementRef }) dragHandleElement: ElementRef;
+
     /**
      * The data that will be available to the droppable directive on its `onDrop()` event.
      */
     @Input() dragData: any;
 
     /**
-     * The selector that defines the drag Handle.
-     * If defined drag will only be allowed if dragged from the selector element.
-     */
-    @Input() dragHandle: string;
-
-    /**
      * Defines compatible drag drop pairs. Values must match both in draggable and droppable.dropScope.
      */
     @Input() dragScope: string | Array<string> = 'default';
-
-    /**
-     * The CSS class applied to a draggable element. If a dragHandle is defined then its applied to that handle
-     * element only. By default it is used to change the mouse over pointer.
-     */
-    @Input() dragHandleClass = 'drag-handle';
 
     /**
      * CSS class applied on the source draggable element while being dragged.
@@ -60,7 +55,6 @@ export class Draggable implements OnInit, OnDestroy {
     @HostBinding('draggable')
     @Input() set dragEnabled(value: boolean) {
         this._dragEnabled = value;
-        this.applyDragHandleClass();
     };
 
     get dragEnabled() {
@@ -83,41 +77,32 @@ export class Draggable implements OnInit, OnDestroy {
     @Output() onDragEnd: EventEmitter<any> = new EventEmitter();
 
     /**
-     * @private
      * Keeps track of mouse over element that is used to determine drag handles
      */
     private mouseDownElement: any;
 
     /**
-     * @private
      * Backing field for the dragEnabled property
      */
     private _dragEnabled = true;
 
     /**
-     * @private
      * Backing field for the dragImage property
      */
     private _dragImage: string;
 
     /**
-     * @private
      * Image element for the dragImage
      */
     private dragImageElement: HTMLImageElement;
 
     /**
-     * @private
      * Function for unbinding the drag listener
      */
     private unbindDragListener: Function;
 
     constructor(protected hostElement: ElementRef, private renderer: Renderer2,
         private dndService: DndService, private zone: NgZone) {
-    }
-
-    ngOnInit() {
-        this.applyDragHandleClass();
     }
 
     ngOnDestroy() {
@@ -167,9 +152,9 @@ export class Draggable implements OnInit, OnDestroy {
     }
 
     @HostListener('dragend', ['$event'])
-    dragEnd(e) {
+    dragEnd(e: Event) {
         this.unbindDragListeners();
-        DomHelper.removeClass(this.hostElement, this.dragClass);
+        this.renderer.removeClass(this.hostElement.nativeElement, this.dragClass);
         this.dndService.onDragEnd.next();
         this.onDragEnd.emit(e);
         e.stopPropagation();
@@ -178,40 +163,19 @@ export class Draggable implements OnInit, OnDestroy {
 
     @HostListener('mousedown', ['$event'])
     @HostListener('touchstart', ['$event'])
-    mousedown(e) {
+    mousedown(e: Event) {
         this.mouseDownElement = e.target;
     }
 
     private allowDrag() {
-        if (this.dragHandle) {
-            return DomHelper.matches(this.mouseDownElement, this.dragHandle) && this.dragEnabled;
+        if (this.dragHandleElement) {
+            // not testing
+            return this.mouseDownElement.isSameNode(this.dragHandleElement.nativeElement) && this.dragEnabled;
         } else {
             return this.dragEnabled;
         }
     }
 
-    private applyDragHandleClass() {
-        let dragElement = this.getDragHandleElement();
-
-        if (!dragElement) {
-            return;
-        }
-
-        if (this.dragEnabled) {
-            DomHelper.addClass(dragElement, this.dragHandleClass);
-        } else {
-            DomHelper.removeClass(this.hostElement, this.dragHandleClass);
-        }
-    }
-
-    private getDragHandleElement() {
-        let dragElement = this.hostElement;
-        if (this.dragHandle) {
-            dragElement = this.hostElement.nativeElement.querySelector(this.dragHandle);
-        }
-
-        return dragElement;
-    }
 
     unbindDragListeners() {
         if (this.unbindDragListener) {

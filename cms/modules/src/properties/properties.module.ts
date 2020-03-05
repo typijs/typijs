@@ -8,7 +8,7 @@ import { faFile, faFolder, faCube, faImage, faBars } from '@fortawesome/free-sol
 import { EditorModule } from '@tinymce/tinymce-angular';
 import { CoreModule } from '@angular-cms/core';
 
-import { DndModule } from '../shared/dnd/dnd.module';
+import { DndModule } from '../shared/drag-drop/dnd.module';
 
 import { InputComponent } from './input/input.component';
 

@@ -8,7 +8,7 @@ import { faFolder, faPhotoVideo } from '@fortawesome/free-solid-svg-icons';
 
 import { CoreModule } from '@angular-cms/core';
 
-import { DndModule } from '../shared/dnd/dnd.module';
+import { DndModule } from '../shared/drag-drop/dnd.module';
 import { CmsProgressbarModule } from '../shared/libs/ngx-bootstrap/progressbar.module';
 import { CmsModalModule } from '../shared/libs/ngx-bootstrap/modal.module';
 import { CmsAngularSplitModule } from '../shared/libs/angular-split/module';

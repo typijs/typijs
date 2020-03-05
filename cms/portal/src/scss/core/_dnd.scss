@@ -14,6 +14,10 @@
   min-height: 20px;
 }
 
+.drag-transit {
+  border: #3500FF dashed 2px;
+}
+
 /* Sortable */
 .drag-over-expand {
   transition: all .2s ease-in-out;

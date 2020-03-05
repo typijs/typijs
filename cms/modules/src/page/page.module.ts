@@ -9,7 +9,7 @@ import { faFile, faFolder, faSitemap } from '@fortawesome/free-solid-svg-icons';
 import { CoreModule, setAppInjector } from '@angular-cms/core';
 
 import { ContentModule } from '../content/content.module';
-import { DndModule } from '../shared/dnd/dnd.module';
+import { DndModule } from '../shared/drag-drop/dnd.module';
 import { TreeModule } from '../shared/tree/tree.module';
 
 import { PageTreeReadonlyComponent } from './page-tree-readonly.component';

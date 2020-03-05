@@ -1,12 +1,11 @@
 import { Directive, ElementRef, HostListener, Input, Output, EventEmitter, OnInit, OnDestroy, Renderer2, NgZone } from '@angular/core';
 
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { clone } from '@angular-cms/core';
 
 import { DropEvent } from '../drop-event.model';
 import { DndService } from '../dnd.service';
-import { DomHelper } from '../dom-helper';
 
 @Directive({
     selector: '[droppable]'
@@ -69,51 +68,45 @@ export class Droppable implements OnInit, OnDestroy {
     /**
      * 
      */
-    dragStartSubscription: any;
+    private dragStartSubscription: Subscription;
 
     /**
      * 
      */
-    dragEndSubscription: any;
+    private dragEndSubscription: Subscription;
 
     /**
-     * 
      * Backing field for the dropEnabled property
      */
-    _dropEnabled = true;
+    private _dropEnabled = true;
 
     /**
-     * 
      * Field for tracking drag state. Helps when
      * drag stop event occurs before the allowDrop()
      * can be calculated (async).
      */
-    _isDragActive = false;
+    private _isDragActive = false;
 
     /**
-     * 
      * Field for tracking if service is subscribed.
      * Avoids creating multiple subscriptions of service.
      */
-    _isServiceActive = false;
+    private _isServiceActive = false;
 
     /**
-     * 
      * Function for unbinding the drag enter listener
      */
-    unbindDragEnterListener: Function;
+    private unbindDragEnterListener: Function;
 
     /**
-     * 
      * Function for unbinding the drag over listener
      */
-    unbindDragOverListener: Function;
+    private unbindDragOverListener: Function;
 
     /**
-     * 
      * Function for unbinding the drag leave listener
      */
-    unbindDragLeaveListener: Function;
+    private unbindDragLeaveListener: Function;
 
     placeholder: any;
 
@@ -132,14 +125,14 @@ export class Droppable implements OnInit, OnDestroy {
         this.unbindDragListeners();
     }
 
-    setDndPlaceholder(placeholderElement: ElementRef) {
-        var placeholder;
+    setDragPlaceholder(placeholderElement: ElementRef) {
+        this.placeholder = placeholderElement ? placeholderElement.nativeElement : this.createDefaultDragPlaceHolder()
+    }
 
-        if (placeholderElement) {
-            placeholder = placeholderElement.nativeElement;
-        }
-
-        this.placeholder = placeholder || DomHelper.createElement('li', { 'class': 'dndPlaceholder' });
+    private createDefaultDragPlaceHolder(): any {
+        const defaultPlaceHolder = this.renderer.createElement('div');
+        this.renderer.addClass(defaultPlaceHolder, 'drag-placeholder')
+        return defaultPlaceHolder;
     }
 
     private getPlaceholderIndex() {
@@ -179,7 +172,7 @@ export class Droppable implements OnInit, OnDestroy {
 
     private removeDropPlaceholder(event) {
         event = event.originalEvent || event;
-        let listNode = this.el.nativeElement;
+        const listNode = this.el.nativeElement;
 
         let newTarget = document.elementFromPoint(event.clientX, event.clientY);
         if (listNode.contains(newTarget) && !event._dndPhShown) {
@@ -198,7 +191,7 @@ export class Droppable implements OnInit, OnDestroy {
 
     dragOver(e, result) {
         if (result) {
-            DomHelper.addClass(this.el, this.dragOverClass);
+            this.renderer.addClass(this.el.nativeElement, this.dragOverClass);
             this.insertDropPlaceholder(e);
             e.preventDefault();
             this.onDragOver.emit(e);
@@ -206,7 +199,7 @@ export class Droppable implements OnInit, OnDestroy {
     }
 
     dragLeave(e) {
-        DomHelper.removeClass(this.el, this.dragOverClass);
+        this.renderer.removeClass(this.el.nativeElement, this.dragOverClass);
         this.removeDropPlaceholder(e);
         e.preventDefault();
         this.onDragLeave.emit(e);
@@ -216,12 +209,12 @@ export class Droppable implements OnInit, OnDestroy {
     drop(e) {
         this.allowDrop().subscribe(result => {
             if (result && this._isDragActive) {
-                DomHelper.removeClass(this.el, this.dragOverClass);
+                this.renderer.removeClass(this.el.nativeElement, this.dragOverClass);
                 e.preventDefault();
                 e.stopPropagation();
 
                 this.dndService.onDragEnd.next();
-                this.onDrop.emit(new DropEvent(e, clone(this.dndService.dragData), this.getPlaceholderIndex()));
+                this.onDrop.emit(new DropEvent(e, this.dndService.dragData, this.getPlaceholderIndex()));
                 this.dndService.dragData = null;
                 this.dndService.scope = null;
                 this.placeholder.remove();
@@ -269,7 +262,7 @@ export class Droppable implements OnInit, OnDestroy {
             this._isDragActive = true;
             this.allowDrop().subscribe(result => {
                 if (result && this._isDragActive) {
-                    DomHelper.addClass(this.el, this.dragHintClass);
+                    this.renderer.addClass(this.el.nativeElement, this.dragHintClass);
 
                     this.zone.runOutsideAngular(() => {
                         this.unbindDragEnterListener = this.renderer.listen(this.el.nativeElement, 'dragenter', (dragEvent) => {
@@ -288,7 +281,7 @@ export class Droppable implements OnInit, OnDestroy {
 
         this.dragEndSubscription = this.dndService.onDragEnd.subscribe(() => {
             this._isDragActive = false;
-            DomHelper.removeClass(this.el, this.dragHintClass);
+            this.renderer.removeClass(this.el.nativeElement, this.dragHintClass);
             this.unbindDragListeners();
         });
     }
