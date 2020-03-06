@@ -31,6 +31,7 @@ import { ContentReferenceComponent } from './content-reference/content-reference
 
 import { registerCmsProperties } from './registerCmsProperties';
 import { CmsBsDropdownModule } from '../shared/libs/ngx-bootstrap/bs-dropdown.module';
+import { RouterModule } from '@angular/router';
 
 registerCmsProperties();
 
@@ -39,6 +40,7 @@ registerCmsProperties();
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
+        RouterModule,
         EditorModule,
         FontAwesomeModule,
         CmsBsDropdownModule.forRoot(),
