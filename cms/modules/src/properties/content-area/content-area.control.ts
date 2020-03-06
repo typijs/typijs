@@ -59,10 +59,8 @@ import { CmsControl } from '../cms-control';
         }
     ]
 })
-export class ContentAreaControl extends SubscriptionDestroy implements ControlValueAccessor {
+export class ContentAreaControl extends CmsControl {
     private _model: ContentAreaItem[];
-    private onChange: (m: any) => void;
-    private onTouched: (m: any) => void;
 
     @Input() name: string;
     @Input() allowedTypes: string[];
@@ -92,12 +90,6 @@ export class ContentAreaControl extends SubscriptionDestroy implements ControlVa
         }
     }
 
-    registerOnChange(fn: any): void {
-        this.onChange = fn;
-    }
-
-    registerOnTouched(fn: any): void {
-        this.onTouched = fn;
     isDropAllowed = (dragData) => {
         if (!this.allowedTypes) return true;
         const { extendProperties } = dragData;
@@ -130,21 +122,26 @@ export class ContentAreaControl extends SubscriptionDestroy implements ControlVa
             // Sort item in content area by dnd
             const itemGuid = item.guid;
             // Insert new item
-            item.guid = generateUUID();
-            this._model.splice(itemIndex, 0, item);
+            this.insertItemToModel(itemIndex, item);
             if (this.removeItemFromModel(itemGuid)) {
                 this.onChange(this._model);
             }
         }
         else {
             // Fire event to handle swap item between Content area
-            this.subjectService.fireContentAreaDropFinished(Object.assign({}, item));
+            this.subjectService.fireContentAreaDropFinished(item);
             // Insert new item
-            item.guid = generateUUID();
             item.owner = this.name;
-            this._model.splice(itemIndex, 0, item);
+            this.insertItemToModel(itemIndex, item);
             this.onChange(this._model);
         }
+    }
+
+
+
+    private insertItemToModel(insertIndex: number, item: ContentAreaItem) {
+        item.guid = generateUUID();
+        this._model.splice(insertIndex, 0, item);
     }
 
     private removeItemFromModel(itemGuid: string): boolean {

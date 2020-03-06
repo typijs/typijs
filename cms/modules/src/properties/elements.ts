@@ -4,7 +4,7 @@ import { PropertyListComponent } from './property-list/property-list.component';
 import { TinymceComponent } from './xhtml/tinymce.component';
 import { DropdownComponent } from './select/dropdown/dropdown.component';
 import { CheckboxComponent } from './select/checkbox/checkbox.component';
-import { ContentAreaComponent } from './content-area/content-area.component';
+import { ContentAreaProperty } from './content-area/content-area.property';
 
 export namespace Elements {
     export const Input = InputComponent;
@@ -17,14 +17,14 @@ export namespace Elements {
     export type Select = DropdownComponent;
 
     export const PropertyList = PropertyListComponent;
-    export type PropertyList = PropertyListComponent; 
+    export type PropertyList = PropertyListComponent;
 
     export const Xhtml = TinymceComponent;
-    export type Xhtml = TinymceComponent; 
+    export type Xhtml = TinymceComponent;
 
     export const Checkbox = CheckboxComponent;
-    export type Checkbox = CheckboxComponent; 
+    export type Checkbox = CheckboxComponent;
 
-    export const ContentArea = ContentAreaComponent;
-    export type ContentArea = ContentAreaComponent;  
+    export const ContentArea = ContentAreaProperty;
+    export type ContentArea = ContentAreaProperty;
 }

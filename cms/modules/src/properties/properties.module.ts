@@ -24,7 +24,7 @@ import { CheckboxComponent } from './select/checkbox/checkbox.component';
 import { CheckboxGroupControl } from './select/checkbox/checkbox-group.control';
 
 import { ContentAreaControl } from './content-area/content-area.control';
-import { ContentAreaComponent } from './content-area/content-area.component';
+import { ContentAreaProperty } from './content-area/content-area.property';
 
 import { ContentReferenceControl } from './content-reference/content-reference.control';
 import { ContentReferenceComponent } from './content-reference/content-reference.component';
@@ -56,7 +56,7 @@ registerCmsProperties();
         PropertyListControl,
         PropertyListComponent,
         TinymceComponent,
-        ContentAreaComponent,
+        ContentAreaProperty,
         ContentAreaControl,
 
         ContentReferenceControl,
@@ -69,7 +69,7 @@ registerCmsProperties();
         CheckboxComponent,
         PropertyListComponent,
         TinymceComponent,
-        ContentAreaComponent,
+        ContentAreaProperty,
         ContentReferenceComponent
     ],
     exports: [
@@ -79,7 +79,7 @@ registerCmsProperties();
         CheckboxComponent,
         PropertyListComponent,
         TinymceComponent,
-        ContentAreaComponent,
+        ContentAreaProperty,
 
         ContentReferenceControl,
         ContentReferenceComponent

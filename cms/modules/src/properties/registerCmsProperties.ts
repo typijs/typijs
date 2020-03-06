@@ -6,7 +6,7 @@ import { PropertyListComponent } from './property-list/property-list.component';
 import { TinymceComponent } from './xhtml/tinymce.component';
 import { DropdownComponent } from './select/dropdown/dropdown.component';
 import { CheckboxComponent } from './select/checkbox/checkbox.component';
-import { ContentAreaComponent } from './content-area/content-area.component';
+import { ContentAreaProperty } from './content-area/content-area.property';
 
 export function registerCmsProperties() {
     AngularCmsModule.registerProperties([
@@ -16,6 +16,6 @@ export function registerCmsProperties() {
         [UIHint.Xhtml, TinymceComponent],
         [UIHint.Select, DropdownComponent],
         [UIHint.Checkbox, CheckboxComponent],
-        [UIHint.ContentArea, ContentAreaComponent]
+        [UIHint.ContentArea, ContentAreaProperty]
     ])
 }
