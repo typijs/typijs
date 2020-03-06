@@ -173,36 +173,39 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
     }
 
     private createPropertyComponents(properties: Array<FormProperty>): ComponentRef<any>[] {
-        const formControls: ComponentRef<any>[] = [];
+        const propertyControls: ComponentRef<any>[] = [];
 
-        if (this.formTabs) {
-            this.formTabs.forEach(tab => {
-                const viewContainerRef = this.insertPoints.find(x => x.name == tab.content).viewContainerRef;
-                viewContainerRef.clear();
+        if (!this.formTabs || this.formTabs.length == 0) return propertyControls;
 
-                properties.filter(x => (x.metadata.groupName == tab.title || (!x.metadata.groupName && tab.title == this.defaultGroup))).forEach(property => {
-                    if (CMS.PROPERTIES[property.metadata.displayType]) {
-                        const propertyFactory = this.componentFactoryResolver.resolveComponentFactory(CMS.PROPERTIES[property.metadata.displayType]);
-                        const propertyComponent = viewContainerRef.createComponent(propertyFactory);
+        this.formTabs.forEach(tab => {
+            const viewContainerRef = this.insertPoints.find(x => x.name == tab.content).viewContainerRef;
+            viewContainerRef.clear();
 
-                        (<CmsProperty>propertyComponent.instance).label = property.metadata.displayName;
-                        (<CmsProperty>propertyComponent.instance).formGroup = this.contentForm;
-                        (<CmsProperty>propertyComponent.instance).propertyName = property.name;
+            properties.filter(x => (x.metadata.groupName == tab.title || (!x.metadata.groupName && tab.title == this.defaultGroup))).forEach(property => {
+                if (CMS.PROPERTIES[property.metadata.displayType]) {
+                    const propertyFactory = this.componentFactoryResolver.resolveComponentFactory(CMS.PROPERTIES[property.metadata.displayType]);
+                    const propertyComponent = viewContainerRef.createComponent(propertyFactory);
 
-                        if (propertyComponent.instance instanceof SelectProperty) {
-                            (<SelectProperty>propertyComponent.instance).selectItems = (<ISelectionFactory>(this.injector.get(property.metadata.selectionFactory))).GetSelections();
-                        }
-                        else if (propertyComponent.instance instanceof PropertyListComponent) {
-                            (<PropertyListComponent>propertyComponent.instance).itemType = property.metadata.propertyListItemType;
-                        }
+                    (<CmsProperty>propertyComponent.instance).label = property.metadata.displayName;
+                    (<CmsProperty>propertyComponent.instance).formGroup = this.contentForm;
+                    (<CmsProperty>propertyComponent.instance).propertyName = property.name;
 
-                        formControls.push(propertyComponent);
+                    if (propertyComponent.instance instanceof SelectProperty) {
+                        (<SelectProperty>propertyComponent.instance).selectItems = (<ISelectionFactory>(this.injector.get(property.metadata.selectionFactory))).GetSelections();
                     }
-                });
-            });
-        }
+                    else if (propertyComponent.instance instanceof PropertyListComponent) {
+                        (<PropertyListComponent>propertyComponent.instance).itemType = property.metadata.propertyListItemType;
+                    }
+                    else if (propertyComponent.instance instanceof ContentAreaProperty) {
+                        (<ContentAreaProperty>propertyComponent.instance).allowedTypes = property.metadata.allowedTypes;
+                    }
 
-        return formControls;
+                    propertyControls.push(propertyComponent);
+                }
+            });
+        });
+
+        return propertyControls;
     }
 
     updateContent(isPublished: boolean, formId: any) {

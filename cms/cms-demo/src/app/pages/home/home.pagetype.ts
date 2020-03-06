@@ -23,13 +23,15 @@ export class HomePage extends PageData {
     @Property({
         displayName: "Highlight Features",
         description: "This is highlight feature will be in banner area",
-        displayType: UIHint.ContentArea
+        displayType: UIHint.ContentArea,
+        allowedTypes: ['FeatureBlock', 'PortfolioBlock']
     })
     features: Array<any>;
 
     @Property({
         displayName: "Highlight Portfolios",
         displayType: UIHint.ContentArea,
+        allowedTypes: ['PortfolioBlock']
     })
     portfolios: Array<any>;
 

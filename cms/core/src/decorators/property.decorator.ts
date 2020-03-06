@@ -17,6 +17,7 @@ export type PropertyMetadata = {
     order?: number;
     groupName?: string;
     validates?: Array<ValidateMetadata>;
+    allowedTypes?: Array<string>;
 }
 
 export function Property(metadata: PropertyMetadata) {

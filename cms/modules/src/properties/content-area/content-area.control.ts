@@ -4,14 +4,14 @@ import { generateUUID } from '@angular-cms/core';
 
 import { DropEvent } from '../../shared/drag-drop/drop-event.model';
 import { SubjectService } from '../../shared/services/subject.service';
-import { SubscriptionDestroy } from '../../shared/subscription-destroy';
 import { ContentAreaItem } from './ContentAreaItem';
+import { CmsControl } from '../cms-control';
 
 @Component({
     selector: 'content-area',
     template: `
             <div class="content-area border">
-                <div class="list-group p-2" droppable (onDrop)="onDropItem($event)">
+                <div class="list-group p-2" droppable [dropScope]="isDropAllowed" (onDrop)="onDropItem($event)">
                     <a class="list-group-item list-group-item-action rounded mb-1 p-2" href="javascript:void(0)"
                         *ngFor="let item of model;" 
                         draggable 
@@ -65,6 +65,7 @@ export class ContentAreaControl extends SubscriptionDestroy implements ControlVa
     private onTouched: (m: any) => void;
 
     @Input() name: string;
+    @Input() allowedTypes: string[];
 
     get model(): ContentAreaItem[] {
         return this._model;
@@ -97,6 +98,11 @@ export class ContentAreaControl extends SubscriptionDestroy implements ControlVa
 
     registerOnTouched(fn: any): void {
         this.onTouched = fn;
+    isDropAllowed = (dragData) => {
+        if (!this.allowedTypes) return true;
+        const { extendProperties } = dragData;
+        const contentType = extendProperties ? extendProperties.contentType : dragData.contentType
+        return this.allowedTypes.indexOf(contentType) > -1;
     }
 
     removeItem(item: Partial<ContentAreaItem>) {

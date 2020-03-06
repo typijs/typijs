@@ -6,6 +6,7 @@ export type CmsPropertyType = {
     Xhtml: string;
     Checkbox: string;
     ContentArea: string;
+    ContentReference: string;
 }
 
 //build-in property types
@@ -16,5 +17,6 @@ export const UIHint: CmsPropertyType = {
     PropertyList: "PropertyList",
     Xhtml: "Xhtml",
     Checkbox: "Checkbox",
-    ContentArea: "ContentArea"
+    ContentArea: "ContentArea",
+    ContentReference: "ContentReference"
 };
