@@ -46,7 +46,7 @@ const MediaMenuItemAction = {
                     </cms-tree>
                 </as-split-area>
                 <as-split-area size="50">
-                    <div class="list-group media-content"  *ngIf="medias" #mediaItem>
+                    <div class="list-group list-media"  *ngIf="medias" #mediaItem>
                         <a *ngFor="let media of medias" 
                             [draggable] 
                             [dragData]="media"  
@@ -89,7 +89,7 @@ const MediaMenuItemAction = {
             background-color: #999;
         }
 
-        .drag-over .media-content{
+        .drag-over .list-media{
             display: none;
         }
 
