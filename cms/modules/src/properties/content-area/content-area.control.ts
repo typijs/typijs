@@ -1,5 +1,5 @@
 import { Component, forwardRef, Input } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { generateUUID } from '@angular-cms/core';
 
 import { DropEvent } from '../../shared/drag-drop/drop-event.model';
@@ -82,12 +82,6 @@ export class ContentAreaControl extends CmsControl {
     //This method is called by the forms API to write to the view when programmatic changes from model to view are requested.
     writeValue(value: any): void {
         this._model = value;
-        if (this._model) {
-            this._model.forEach(x => {
-                x.owner = this.name;
-                x.guid = generateUUID();
-            });
-        }
     }
 
     isDropAllowed = (dragData) => {
@@ -136,8 +130,6 @@ export class ContentAreaControl extends CmsControl {
             this.onChange(this._model);
         }
     }
-
-
 
     private insertItemToModel(insertIndex: number, item: ContentAreaItem) {
         item.guid = generateUUID();

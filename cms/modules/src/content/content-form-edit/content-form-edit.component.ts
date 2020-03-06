@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, UrlSegment } from '@angular/router';
 
 import { PROPERTY_METADATA_KEY, PROPERTIES_METADATA_KEY, Media, Block, Page, ChildItemRef, Content, PAGE_TYPE, BLOCK_TYPE, MEDIA_TYPE, FOLDER_BLOCK, FOLDER_MEDIA } from '@angular-cms/core';
-import { CMS, UIHint, CmsProperty, InsertPointDirective, ISelectionFactory, PropertyMetadata, CmsTab, sortTabByTitle } from '@angular-cms/core';
+import { CMS, UIHint, CmsProperty, CmsPropertyProvider, PROPERTY_PROVIDERS_TOKEN, InsertPointDirective, ISelectionFactory, PropertyMetadata, CmsTab, sortTabByTitle } from '@angular-cms/core';
 import { PageService, BlockService } from '@angular-cms/core';
 
 import { PropertyListComponent } from '../../properties/property-list/property-list.component';
@@ -36,6 +36,7 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
     private defaultGroup: string = "Content";
 
     constructor(
+        @Inject(PROPERTY_PROVIDERS_TOKEN) private providers: CmsPropertyProvider[],
         private componentFactoryResolver: ComponentFactoryResolver,
         private injector: Injector,
         private formBuilder: FormBuilder,
@@ -111,7 +112,7 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
 
     private getPopulatedContentData(contentData: Page | Block | Media, propertiesMetadata: Array<FormProperty>): Partial<Page> & Content {
         propertiesMetadata.forEach(propertyMeta => {
-            contentData.properties[propertyMeta.name] = this.getPopulatedReferenceProperty(contentData, propertyMeta);
+            if (contentData.properties) contentData.properties[propertyMeta.name] = this.getPopulatedReferenceProperty(contentData, propertyMeta);
         });
 
         return contentData;
@@ -191,6 +192,8 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
 
             properties.filter(x => (x.metadata.groupName == tab.title || (!x.metadata.groupName && tab.title == this.defaultGroup))).forEach(property => {
                 if (CMS.PROPERTIES[property.metadata.displayType]) {
+                    const provider = this.providers.find(x => x.isMatchingProvider(property.metadata.displayType));
+
                     const propertyFactory = this.componentFactoryResolver.resolveComponentFactory(CMS.PROPERTIES[property.metadata.displayType]);
                     const propertyComponent = viewContainerRef.createComponent(propertyFactory);
 

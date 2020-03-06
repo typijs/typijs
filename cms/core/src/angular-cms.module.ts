@@ -9,6 +9,7 @@ import { CmsRenderContentComponent } from './render/cms-content';
 import { localStorageFactory, LOCAL_STORAGE } from './services/browser-storage.service';
 import { OutsideZoneEventPlugin } from './utils/outside-zone-event-plugin';
 import { CustomRouteReuseStrategy } from './utils/route-reuse-strategy';
+import { CmsProperty, CmsPropertyProvider } from './bases/cms-property';
 
 
 // Reexport all public apis
@@ -57,11 +58,11 @@ export class AngularCmsModule {
         CMS.registerContentTypes(theEntryScope);
     }
 
-    public static registerProperty(property: any, uniqueAccessKey?: string) {
-        CMS.registerProperty(property, uniqueAccessKey);
+    public static registerProperty(uniquePropertyKey: string, property: Function, propertyProvider?: Function) {
+        CMS.registerProperty(uniquePropertyKey, property, propertyProvider);
     }
 
-    public static registerProperties(properties: Array<[string, Function]> | Array<Function>) {
+    public static registerProperties(properties: Array<Function> | Array<[string, Function] | [string, Function, Function]>) {
         CMS.registerProperties(properties);
     }
 

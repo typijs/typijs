@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, InjectionToken } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -6,7 +6,7 @@ import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontaweso
 import { faFile, faFolder, faCube, faImage, faBars } from '@fortawesome/free-solid-svg-icons';
 
 import { EditorModule } from '@tinymce/tinymce-angular';
-import { CoreModule } from '@angular-cms/core';
+import { CoreModule, CMS } from '@angular-cms/core';
 
 import { DndModule } from '../shared/drag-drop/dnd.module';
 
@@ -83,6 +83,9 @@ registerCmsProperties();
 
         ContentReferenceControl,
         ContentReferenceComponent
+    ],
+    providers: [
+        ...CMS.NG_PROPERTY_PROVIDERS
     ]
 })
 export class PropertiesModule {
@@ -90,5 +93,3 @@ export class PropertiesModule {
         library.addIcons(faFolder, faFile, faImage, faCube, faBars);
     }
 }
-
-

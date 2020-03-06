@@ -1,11 +1,17 @@
 import { Routes, Route } from '@angular/router';
 import { PAGE_TYPE_INDICATOR, BLOCK_TYPE_INDICATOR } from './constants/meta-keys';
 import { CmsModuleConfig, CmsModuleRoot, CmsComponentConfig } from './constants/module-config';
+import { CmsProperty, CmsPropertyProvider, PROPERTY_PROVIDERS_TOKEN } from './bases/cms-property';
+import { InjectionToken } from '@angular/core';
+
+export type CmsObject = { [key: string]: any };
 
 export type CmsModel = {
-    PAGE_TYPES: object;
-    BLOCK_TYPES: object;
-    PROPERTIES: object;
+    PAGE_TYPES: CmsObject;
+    BLOCK_TYPES: CmsObject;
+    PROPERTIES: CmsObject;
+    PROPERTY_PROVIDERS: CmsObject;
+    NG_PROPERTY_PROVIDERS: Array<any>;
 
     MODULES: Array<CmsModuleConfig>;
     NG_MODULES: Array<any>;
@@ -23,6 +29,8 @@ export const CMS: CmsModel = {
     PAGE_TYPES: {},
     BLOCK_TYPES: {},
     PROPERTIES: {},
+    PROPERTY_PROVIDERS: {},
+    NG_PROPERTY_PROVIDERS: [],
 
     MODULES: [],
     NG_MODULES: [],
@@ -80,30 +88,33 @@ export function registerContentTypes(theEntryScope: any) {
 }
 
 //register a property with cms
-export function registerProperty(property: any, uniqueAccessKey?: string) {
-    if (property) {
-        if (uniqueAccessKey) {
-            if (CMS.PROPERTIES.hasOwnProperty(uniqueAccessKey)) {
-                console.warn('Warning: CMS.PROPERTIES has already property ', uniqueAccessKey)
-            }
-            CMS.PROPERTIES[uniqueAccessKey] = property
-        } else {
-            if (CMS.PROPERTIES.hasOwnProperty(property['name'])) {
-                console.warn('Warning: CMS.PROPERTIES has already property ', property['name'])
-            }
-            CMS.PROPERTIES[property['name']] = property;
-        }
+export function registerProperty(uniquePropertyKey: string, property: Function, propertyProvider?: Function) {
+    if (!uniquePropertyKey || !property) return;
+
+    if (CMS.PROPERTIES.hasOwnProperty(uniquePropertyKey)) {
+        console.warn('Warning: CMS.PROPERTIES has already property ', uniquePropertyKey)
+    }
+
+    CMS.PROPERTIES[uniquePropertyKey] = property;
+
+    if (propertyProvider) {
+        CMS.NG_PROPERTY_PROVIDERS.push({ provide: PROPERTY_PROVIDERS_TOKEN, useClass: propertyProvider, multi: true });
+        CMS.PROPERTY_PROVIDERS[uniquePropertyKey] = propertyProvider;
     }
 }
 
 //register multi properties with cms
-export function registerProperties(properties: Array<[string, Function]> | Array<Function>) {
+export function registerProperties(properties: Array<Function> | Array<[string, Function] | [string, Function, Function]>) {
     if (properties instanceof Array) {
         for (const property of properties) {
             if (property instanceof Function) {
-                registerProperty(property);
-            } else if (property instanceof Array && property.length == 2) {
-                registerProperty(property[1], property[0]);
+                registerProperty(property['name'], property);
+            }
+            else if (property instanceof Array && property.length == 2) {
+                registerProperty(property[0], property[1]);
+            }
+            else if (property instanceof Array && property.length == 3) {
+                registerProperty(property[0], property[1], property[2]);
             }
         }
     }
@@ -116,7 +127,7 @@ export function registerModule(moduleConfig: CmsModuleConfig) {
 
         var existingModule = CMS.MODULES.find(m => m.module['name'] === moduleName);
         if (existingModule) {
-            console.warn(`The module ${moduleName} has already registed`);
+            console.warn(`The module ${moduleName} has already registered`);
         } else {
             CMS.MODULES.push(moduleConfig);
             CMS.NG_MODULES.push(moduleConfig.module);

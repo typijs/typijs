@@ -71,17 +71,3 @@ export function clone(obj) {
 
   throw new Error("Unable to copy obj! Its type isn't supported.");
 }
-
-const idCounter = {}
-export function uniqueId(prefix = '$lodash$') {
-  if (!idCounter[prefix]) {
-    idCounter[prefix] = 0
-  }
-
-  const id = ++idCounter[prefix]
-  if (prefix === '$lodash$') {
-    return `${id}`
-  }
-
-  return `${prefix + id}`
-}

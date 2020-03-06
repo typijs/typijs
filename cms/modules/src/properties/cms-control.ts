@@ -1,4 +1,3 @@
-import { Subscription } from 'rxjs';
 import { SubscriptionDestroy } from '../shared/subscription-destroy';
 import { ControlValueAccessor } from '@angular/forms';
 

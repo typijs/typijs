@@ -7,7 +7,7 @@ export * from './utils/outside-zone-event-plugin';
 export * from './utils/route-reuse-strategy';
 
 export * from './bases/cms-component';
-export * from './bases/cms-property';
+export { CmsProperty, CmsPropertyProvider, PROPERTY_PROVIDERS_TOKEN } from './bases/cms-property';
 export * from './bases/content-data';
 export * from './bases/selection-factory';
 
@@ -32,7 +32,7 @@ export * from './models/content.model';
 export * from './models/media.model';
 export * from './models/page.model';
 
-export { slugify, sortTabByTitle, uniqueId, clone, generateUUID } from './helpers/common';
+export { slugify, sortTabByTitle, clone, generateUUID } from './helpers/common';
 
 export * from './services/block.service';
 export * from './services/page.service';
