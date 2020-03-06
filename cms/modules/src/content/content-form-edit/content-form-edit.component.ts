@@ -2,14 +2,13 @@ import { Component, ViewChildren, QueryList, ComponentFactoryResolver, Inject, I
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, UrlSegment } from '@angular/router';
 
-import { PROPERTY_METADATA_KEY, PROPERTIES_METADATA_KEY, Media, Block, Page, ChildItemRef, Content } from '@angular-cms/core';
-import { CMS, UIHint, CmsProperty, InsertPointDirective, ISelectionFactory, PropertyMetadata, CmsTab, sortTabByTitle, clone } from '@angular-cms/core';
+import { PROPERTY_METADATA_KEY, PROPERTIES_METADATA_KEY, Media, Block, Page, ChildItemRef, Content, PAGE_TYPE, BLOCK_TYPE, MEDIA_TYPE, FOLDER_BLOCK, FOLDER_MEDIA } from '@angular-cms/core';
+import { CMS, UIHint, CmsProperty, InsertPointDirective, ISelectionFactory, PropertyMetadata, CmsTab, sortTabByTitle } from '@angular-cms/core';
 import { PageService, BlockService } from '@angular-cms/core';
 
 import { PropertyListComponent } from '../../properties/property-list/property-list.component';
 import { SelectProperty } from '../../properties/select/select-property';
 
-import { PAGE_TYPE, BLOCK_TYPE, MEDIA_TYPE, FOLDER_BLOCK, FOLDER_MEDIA } from './../../constants';
 import { SubjectService } from '../../shared/services/subject.service';
 import { ContentAreaItem } from "../../properties/content-area/ContentAreaItem";
 import { SubscriptionDestroy } from '../../shared/subscription-destroy';

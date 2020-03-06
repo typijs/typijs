@@ -2,7 +2,7 @@ import { Directive, ElementRef, OnInit } from '@angular/core';
 
 @Directive({
   // tslint:disable-next-line:max-line-length
-  selector: '[appHostReplace], cms-header, cms-footer'
+  selector: '[appHostReplace], cms-header'
 })
 export class ReplaceDirective implements OnInit {
 

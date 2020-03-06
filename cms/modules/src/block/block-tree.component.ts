@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { ServiceLocator, Block, BlockService } from '@angular-cms/core';
+import { ServiceLocator, Block, BlockService, BLOCK_TYPE } from '@angular-cms/core';
 import { TreeNode } from '../shared/tree/interfaces/tree-node';
 import { TreeComponent } from '../shared/tree/components/tree.component';
 import { TreeConfig } from '../shared/tree/interfaces/tree-config';
@@ -9,7 +9,7 @@ import { NodeMenuItemAction, TreeMenuActionEvent } from '../shared/tree/interfac
 import { BlockTreeService } from './block-tree.service';
 import { SubscriptionDestroy } from '../shared/subscription-destroy';
 import { SubjectService } from '../shared/services/subject.service';
-import { ContentTreeNode, BLOCK_TYPE } from '../constants';
+import { ContentTreeNode } from '../constants';
 
 const BlockMenuItemAction = {
     DeleteFolder: 'DeleteFolder',

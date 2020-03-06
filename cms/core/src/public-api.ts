@@ -13,6 +13,7 @@ export * from './bases/selection-factory';
 
 export * from './render/cms-content';
 
+export * from './constants/content-type';
 export * from './constants/module-config';
 export * from './constants/ui-hint'
 export * from './constants/meta-keys';
@@ -31,7 +32,7 @@ export * from './models/content.model';
 export * from './models/media.model';
 export * from './models/page.model';
 
-export { slugify, sortTabByTitle, uniqueId, clone } from './helpers/common';
+export { slugify, sortTabByTitle, uniqueId, clone, generateUUID } from './helpers/common';
 
 export * from './services/block.service';
 export * from './services/page.service';
