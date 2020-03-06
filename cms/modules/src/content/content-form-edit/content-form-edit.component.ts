@@ -12,6 +12,7 @@ import { SelectProperty } from '../../properties/select/select-property';
 import { SubjectService } from '../../shared/services/subject.service';
 import { ContentAreaItem } from "../../properties/content-area/ContentAreaItem";
 import { SubscriptionDestroy } from '../../shared/subscription-destroy';
+import { ContentAreaProperty } from '../../properties/content-area/content-area.property';
 
 type FormProperty = {
     name: string,
@@ -30,7 +31,7 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
     currentContent: Partial<Page> & Content;
 
     private typeOfContent: string;
-    private propertyMetadatas: Array<FormProperty> = [];
+    private propertiesMetadata: Array<FormProperty> = [];
     private componentRefs: Array<any> = [];
     private defaultGroup: string = "Content";
 
@@ -72,28 +73,27 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
     ngAfterViewInit() {
         this.insertPoints.changes.subscribe((newValue: QueryList<InsertPointDirective>) => {
             if (newValue.length > 0) {
-                this.componentRefs = this.createPropertyComponents(this.propertyMetadatas);
+                this.componentRefs = this.createPropertyComponents(this.propertiesMetadata);
                 this.changeDetectionRef.detectChanges();
             }
         });
     }
 
     private bindDataForContentForm(contentData: Page | Block | Media, contentType: string) {
-        this.currentContent = contentData;
-        this.propertyMetadatas = [];
+        if (!contentType) return;
 
-        if (contentType) {
-            this.propertyMetadatas = this.createPropertyMetadatas(contentType);
-            if (this.propertyMetadatas.length > 0) {
-                this.propertyMetadatas.forEach(propertyMeta => this.populateReferenceProperty(propertyMeta));
-                this.formTabs = this.createFormTabs(this.propertyMetadatas);
-                this.contentForm = this.createFormGroup(this.propertyMetadatas);
-            }
+        this.propertiesMetadata = this.getPropertiesMetadataFromContentType(contentType);
+
+        this.currentContent = this.getPopulatedContentData(contentData, this.propertiesMetadata);
+
+        if (this.propertiesMetadata.length > 0) {
+            this.formTabs = this.createFormTabs(this.propertiesMetadata);
+            this.contentForm = this.createFormGroup(this.propertiesMetadata);
         }
     }
 
-    private createPropertyMetadatas(contentType: string): Array<FormProperty> {
-        const metadatas = [];
+    private getPropertiesMetadataFromContentType(contentType: string): Array<FormProperty> {
+        const metadata = [];
         //get all properties of content type
         const properties: string[] = Reflect.getMetadata(PROPERTIES_METADATA_KEY, contentType);
         if (properties) {
@@ -103,29 +103,36 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
                     metadata: Reflect.getMetadata(PROPERTY_METADATA_KEY, contentType, propertyName)
                 }
 
-                metadatas.push(propertyMeta);
+                metadata.push(propertyMeta);
             });
         }
-        return metadatas;
+        return metadata;
     }
 
-    private populateReferenceProperty(property: FormProperty): void {
-        if (this.currentContent.properties) {
-            const childItems = this.currentContent.childItems;
-            const fieldType = property.metadata.displayType;
-            switch (fieldType) {
-                // Content Area
-                case UIHint.ContentArea:
-                    const contentAreaItems: ContentAreaItem[] = this.currentContent.properties[property.name]
-                    if (Array.isArray(contentAreaItems)) {
-                        contentAreaItems.forEach(areaItem => {
-                            const matchItem = childItems.find(x => x.content._id == areaItem._id);
-                            Object.assign(areaItem, { name: matchItem.content.name, isPublished: matchItem.content.isPublished })
-                        })
-                    }
-                    this.currentContent.properties[property.name] = contentAreaItems;
-                    break;
-            }
+    private getPopulatedContentData(contentData: Page | Block | Media, propertiesMetadata: Array<FormProperty>): Partial<Page> & Content {
+        propertiesMetadata.forEach(propertyMeta => {
+            contentData.properties[propertyMeta.name] = this.getPopulatedReferenceProperty(contentData, propertyMeta);
+        });
+
+        return contentData;
+    }
+
+    private getPopulatedReferenceProperty(contentData: Page | Block | Media, property: FormProperty): any {
+        const childItems = contentData.childItems;
+        const displayType = property.metadata.displayType;
+
+        switch (displayType) {
+            case UIHint.ContentArea:
+                const contentAreaItems: ContentAreaItem[] = contentData.properties[property.name];
+                if (Array.isArray(contentAreaItems)) {
+                    contentAreaItems.forEach(areaItem => {
+                        const matchItem = childItems.find(x => x.content._id == areaItem._id);
+                        Object.assign(areaItem, { name: matchItem.content.name, isPublished: matchItem.content.isPublished })
+                    })
+                }
+                return contentAreaItems;
+            default:
+                return contentData.properties[property.name];
         }
     }
 
@@ -151,6 +158,7 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
         if (properties) {
             const formModel = this.currentContent.properties ? this.currentContent.properties : {};
             const formControls: { [key: string]: any } = this.createDefaultFormControls();
+
             properties.forEach(property => {
                 const validators = [];
                 if (property.metadata.validates) {
@@ -251,7 +259,7 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
         const childItems: ChildItemRef[] = [];
 
         Object.keys(this.currentContent.properties).forEach(fieldName => {
-            const fieldMeta = this.propertyMetadatas.find(x => x.name == fieldName);
+            const fieldMeta = this.propertiesMetadata.find(x => x.name == fieldName);
             if (fieldMeta) {
                 const fieldType = fieldMeta.metadata.displayType;
 
