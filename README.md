@@ -2,8 +2,6 @@
 
 The single app CMS based on Angular, Express, NodeJs and MongoDB.
 
-**HOPE THERE IS SOMEONE WORK WITH ME TO CREATE THE FUN. FEEL FREE TO CONTACT ME (danghung1202@gmail.com)**
-
 **Status: Working In Progress, not ready to use in production**
 
 ## How it work?
