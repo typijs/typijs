@@ -10,15 +10,15 @@ import { LinkItem } from '../../shared/link-item';
 export class LinkListBlock extends BlockData {
     @Property({
         displayName: "Header",
-        displayType: UIHint.Input,
+        displayType: UIHint.Text,
         validates: [ValidationTypes.required("This field is required")]
     })
     header: string;
 
     @Property({
         displayName: "Link Items",
-        displayType: UIHint.PropertyList,
-        propertyListItemType: LinkItem,
+        displayType: UIHint.ObjectList,
+        objectListItemType: LinkItem,
     })
     linkItems: Array<LinkItem>
 }

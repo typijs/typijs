@@ -9,26 +9,26 @@ import { FeatureComponent } from './feature.component';
 export class FeatureBlock extends BlockData {
     @Property({
         displayName: "Header",
-        displayType: UIHint.Input,
+        displayType: UIHint.Text,
         validates: [ValidationTypes.required("This field is required")]
     })
     header: string;
 
     @Property({
         displayName: "Summary",
-        displayType: UIHint.Xhtml
+        displayType: UIHint.XHtml
     })
     summary: string;
 
     @Property({
         displayName: "Image Teaser",
-        displayType: UIHint.Input
+        displayType: UIHint.Text
     })
     image: string;
 
     @Property({
         displayName: "Read More Link",
-        displayType: UIHint.Input
+        displayType: UIHint.Text
     })
     link: string;
 }

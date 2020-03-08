@@ -3,7 +3,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faFile, faFolder, faCube, faImage, faBars } from '@fortawesome/free-solid-svg-icons';
+import { faFile, faFolder, faCube, faImage, faBars, faHashtag, faList } from '@fortawesome/free-solid-svg-icons';
 
 import { EditorModule } from '@tinymce/tinymce-angular';
 import { CoreModule, CMS } from '@angular-cms/core';
@@ -14,8 +14,8 @@ import { InputComponent } from './input/input.component';
 
 import { TextareaComponent } from './textarea/textarea.component';
 
-import { PropertyListComponent } from './property-list/property-list.component';
-import { PropertyListControl } from './property-list/property-list.control';
+import { ObjectListProperty } from './object-list/object-list.property';
+import { ObjectListControl } from './object-list/object-list.control';
 
 import { TinymceComponent } from './xhtml/tinymce.component';
 import { DropdownComponent } from './select/dropdown/dropdown.component';
@@ -53,8 +53,8 @@ registerCmsProperties();
         DropdownComponent,
         CheckboxGroupControl,
         CheckboxComponent,
-        PropertyListControl,
-        PropertyListComponent,
+        ObjectListProperty,
+        ObjectListControl,
         TinymceComponent,
         ContentAreaProperty,
         ContentAreaControl,
@@ -67,7 +67,7 @@ registerCmsProperties();
         TextareaComponent,
         DropdownComponent,
         CheckboxComponent,
-        PropertyListComponent,
+        ObjectListProperty,
         TinymceComponent,
         ContentAreaProperty,
         ContentReferenceComponent
@@ -77,7 +77,7 @@ registerCmsProperties();
         TextareaComponent,
         DropdownComponent,
         CheckboxComponent,
-        PropertyListComponent,
+        ObjectListProperty,
         TinymceComponent,
         ContentAreaProperty,
 
@@ -85,11 +85,11 @@ registerCmsProperties();
         ContentReferenceComponent
     ],
     providers: [
-        ...CMS.NG_PROPERTY_PROVIDERS
+        ...CMS.PROPERTY_PROVIDERS
     ]
 })
 export class PropertiesModule {
     constructor(private library: FaIconLibrary) {
-        library.addIcons(faFolder, faFile, faImage, faCube, faBars);
+        library.addIcons(faFolder, faFile, faImage, faCube, faBars, faHashtag, faList);
     }
 }
