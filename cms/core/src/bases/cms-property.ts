@@ -16,17 +16,25 @@ export abstract class CmsProperty {
     }
 }
 
-export const PROPERTY_PROVIDERS_TOKEN: InjectionToken<CmsPropertyProvider[]> = new InjectionToken<CmsPropertyProvider[]>('PROPERTY_PROVIDERS_TOKEN');
+export const PROPERTY_PROVIDERS_TOKEN: InjectionToken<CmsPropertyFactory[]> = new InjectionToken<CmsPropertyFactory[]>('PROPERTY_PROVIDERS_TOKEN');
+
+export function getCmsPropertyFactory(propertyKey: string) {
+    return (componentFactoryResolver: ComponentFactoryResolver): CmsPropertyFactory => {
+        return new CmsPropertyFactory(componentFactoryResolver, propertyKey)
+    };
+};
 
 @Injectable()
-export class CmsPropertyProvider {
-    propertyKey: string;
+export class CmsPropertyFactory {
+    protected propertyKey: string;
     componentFactoryResolver: ComponentFactoryResolver;
-    constructor(componentFactoryResolver: ComponentFactoryResolver) {
+
+    constructor(componentFactoryResolver: ComponentFactoryResolver, propertyKey: string) {
         this.componentFactoryResolver = componentFactoryResolver;
+        this.propertyKey = propertyKey;
     }
 
-    isMatchingProvider(propertyKey): boolean {
+    isMatching(propertyKey): boolean {
         return this.propertyKey == propertyKey;
     }
 

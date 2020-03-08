@@ -60,11 +60,10 @@ import { CmsControl } from '../cms-control';
     ]
 })
 export class ContentAreaControl extends CmsControl {
-    private _model: ContentAreaItem[];
-
     @Input() name: string;
     @Input() allowedTypes: string[];
 
+    private _model: ContentAreaItem[];
     get model(): ContentAreaItem[] {
         return this._model;
     }

@@ -1,8 +1,10 @@
 import { Component, Input } from '@angular/core';
 
-import { CmsProperty } from '@angular-cms/core';
+import { CmsProperty, PROPERTY_PROVIDERS_TOKEN } from '@angular-cms/core';
+import { ContentAreaFactory } from './content-area.factory';
 
 @Component({
+    selector: '[contentAreaProperty]',
     template: `
     <div class="form-group row" [formGroup]="formGroup">
         <label [attr.for]="id" class="col-4 col-form-label">{{label}}</label>

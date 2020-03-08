@@ -3,16 +3,12 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, UrlSegment } from '@angular/router';
 
 import { PROPERTY_METADATA_KEY, PROPERTIES_METADATA_KEY, Media, Block, Page, ChildItemRef, Content, PAGE_TYPE, BLOCK_TYPE, MEDIA_TYPE, FOLDER_BLOCK, FOLDER_MEDIA } from '@angular-cms/core';
-import { CMS, UIHint, CmsProperty, CmsPropertyProvider, PROPERTY_PROVIDERS_TOKEN, InsertPointDirective, ISelectionFactory, PropertyMetadata, CmsTab, sortTabByTitle } from '@angular-cms/core';
+import { CMS, UIHint, CmsPropertyFactory, PROPERTY_PROVIDERS_TOKEN, InsertPointDirective, PropertyMetadata, CmsTab, sortTabByTitle } from '@angular-cms/core';
 import { PageService, BlockService } from '@angular-cms/core';
-
-import { PropertyListComponent } from '../../properties/property-list/property-list.component';
-import { SelectProperty } from '../../properties/select/select-property';
 
 import { SubjectService } from '../../shared/services/subject.service';
 import { ContentAreaItem } from "../../properties/content-area/ContentAreaItem";
 import { SubscriptionDestroy } from '../../shared/subscription-destroy';
-import { ContentAreaProperty } from '../../properties/content-area/content-area.property';
 
 type FormProperty = {
     name: string,
@@ -26,7 +22,7 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
 
     @ViewChildren(InsertPointDirective) insertPoints: QueryList<InsertPointDirective>;
 
-    contentForm: FormGroup = new FormGroup({});
+    contentFormGroup: FormGroup = new FormGroup({});
     formTabs: Array<CmsTab> = [];
     currentContent: Partial<Page> & Content;
 
@@ -36,7 +32,7 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
     private defaultGroup: string = "Content";
 
     constructor(
-        @Inject(PROPERTY_PROVIDERS_TOKEN) private providers: CmsPropertyProvider[],
+        @Inject(PROPERTY_PROVIDERS_TOKEN) private propertyFactories: CmsPropertyFactory[],
         private componentFactoryResolver: ComponentFactoryResolver,
         private injector: Injector,
         private formBuilder: FormBuilder,
@@ -89,7 +85,7 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
 
         if (this.propertiesMetadata.length > 0) {
             this.formTabs = this.createFormTabs(this.propertiesMetadata);
-            this.contentForm = this.createFormGroup(this.propertiesMetadata);
+            this.contentFormGroup = this.createFormGroup(this.propertiesMetadata);
         }
     }
 
@@ -167,7 +163,6 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
                         validators.push(validate.validateFn);
                     })
                 }
-
                 formControls[property.name] = [formModel[property.name], validators]
             });
             return this.formBuilder.group(formControls);
@@ -192,25 +187,8 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
 
             properties.filter(x => (x.metadata.groupName == tab.title || (!x.metadata.groupName && tab.title == this.defaultGroup))).forEach(property => {
                 if (CMS.PROPERTIES[property.metadata.displayType]) {
-                    const provider = this.providers.find(x => x.isMatchingProvider(property.metadata.displayType));
-
-                    const propertyFactory = this.componentFactoryResolver.resolveComponentFactory(CMS.PROPERTIES[property.metadata.displayType]);
-                    const propertyComponent = viewContainerRef.createComponent(propertyFactory);
-
-                    (<CmsProperty>propertyComponent.instance).label = property.metadata.displayName;
-                    (<CmsProperty>propertyComponent.instance).formGroup = this.contentForm;
-                    (<CmsProperty>propertyComponent.instance).propertyName = property.name;
-
-                    if (propertyComponent.instance instanceof SelectProperty) {
-                        (<SelectProperty>propertyComponent.instance).selectItems = (<ISelectionFactory>(this.injector.get(property.metadata.selectionFactory))).GetSelections();
-                    }
-                    else if (propertyComponent.instance instanceof PropertyListComponent) {
-                        (<PropertyListComponent>propertyComponent.instance).itemType = property.metadata.propertyListItemType;
-                    }
-                    else if (propertyComponent.instance instanceof ContentAreaProperty) {
-                        (<ContentAreaProperty>propertyComponent.instance).allowedTypes = property.metadata.allowedTypes;
-                    }
-
+                    const propertyFactory = this.propertyFactories.find(x => x.isMatching(property.metadata.displayType));
+                    const propertyComponent = propertyFactory.createCmsPropertyComponent(viewContainerRef, this.contentFormGroup, property.name, property.metadata);
                     propertyControls.push(propertyComponent);
                 }
             });
@@ -220,15 +198,15 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
     }
 
     updateContent(isPublished: boolean, formId: any) {
-        if (this.contentForm.valid) {
+        if (this.contentFormGroup.valid) {
             if (this.currentContent) {
                 const properties = {};
-                Object.keys(this.contentForm.value).forEach(key => {
+                Object.keys(this.contentFormGroup.value).forEach(key => {
                     if (this.currentContent.hasOwnProperty(key)) {
-                        this.currentContent[key] = this.contentForm.value[key]
+                        this.currentContent[key] = this.contentFormGroup.value[key]
                     }
                     else {
-                        properties[key] = this.contentForm.value[key];
+                        properties[key] = this.contentFormGroup.value[key];
                     }
                 });
                 this.currentContent.properties = properties;

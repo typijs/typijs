@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { CoreModule, CmsPropertyProvider } from '@angular-cms/core';
+import { CoreModule, CmsPropertyFactory } from '@angular-cms/core';
 
 import { CmsAngularSplitModule } from '../shared/libs/angular-split/module';
 import { CmsTabsModule } from '../shared/libs/ngx-bootstrap/tabs.module';

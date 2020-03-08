@@ -7,7 +7,7 @@ export * from './utils/outside-zone-event-plugin';
 export * from './utils/route-reuse-strategy';
 
 export * from './bases/cms-component';
-export { CmsProperty, CmsPropertyProvider, PROPERTY_PROVIDERS_TOKEN } from './bases/cms-property';
+export { CmsProperty, CmsPropertyFactory, PROPERTY_PROVIDERS_TOKEN, getCmsPropertyFactory } from './bases/cms-property';
 export * from './bases/content-data';
 export * from './bases/selection-factory';
 
