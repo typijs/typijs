@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 
-import { PageService, Page } from '@angular-cms/core';
+import { PageService, Page, PAGE_TYPE } from '@angular-cms/core';
 
 import { TreeService } from '../shared/tree/interfaces/tree-service';
 import { TreeNode } from '../shared/tree/interfaces/tree-node';
-import { ContentTreeNode, PAGE_TYPE } from '../constants';
+import { ContentTreeNode } from '../constants';
 
 @Injectable()
 export class PageTreeService implements TreeService {

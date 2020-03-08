@@ -1,20 +1,20 @@
-import { Component, Input, ViewChild, Inject, ComponentFactoryResolver, Injector } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
-
-import { CMS, CmsProperty, UIHint, PROPERTIES_METADATA_KEY, PROPERTY_METADATA_KEY, InsertPointDirective, ISelectionFactory } from '@angular-cms/core';
-
 import 'reflect-metadata';
-import { PropertyListControl } from './property-list.control';
+import { Component, ComponentFactoryResolver, Inject, Injector, Input, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+
+import { CMS, CmsProperty, InsertPointDirective, ISelectionFactory, PROPERTIES_METADATA_KEY, PROPERTY_METADATA_KEY, UIHint } from '@angular-cms/core';
 import { SelectProperty } from '../select/select-property';
+import { ObjectListControl } from './object-list.control';
 
 @Component({
+    selector: '[objectListProperty]',
     template: `
     <div class="form-group row" [formGroup]="formGroup">
         <label [attr.for]="id" class="col-sm-4 col-form-label">{{label}}</label>
         <div class="col-sm-8">
             <div class="card">
                 <div class="card-body">
-                    <property-group [formControlName]="propertyName"></property-group>
+                    <object-list [formControlName]="propertyName"></object-list>
                     
                     <a href="javascript:void(0)" class="btn btn-default btn-block" (click)="openDiglog()">Add item</a>
                 </div>
@@ -50,13 +50,9 @@ import { SelectProperty } from '../select/select-property';
     `]
 })
 
-export class PropertyListComponent extends CmsProperty {
-    showDialog: boolean = false;
-    modelForm: FormGroup = new FormGroup({});
-    private _itemType: any;
-
+export class ObjectListProperty extends CmsProperty {
     @ViewChild(InsertPointDirective, { static: true }) modelEditHost: InsertPointDirective;
-    @ViewChild(PropertyListControl, { static: false }) propertyGroup: PropertyListControl;
+    @ViewChild(ObjectListControl, { static: false }) propertyGroup: ObjectListControl;
 
     @Input()
     set itemType(itemType: any) {
@@ -79,6 +75,10 @@ export class PropertyListComponent extends CmsProperty {
     get itemType(): any {
         return this._itemType;
     }
+    private _itemType: any;
+
+    showDialog: boolean = false;
+    modelForm: FormGroup = new FormGroup({});
 
     constructor(
         private formBuilder: FormBuilder,
@@ -105,7 +105,7 @@ export class PropertyListComponent extends CmsProperty {
                         validators.push(validate.validateFn);
                     })
                 }
-                if (property.metadata.displayType == UIHint.PropertyList) {
+                if (property.metadata.displayType == UIHint.ObjectList) {
                     group[property.name] = [[], validators]
                 } else {
                     group[property.name] = ['', validators]
@@ -129,8 +129,8 @@ export class PropertyListComponent extends CmsProperty {
 
                 if (propertyComponent.instance instanceof SelectProperty) {
                     (<SelectProperty>propertyComponent.instance).selectItems = (<ISelectionFactory>(this.injector.get(property.metadata.selectionFactory))).GetSelections();
-                } else if (propertyComponent.instance instanceof PropertyListComponent) {
-                    (<PropertyListComponent>propertyComponent.instance).itemType = property.metadata.propertyListItemType;
+                } else if (propertyComponent.instance instanceof ObjectListProperty) {
+                    (<ObjectListProperty>propertyComponent.instance).itemType = property.metadata.objectListItemType;
                 }
             });
         }

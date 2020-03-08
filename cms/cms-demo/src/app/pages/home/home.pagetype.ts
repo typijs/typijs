@@ -10,26 +10,29 @@ export class HomePage extends PageData {
 
     @Property({
         displayName: "Logo",
-        displayType: UIHint.Input
+        displayType: UIHint.Text
     })
     logo: string;
 
     @Property({
         displayName: "Latest Projects Page Root",
-        displayType: UIHint.Input
+        displayType: UIHint.Text
     })
     latestProjectRoot: string;
 
     @Property({
         displayName: "Highlight Features",
         description: "This is highlight feature will be in banner area",
-        displayType: UIHint.ContentArea
+        displayType: UIHint.ContentArea,
+        allowedTypes: ['FeatureBlock', 'PortfolioBlock'],
+        newProperty: 'abc'
     })
     features: Array<any>;
 
     @Property({
         displayName: "Highlight Portfolios",
         displayType: UIHint.ContentArea,
+        allowedTypes: ['PortfolioBlock']
     })
     portfolios: Array<any>;
 
@@ -42,7 +45,7 @@ export class HomePage extends PageData {
     @Property({
         displayName: "Footer Text",
         description: "This is footer text to show the copyright",
-        displayType: UIHint.Xhtml
+        displayType: UIHint.XHtml
     })
     footerText: string;
 }

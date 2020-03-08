@@ -35,7 +35,7 @@ import { TreeStore } from '../tree-store';
 
         <div *ngIf="menuItems && node.id != '0'" class="node-menu" dropdown container="body" (isOpenChange)="onMenuOpenChange($event, node)">
             <fa-icon class="mr-1" [icon]="['fas', 'bars']" dropdownToggle></fa-icon>
-            <div class="node-menu-dropdown dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
+            <div class="cms-dropdown-menu dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
                 <a *ngFor="let menuItem of menuItems" class="dropdown-item p-2" href="javascript:void(0)" (click)="onMenuItemSelected(menuItem.action, node)">
                     {{menuItem.name}}
                 </a>

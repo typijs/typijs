@@ -1,0 +1,26 @@
+bs-dropdown-container {
+  z-index: 2;
+}
+
+.cms-dropdown-menu {
+  right: -15px !important;
+  top: -8px;
+}
+
+.hover-menu {
+  display: none;
+}
+
+.content-area,
+.list-block,
+.list-media {
+
+  .list-group-item-action:focus,
+  .list-group-item-action:hover {
+    //z-index: 0;
+
+    .hover-menu {
+      display: block;
+    }
+  }
+}

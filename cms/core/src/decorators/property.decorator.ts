@@ -13,10 +13,12 @@ export type PropertyMetadata = {
     description?: string;
     displayType?: string;
     selectionFactory?: any;
-    propertyListItemType?: any,
+    objectListItemType?: any,
     order?: number;
     groupName?: string;
     validates?: Array<ValidateMetadata>;
+    allowedTypes?: Array<string>;
+    [key: string]: any;
 }
 
 export function Property(metadata: PropertyMetadata) {

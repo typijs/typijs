@@ -1,11 +1,11 @@
-import { registerModule, CmsModuleRoot, CmsWidgetPosition } from '@angular-cms/core';
+import { CmsModuleRoot, CmsWidgetPosition, AngularCmsModule } from '@angular-cms/core';
 import { SiteManageModule } from './site-manage.module';
 import { SiteManageEntryComponent } from './site-manage-entry.component';
 import { SiteManageComponent } from './site-manage.component';
 
 
 export function registerSiteManageModule() {
-    registerModule({
+    AngularCmsModule.registerModule({
         module: SiteManageModule,
         roots: [
             {

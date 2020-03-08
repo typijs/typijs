@@ -8,16 +8,3 @@
   font-weight: bold;
   border-bottom: 1px solid #a4b7c1 !important;
 }
-
-.item-menu {
-  display: none;
-}
-
-.list-group-item-action:focus,
-.list-group-item-action:hover {
-  z-index: 0;
-
-  .item-menu {
-    display: block;
-  }
-}

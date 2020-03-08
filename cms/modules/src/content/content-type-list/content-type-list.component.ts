@@ -1,10 +1,9 @@
 import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
 
-import { Block, BlockService, BLOCK_TYPE_METADATA_KEY, CMS, Page, PageService, PAGE_TYPE_METADATA_KEY, slugify } from '@angular-cms/core';
+import { Block, BlockService, BLOCK_TYPE_METADATA_KEY, CMS, Page, PageService, PAGE_TYPE_METADATA_KEY, BLOCK_TYPE, PAGE_TYPE, slugify } from '@angular-cms/core';
 
 import { SubjectService } from '../../shared/services/subject.service';
-import { BLOCK_TYPE, PAGE_TYPE } from './../../constants';
 import { SubscriptionDestroy } from '../../shared/subscription-destroy';
 
 

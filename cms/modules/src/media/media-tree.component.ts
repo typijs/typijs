@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 
-import { Media, MediaService, ServiceLocator } from '@angular-cms/core';
+import { Media, MediaService, ServiceLocator, MEDIA_TYPE } from '@angular-cms/core';
 
 import { SubjectService } from '../shared/services/subject.service';
 import { SubscriptionDestroy } from '../shared/subscription-destroy';
@@ -12,7 +12,7 @@ import { TreeNode } from '../shared/tree/interfaces/tree-node';
 import { MediaTreeService } from './media-tree.service';
 import { UploadService } from './upload/upload.service';
 import { FileModalComponent } from './upload/file-modal.component';
-import { ContentTreeNode, MEDIA_TYPE } from '../constants';
+import { ContentTreeNode } from '../constants';
 
 const MediaMenuItemAction = {
     DeleteFolder: 'DeleteFolder',
@@ -46,7 +46,7 @@ const MediaMenuItemAction = {
                     </cms-tree>
                 </as-split-area>
                 <as-split-area size="50">
-                    <div class="list-group media-content"  *ngIf="medias" #mediaItem>
+                    <div class="list-group list-media"  *ngIf="medias" #mediaItem>
                         <a *ngFor="let media of medias" 
                             [draggable] 
                             [dragData]="media"  
@@ -89,7 +89,7 @@ const MediaMenuItemAction = {
             background-color: #999;
         }
 
-        .drag-over .media-content{
+        .drag-over .list-media{
             display: none;
         }
 

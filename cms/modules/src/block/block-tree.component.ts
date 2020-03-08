@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { ServiceLocator, Block, BlockService } from '@angular-cms/core';
+import { ServiceLocator, Block, BlockService, BLOCK_TYPE } from '@angular-cms/core';
 import { TreeNode } from '../shared/tree/interfaces/tree-node';
 import { TreeComponent } from '../shared/tree/components/tree.component';
 import { TreeConfig } from '../shared/tree/interfaces/tree-config';
@@ -9,7 +9,7 @@ import { NodeMenuItemAction, TreeMenuActionEvent } from '../shared/tree/interfac
 import { BlockTreeService } from './block-tree.service';
 import { SubscriptionDestroy } from '../shared/subscription-destroy';
 import { SubjectService } from '../shared/services/subject.service';
-import { ContentTreeNode, BLOCK_TYPE } from '../constants';
+import { ContentTreeNode } from '../constants';
 
 const BlockMenuItemAction = {
     DeleteFolder: 'DeleteFolder',
@@ -40,7 +40,7 @@ const BlockMenuItemAction = {
             </cms-tree>
         </as-split-area>
         <as-split-area size="50">
-            <div class="list-group" *ngIf="blocks">
+            <div class="list-group list-block" *ngIf="blocks">
                 <a *ngFor="let block of blocks" 
                     [draggable] 
                     [dragData]="block"  
@@ -49,9 +49,9 @@ const BlockMenuItemAction = {
                     <div class="d-flex align-items-center">
                         <fa-icon class="mr-1" [icon]="['fas', 'cube']"></fa-icon>
                         <div class="w-100 mr-2 text-truncate" [routerLink]="['content/block', block._id]">{{block.name}}</div>
-                        <div class="item-menu ml-auto" dropdown container="body">
+                        <div class="hover-menu ml-auto" dropdown container="body">
                             <fa-icon class="mr-1" [icon]="['fas', 'bars']" dropdownToggle></fa-icon>
-                            <div class="node-menu-dropdown dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
+                            <div class="cms-dropdown-menu dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
                                 <a class="dropdown-item p-2" href="javascript:void(0)" [routerLink]="['content/block', block._id]">
                                     Edit
                                 </a>
