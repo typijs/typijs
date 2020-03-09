@@ -1,10 +1,10 @@
 import "reflect-metadata";
-import { NgModule, InjectionToken } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { CoreModule, CmsPropertyFactory } from '@angular-cms/core';
+import { CoreModule } from '@angular-cms/core';
 
 import { CmsAngularSplitModule } from '../shared/libs/angular-split/module';
 import { CmsTabsModule } from '../shared/libs/ngx-bootstrap/tabs.module';

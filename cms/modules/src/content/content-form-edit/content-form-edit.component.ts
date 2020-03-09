@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, UrlSegment } from '@angular/router';
 
 import { PROPERTY_METADATA_KEY, PROPERTIES_METADATA_KEY, Media, Block, Page, ChildItemRef, Content, PAGE_TYPE, BLOCK_TYPE, MEDIA_TYPE, FOLDER_BLOCK, FOLDER_MEDIA } from '@angular-cms/core';
-import { CMS, UIHint, CmsPropertyFactory, PROPERTY_PROVIDERS_TOKEN, InsertPointDirective, PropertyMetadata, CmsTab, sortTabByTitle } from '@angular-cms/core';
+import { CMS, UIHint, CmsPropertyFactoryResolver, InsertPointDirective, PropertyMetadata, CmsTab, sortTabByTitle } from '@angular-cms/core';
 import { PageService, BlockService } from '@angular-cms/core';
 
 import { SubjectService } from '../../shared/services/subject.service';
@@ -32,7 +32,7 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
     private defaultGroup: string = "Content";
 
     constructor(
-        @Inject(PROPERTY_PROVIDERS_TOKEN) private propertyFactories: CmsPropertyFactory[],
+        private propertyFactoryResolver: CmsPropertyFactoryResolver,
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
         private pageService: PageService,
@@ -185,8 +185,9 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
 
             properties.filter(x => (x.metadata.groupName == tab.title || (!x.metadata.groupName && tab.title == this.defaultGroup))).forEach(property => {
                 if (CMS.PROPERTIES[property.metadata.displayType]) {
-                    const propertyFactory = this.propertyFactories.find(x => x.isMatching(property.metadata.displayType));
-                    const propertyComponent = propertyFactory.createCmsPropertyComponent(viewContainerRef, this.contentFormGroup, property.name, property.metadata);
+                    const propertyFactory = this.propertyFactoryResolver.resolvePropertyFactory(property.metadata.displayType);
+                    const propertyComponent = propertyFactory.createPropertyComponent(property.name, property.metadata, this.contentFormGroup);
+                    viewContainerRef.insert(propertyComponent.hostView);
                     propertyControls.push(propertyComponent);
                 }
             });
@@ -273,6 +274,8 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
 
     ngOnDestroy() {
         this.unsubscribe();
+        if (this.insertPoints)
+            this.insertPoints.map(x => x.viewContainerRef).forEach(containerRef => containerRef.clear());
 
         if (this.componentRefs) {
             this.componentRefs.forEach(cmpRef => { cmpRef.destroy(); })
