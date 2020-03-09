@@ -3,7 +3,6 @@ import { EVENT_MANAGER_PLUGINS } from '@angular/platform-browser';
 import { RouteReuseStrategy, Routes } from '@angular/router';
 import { PAGE_TYPE_INDICATOR, BLOCK_TYPE_INDICATOR } from './constants/meta-keys';
 import { CMS } from './cms';
-import { ComponentFactoryResolver } from '@angular/core';
 
 import { CmsModuleConfig } from './constants/module-config';
 import { CoreModule } from "./core.module";
@@ -82,7 +81,7 @@ export class AngularCms {
         if (propertyProvider) {
             CMS.PROPERTY_PROVIDERS.push({ provide: PROPERTY_PROVIDERS_TOKEN, useClass: propertyProvider, multi: true });
         } else {
-            CMS.PROPERTY_PROVIDERS.push({ provide: PROPERTY_PROVIDERS_TOKEN, useFactory: getCmsPropertyFactory(uniquePropertyUIHint), deps: [Injector, ComponentFactoryResolver], multi: true });
+            CMS.PROPERTY_PROVIDERS.push({ provide: PROPERTY_PROVIDERS_TOKEN, useFactory: getCmsPropertyFactory(uniquePropertyUIHint), deps: [Injector], multi: true });
         }
     }
 

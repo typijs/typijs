@@ -1,4 +1,4 @@
-import { Injectable, ComponentFactoryResolver, ComponentRef, Injector } from '@angular/core';
+import { Injectable, ComponentRef, Injector } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { CmsPropertyFactory, UIHint, PropertyMetadata, ISelectionFactory } from '@angular-cms/core';
@@ -6,8 +6,8 @@ import { SelectProperty } from './select-property';
 
 @Injectable()
 export class SelectPropertyFactory extends CmsPropertyFactory {
-    constructor(propertyUIHint: string, injector: Injector, componentFactoryResolver: ComponentFactoryResolver) {
-        super(propertyUIHint, injector, componentFactoryResolver);
+    constructor(propertyUIHint: string, injector: Injector) {
+        super(propertyUIHint, injector);
     }
 
     createPropertyComponent(
@@ -28,14 +28,14 @@ export class SelectPropertyFactory extends CmsPropertyFactory {
 
 @Injectable()
 export class DropdownPropertyFactory extends SelectPropertyFactory {
-    constructor(injector: Injector, componentFactoryResolver: ComponentFactoryResolver) {
-        super(UIHint.Dropdown, injector, componentFactoryResolver);
+    constructor(injector: Injector) {
+        super(UIHint.Dropdown, injector);
     }
 }
 
 @Injectable()
 export class CheckboxPropertyFactory extends SelectPropertyFactory {
-    constructor(injector: Injector, componentFactoryResolver: ComponentFactoryResolver) {
-        super(UIHint.Checkbox, injector, componentFactoryResolver);
+    constructor(injector: Injector) {
+        super(UIHint.Checkbox, injector);
     }
 }

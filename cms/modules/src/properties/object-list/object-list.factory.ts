@@ -1,4 +1,4 @@
-import { Injectable, ComponentFactoryResolver, ComponentRef, Injector } from '@angular/core';
+import { Injectable, ComponentRef, Injector } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { CmsPropertyFactory, UIHint, PropertyMetadata } from '@angular-cms/core';
@@ -6,8 +6,8 @@ import { ObjectListProperty } from './object-list.property';
 
 @Injectable()
 export class ObjectListFactory extends CmsPropertyFactory {
-    constructor(injector: Injector, componentFactoryResolver: ComponentFactoryResolver) {
-        super(UIHint.ObjectList, injector, componentFactoryResolver);
+    constructor(injector: Injector) {
+        super(UIHint.ObjectList, injector);
     }
 
     createPropertyComponent(

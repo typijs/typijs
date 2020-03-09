@@ -1,12 +1,12 @@
-import { Injectable, ComponentFactoryResolver, ComponentRef, Injector } from '@angular/core';
+import { Injectable, ComponentRef, Injector } from '@angular/core';
 import { CmsPropertyFactory, UIHint, PropertyMetadata } from '@angular-cms/core';
 import { ContentAreaProperty } from './content-area.property';
 import { FormGroup } from '@angular/forms';
 
 @Injectable()
 export class ContentAreaFactory extends CmsPropertyFactory {
-    constructor(injector: Injector, componentFactoryResolver: ComponentFactoryResolver) {
-        super(UIHint.ContentArea, injector, componentFactoryResolver);
+    constructor(injector: Injector) {
+        super(UIHint.ContentArea, injector);
     }
 
     createPropertyComponent(propertyName: string, propertyMetadata: PropertyMetadata, formGroup: FormGroup): ComponentRef<any> {

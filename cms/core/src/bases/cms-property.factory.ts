@@ -9,8 +9,8 @@ import { CmsProperty } from './cms-property';
 export const PROPERTY_PROVIDERS_TOKEN: InjectionToken<CmsPropertyFactory[]> = new InjectionToken<CmsPropertyFactory[]>('PROPERTY_PROVIDERS_TOKEN');
 
 export function getCmsPropertyFactory(propertyUIHint: string) {
-    return (injector: Injector, componentFactoryResolver: ComponentFactoryResolver): CmsPropertyFactory => {
-        return new CmsPropertyFactory(propertyUIHint, injector, componentFactoryResolver)
+    return (injector: Injector): CmsPropertyFactory => {
+        return new CmsPropertyFactory(propertyUIHint, injector)
     };
 };
 
@@ -20,11 +20,10 @@ export class CmsPropertyFactory {
     protected componentFactoryResolver: ComponentFactoryResolver;
     protected injector: Injector;
 
-
-    constructor(propertyUIHint: string, injector: Injector, componentFactoryResolver: ComponentFactoryResolver) {
+    constructor(propertyUIHint: string, injector: Injector) {
         this.propertyUIHint = propertyUIHint;
         this.injector = injector;
-        this.componentFactoryResolver = componentFactoryResolver;
+        this.componentFactoryResolver = injector.get(ComponentFactoryResolver);
     }
 
     isMatching(propertyUIHint: string): boolean {
@@ -48,9 +47,7 @@ export class CmsPropertyFactory {
     }
 }
 
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable()
 export class CmsPropertyFactoryResolver {
     constructor(@Inject(PROPERTY_PROVIDERS_TOKEN) private propertyFactories: CmsPropertyFactory[]) { }
 
