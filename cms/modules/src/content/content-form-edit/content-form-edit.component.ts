@@ -1,4 +1,4 @@
-import { Component, ViewChildren, QueryList, ComponentFactoryResolver, Inject, Injector, OnInit, ChangeDetectorRef, ComponentRef } from '@angular/core';
+import { Component, ViewChildren, QueryList, Inject, OnInit, ChangeDetectorRef, ComponentRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, UrlSegment } from '@angular/router';
 
@@ -33,8 +33,6 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
 
     constructor(
         @Inject(PROPERTY_PROVIDERS_TOKEN) private propertyFactories: CmsPropertyFactory[],
-        private componentFactoryResolver: ComponentFactoryResolver,
-        private injector: Injector,
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
         private pageService: PageService,
@@ -172,7 +170,7 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
 
     private createDefaultFormControls(): { [key: string]: any } {
         const formControls: { [key: string]: any } = {};
-        formControls["name"] = [this.currentContent.name, Validators.required];
+        formControls.name = [this.currentContent.name, Validators.required];
         return formControls;
     }
 
@@ -277,9 +275,7 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
         this.unsubscribe();
 
         if (this.componentRefs) {
-            this.componentRefs.forEach(cmpref => {
-                cmpref.destroy();
-            })
+            this.componentRefs.forEach(cmpRef => { cmpRef.destroy(); })
             this.componentRefs = [];
         }
     }

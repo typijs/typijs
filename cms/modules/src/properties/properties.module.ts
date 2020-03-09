@@ -1,13 +1,15 @@
-import { NgModule, InjectionToken } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faFile, faFolder, faCube, faImage, faBars, faHashtag, faList } from '@fortawesome/free-solid-svg-icons';
-
 import { EditorModule } from '@tinymce/tinymce-angular';
+
 import { CoreModule, CMS } from '@angular-cms/core';
 
+import { CmsBsDropdownModule } from '../shared/libs/ngx-bootstrap/bs-dropdown.module';
 import { DndModule } from '../shared/drag-drop/dnd.module';
 
 import { InputComponent } from './input/input.component';
@@ -30,8 +32,6 @@ import { ContentReferenceControl } from './content-reference/content-reference.c
 import { ContentReferenceComponent } from './content-reference/content-reference.component';
 
 import { registerCmsProperties } from './registerCmsProperties';
-import { CmsBsDropdownModule } from '../shared/libs/ngx-bootstrap/bs-dropdown.module';
-import { RouterModule } from '@angular/router';
 
 registerCmsProperties();
 

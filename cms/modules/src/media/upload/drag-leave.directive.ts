@@ -15,8 +15,6 @@ export class DragLeaveDirective {
 
     @HostListener('drop', ['$event'])
     public onDrop() {
-        //evt.preventDefault();
-        //evt.stopPropagation();
         this.renderer.removeClass(this.hostElement.nativeElement.parentNode, 'drag-over');
     }
 }
