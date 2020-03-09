@@ -1,4 +1,4 @@
-import { AngularCmsModule, UIHint } from '@angular-cms/core';
+import { AngularCms, UIHint } from '@angular-cms/core';
 
 import { InputComponent } from './input/input.component';
 import { TextareaComponent } from './textarea/textarea.component';
@@ -12,7 +12,7 @@ import { ObjectListFactory } from './object-list/object-list.factory';
 import { DropdownPropertyFactory, CheckboxPropertyFactory } from './select/select-property.factory';
 
 export function registerCmsProperties() {
-    AngularCmsModule.registerProperties([
+    AngularCms.registerProperties([
         [UIHint.Text, InputComponent],
         [UIHint.Textarea, TextareaComponent],
         [UIHint.ObjectList, ObjectListProperty, ObjectListFactory],

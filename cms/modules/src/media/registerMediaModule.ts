@@ -1,10 +1,10 @@
-import { CmsModuleRoot, CmsWidgetPosition, AngularCmsModule } from '@angular-cms/core';
+import { CmsModuleRoot, CmsWidgetPosition, AngularCms } from '@angular-cms/core';
 import { ContentFormEditComponent } from '../content/content-form-edit/content-form-edit.component';
 import { MediaTreeComponent } from './media-tree.component';
 import { MediaModule } from './media.module';
 
 export function registerMediaModule() {
-    AngularCmsModule.registerModule({
+    AngularCms.registerModule({
         module: MediaModule,
         roots: [
             {

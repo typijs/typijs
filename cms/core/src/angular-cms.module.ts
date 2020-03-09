@@ -14,7 +14,7 @@ import { CustomRouteReuseStrategy } from './utils/route-reuse-strategy';
 import { PROPERTY_PROVIDERS_TOKEN, getCmsPropertyFactory } from './bases/cms-property';
 
 // Reexport all public apis
-export class AngularCmsModule {
+export class AngularCms {
     public static forRoot(): ModuleWithProviders {
         return {
             ngModule: CoreModule,
