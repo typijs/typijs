@@ -33,6 +33,7 @@ export * from './models/page.model';
 
 export { slugify, sortTabByTitle, clone, generateUUID } from './helpers/common';
 
+export * from './services/content-type.service';
 export * from './services/block.service';
 export * from './services/page.service';
 export * from './services/media.service';

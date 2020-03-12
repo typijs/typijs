@@ -1,19 +1,19 @@
 import 'reflect-metadata';
 import { Component, ComponentFactoryResolver, ComponentRef, OnDestroy, ViewChild } from '@angular/core';
 
-import { PAGE_TYPE_METADATA_KEY, PROPERTIES_METADATA_KEY, PROPERTY_METADATA_KEY } from '../constants/meta-keys';
 import { UIHint } from '../constants/ui-hint';
-import { ContentTypeMetadata } from '../decorators/content-type-metadata';
+import { ContentTypeMetadata } from '../decorators/content-type.decorator';
 import { PropertyMetadata } from '../decorators/property.decorator';
+
+import { InsertPointDirective } from '../directives/insert-point.directive';
+
 import { clone } from '../helpers/common';
 import { Page } from '../models/page.model';
+import { CmsComponent } from '../bases/cms-component';
+import { PageData } from '../bases/content-data';
+import { PageService } from '../services/page.service';
 import { BrowserLocationService } from '../services/browser-location.service';
-import { CmsComponent } from './../bases/cms-component';
-import { PageData } from './../bases/content-data';
-import { CMS } from './../cms';
-import { InsertPointDirective } from './../directives/insert-point.directive';
-import { PageService } from './../services/page.service';
-
+import { ContentTypeService } from '../services/content-type.service';
 
 @Component({
     selector: 'cms-content',
@@ -25,8 +25,9 @@ export class CmsRenderContentComponent implements OnDestroy {
     @ViewChild(InsertPointDirective, { static: true }) pageEditHost: InsertPointDirective;
 
     constructor(
-        private locationService: BrowserLocationService,
         private componentFactoryResolver: ComponentFactoryResolver,
+        private contentTypeService: ContentTypeService,
+        private locationService: BrowserLocationService,
         private pageService: PageService) { }
 
     ngOnInit() {
@@ -44,19 +45,11 @@ export class CmsRenderContentComponent implements OnDestroy {
         const currentUrl = `${location.origin}${location.pathname}`;
         this.pageService.getPublishedPage(currentUrl).subscribe((currentPage: Page) => {
             if (currentPage) {
-                const contentType = CMS.PAGE_TYPES[currentPage.contentType];
-                const pageMetadata = Reflect.getMetadata(PAGE_TYPE_METADATA_KEY, contentType);
-                const propertiesMetadata = this.getPropertiesMetadata(contentType);
-                propertiesMetadata.forEach(property => this.populateReferenceProperty(currentPage, property));
-
-                this.pageComponentRef = this.createPageComponent(new PageData(currentPage), pageMetadata);
+                const pageType = this.contentTypeService.getPageType(currentPage.contentType);
+                pageType.properties.forEach(property => this.populateReferenceProperty(currentPage, property));
+                this.pageComponentRef = this.createPageComponent(new PageData(currentPage), pageType.metadata);
             }
         })
-    }
-
-    private getPropertiesMetadata(contentType: string): { name: string, metadata: PropertyMetadata }[] {
-        const properties: Array<string> = Reflect.getMetadata(PROPERTIES_METADATA_KEY, contentType);
-        return properties.map(propertyName => ({ name: propertyName, metadata: Reflect.getMetadata(PROPERTY_METADATA_KEY, contentType, propertyName) }))
     }
 
     private populateReferenceProperty(currentPage: Page, property: { name: string, metadata: PropertyMetadata }): void {
