@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { Injector, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faFile, faFolder, faSitemap } from '@fortawesome/free-solid-svg-icons';
 
-import { CoreModule, setAppInjector } from '@angular-cms/core';
+import { CoreModule } from '@angular-cms/core';
 
 import { ContentModule } from '../content/content.module';
 import { DndModule } from '../shared/drag-drop/dnd.module';
@@ -45,8 +45,7 @@ import { PageTreeService } from './page-tree.service';
     providers: [PageTreeService]
 })
 export class PageModule {
-    constructor(private injector: Injector, private library: FaIconLibrary) {
-        setAppInjector(injector);
+    constructor(library: FaIconLibrary) {
         library.addIcons(faFolder, faSitemap, faFile);
     }
 }

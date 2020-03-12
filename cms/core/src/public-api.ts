@@ -2,7 +2,7 @@
  * Public API Surface of core
  */
 
-export * from './utils/service-locator';
+export * from './utils/appInjector';
 export * from './utils/outside-zone-event-plugin';
 export * from './utils/route-reuse-strategy';
 

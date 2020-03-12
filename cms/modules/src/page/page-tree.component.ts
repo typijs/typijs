@@ -1,7 +1,7 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, Injector } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { ServiceLocator, Page, PageService } from '@angular-cms/core';
+import { Page, PageService } from '@angular-cms/core';
 import { TreeNode } from '../shared/tree/interfaces/tree-node';
 import { TreeComponent } from '../shared/tree/components/tree.component';
 import { TreeConfig } from '../shared/tree/interfaces/tree-config';
@@ -50,38 +50,40 @@ export class PageTreeComponent extends SubscriptionDestroy {
     @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
 
     root: TreeNode = new TreeNode({ id: '0', name: 'Root', hasChildren: true });
-    treeConfig: TreeConfig = {
-        service: ServiceLocator.Instance.get(PageTreeService),
-        menuItems: [
-            {
-                action: PageMenuItemAction.NewPage,
-                name: "New Page"
-            },
-            {
-                action: NodeMenuItemAction.Cut,
-                name: "Cut"
-            },
-            {
-                action: NodeMenuItemAction.Copy,
-                name: "Copy"
-            },
-            {
-                action: NodeMenuItemAction.Paste,
-                name: "Paste"
-            },
-            {
-                action: PageMenuItemAction.DeletePage,
-                name: "Delete"
-            },
-        ]
-    }
+    treeConfig: TreeConfig;
 
     constructor(
+        private injector: Injector,
         private pageService: PageService,
         private subjectService: SubjectService,
         private router: Router,
         private route: ActivatedRoute) {
         super()
+        this.treeConfig = {
+            service: this.injector.get(PageTreeService),
+            menuItems: [
+                {
+                    action: PageMenuItemAction.NewPage,
+                    name: "New Page"
+                },
+                {
+                    action: NodeMenuItemAction.Cut,
+                    name: "Cut"
+                },
+                {
+                    action: NodeMenuItemAction.Copy,
+                    name: "Copy"
+                },
+                {
+                    action: NodeMenuItemAction.Paste,
+                    name: "Paste"
+                },
+                {
+                    action: PageMenuItemAction.DeletePage,
+                    name: "Delete"
+                },
+            ]
+        }
     }
 
     ngOnInit() {

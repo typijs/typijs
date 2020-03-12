@@ -1,3 +1,7 @@
+/**
+ * https://stackoverflow.com/questions/39409328/storing-injector-instance-for-use-in-components
+ */
+
 import { Injector } from '@angular/core';
 
 /**
@@ -6,9 +10,7 @@ import { Injector } from '@angular/core';
  * of the service).
  */
 
-export const ServiceLocator: any = {
-    Instance: null
-};
+export let AppInjector: Injector;
 
 /**
  * Helper to set the exported {@link AppInjector}, needed as ES6 modules export
@@ -17,11 +19,11 @@ export const ServiceLocator: any = {
  * "TS2539: Cannot assign to 'AppInjector' because it is not a variable".
  */
 export function setAppInjector(injector: Injector) {
-    if (ServiceLocator.Instance) {
+    if (AppInjector) {
         // Should not happen
         console.error('Programming error: AppInjector was already set');
     }
     else {
-        ServiceLocator.Instance = injector;
+        AppInjector = injector;
     }
 }
