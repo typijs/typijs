@@ -1,7 +1,6 @@
 import { Routes, Route } from '@angular/router';
-import { CmsModuleConfig, CmsModuleRoot, CmsComponentConfig } from './constants/module-config';
+import { CmsModuleConfig, CmsModuleRoot, CmsComponentConfig, CmsObject } from './constants/types';
 
-export type CmsObject = { [key: string]: any };
 
 /**
  * The type of global CMS model. It keeps all cms configurations

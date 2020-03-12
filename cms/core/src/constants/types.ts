@@ -1,6 +1,9 @@
 
 import { Routes } from '@angular/router';
 
+export type ClassOf<T> = new (...args: any[]) => T;
+export type CmsObject = { [key: string]: any };
+
 export enum CmsModuleRoot {
     Editor = "Editor",
     Admin = "Admin"

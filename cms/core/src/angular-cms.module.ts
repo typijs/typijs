@@ -2,13 +2,14 @@ import { ModuleWithProviders, Injector, NgModule } from '@angular/core';
 import { Routes } from '@angular/router';
 
 import { PAGE_TYPE_INDICATOR, BLOCK_TYPE_INDICATOR, MEDIA_TYPE_INDICATOR } from './decorators/metadata-key';
-import { PROPERTY_PROVIDERS_TOKEN, getCmsPropertyFactory } from './bases/cms-property.factory';
-import { CmsModuleConfig } from './constants/module-config';
+import { PROPERTY_PROVIDERS_TOKEN, getCmsPropertyFactory, CmsPropertyFactory } from './bases/cms-property.factory';
+import { CmsModuleConfig, ClassOf } from './constants/types';
 import { UIHint } from './constants/ui-hint';
 import { CmsRenderContentComponent } from './render/cms-content';
 import { setAppInjector } from './utils/appInjector';
 import { CoreModule, CMS_PROVIDERS } from "./core.module";
 import { CMS } from './cms';
+import { CmsProperty } from './bases/cms-property';
 
 /**
  * Re-export Core Module to used on client
@@ -68,12 +69,12 @@ export class AngularCms {
 
     /**
      * Params angular cms
-     * @param uniquePropertyUIHint 
-     * @param property 
-     * @param [propertyProvider] 
+     * @param uniquePropertyUIHint The UIHint key such as Text, ContentArea...
+     * @param property The property component to show ui in editor
+     * @param [propertyFactory] 
      * @returns  
      */
-    public static registerProperty(uniquePropertyUIHint: string, property: Function, propertyProvider?: Function) {
+    public static registerProperty(uniquePropertyUIHint: string, property: ClassOf<CmsProperty>, propertyFactory?: ClassOf<CmsPropertyFactory>) {
         if (!uniquePropertyUIHint || !property) return;
 
         if (CMS.PROPERTIES.hasOwnProperty(uniquePropertyUIHint)) {
@@ -82,18 +83,22 @@ export class AngularCms {
 
         CMS.PROPERTIES[uniquePropertyUIHint] = property;
 
-        if (propertyProvider) {
-            CMS.PROPERTY_PROVIDERS.push({ provide: PROPERTY_PROVIDERS_TOKEN, useClass: propertyProvider, multi: true });
+        if (propertyFactory) {
+            CMS.PROPERTY_PROVIDERS.push({ provide: PROPERTY_PROVIDERS_TOKEN, useClass: propertyFactory, multi: true });
         } else {
             CMS.PROPERTY_PROVIDERS.push({ provide: PROPERTY_PROVIDERS_TOKEN, useFactory: getCmsPropertyFactory(uniquePropertyUIHint), deps: [Injector], multi: true });
         }
+    }
+
+    public static registerPropertyRender() {
+
     }
 
     /**
      * Params angular cms
      * @param properties 
      */
-    public static registerProperties(properties: Array<Function> | Array<[string, Function] | [string, Function, Function]>) {
+    public static registerProperties(properties: Array<ClassOf<CmsProperty>> | Array<[string, ClassOf<CmsProperty>] | [string, ClassOf<CmsProperty>, ClassOf<CmsPropertyFactory>]>) {
         if (properties instanceof Array) {
             for (const property of properties) {
                 if (property instanceof Function) {
