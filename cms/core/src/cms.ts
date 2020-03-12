@@ -1,12 +1,29 @@
 import { Routes, Route } from '@angular/router';
-import { PAGE_TYPE_INDICATOR, BLOCK_TYPE_INDICATOR } from './constants/meta-keys';
 import { CmsModuleConfig, CmsModuleRoot, CmsComponentConfig } from './constants/module-config';
 
 export type CmsObject = { [key: string]: any };
 
+/**
+ * The type of global CMS model. It keeps all cms configurations
+ */
 export type CmsModel = {
+    /**
+     * This property keeps all Page Types class was registered via decorator `@PageType`
+     */
     PAGE_TYPES: CmsObject;
+    /**
+     * This property keeps all Block Types class was registered via decorator `@BlockType`
+     */
     BLOCK_TYPES: CmsObject;
+    /**
+     * This property keeps all Media Types class was registered via decorator `@MediaType`
+     */
+    MEDIA_TYPES: CmsObject;
+    /**
+     * This property keeps all the CMS property types including build-in properties such as `ContentArea`, `ObjectList`...
+     * 
+     * Each property type will be mapped to UIHint key
+     */
     PROPERTIES: CmsObject;
     PROPERTY_PROVIDERS: Array<any>;
 
@@ -25,6 +42,7 @@ export type CmsModel = {
 export const CMS: CmsModel = {
     PAGE_TYPES: {},
     BLOCK_TYPES: {},
+    MEDIA_TYPES: {},
     PROPERTIES: {},
     PROPERTY_PROVIDERS: [],
 

@@ -1,11 +1,11 @@
-import { CmsModuleRoot, CmsWidgetPosition, AngularCmsModule } from '@angular-cms/core';
+import { CmsModuleRoot, CmsWidgetPosition, AngularCms } from '@angular-cms/core';
 import { ContentFormEditComponent } from '../content/content-form-edit/content-form-edit.component';
 import { ContentTypeListComponent } from '../content/content-type-list/content-type-list.component';
 import { BlockTreeComponent } from './block-tree.component';
 import { BlockModule } from './block.module';
 
 export function registerBlockModule() {
-    AngularCmsModule.registerModule({
+    AngularCms.registerModule({
         module: BlockModule,
         roots: [
             {

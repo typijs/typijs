@@ -2,12 +2,13 @@
  * Public API Surface of core
  */
 
-export * from './utils/service-locator';
+export * from './utils/appInjector';
 export * from './utils/outside-zone-event-plugin';
 export * from './utils/route-reuse-strategy';
 
 export * from './bases/cms-component';
-export { CmsProperty, CmsPropertyFactory, PROPERTY_PROVIDERS_TOKEN, getCmsPropertyFactory } from './bases/cms-property';
+export { CmsProperty } from './bases/cms-property';
+export { CmsPropertyFactoryResolver, CmsPropertyFactory, PROPERTY_PROVIDERS_TOKEN, getCmsPropertyFactory } from './bases/cms-property.factory';
 export * from './bases/content-data';
 export * from './bases/selection-factory';
 
@@ -16,11 +17,9 @@ export * from './render/cms-content';
 export * from './constants/content-type';
 export * from './constants/module-config';
 export * from './constants/ui-hint'
-export * from './constants/meta-keys';
 
-export * from './decorators/content-type-metadata';
-export * from './decorators/block-type.decorator';
-export * from './decorators/page-type.decorator';
+export * from './decorators/metadata-key';
+export * from './decorators/content-type.decorator';
 export * from './decorators/property.decorator';
 export * from './decorators/validate.decorator';
 
@@ -34,6 +33,7 @@ export * from './models/page.model';
 
 export { slugify, sortTabByTitle, clone, generateUUID } from './helpers/common';
 
+export * from './services/content-type.service';
 export * from './services/block.service';
 export * from './services/page.service';
 export * from './services/media.service';

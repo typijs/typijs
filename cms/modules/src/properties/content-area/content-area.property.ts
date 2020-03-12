@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 
-import { CmsProperty, PROPERTY_PROVIDERS_TOKEN } from '@angular-cms/core';
-import { ContentAreaFactory } from './content-area.factory';
+import { CmsProperty } from '@angular-cms/core';
 
 @Component({
     selector: '[contentAreaProperty]',

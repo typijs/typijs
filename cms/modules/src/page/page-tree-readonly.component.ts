@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 
-import { ServiceLocator } from '@angular-cms/core';
+import { AppInjector } from '@angular-cms/core';
 
 import { TreeNode } from '../shared/tree/interfaces/tree-node';
 import { TreeComponent } from '../shared/tree/components/tree.component';
@@ -37,7 +37,7 @@ export class PageTreeReadonlyComponent {
 
     root: TreeNode = new TreeNode({ id: '0' });
     treeConfig: TreeConfig = {
-        service: ServiceLocator.Instance.get(PageTreeService),
+        service: AppInjector.get(PageTreeService),
     }
 
     constructor() { }

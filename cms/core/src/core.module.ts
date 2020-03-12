@@ -10,6 +10,7 @@ import { PageService } from './services/page.service';
 import { MediaService } from './services/media.service';
 
 import { CmsRenderContentComponent } from './render/cms-content';
+import { CmsPropertyFactoryResolver } from './bases/cms-property.factory';
 
 @NgModule({
   imports: [
@@ -29,7 +30,8 @@ import { CmsRenderContentComponent } from './render/cms-content';
   providers: [
     BlockService,
     PageService,
-    MediaService
+    MediaService,
+    CmsPropertyFactoryResolver
   ]
 })
 export class CoreModule { }

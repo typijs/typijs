@@ -1,7 +1,7 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, Injector } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { ServiceLocator, Block, BlockService, BLOCK_TYPE } from '@angular-cms/core';
+import { Block, BlockService, BLOCK_TYPE } from '@angular-cms/core';
 import { TreeNode } from '../shared/tree/interfaces/tree-node';
 import { TreeComponent } from '../shared/tree/components/tree.component';
 import { TreeConfig } from '../shared/tree/interfaces/tree-config';
@@ -73,42 +73,44 @@ export class BlockTreeComponent extends SubscriptionDestroy {
     blocks: Array<Block>;
 
     root: TreeNode = new TreeNode({ id: '0', name: 'Block', hasChildren: true });
-    treeConfig: TreeConfig = {
-        service: ServiceLocator.Instance.get(BlockTreeService),
-        menuItems: [
-            {
-                action: BlockMenuItemAction.NewBlock,
-                name: "New Block"
-            },
-            {
-                action: NodeMenuItemAction.NewNodeInline,
-                name: "New Folder"
-            },
-            {
-                action: NodeMenuItemAction.EditNowInline,
-                name: "Rename"
-            },
-            {
-                action: NodeMenuItemAction.Copy,
-                name: "Copy"
-            },
-            {
-                action: NodeMenuItemAction.Paste,
-                name: "Paste"
-            },
-            {
-                action: BlockMenuItemAction.DeleteFolder,
-                name: "Delete"
-            },
-        ]
-    }
+    treeConfig: TreeConfig;
 
     constructor(
+        private injector: Injector,
         private router: Router,
         private route: ActivatedRoute,
         private blockService: BlockService,
         private subjectService: SubjectService) {
-        super()
+        super();
+        this.treeConfig = {
+            service: this.injector.get(BlockTreeService),
+            menuItems: [
+                {
+                    action: BlockMenuItemAction.NewBlock,
+                    name: "New Block"
+                },
+                {
+                    action: NodeMenuItemAction.NewNodeInline,
+                    name: "New Folder"
+                },
+                {
+                    action: NodeMenuItemAction.EditNowInline,
+                    name: "Rename"
+                },
+                {
+                    action: NodeMenuItemAction.Copy,
+                    name: "Copy"
+                },
+                {
+                    action: NodeMenuItemAction.Paste,
+                    name: "Paste"
+                },
+                {
+                    action: BlockMenuItemAction.DeleteFolder,
+                    name: "Delete"
+                },
+            ]
+        }
     }
 
     ngOnInit() {
@@ -170,7 +172,7 @@ export class BlockTreeComponent extends SubscriptionDestroy {
 
     private folderDelete(nodeToDelete: TreeNode) {
         if (nodeToDelete.id == '0') return;
-        this.blockService.softDeleteContent(nodeToDelete.id).subscribe(([blockToDelete, deleteResult]: [Block, any]) => {
+        this.blockService.softDeleteContent(nodeToDelete.id).subscribe(([, deleteResult]: [Block, any]) => {
             console.log(deleteResult);
             this.cmsTree.reloadSubTree(nodeToDelete.parentId);
         });

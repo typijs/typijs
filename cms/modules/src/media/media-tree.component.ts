@@ -1,6 +1,6 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, Injector } from '@angular/core';
 
-import { Media, MediaService, ServiceLocator, MEDIA_TYPE } from '@angular-cms/core';
+import { Media, MediaService, AppInjector, MEDIA_TYPE } from '@angular-cms/core';
 
 import { SubjectService } from '../shared/services/subject.service';
 import { SubscriptionDestroy } from '../shared/subscription-destroy';
@@ -105,44 +105,44 @@ export class MediaTreeComponent extends SubscriptionDestroy {
 
     medias: Array<Media>;
     root: TreeNode = new TreeNode({ id: '0', name: 'Media', hasChildren: true });
-    treeConfig: TreeConfig = {
-        service: ServiceLocator.Instance.get(MediaTreeService),
-        menuItems: [
-            {
-                action: NodeMenuItemAction.NewNodeInline,
-                name: "New Folder"
-            },
-            {
-                action: MediaMenuItemAction.NewFileUpload,
-                name: "Upload"
-            },
-            {
-                action: NodeMenuItemAction.EditNowInline,
-                name: "Rename"
-            },
-            {
-                action: NodeMenuItemAction.Copy,
-                name: "Copy"
-            },
-            {
-                action: NodeMenuItemAction.Paste,
-                name: "Paste"
-            },
-            {
-                action: MediaMenuItemAction.DeleteFolder,
-                name: "Delete"
-            },
-        ]
-    }
-
+    treeConfig: TreeConfig;
     selectedFolder: Partial<TreeNode>;
 
-
     constructor(
+        private injector: Injector,
         private mediaService: MediaService,
         private subjectService: SubjectService,
         private uploadService: UploadService) {
         super();
+        this.treeConfig = {
+            service: this.injector.get(MediaTreeService),
+            menuItems: [
+                {
+                    action: NodeMenuItemAction.NewNodeInline,
+                    name: "New Folder"
+                },
+                {
+                    action: MediaMenuItemAction.NewFileUpload,
+                    name: "Upload"
+                },
+                {
+                    action: NodeMenuItemAction.EditNowInline,
+                    name: "Rename"
+                },
+                {
+                    action: NodeMenuItemAction.Copy,
+                    name: "Copy"
+                },
+                {
+                    action: NodeMenuItemAction.Paste,
+                    name: "Paste"
+                },
+                {
+                    action: MediaMenuItemAction.DeleteFolder,
+                    name: "Delete"
+                },
+            ]
+        }
     }
 
     ngOnInit() {
