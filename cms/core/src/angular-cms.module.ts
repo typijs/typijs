@@ -98,7 +98,7 @@ export class AngularCms {
      * Params angular cms
      * @param properties 
      */
-    public static registerProperties(properties: Array<ClassOf<CmsProperty>> | Array<[string, ClassOf<CmsProperty>] | [string, ClassOf<CmsProperty>, ClassOf<CmsPropertyFactory>]>) {
+    public static registerProperties(properties: Array<ClassOf<CmsProperty> | [string, ClassOf<CmsProperty>] | [string, ClassOf<CmsProperty>, ClassOf<CmsPropertyFactory>]>) {
         if (properties instanceof Array) {
             for (const property of properties) {
                 if (property instanceof Function) {
