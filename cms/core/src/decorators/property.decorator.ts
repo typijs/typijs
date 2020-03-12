@@ -16,11 +16,11 @@ export type PropertyMetadata = {
     objectListItemType?: any,
     order?: number;
     groupName?: string;
-    validates?: Array<ValidateMetadata>;
-    allowedTypes?: Array<string>;
-    [key: string]: any;
+    validates?: ValidateMetadata[];
+    allowedTypes?: string[];
     // be only used as private property for internal methods
     _propertyType?: string
+    [key: string]: any;
 }
 
 /**
@@ -32,7 +32,7 @@ export type PropertyMetadata = {
  * @param metadata 
  */
 export function Property(metadata: PropertyMetadata) {
-    function propertyDecorator(target: Object, propertyKey: string) {
+    function propertyDecorator(target: object, propertyKey: string) {
         const properties: string[] = Reflect.getMetadata(PROPERTIES_METADATA_KEY, target.constructor) || [];
         if (properties.indexOf(propertyKey) == -1) properties.push(propertyKey);
         Reflect.defineMetadata(PROPERTIES_METADATA_KEY, properties, target.constructor);

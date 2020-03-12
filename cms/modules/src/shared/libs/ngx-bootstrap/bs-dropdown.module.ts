@@ -11,7 +11,7 @@ import {
 @NgModule()
 export class CmsBsDropdownModule {
     // tslint:disable-next-line:no-any
-    static forRoot(config?: any): ModuleWithProviders {
+    static forRoot(config?: any): ModuleWithProviders<BsDropdownModule> {
         return {
             ngModule: BsDropdownModule,
             providers: [

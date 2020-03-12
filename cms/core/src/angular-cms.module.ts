@@ -19,7 +19,7 @@ export class AngularCms {
         setAppInjector(this.injector);
     }
 
-    public static forRoot(): ModuleWithProviders<CoreModule> {
+    public static forRoot(): ModuleWithProviders<AngularCms> {
         return {
             ngModule: AngularCms,
             providers: [...CMS_PROVIDERS]

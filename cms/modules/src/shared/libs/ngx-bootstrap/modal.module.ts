@@ -6,13 +6,13 @@ import { ModalModule, BsModalService } from 'ngx-bootstrap/modal';
 
 @NgModule()
 export class CmsModalModule {
-    static forRoot(): ModuleWithProviders {
+    static forRoot(): ModuleWithProviders<ModalModule> {
         return {
             ngModule: ModalModule,
             providers: [BsModalService, ComponentLoaderFactory, PositioningService]
         };
     }
-    static forChild(): ModuleWithProviders {
+    static forChild(): ModuleWithProviders<ModalModule> {
         return {
             ngModule: ModalModule,
             providers: [BsModalService, ComponentLoaderFactory, PositioningService]

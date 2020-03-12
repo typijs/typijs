@@ -4,7 +4,7 @@ import { ProgressbarModule, ProgressbarConfig } from 'ngx-bootstrap/progressbar'
 
 @NgModule()
 export class CmsProgressbarModule {
-    static forRoot(): ModuleWithProviders {
+    static forRoot(): ModuleWithProviders<ProgressbarModule> {
         return {
             ngModule: ProgressbarModule,
             providers: [ProgressbarConfig]
