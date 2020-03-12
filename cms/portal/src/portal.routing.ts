@@ -5,13 +5,13 @@ import { RouterModule, Routes } from '@angular/router';
 import { CMS } from '@angular-cms/core';
 
 import './cms-module-register';
-import { CmsComponent } from './cms.component';
+import { PortalComponent } from './portal.component';
 import { EditorLayoutComponent } from './editor-layout/editor-layout.component';
 import { AdminLayoutComponent } from './admin-layout/admin-layout.component';
 
 const cmsRoutes: Routes = [
     {
-        path: '', component: CmsComponent,
+        path: '', component: PortalComponent,
         children: [
             {
                 path: '',
@@ -39,4 +39,4 @@ const cmsRoutes: Routes = [
         RouterModule
     ]
 })
-export class CmsRoutingModule { }
+export class PortalRoutingModule { }

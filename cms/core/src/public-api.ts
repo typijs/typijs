@@ -17,11 +17,9 @@ export * from './render/cms-content';
 export * from './constants/content-type';
 export * from './constants/module-config';
 export * from './constants/ui-hint'
-export * from './constants/meta-keys';
 
-export * from './decorators/content-type-metadata';
-export * from './decorators/block-type.decorator';
-export * from './decorators/page-type.decorator';
+export * from './decorators/metadata-key';
+export * from './decorators/content-type.decorator';
 export * from './decorators/property.decorator';
 export * from './decorators/validate.decorator';
 

@@ -5,5 +5,5 @@ import { Component, ViewEncapsulation } from '@angular/core';
     styleUrls: ['./scss/style.scss'],
     encapsulation: ViewEncapsulation.None
 })
-export class CmsComponent {
+export class PortalComponent {
 }
