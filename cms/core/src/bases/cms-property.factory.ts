@@ -35,6 +35,9 @@ export class CmsPropertyFactory {
     }
 
     protected createDefaultCmsPropertyComponent(propertyName: string, propertyMetadata: PropertyMetadata, formGroup: FormGroup): ComponentRef<any> {
+        if (!CMS.PROPERTIES[propertyMetadata.displayType])
+            throw new Error(`The CMS don't have the property with UIHint of ${propertyMetadata.displayType}`);
+
         const propertyFactory = this.componentFactoryResolver.resolveComponentFactory(CMS.PROPERTIES[propertyMetadata.displayType]);
 
         const propertyComponent = propertyFactory.create(this.injector);
@@ -52,6 +55,10 @@ export class CmsPropertyFactoryResolver {
     constructor(@Inject(PROPERTY_PROVIDERS_TOKEN) private propertyFactories: CmsPropertyFactory[]) { }
 
     resolvePropertyFactory(uiHint: string): CmsPropertyFactory {
-        return this.propertyFactories.find(x => x.isMatching(uiHint))
+        const propertyFactory = this.propertyFactories.find(x => x.isMatching(uiHint));
+        if (!propertyFactory)
+            throw new Error(`The CMS can not resolve the Property Factor for the property with UIHint of ${uiHint}`);
+
+        return propertyFactory;
     }
 }
