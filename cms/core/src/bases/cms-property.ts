@@ -13,3 +13,7 @@ export abstract class CmsProperty {
         return this.constructor.name + '_' + id;
     }
 }
+
+export abstract class CmsPropertyRender {
+    @Input() value: any;
+}

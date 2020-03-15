@@ -10,13 +10,13 @@ import { InsertPointDirective } from './directives/insert-point.directive';
 import { BlockService } from './services/block.service';
 import { PageService } from './services/page.service';
 import { MediaService } from './services/media.service';
+import { LOCAL_STORAGE, localStorageFactory } from './services/browser-storage.service';
 
 import { CmsRenderContentComponent } from './render/cms-content';
 import { CmsPropertyFactoryResolver } from './bases/cms-property.factory';
 
 import { OutsideZoneEventPlugin } from './utils/outside-zone-event-plugin';
 import { CustomRouteReuseStrategy } from './utils/route-reuse-strategy';
-import { LOCAL_STORAGE, localStorageFactory } from './services/browser-storage.service';
 
 export const CMS_PROVIDERS = [
   {
@@ -32,7 +32,9 @@ export const CMS_PROVIDERS = [
     provide: LOCAL_STORAGE,
     useFactory: localStorageFactory,
     deps: [PLATFORM_ID]
-  }
+  },
+  CmsPropertyFactoryResolver,
+
 ]
 
 @NgModule({
@@ -53,8 +55,7 @@ export const CMS_PROVIDERS = [
   providers: [
     BlockService,
     PageService,
-    MediaService,
-    CmsPropertyFactoryResolver
+    MediaService
   ]
 })
 export class CoreModule {

@@ -1,5 +1,6 @@
 import { Routes, Route } from '@angular/router';
-import { CmsModuleConfig, CmsModuleRoot, CmsComponentConfig, CmsObject } from './constants/types';
+import { CmsModuleConfig, CmsModuleRoot, CmsComponentConfig, CmsObject, ClassOf } from './constants/types';
+import { CmsProperty, CmsPropertyRender } from './bases/cms-property';
 
 
 /**
@@ -23,7 +24,8 @@ export type CmsModel = {
      * 
      * Each property type will be mapped to UIHint key
      */
-    PROPERTIES: CmsObject;
+    PROPERTIES: { [key: string]: ClassOf<CmsProperty> };
+    PROPERTY_RENDERS: { [key: string]: ClassOf<CmsPropertyRender> };
     PROPERTY_PROVIDERS: Array<any>;
 
     MODULES: Array<CmsModuleConfig>;

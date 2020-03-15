@@ -9,7 +9,8 @@ import { CmsRenderContentComponent } from './render/cms-content';
 import { setAppInjector } from './utils/appInjector';
 import { CoreModule, CMS_PROVIDERS } from "./core.module";
 import { CMS } from './cms';
-import { CmsProperty } from './bases/cms-property';
+import { CmsProperty, CmsPropertyRender } from './bases/cms-property';
+import { CmsPropertyRenderFactory, PROPERTY_PROVIDERS_RENDER_TOKEN, getCmsPropertyRenderFactory } from './factories/property-render.factory';
 
 /**
  * Re-export Core Module to used on client
@@ -90,8 +91,20 @@ export class AngularCms {
         }
     }
 
-    public static registerPropertyRender() {
+    public static registerPropertyRender(uniquePropertyUIHint: string, property: ClassOf<CmsPropertyRender>, propertyRenderFactory?: ClassOf<CmsPropertyRenderFactory>) {
+        if (!uniquePropertyUIHint || !property) return;
 
+        if (CMS.PROPERTY_RENDERS.hasOwnProperty(uniquePropertyUIHint)) {
+            console.warn('Warning: CMS.PROPERTY_RENDERS has already property ', uniquePropertyUIHint)
+        }
+
+        CMS.PROPERTY_RENDERS[uniquePropertyUIHint] = property;
+
+        if (propertyRenderFactory) {
+            CMS.PROPERTY_PROVIDERS.push({ provide: PROPERTY_PROVIDERS_RENDER_TOKEN, useClass: propertyRenderFactory, multi: true });
+        } else {
+            CMS.PROPERTY_PROVIDERS.push({ provide: PROPERTY_PROVIDERS_RENDER_TOKEN, useFactory: getCmsPropertyRenderFactory(uniquePropertyUIHint), deps: [Injector], multi: true });
+        }
     }
 
     /**

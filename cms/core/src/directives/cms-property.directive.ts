@@ -1,11 +1,7 @@
-import { Input, Directive, ViewContainerRef, ComponentFactoryResolver, Inject, OnDestroy, ComponentRef } from '@angular/core';
+import { Input, Directive, ViewContainerRef, OnDestroy, ComponentRef } from '@angular/core';
 
-import { BLOCK_TYPE_METADATA_KEY } from '../decorators/metadata-key';
-import { CMS } from './../cms';
-import { ContentData, BlockData } from './../bases/content-data';
-import { CmsComponent } from './../bases/cms-component';
-import { Block } from '../models/block.model';
-import { CmsPropertyFactoryResolver } from '../bases/cms-property.factory';
+import { CmsPropertyRenderFactoryResolver } from '../factories/property-render.factory';
+import { PropertyModel } from '../constants/types';
 
 @Directive({
     selector: '[cmsProperty]'
@@ -13,19 +9,19 @@ import { CmsPropertyFactoryResolver } from '../bases/cms-property.factory';
 export class CmsPropertyDirective implements OnDestroy {
     private componentRefs: Array<ComponentRef<any>> = [];
 
-    private _value: any;
+    private _value: PropertyModel;
     @Input('cmsProperty')
-    set value(value: any) {
+    set value(value: PropertyModel) {
         this._value = value;
-
+        this.renderProperty();
     }
-    get value(): any {
+    get value(): PropertyModel {
         return this._value;
     }
 
     constructor(
         private viewContainerRef: ViewContainerRef,
-        private cmsPropertyFactoryResolver: CmsPropertyFactoryResolver) { }
+        private propertyRenderFactoryResolver: CmsPropertyRenderFactoryResolver, ) { }
 
     ngOnDestroy() {
         if (this.componentRefs) {
@@ -35,7 +31,11 @@ export class CmsPropertyDirective implements OnDestroy {
     }
 
     private renderProperty() {
-        //const propertyFactory = this.cmsPropertyFactoryResolver.resolvePropertyFactory()
-    }
+        const propertyFactory = this.propertyRenderFactoryResolver.resolvePropertyRenderFactory(this.value.property.metadata.displayType)
+        if (!propertyFactory) throw new Error(`Can not resolver propertyRender Factory for ${this.value.property.metadata.displayType}`)
 
+        const propertyComponent = propertyFactory.createPropertyComponent(this.value.property, this.value.value);
+        this.viewContainerRef.insert(propertyComponent.hostView);
+        this.componentRefs.push(propertyComponent);
+    }
 }
