@@ -10,18 +10,7 @@ import {
     MEDIA_TYPE_METADATA_KEY
 } from '../decorators/metadata-key';
 import { ContentTypeMetadata } from '../decorators/content-type.decorator';
-import { PropertyMetadata } from '../decorators/property.decorator';
-
-export type ContentType = {
-    name: string
-    metadata: ContentTypeMetadata
-    properties: ContentTypeProperty[]
-}
-
-export type ContentTypeProperty = {
-    name: string
-    metadata: PropertyMetadata
-}
+import { ContentTypeProperty, ContentType } from '../constants/types';
 
 @Injectable({
     providedIn: 'root'

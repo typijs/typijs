@@ -1,7 +1,8 @@
-import { Injectable, ComponentRef, Injector } from '@angular/core';
-import { CmsPropertyFactory, UIHint, PropertyMetadata } from '@angular-cms/core';
-import { ContentAreaProperty } from './content-area.property';
+import { ComponentRef, Injectable, Injector } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+
+import { CmsPropertyFactory, ContentTypeProperty, UIHint } from '@angular-cms/core';
+import { ContentAreaProperty } from './content-area.property';
 
 @Injectable()
 export class ContentAreaFactory extends CmsPropertyFactory {
@@ -9,11 +10,11 @@ export class ContentAreaFactory extends CmsPropertyFactory {
         super(UIHint.ContentArea, injector);
     }
 
-    createPropertyComponent(propertyName: string, propertyMetadata: PropertyMetadata, formGroup: FormGroup): ComponentRef<any> {
-        const propertyComponent = this.createDefaultCmsPropertyComponent(propertyName, propertyMetadata, formGroup);
+    createPropertyComponent(property: ContentTypeProperty, formGroup: FormGroup): ComponentRef<any> {
+        const propertyComponent = this.createDefaultCmsPropertyComponent(property, formGroup);
 
         if (propertyComponent.instance instanceof ContentAreaProperty) {
-            (<ContentAreaProperty>propertyComponent.instance).allowedTypes = propertyMetadata.allowedTypes;
+            (<ContentAreaProperty>propertyComponent.instance).allowedTypes = property.metadata.allowedTypes;
         }
 
         return propertyComponent;
