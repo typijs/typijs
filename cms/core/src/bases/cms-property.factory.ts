@@ -48,9 +48,8 @@ export class CmsPropertyFactory {
 
         const propertyComponent = propertyFactory.create(this.injector);
 
-        (<CmsProperty>propertyComponent.instance).label = property.metadata.displayName;
+        (<CmsProperty>propertyComponent.instance).property = property;
         (<CmsProperty>propertyComponent.instance).formGroup = formGroup;
-        (<CmsProperty>propertyComponent.instance).propertyName = property.name;
 
         return propertyComponent;
     }

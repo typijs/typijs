@@ -11,7 +11,7 @@ export class SelectPropertyFactory extends CmsPropertyFactory {
     }
 
     createPropertyComponent(property: ContentTypeProperty, formGroup: FormGroup): ComponentRef<any> {
-        const propertyComponent = this.createDefaultCmsPropertyComponent(property formGroup);
+        const propertyComponent = this.createDefaultCmsPropertyComponent(property, formGroup);
 
         if (propertyComponent.instance instanceof SelectProperty) {
             const selectFactory = <ISelectionFactory>(this.injector.get(property.metadata.selectionFactory));
