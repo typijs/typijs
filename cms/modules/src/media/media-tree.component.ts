@@ -1,6 +1,6 @@
 import { Component, ViewChild, Injector } from '@angular/core';
 
-import { Media, MediaService, AppInjector, MEDIA_TYPE } from '@angular-cms/core';
+import { Media, MediaService, MEDIA_TYPE } from '@angular-cms/core';
 
 import { SubjectService } from '../shared/services/subject.service';
 import { SubscriptionDestroy } from '../shared/subscription-destroy';

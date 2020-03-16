@@ -1,10 +1,10 @@
 import { Input, Directive, ViewContainerRef, ComponentFactoryResolver, Inject, OnDestroy, ComponentRef } from '@angular/core';
 
-import { BLOCK_TYPE_METADATA_KEY } from '../decorators/metadata-key';
-import { CMS } from './../cms';
-import { ContentData, BlockData } from './../bases/content-data';
-import { CmsComponent } from './../bases/cms-component';
-import { Block } from '../models/block.model';
+import { BLOCK_TYPE_METADATA_KEY } from '../../decorators/metadata-key';
+import { CMS } from '../../cms';
+import { ContentData, BlockData } from '../../bases/content-data';
+import { CmsComponent } from '../../bases/cms-component';
+import { Block } from '../../models/block.model';
 
 @Directive({
     selector: '[cmsContentArea]'

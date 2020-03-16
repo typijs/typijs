@@ -1,9 +1,9 @@
-import { Injectable, ComponentFactoryResolver, ViewContainerRef, ComponentRef, InjectionToken, Injector, Inject } from '@angular/core';
+import { Injectable, ComponentFactoryResolver, ComponentRef, InjectionToken, Injector, Inject } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { CMS } from '../cms';
-import { PropertyMetadata } from '../decorators/property.decorator';
 import { CmsProperty } from './cms-property';
+import { ClassOf, ContentTypeProperty } from '../constants/types';
 
 // https://stackoverflow.com/questions/51824125/injection-of-multiple-instances-in-angular
 export const PROPERTY_PROVIDERS_TOKEN: InjectionToken<CmsPropertyFactory[]> = new InjectionToken<CmsPropertyFactory[]>('PROPERTY_PROVIDERS_TOKEN');
@@ -30,18 +30,26 @@ export class CmsPropertyFactory {
         return this.propertyUIHint == propertyUIHint;
     }
 
-    createPropertyComponent(propertyName: string, propertyMetadata: PropertyMetadata, formGroup: FormGroup): ComponentRef<any> {
-        return this.createDefaultCmsPropertyComponent(propertyName, propertyMetadata, formGroup);
+    createPropertyComponent(property: ContentTypeProperty, formGroup: FormGroup): ComponentRef<any> {
+        return this.createDefaultCmsPropertyComponent(property, formGroup);
     }
 
-    protected createDefaultCmsPropertyComponent(propertyName: string, propertyMetadata: PropertyMetadata, formGroup: FormGroup): ComponentRef<any> {
-        const propertyFactory = this.componentFactoryResolver.resolveComponentFactory(CMS.PROPERTIES[propertyMetadata.displayType]);
+    protected getRegisteredPropertyComponent(): ClassOf<CmsProperty> {
+        if (!CMS.PROPERTIES[this.propertyUIHint])
+            throw new Error(`The CMS don't have the property with UIHint of ${this.propertyUIHint}`);
+
+        return CMS.PROPERTIES[this.propertyUIHint];
+    }
+
+    protected createDefaultCmsPropertyComponent(property: ContentTypeProperty, formGroup: FormGroup): ComponentRef<any> {
+        const propertyComponentClass = this.getRegisteredPropertyComponent();
+
+        const propertyFactory = this.componentFactoryResolver.resolveComponentFactory(propertyComponentClass);
 
         const propertyComponent = propertyFactory.create(this.injector);
 
-        (<CmsProperty>propertyComponent.instance).label = propertyMetadata.displayName;
+        (<CmsProperty>propertyComponent.instance).property = property;
         (<CmsProperty>propertyComponent.instance).formGroup = formGroup;
-        (<CmsProperty>propertyComponent.instance).propertyName = propertyName;
 
         return propertyComponent;
     }
@@ -52,6 +60,11 @@ export class CmsPropertyFactoryResolver {
     constructor(@Inject(PROPERTY_PROVIDERS_TOKEN) private propertyFactories: CmsPropertyFactory[]) { }
 
     resolvePropertyFactory(uiHint: string): CmsPropertyFactory {
-        return this.propertyFactories.find(x => x.isMatching(uiHint))
+        //TODO: Need to get last element to allow override factory
+        const propertyFactory = this.propertyFactories.find(x => x.isMatching(uiHint));
+        if (!propertyFactory)
+            throw new Error(`The CMS can not resolve the Property Factor for the property with UIHint of ${uiHint}`);
+
+        return propertyFactory;
     }
 }

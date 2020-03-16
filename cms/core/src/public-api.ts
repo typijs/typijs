@@ -15,7 +15,7 @@ export * from './bases/selection-factory';
 export * from './render/cms-content';
 
 export * from './constants/content-type';
-export * from './constants/module-config';
+export * from './constants/types';
 export * from './constants/ui-hint'
 
 export * from './decorators/metadata-key';
@@ -24,7 +24,9 @@ export * from './decorators/property.decorator';
 export * from './decorators/validate.decorator';
 
 export * from './directives/insert-point.directive';
-export * from './directives/content-area.directive';
+export * from './render/content-area/content-area.directive';
+export * from './render/cms-property.directive';
+export * from './render/property-render.factory';
 
 export * from './models/block.model';
 export * from './models/content.model';
@@ -41,5 +43,5 @@ export * from './services/browser-location.service';
 export * from './services/browser-storage.service';
 
 export * from './cms';
-export * from './core.module';
+export { CoreModule, CMS_PROVIDERS } from './core.module';
 export * from './angular-cms.module';

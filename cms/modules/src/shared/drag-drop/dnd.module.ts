@@ -20,7 +20,7 @@ import { DragHandle } from './directives/drag-handle.directive';
   ]
 })
 export class DndModule {
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<DndModule> {
     return {
       ngModule: DndModule,
       providers: [DndService]

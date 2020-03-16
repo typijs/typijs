@@ -1,7 +1,7 @@
 import { Injectable, ComponentRef, Injector } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
-import { CmsPropertyFactory, UIHint, PropertyMetadata, ISelectionFactory } from '@angular-cms/core';
+import { CmsPropertyFactory, UIHint, ContentTypeProperty, ISelectionFactory } from '@angular-cms/core';
 import { SelectProperty } from './select-property';
 
 @Injectable()
@@ -10,15 +10,11 @@ export class SelectPropertyFactory extends CmsPropertyFactory {
         super(propertyUIHint, injector);
     }
 
-    createPropertyComponent(
-        propertyName: string,
-        propertyMetadata: PropertyMetadata,
-        formGroup: FormGroup,
-    ): ComponentRef<any> {
-        const propertyComponent = this.createDefaultCmsPropertyComponent(propertyName, propertyMetadata, formGroup);
+    createPropertyComponent(property: ContentTypeProperty, formGroup: FormGroup): ComponentRef<any> {
+        const propertyComponent = this.createDefaultCmsPropertyComponent(property, formGroup);
 
         if (propertyComponent.instance instanceof SelectProperty) {
-            const selectFactory = <ISelectionFactory>(this.injector.get(propertyMetadata.selectionFactory));
+            const selectFactory = <ISelectionFactory>(this.injector.get(property.metadata.selectionFactory));
             (<SelectProperty>propertyComponent.instance).selectItems = selectFactory.GetSelections();
         }
 

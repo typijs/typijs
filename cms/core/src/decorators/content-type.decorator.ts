@@ -1,5 +1,12 @@
 import 'reflect-metadata';
-import { PAGE_TYPE_METADATA_KEY, PAGE_TYPE_INDICATOR, BLOCK_TYPE_METADATA_KEY, BLOCK_TYPE_INDICATOR, MEDIA_TYPE_INDICATOR, MEDIA_TYPE_METADATA_KEY } from './metadata-key';
+import {
+    PAGE_TYPE_METADATA_KEY,
+    PAGE_TYPE_INDICATOR,
+    BLOCK_TYPE_METADATA_KEY,
+    BLOCK_TYPE_INDICATOR,
+    MEDIA_TYPE_INDICATOR,
+    MEDIA_TYPE_METADATA_KEY
+} from './metadata-key';
 
 export type ContentTypeMetadata = {
     displayName?: string;
@@ -7,36 +14,65 @@ export type ContentTypeMetadata = {
     componentRef?: any;
 }
 
+//https://www.laurivan.com/scan-decorated-classes-in-typescript/
+/**
+ * The PageType decorator factory
+ * 
+ * The factory, is just a function that receives any parameters you want and returns a function with a decorator signature
+ * 
+ * https://www.typescriptlang.org/docs/handbook/decorators.html#decorator-factories
+ * @param metadata 
+ */
+export function PageType(metadata: ContentTypeMetadata) {
+    function pageTypeDecorator(target: Function) {
+        registerPageTypeDecorator(target);
+        Reflect.defineMetadata(PAGE_TYPE_METADATA_KEY, metadata, target);
+    }
+    return pageTypeDecorator;
+}
+
 function registerPageTypeDecorator(target: any) {
     target[PAGE_TYPE_INDICATOR] = true;
 }
 
-//https://www.laurivan.com/scan-decorated-classes-in-typescript/
-export function PageType(metadata: ContentTypeMetadata) {
-    return function (target: Function) {
-        registerPageTypeDecorator(target);
-        Reflect.defineMetadata(PAGE_TYPE_METADATA_KEY, metadata, target);
+/**
+ * The BlockType decorator factory
+ * 
+ * The factory, is just a function that receives any parameters you want and returns a function with a decorator signature
+ * 
+ * https://www.typescriptlang.org/docs/handbook/decorators.html#decorator-factories
+ * @param metadata 
+ */
+export function BlockType(metadata: ContentTypeMetadata) {
+    function blockTypeDecorator(target: Function) {
+        registerBlockTypeDecorator(target);
+        Reflect.defineMetadata(BLOCK_TYPE_METADATA_KEY, metadata, target);
     }
+
+    return blockTypeDecorator;
 }
 
 function registerBlockTypeDecorator(target: any) {
     target[BLOCK_TYPE_INDICATOR] = true;
 }
 
-export function BlockType(metadata: ContentTypeMetadata) {
-    return function (target: Function) {
-        registerBlockTypeDecorator(target);
-        Reflect.defineMetadata(BLOCK_TYPE_METADATA_KEY, metadata, target);
+/**
+ * The MediaType decorator factory
+ * 
+ * The factory, is just a function that receives any parameters you want and returns a function with a decorator signature
+ * 
+ * https://www.typescriptlang.org/docs/handbook/decorators.html#decorator-factories
+ * @param metadata 
+ */
+export function MediaType(metadata: ContentTypeMetadata) {
+    function mediaTypeDecorator(target: Function) {
+        registerMediaTypeDecorator(target);
+        Reflect.defineMetadata(MEDIA_TYPE_METADATA_KEY, metadata, target);
     }
+
+    return mediaTypeDecorator;
 }
 
 function registerMediaTypeDecorator(target: any) {
     target[MEDIA_TYPE_INDICATOR] = true;
-}
-
-export function MediaType(metadata: ContentTypeMetadata) {
-    return function (target: Function) {
-        registerMediaTypeDecorator(target);
-        Reflect.defineMetadata(MEDIA_TYPE_METADATA_KEY, metadata, target);
-    }
 }

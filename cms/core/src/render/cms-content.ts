@@ -2,8 +2,8 @@ import 'reflect-metadata';
 import { Component, ComponentFactoryResolver, ComponentRef, OnDestroy, ViewChild } from '@angular/core';
 
 import { UIHint } from '../constants/ui-hint';
+import { ContentTypeProperty } from '../constants/types';
 import { ContentTypeMetadata } from '../decorators/content-type.decorator';
-import { PropertyMetadata } from '../decorators/property.decorator';
 
 import { InsertPointDirective } from '../directives/insert-point.directive';
 
@@ -19,7 +19,7 @@ import { ContentTypeService } from '../services/content-type.service';
     selector: 'cms-content',
     template: `<ng-template cmsInsertPoint></ng-template>`
 })
-export class CmsRenderContentComponent implements OnDestroy {
+export class CmsContentRender implements OnDestroy {
 
     private pageComponentRef: ComponentRef<any>;
     @ViewChild(InsertPointDirective, { static: true }) pageEditHost: InsertPointDirective;
@@ -52,7 +52,7 @@ export class CmsRenderContentComponent implements OnDestroy {
         })
     }
 
-    private populateReferenceProperty(currentPage: Page, property: { name: string, metadata: PropertyMetadata }): void {
+    private populateReferenceProperty(currentPage: Page, property: ContentTypeProperty): void {
         if (!currentPage.properties) return;
 
         const childItems = currentPage.publishedChildItems;

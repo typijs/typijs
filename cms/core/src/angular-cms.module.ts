@@ -1,39 +1,45 @@
-import { ModuleWithProviders, PLATFORM_ID, Injector } from '@angular/core';
-import { EVENT_MANAGER_PLUGINS } from '@angular/platform-browser';
-import { RouteReuseStrategy, Routes } from '@angular/router';
-import { PAGE_TYPE_INDICATOR, BLOCK_TYPE_INDICATOR } from './constants/meta-keys';
+import { ModuleWithProviders, Injector, NgModule } from '@angular/core';
+import { Routes } from '@angular/router';
+
 import { CMS } from './cms';
+import { CoreModule, CMS_PROVIDERS } from "./core.module";
+import { setAppInjector } from './utils/appInjector';
 
-import { CmsModuleConfig } from './constants/module-config';
-import { CoreModule } from "./core.module";
-import { CmsRenderContentComponent } from './render/cms-content';
-import { localStorageFactory, LOCAL_STORAGE } from './services/browser-storage.service';
-import { OutsideZoneEventPlugin } from './utils/outside-zone-event-plugin';
-import { CustomRouteReuseStrategy } from './utils/route-reuse-strategy';
-import { PROPERTY_PROVIDERS_TOKEN, getCmsPropertyFactory } from './bases/cms-property.factory';
+import { PAGE_TYPE_INDICATOR, BLOCK_TYPE_INDICATOR, MEDIA_TYPE_INDICATOR } from './decorators/metadata-key';
+import { PROPERTY_PROVIDERS_TOKEN, getCmsPropertyFactory, CmsPropertyFactory } from './bases/cms-property.factory';
+import { CmsProperty, CmsPropertyRender } from './bases/cms-property';
+
 import { UIHint } from './constants/ui-hint';
+import { CmsModuleConfig, ClassOf } from './constants/types';
+import { CmsContentRender } from './render/cms-content';
+import { ContentAreaRender } from './render/content-area/content-area';
+import { PROPERTY_PROVIDERS_RENDER_TOKEN, getCmsPropertyRenderFactory, CmsPropertyRenderFactory } from './render/property-render.factory';
+import { TextRender } from './render/properties/text';
+import { XHtmlRender } from './render/properties/xhtml';
+import { UrlRender } from './render/properties/url';
+import { UrlListRender } from './render/properties/url-list';
 
-// Reexport all public apis
+
+/**
+ * Re-export Core Module to used on client
+ */
+@NgModule({ imports: [CoreModule] })
 export class AngularCms {
-    public static forRoot(): ModuleWithProviders {
+    constructor(private injector: Injector) {
+        setAppInjector(this.injector);
+    }
+
+    public static forRoot(): ModuleWithProviders<AngularCms> {
+        this.registerPropertyRender(UIHint.ContentArea, ContentAreaRender)
+        this.registerPropertyRender(UIHint.Text, TextRender)
+        this.registerPropertyRender(UIHint.Textarea, TextRender)
+        this.registerPropertyRender(UIHint.XHtml, XHtmlRender)
+        this.registerPropertyRender(UIHint.Url, UrlRender);
+        this.registerPropertyRender(UIHint.UrlList, UrlListRender);
+
         return {
-            ngModule: CoreModule,
-            providers: [
-                {
-                    provide: EVENT_MANAGER_PLUGINS,
-                    useClass: OutsideZoneEventPlugin,
-                    multi: true
-                },
-                {
-                    provide: RouteReuseStrategy,
-                    useClass: CustomRouteReuseStrategy
-                },
-                {
-                    provide: LOCAL_STORAGE,
-                    useFactory: localStorageFactory,
-                    deps: [PLATFORM_ID]
-                }
-            ]
+            ngModule: AngularCms,
+            providers: [...CMS_PROVIDERS, ...CMS.PROPERTY_PROVIDERS]
         };
     }
 
@@ -46,7 +52,7 @@ export class AngularCms {
                     {
                         path: '**',
                         data: { reuse: false }, //pass reuse param to CustomRouteReuseStrategy
-                        component: CmsRenderContentComponent,
+                        component: CmsContentRender,
                     }
                 ]
             }
@@ -55,8 +61,12 @@ export class AngularCms {
         return cmsRoutes;
     }
 
-    //register multi content types with cms
-    //https://www.laurivan.com/scan-decorated-classes-in-typescript/
+    /**
+     * Registers multi content types with cms
+     * 
+     * https://www.laurivan.com/scan-decorated-classes-in-typescript/
+     * @param theEntryScope 
+     */
     public static registerContentTypes(theEntryScope: any) {
         for (let prop in theEntryScope) {
             if (theEntryScope[prop][PAGE_TYPE_INDICATOR]) {
@@ -66,10 +76,21 @@ export class AngularCms {
             if (theEntryScope[prop][BLOCK_TYPE_INDICATOR]) {
                 CMS.BLOCK_TYPES[prop] = theEntryScope[prop];
             }
+
+            if (theEntryScope[prop][MEDIA_TYPE_INDICATOR]) {
+                CMS.MEDIA_TYPES[prop] = theEntryScope[prop];
+            }
         }
     }
 
-    public static registerProperty(uniquePropertyUIHint: string, property: Function, propertyProvider?: Function) {
+    /**
+     * Params angular cms
+     * @param uniquePropertyUIHint The UIHint key such as Text, ContentArea...
+     * @param property The property component to show ui in editor
+     * @param [propertyFactory] 
+     * @returns  
+     */
+    public static registerProperty(uniquePropertyUIHint: string, property: ClassOf<CmsProperty>, propertyFactory?: ClassOf<CmsPropertyFactory>) {
         if (!uniquePropertyUIHint || !property) return;
 
         if (CMS.PROPERTIES.hasOwnProperty(uniquePropertyUIHint)) {
@@ -78,14 +99,34 @@ export class AngularCms {
 
         CMS.PROPERTIES[uniquePropertyUIHint] = property;
 
-        if (propertyProvider) {
-            CMS.PROPERTY_PROVIDERS.push({ provide: PROPERTY_PROVIDERS_TOKEN, useClass: propertyProvider, multi: true });
+        if (propertyFactory) {
+            CMS.PROPERTY_PROVIDERS.push({ provide: PROPERTY_PROVIDERS_TOKEN, useClass: propertyFactory, multi: true });
         } else {
             CMS.PROPERTY_PROVIDERS.push({ provide: PROPERTY_PROVIDERS_TOKEN, useFactory: getCmsPropertyFactory(uniquePropertyUIHint), deps: [Injector], multi: true });
         }
     }
 
-    public static registerProperties(properties: Array<Function> | Array<[string, Function] | [string, Function, Function]>) {
+    public static registerPropertyRender(uniquePropertyUIHint: string, property: ClassOf<CmsPropertyRender>, propertyRenderFactory?: ClassOf<CmsPropertyRenderFactory>) {
+        if (!uniquePropertyUIHint || !property) return;
+
+        if (CMS.PROPERTY_RENDERS.hasOwnProperty(uniquePropertyUIHint)) {
+            console.warn('Warning: CMS.PROPERTY_RENDERS has already property ', uniquePropertyUIHint)
+        }
+
+        CMS.PROPERTY_RENDERS[uniquePropertyUIHint] = property;
+
+        if (propertyRenderFactory) {
+            CMS.PROPERTY_PROVIDERS.push({ provide: PROPERTY_PROVIDERS_RENDER_TOKEN, useClass: propertyRenderFactory, multi: true });
+        } else {
+            CMS.PROPERTY_PROVIDERS.push({ provide: PROPERTY_PROVIDERS_RENDER_TOKEN, useFactory: getCmsPropertyRenderFactory(uniquePropertyUIHint), deps: [Injector], multi: true });
+        }
+    }
+
+    /**
+     * Params angular cms
+     * @param properties 
+     */
+    public static registerProperties(properties: Array<ClassOf<CmsProperty> | [string, ClassOf<CmsProperty>] | [string, ClassOf<CmsProperty>, ClassOf<CmsPropertyFactory>]>) {
         if (properties instanceof Array) {
             for (const property of properties) {
                 if (property instanceof Function) {
@@ -101,6 +142,10 @@ export class AngularCms {
         }
     }
 
+    /**
+     * Registers module
+     * @param moduleConfig 
+     */
     public static registerModule(moduleConfig: CmsModuleConfig) {
         if (moduleConfig && moduleConfig.module && moduleConfig.roots) {
             let moduleName = moduleConfig.module['name'];

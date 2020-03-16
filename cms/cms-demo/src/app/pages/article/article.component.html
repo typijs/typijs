@@ -4,11 +4,15 @@
     </div>
     <div class="blog">
         <div class="blog_list">
-            <h4><a href="">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</a></h4>
+            <h4>
+                <a href="">
+                    <ng-container [cmsProperty]="getProperty('title')"></ng-container>
+                </a>
+            </h4>
             <h5>January 3rd, 2013 , Posted by&nbsp;<a href="javascript:void(0)">{{currentContent.author}}</a></h5>
             <div class="blog_para">
                 <img src="" alt="">
-                <p class="para1" [innerHTML]="currentContent.content"></p>
+                <p class="para1" [cmsProperty]="getProperty('content')"></p>
                 <div class="clear"></div>
             </div>
         </div>

@@ -13,6 +13,8 @@ export type CmsPropertyType = {
     Url: string;
     UrlList: string;
     InputList: string;
+    Datepicker: string;
+    [key: string]: string;
 }
 
 //build-in property types
@@ -30,5 +32,7 @@ export const UIHint: CmsPropertyType = {
     ContentReference: 'ContentReference',
     Url: 'Url',
     UrlList: 'UrlList',
-    InputList: 'InputList'
+    InputList: 'InputList',
+    Datepicker: 'Datepicker',
+    Timepicker: 'Timepicker'
 };
