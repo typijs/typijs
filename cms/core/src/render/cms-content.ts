@@ -19,7 +19,7 @@ import { ContentTypeService } from '../services/content-type.service';
     selector: 'cms-content',
     template: `<ng-template cmsInsertPoint></ng-template>`
 })
-export class CmsRenderContentComponent implements OnDestroy {
+export class CmsContentRender implements OnDestroy {
 
     private pageComponentRef: ComponentRef<any>;
     @ViewChild(InsertPointDirective, { static: true }) pageEditHost: InsertPointDirective;
