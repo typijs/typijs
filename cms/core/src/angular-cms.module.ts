@@ -1,16 +1,24 @@
 import { ModuleWithProviders, Injector, NgModule } from '@angular/core';
 import { Routes } from '@angular/router';
 
+import { CMS } from './cms';
+import { CoreModule, CMS_PROVIDERS } from "./core.module";
+import { setAppInjector } from './utils/appInjector';
+
 import { PAGE_TYPE_INDICATOR, BLOCK_TYPE_INDICATOR, MEDIA_TYPE_INDICATOR } from './decorators/metadata-key';
 import { PROPERTY_PROVIDERS_TOKEN, getCmsPropertyFactory, CmsPropertyFactory } from './bases/cms-property.factory';
-import { CmsModuleConfig, ClassOf } from './constants/types';
-import { UIHint } from './constants/ui-hint';
-import { CmsRenderContentComponent } from './render/cms-content';
-import { setAppInjector } from './utils/appInjector';
-import { CoreModule, CMS_PROVIDERS } from "./core.module";
-import { CMS } from './cms';
 import { CmsProperty, CmsPropertyRender } from './bases/cms-property';
-import { CmsPropertyRenderFactory, PROPERTY_PROVIDERS_RENDER_TOKEN, getCmsPropertyRenderFactory } from './factories/property-render.factory';
+
+import { UIHint } from './constants/ui-hint';
+import { CmsModuleConfig, ClassOf } from './constants/types';
+import { CmsContentRender } from './render/cms-content';
+import { ContentAreaRender } from './render/content-area/content-area';
+import { PROPERTY_PROVIDERS_RENDER_TOKEN, getCmsPropertyRenderFactory, CmsPropertyRenderFactory } from './render/property-render.factory';
+import { TextRender } from './render/properties/text';
+import { XHtmlRender } from './render/properties/xhtml';
+import { UrlRender } from './render/properties/url';
+import { UrlListRender } from './render/properties/url-list';
+
 
 /**
  * Re-export Core Module to used on client
@@ -22,9 +30,16 @@ export class AngularCms {
     }
 
     public static forRoot(): ModuleWithProviders<AngularCms> {
+        this.registerPropertyRender(UIHint.ContentArea, ContentAreaRender)
+        this.registerPropertyRender(UIHint.Text, TextRender)
+        this.registerPropertyRender(UIHint.Textarea, TextRender)
+        this.registerPropertyRender(UIHint.XHtml, XHtmlRender)
+        this.registerPropertyRender(UIHint.Url, UrlRender);
+        this.registerPropertyRender(UIHint.UrlList, UrlListRender);
+
         return {
             ngModule: AngularCms,
-            providers: [...CMS_PROVIDERS]
+            providers: [...CMS_PROVIDERS, ...CMS.PROPERTY_PROVIDERS]
         };
     }
 

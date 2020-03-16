@@ -24,7 +24,9 @@ export * from './decorators/property.decorator';
 export * from './decorators/validate.decorator';
 
 export * from './directives/insert-point.directive';
-export * from './directives/content-area.directive';
+export * from './render/content-area/content-area.directive';
+export * from './render/cms-property.directive';
+export * from './render/property-render.factory';
 
 export * from './models/block.model';
 export * from './models/content.model';

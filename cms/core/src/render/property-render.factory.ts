@@ -1,4 +1,4 @@
-import { Injectable, ComponentFactoryResolver, ComponentRef, InjectionToken, Injector, Inject } from '@angular/core';
+import { Injectable, ComponentFactoryResolver, ComponentRef, InjectionToken, Injector, Inject, ViewContainerRef } from '@angular/core';
 
 import { CMS } from '../cms';
 import { CmsPropertyRender } from '../bases/cms-property';
@@ -47,6 +47,7 @@ export class CmsPropertyRenderFactory {
 
         const propertyComponent = propertyFactory.create(this.injector);
 
+        (<CmsPropertyRender>propertyComponent.instance).property = property;
         (<CmsPropertyRender>propertyComponent.instance).value = propertyValue;
 
         return propertyComponent;

@@ -29,4 +29,5 @@ export abstract class CmsProperty {
 
 export abstract class CmsPropertyRender {
     @Input() value: any;
+    @Input() property: ContentTypeProperty;
 }

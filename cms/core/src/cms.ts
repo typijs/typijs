@@ -45,6 +45,7 @@ export const CMS: CmsModel = {
     BLOCK_TYPES: {},
     MEDIA_TYPES: {},
     PROPERTIES: {},
+    PROPERTY_RENDERS: {},
     PROPERTY_PROVIDERS: [],
 
     MODULES: [],
