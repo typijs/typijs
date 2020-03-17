@@ -4,7 +4,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { EVENT_MANAGER_PLUGINS } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
-import { ContentAreaDirective } from './render/content-area/content-area.directive';
 import { InsertPointDirective } from './directives/insert-point.directive';
 
 import { BlockService } from './services/block.service';
@@ -12,18 +11,23 @@ import { PageService } from './services/page.service';
 import { MediaService } from './services/media.service';
 import { LOCAL_STORAGE, localStorageFactory } from './services/browser-storage.service';
 
-import { CmsContentRender } from './render/cms-content';
 import { CmsPropertyFactoryResolver } from './bases/cms-property.factory';
 
 import { OutsideZoneEventPlugin } from './utils/outside-zone-event-plugin';
 import { CustomRouteReuseStrategy } from './utils/route-reuse-strategy';
+
+import { CmsPropertyDirective } from './render/cms-property.directive';
+import { CmsPropertyRenderFactoryResolver } from './render/property-render.factory';
+
+import { CmsContentRender } from './render/cms-content';
 import { ContentAreaRender } from './render/content-area/content-area';
+import { ContentAreaDirective } from './render/content-area/content-area.directive';
+
 import { XHtmlRender } from './render/properties/xhtml';
 import { UrlRender } from './render/properties/url';
 import { UrlListRender } from './render/properties/url-list';
 import { TextRender } from './render/properties/text';
-import { CmsPropertyDirective } from './render/cms-property.directive';
-import { CmsPropertyRenderFactoryResolver } from './render/property-render.factory';
+
 
 export const CMS_PROVIDERS = [
   {

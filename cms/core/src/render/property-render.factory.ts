@@ -1,4 +1,4 @@
-import { Injectable, ComponentFactoryResolver, ComponentRef, InjectionToken, Injector, Inject, ViewContainerRef } from '@angular/core';
+import { Injectable, ComponentFactoryResolver, ComponentRef, InjectionToken, Injector, Inject } from '@angular/core';
 
 import { CMS } from '../cms';
 import { CmsPropertyRender } from '../bases/cms-property';

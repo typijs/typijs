@@ -1,6 +1,6 @@
 import { CmsTab } from "../constants/types";
 
-export function slugify(text) {
+export function slugify(text: string) {
   return text.toString().toLowerCase()
     .replace(/\s+/g, '-')           // Replace spaces with -
     .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
@@ -38,8 +38,8 @@ export function generateUUID() { // Public Domain/MIT
   });
 }
 
-export function clone(obj) {
-  let copy;
+export function clone(obj: any) {
+  let copy: any;
 
   // Handle the 3 simple types, and null or undefined
   if (null == obj || "object" != typeof obj) return obj;
@@ -62,10 +62,6 @@ export function clone(obj) {
 
   // Handle Object
   if (obj instanceof Object) {
-    // copy = {};
-    // for (var attr in obj) {
-    //     if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
-    // }
     return Object.assign({}, obj);
   }
 

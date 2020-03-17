@@ -11,9 +11,11 @@ import { CmsProperty, CmsPropertyRender } from './bases/cms-property';
 
 import { UIHint } from './constants/ui-hint';
 import { CmsModuleConfig, ClassOf } from './constants/types';
+
 import { CmsContentRender } from './render/cms-content';
-import { ContentAreaRender } from './render/content-area/content-area';
 import { PROPERTY_PROVIDERS_RENDER_TOKEN, getCmsPropertyRenderFactory, CmsPropertyRenderFactory } from './render/property-render.factory';
+
+import { ContentAreaRender } from './render/content-area/content-area';
 import { TextRender } from './render/properties/text';
 import { XHtmlRender } from './render/properties/xhtml';
 import { UrlRender } from './render/properties/url';
