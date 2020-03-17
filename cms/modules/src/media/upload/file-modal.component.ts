@@ -1,9 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { BsModalService } from 'ngx-bootstrap/modal';
 
-import { TreeNode } from '../../shared/tree/interfaces/tree-node';
+import { TreeNode } from '../../shared/tree';
 import { UploadService, UploadProgress } from './upload.service';
-import { ModalComponent } from '../../shared//modal.component';
+import { ModalComponent } from '../../shared/modal.component';
 
 @Component({
     selector: 'file-modal',

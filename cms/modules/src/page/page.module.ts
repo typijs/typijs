@@ -9,8 +9,8 @@ import { faFile, faFolder, faSitemap } from '@fortawesome/free-solid-svg-icons';
 import { CoreModule } from '@angular-cms/core';
 
 import { ContentModule } from '../content/content.module';
-import { DndModule } from '../shared/drag-drop/dnd.module';
-import { TreeModule } from '../shared/tree/tree.module';
+import { DndModule } from '../shared/drag-drop';
+import { TreeModule } from '../shared/tree';
 
 import { PageTreeReadonlyComponent } from './page-tree-readonly.component';
 import { PageTreeComponent } from './page-tree.component';

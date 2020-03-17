@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { TreeNode } from '../../shared/tree/interfaces/tree-node';
+import { TreeNode } from '../../shared/tree';
 
 import { UploadService } from './upload.service';
 

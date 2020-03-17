@@ -2,7 +2,7 @@ import { Component, forwardRef, Input } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { generateUUID } from '@angular-cms/core';
 
-import { DropEvent } from '../../shared/drag-drop/drop-event.model';
+import { DropEvent } from '../../shared/drag-drop';
 import { SubjectService } from '../../shared/services/subject.service';
 import { ContentAreaItem } from './ContentAreaItem';
 import { CmsControl } from '../cms-control';
