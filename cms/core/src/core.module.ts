@@ -6,9 +6,6 @@ import { RouteReuseStrategy } from '@angular/router';
 
 import { InsertPointDirective } from './directives/insert-point.directive';
 
-import { BlockService } from './services/block.service';
-import { PageService } from './services/page.service';
-import { MediaService } from './services/media.service';
 import { LOCAL_STORAGE, localStorageFactory } from './services/browser-storage.service';
 
 import { CmsPropertyFactoryResolver } from './bases/cms-property.factory';
@@ -17,7 +14,6 @@ import { OutsideZoneEventPlugin } from './utils/outside-zone-event-plugin';
 import { CustomRouteReuseStrategy } from './utils/route-reuse-strategy';
 
 import { CmsPropertyDirective } from './render/cms-property.directive';
-import { CmsPropertyRenderFactoryResolver } from './render/property-render.factory';
 
 import { CmsContentRender } from './render/cms-content';
 import { ContentAreaRender } from './render/content-area/content-area';
@@ -43,8 +39,7 @@ export const CMS_PROVIDERS = [
     provide: LOCAL_STORAGE,
     useFactory: localStorageFactory,
     deps: [PLATFORM_ID]
-  },
-  CmsPropertyRenderFactoryResolver
+  }
 ]
 
 @NgModule({
@@ -77,10 +72,7 @@ export const CMS_PROVIDERS = [
     XHtmlRender
   ],
   providers: [
-    BlockService,
-    PageService,
-    MediaService,
-    CmsPropertyFactoryResolver
+    CmsPropertyFactoryResolver //TODO: In Angular 9 , this code should be removed and using Provider Scope  'any'
   ]
 })
 export class CoreModule {

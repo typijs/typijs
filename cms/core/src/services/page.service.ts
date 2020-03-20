@@ -7,7 +7,9 @@ import { ContentService } from './content.service';
 import { BrowserLocationService } from './browser-location.service';
 import { btoa } from '../helpers/base64';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class PageService extends ContentService<Page> {
 
   protected apiUrl: string = "http://localhost:3000/api/page";

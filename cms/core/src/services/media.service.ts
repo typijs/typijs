@@ -5,7 +5,9 @@ import { Observable } from 'rxjs';
 import { Media } from '../models/media.model';
 import { ContentService } from './content.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class MediaService extends ContentService<Media> {
 
   protected apiUrl: string = "http://localhost:3000/api/media";

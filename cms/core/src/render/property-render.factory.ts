@@ -54,7 +54,9 @@ export class CmsPropertyRenderFactory {
     }
 }
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class CmsPropertyRenderFactoryResolver {
     constructor(@Inject(PROPERTY_PROVIDERS_RENDER_TOKEN) private propertyRenderFactories: CmsPropertyRenderFactory[]) { }
 

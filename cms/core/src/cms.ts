@@ -28,7 +28,13 @@ export type CmsModel = {
     PROPERTY_RENDERS: { [key: string]: ClassOf<CmsPropertyRender> };
     PROPERTY_PROVIDERS: Array<any>;
 
+    /**
+     * The array contains the Cms Module (Include NgModule, Routes, Widgets)
+     */
     MODULES: Array<CmsModuleConfig>;
+    /**
+     * The array contains the Angular NgModule
+     */
     NG_MODULES: Array<any>;
 
     EDITOR_ROUTES(): Array<Route>;
@@ -36,8 +42,6 @@ export type CmsModel = {
 
     ADMIN_ROUTES(): Array<Route>;
     ADMIN_WIDGETS(): Array<CmsComponentConfig>;
-
-    REGISTER_MODULES(): Array<any>;
 }
 
 export const CMS: CmsModel = {
@@ -82,8 +86,5 @@ export const CMS: CmsModel = {
                 adminWidgets = adminWidgets.concat(widgets);
         });;
         return adminWidgets;
-    },
-    REGISTER_MODULES(): Array<any> {
-        return this.MODULES.map(x => x.module);
     }
 }
