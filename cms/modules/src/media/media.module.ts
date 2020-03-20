@@ -33,9 +33,9 @@ import { FileSelectDirective } from './upload/file-select.directive';
         CoreModule,
         TreeModule,
         DndModule,
-        CmsAngularSplitModule.forRoot(),
-        CmsProgressbarModule.forRoot(),
-        CmsModalModule.forRoot()
+        CmsAngularSplitModule,
+        CmsProgressbarModule,
+        CmsModalModule
     ],
     declarations: [
         MediaTreeComponent,

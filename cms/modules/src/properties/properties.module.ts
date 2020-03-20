@@ -43,7 +43,7 @@ registerCmsProperties();
         RouterModule,
         EditorModule,
         FontAwesomeModule,
-        CmsBsDropdownModule.forRoot(),
+        CmsBsDropdownModule,
         CoreModule,
         DndModule
     ],
@@ -83,9 +83,6 @@ registerCmsProperties();
 
         ContentReferenceControl,
         ContentReferenceComponent
-    ],
-    providers: [
-        ...CMS.PROPERTY_PROVIDERS
     ]
 })
 export class PropertiesModule {

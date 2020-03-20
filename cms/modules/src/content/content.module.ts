@@ -22,8 +22,8 @@ import { ContentFormEditComponent } from './content-form-edit/content-form-edit.
         ReactiveFormsModule,
         RouterModule,
         CoreModule,
-        CmsAngularSplitModule.forRoot(),
-        CmsTabsModule.forRoot(),
+        CmsAngularSplitModule,
+        CmsTabsModule,
         PropertiesModule,
     ],
     declarations: [

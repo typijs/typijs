@@ -4,7 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CMS, CoreModule } from '@angular-cms/core';
-import { CmsAngularSplitModule, CmsBsDropdownModule, CmsTabsModule, DndModule } from '@angular-cms/modules';
+import { CmsAngularSplitModule, CmsBsDropdownModule, CmsTabsModule, CmsProgressbarModule, CmsModalModule, DndModule } from '@angular-cms/modules';
 
 import { CmsHeaderComponent } from './shared/components/cms-header/cms-header.component';
 import { CmsLayoutComponent } from './shared/components/cms-layout/cms-layout.component';
@@ -21,14 +21,17 @@ import { PortalRoutingModule } from './portal.routing';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
+
     CmsAngularSplitModule.forRoot(),
     CmsTabsModule.forRoot(),
     CmsBsDropdownModule.forRoot(),
-
-    CoreModule,
+    CmsProgressbarModule.forRoot(),
+    CmsModalModule.forRoot(),
     DndModule.forRoot(),
-    PortalRoutingModule,
-    ...CMS.NG_MODULES
+
+    ...CMS.NG_MODULES,
+    CoreModule.forRoot(),
+    PortalRoutingModule
   ],
   declarations: [
     PortalComponent,

@@ -21,7 +21,7 @@ import { TreeComponent } from './components/tree.component';
         FormsModule,
         ReactiveFormsModule,
         FontAwesomeModule,
-        CmsBsDropdownModule.forRoot(),
+        CmsBsDropdownModule,
 
         CoreModule,
         DndModule

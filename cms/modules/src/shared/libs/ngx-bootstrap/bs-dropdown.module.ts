@@ -8,7 +8,9 @@ import {
     BsDropdownModule
 } from 'ngx-bootstrap/dropdown';
 
-@NgModule()
+@NgModule({
+    exports: [BsDropdownModule]
+})
 export class CmsBsDropdownModule {
     // tslint:disable-next-line:no-any
     static forRoot(config?: any): ModuleWithProviders<BsDropdownModule> {
