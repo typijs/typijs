@@ -9,8 +9,8 @@ import { EditorModule } from '@tinymce/tinymce-angular';
 
 import { CoreModule, CMS } from '@angular-cms/core';
 
-import { CmsBsDropdownModule } from '../shared/libs';
-import { DndModule } from '../shared/drag-drop';
+import { CmsBsDropdownModule } from '../shared/libs/ngx-bootstrap/bs-dropdown.module';
+import { DndModule } from '../shared/drag-drop/dnd.module';
 
 import { InputComponent } from './input/input.component';
 

@@ -2,7 +2,12 @@ import { Component, ViewChild, Injector } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Block, BlockService, BLOCK_TYPE } from '@angular-cms/core';
-import { TreeNode, TreeComponent, TreeConfig, NodeMenuItemAction, TreeMenuActionEvent } from '../shared/tree';
+//import { TreeNode, TreeComponent, TreeConfig, NodeMenuItemAction, TreeMenuActionEvent } from '../shared/tree';
+import { TreeNode } from '../shared/tree/interfaces/tree-node';
+import { TreeComponent } from '../shared/tree/components/tree.component';
+import { TreeConfig } from '../shared/tree/interfaces/tree-config';
+import { NodeMenuItemAction, TreeMenuActionEvent } from '../shared/tree/interfaces/tree-menu';
+
 import { BlockTreeService } from './block-tree.service';
 import { SubscriptionDestroy } from '../shared/subscription-destroy';
 import { SubjectService } from '../shared/services/subject.service';

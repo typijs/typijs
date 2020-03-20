@@ -3,7 +3,7 @@ import { HttpEventType } from '@angular/common/http';
 import { BehaviorSubject, Subject, forkJoin, Observable } from 'rxjs';
 
 import { MediaService } from '@angular-cms/core';
-import { TreeNode } from '../../shared/tree';
+import { TreeNode } from '../../shared/tree/interfaces/tree-node';
 
 export type UploadProgress = {
     [key: string]: { progress: Observable<number> }
