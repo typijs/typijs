@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
-import { CoreModule } from '@angular-cms/core';
+import { AngularCms } from '@angular-cms/core';
 import { FeatureComponent } from './feature/feature.component';
 import { PortfolioBlockComponent } from './portfolio/portfolio-block.component';
 import { ContactUsComponent } from './contact-us/contact-us.component';
@@ -19,7 +19,7 @@ const BLOCKS_COMPONENT = [
     imports: [
         CommonModule,
         FormsModule,
-        CoreModule
+        AngularCms
     ],
     entryComponents: [
         ...BLOCKS_COMPONENT
