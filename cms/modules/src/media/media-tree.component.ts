@@ -1,4 +1,4 @@
-import { Component, ViewChild, Injector } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 
 import { Media, MediaService, MEDIA_TYPE } from '@angular-cms/core';
 
@@ -65,39 +65,8 @@ const MediaMenuItemAction = {
             <file-modal></file-modal>
         </div>
         `,
-    styles: [`
-        .media-container{
-            height:100%;
-        }
-
-        .media-node {
-            width: calc(100% - 20px);
-            cursor: pointer;
-            display: inline-block;
-        }
-
-        .media-node:hover {
-            font-weight: bold;
-            border-bottom: 1px solid #a4b7c1!important;
-        }
-        
-        .drop-zone {
-            height: calc(100vh - 55px);
-            position: relative;
-            z-index: 99;
-            display: none;
-            margin: -2px;
-            background-color: #999;
-        }
-
-        .drag-over .list-media{
-            display: none;
-        }
-
-        .drag-over .drop-zone{
-            display: block;
-        }
-  `]
+    styleUrls: ['./media-tree.scss'],
+    providers: [MediaTreeService]
 })
 export class MediaTreeComponent extends SubscriptionDestroy {
 
@@ -105,45 +74,18 @@ export class MediaTreeComponent extends SubscriptionDestroy {
     @ViewChild(FileModalComponent, { static: false }) fileModal: FileModalComponent;
 
     medias: Array<Media>;
-    root: TreeNode = new TreeNode({ id: '0', name: 'Media', hasChildren: true });
+    root: TreeNode;
     treeConfig: TreeConfig;
     selectedFolder: Partial<TreeNode>;
 
     constructor(
-        private injector: Injector,
+        private mediaTreeService: MediaTreeService,
         private mediaService: MediaService,
         private subjectService: SubjectService,
         private uploadService: UploadService) {
         super();
-        this.treeConfig = {
-            service: this.injector.get(MediaTreeService),
-            menuItems: [
-                {
-                    action: NodeMenuItemAction.NewNodeInline,
-                    name: "New Folder"
-                },
-                {
-                    action: MediaMenuItemAction.NewFileUpload,
-                    name: "Upload"
-                },
-                {
-                    action: NodeMenuItemAction.EditNowInline,
-                    name: "Rename"
-                },
-                {
-                    action: NodeMenuItemAction.Copy,
-                    name: "Copy"
-                },
-                {
-                    action: NodeMenuItemAction.Paste,
-                    name: "Paste"
-                },
-                {
-                    action: MediaMenuItemAction.DeleteFolder,
-                    name: "Delete"
-                },
-            ]
-        }
+        this.root = new TreeNode({ id: '0', name: 'Media', hasChildren: true });
+        this.treeConfig = this.initTreeConfiguration();
     }
 
     ngOnInit() {
@@ -215,5 +157,37 @@ export class MediaTreeComponent extends SubscriptionDestroy {
             console.log(deleteResult);
             this.cmsTree.reloadSubTree(nodeToDelete.parentId);
         });
+    }
+
+    private initTreeConfiguration(): TreeConfig {
+        return {
+            service: this.mediaTreeService,
+            menuItems: [
+                {
+                    action: NodeMenuItemAction.NewNodeInline,
+                    name: "New Folder"
+                },
+                {
+                    action: MediaMenuItemAction.NewFileUpload,
+                    name: "Upload"
+                },
+                {
+                    action: NodeMenuItemAction.EditNowInline,
+                    name: "Rename"
+                },
+                {
+                    action: NodeMenuItemAction.Copy,
+                    name: "Copy"
+                },
+                {
+                    action: NodeMenuItemAction.Paste,
+                    name: "Paste"
+                },
+                {
+                    action: MediaMenuItemAction.DeleteFolder,
+                    name: "Delete"
+                },
+            ]
+        }
     }
 }

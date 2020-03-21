@@ -1,4 +1,4 @@
-import { Component, ViewChild, Injector } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 
 import { TreeNode } from '../shared/tree/interfaces/tree-node';
 import { TreeConfig } from '../shared/tree/interfaces/tree-config';
@@ -29,17 +29,17 @@ import { PageTreeService } from './page-tree.service';
             margin-left: 10px;
             display:block;
         }
-        `]
+        `],
+    providers: [PageTreeService]
 })
 export class PageTreeReadonlyComponent {
     @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
 
-    root: TreeNode = new TreeNode({ id: '0' });
+    root: TreeNode;
     treeConfig: TreeConfig;
 
-    constructor(private injector: Injector) {
-        this.treeConfig = {
-            service: injector.get(PageTreeService),
-        }
+    constructor(private pageTreeService: PageTreeService) {
+        this.root = new TreeNode({ id: '0' });
+        this.treeConfig = { service: this.pageTreeService }
     }
 }

@@ -1,0 +1,9 @@
+.page-node {
+    width: calc(100% - 20px);
+    cursor: pointer;
+    display: inline-block;
+    &:hover {
+        font-weight: bold;
+        border-bottom: 1px solid #a4b7c1!important;
+    }
+}

@@ -17,7 +17,8 @@ import { SubjectService } from '../../shared/services/subject.service';
 import { SubscriptionDestroy } from '../../shared/subscription-destroy';
 
 @Component({
-    templateUrl: './content-form-edit.component.html'
+    templateUrl: './content-form-edit.component.html',
+    styleUrls: ['./content-form-edit.scss']
 })
 export class ContentFormEditComponent extends SubscriptionDestroy implements OnInit {
 
@@ -45,9 +46,8 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
 
     ngOnInit() {
         this.subscriptions.push(this.route.params.subscribe(params => {
-            const contentId = params['id'] || '';
-            const url: UrlSegment[] = this.route.snapshot.url;
-            this.typeOfContent = url.length >= 2 && url[0].path == 'content' ? url[1].path : '';
+            const contentId = params['id'];
+            this.typeOfContent = this.getTypeContentFromUrl(this.route.snapshot.url)
 
             if (contentId) {
                 switch (this.typeOfContent) {
@@ -67,6 +67,10 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
                 }
             }
         }));
+    }
+
+    private getTypeContentFromUrl(url: UrlSegment[]) {
+        return url.length >= 2 && url[0].path == 'content' ? url[1].path : '';
     }
 
     ngAfterViewInit() {

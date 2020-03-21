@@ -14,7 +14,6 @@ import { TreeModule } from '../shared/tree/tree.module';
 
 import { PageTreeReadonlyComponent } from './page-tree-readonly.component';
 import { PageTreeComponent } from './page-tree.component';
-import { PageTreeService } from './page-tree.service';
 
 @NgModule({
     imports: [
@@ -41,8 +40,7 @@ import { PageTreeService } from './page-tree.service';
     exports: [
         PageTreeComponent,
         PageTreeReadonlyComponent
-    ],
-    providers: [PageTreeService]
+    ]
 })
 export class PageModule {
     constructor(library: FaIconLibrary) {

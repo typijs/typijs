@@ -17,7 +17,6 @@ import { DndModule } from '../shared/drag-drop/dnd.module';
 import { TreeModule } from '../shared/tree/tree.module';
 
 import { MediaTreeComponent } from './media-tree.component';
-import { MediaTreeService } from './media-tree.service';
 import { DragLeaveDirective } from './upload/drag-leave.directive';
 import { DragOverDirective } from './upload/drag-over.directive';
 import { FileModalComponent } from './upload/file-modal.component';
@@ -32,14 +31,15 @@ import { FileSelectDirective } from './upload/file-select.directive';
         FormsModule,
         ReactiveFormsModule,
         RouterModule,
-
         FontAwesomeModule,
-        CoreModule,
-        TreeModule,
-        DndModule,
+
         CmsAngularSplitModule,
         CmsProgressbarModule,
-        CmsModalModule
+        CmsModalModule,
+
+        TreeModule,
+        DndModule,
+        CoreModule
     ],
     declarations: [
         MediaTreeComponent,
@@ -55,10 +55,10 @@ import { FileSelectDirective } from './upload/file-select.directive';
     exports: [
         MediaTreeComponent
     ],
-    providers: [MediaTreeService, UploadService]
+    providers: [UploadService]
 })
 export class MediaModule {
-    constructor(private library: FaIconLibrary) {
+    constructor(library: FaIconLibrary) {
         library.addIcons(faFolder, faPhotoVideo);
     }
 }
