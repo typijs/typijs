@@ -1,5 +1,6 @@
 import { Component, forwardRef, Input } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { CmsControl } from '../cms-control';
 
 @Component({
     selector: 'content-reference',
@@ -23,30 +24,20 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
         }
     ]
 })
-export class ContentReferenceControl implements ControlValueAccessor {
-    private _model: any;
-    private onChange: (m: any) => void;
-    private onTouched: (m: any) => void;
+export class ContentReferenceControl extends CmsControl {
 
     @Input() name: string;
 
     get model() {
         return this._model;
     }
+    private _model: any;
 
     writeValue(value: any): void {
         this._model = value;
         if (this._model) {
             this._model.owner = this.name;
         }
-    }
-
-    registerOnChange(fn: any): void {
-        this.onChange = fn;
-    }
-
-    registerOnTouched(fn: any): void {
-        this.onTouched = fn;
     }
 
     onDropItem(e: any) {

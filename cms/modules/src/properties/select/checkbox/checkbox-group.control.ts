@@ -1,6 +1,7 @@
 import { Component, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { SelectItem } from '@angular-cms/core';
+import { CmsControl } from '../../cms-control';
 
 @Component({
     selector: 'checkbox-group',
@@ -19,14 +20,12 @@ import { SelectItem } from '@angular-cms/core';
         }
     ]
 })
-export class CheckboxGroupControl implements ControlValueAccessor {
-    private onChange: (m: any) => void;
-    private onTouched: (m: any) => void;
+export class CheckboxGroupControl extends CmsControl {
 
     @Input() selectItems: Array<any>;
 
     //Typescript uses getter/setter syntax that is like ActionScript3.
-    //userd to store internal value
+    //used to store internal value
     private _model: any;
     get model() {
         return this._model;
@@ -34,9 +33,9 @@ export class CheckboxGroupControl implements ControlValueAccessor {
 
     //Implement of the ControlValueAccessor interface
     writeValue(value: any): void {
-        if(this.selectItems && value instanceof Array) {
-            this.selectItems.forEach(item=>{
-                if(value.indexOf(item.value) > -1) {
+        if (this.selectItems && value instanceof Array) {
+            this.selectItems.forEach(item => {
+                if (value.indexOf(item.value) > -1) {
                     item.selected = true;
                 } else {
                     item.selected = false;
@@ -46,20 +45,12 @@ export class CheckboxGroupControl implements ControlValueAccessor {
         this._model = value;
     }
 
-    registerOnChange(fn: any): void {
-        this.onChange = fn;
-    }
-
-    registerOnTouched(fn: any): void {
-        this.onTouched = fn;
-    }
-
     //methods depend on control business
     addOrRemove(value: any) {
         if (this.contains(value)) {
             this.remove(value);
         } else {
-            this._model = this.selectItems.filter(item=>item.selected).map(item=> item.value);
+            this._model = this.selectItems.filter(item => item.selected).map(item => item.value);
             this.onChange(this._model);
         }
     }

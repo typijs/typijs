@@ -1,7 +1,8 @@
-import { Component, AfterViewInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { CmsProperty } from '@angular-cms/core';
 
 @Component({
+    selector: '[xhtmlProperty]',
     template: `
         <div class="form-group row" [formGroup]="formGroup">
             <label [attr.for]="id" class="col-sm-4 col-form-label">{{label}}</label>
@@ -11,5 +12,5 @@ import { CmsProperty } from '@angular-cms/core';
         </div>
     `
 })
-export class TinymceComponent extends CmsProperty {
+export class XHtmlProperty extends CmsProperty {
 }
