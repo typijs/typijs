@@ -4,7 +4,9 @@ import { PositioningService } from 'ngx-bootstrap/positioning';
 import { ComponentLoaderFactory } from 'ngx-bootstrap/component-loader';
 import { ModalModule, BsModalService } from 'ngx-bootstrap/modal';
 
-@NgModule()
+@NgModule({
+    exports: [ModalModule]
+})
 export class CmsModalModule {
     static forRoot(): ModuleWithProviders<ModalModule> {
         return {

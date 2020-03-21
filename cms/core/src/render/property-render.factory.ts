@@ -1,4 +1,4 @@
-import { Injectable, ComponentFactoryResolver, ComponentRef, InjectionToken, Injector, Inject, ViewContainerRef } from '@angular/core';
+import { Injectable, ComponentFactoryResolver, ComponentRef, InjectionToken, Injector, Inject } from '@angular/core';
 
 import { CMS } from '../cms';
 import { CmsPropertyRender } from '../bases/cms-property';
@@ -54,7 +54,9 @@ export class CmsPropertyRenderFactory {
     }
 }
 
-@Injectable()
+@Injectable({
+    providedIn: 'root'
+})
 export class CmsPropertyRenderFactoryResolver {
     constructor(@Inject(PROPERTY_PROVIDERS_RENDER_TOKEN) private propertyRenderFactories: CmsPropertyRenderFactory[]) { }
 

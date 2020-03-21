@@ -1,4 +1,4 @@
-import { InjectionToken, PLATFORM_ID, Injectable, Inject, Optional } from '@angular/core';
+import { PLATFORM_ID, Injectable, Inject, Optional } from '@angular/core';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { REQUEST } from '@nguniversal/express-engine/tokens';
 

@@ -1,4 +1,4 @@
-import { Input, Directive, ViewContainerRef, ComponentFactoryResolver, Inject, OnDestroy, ComponentRef } from '@angular/core';
+import { Input, Directive, ViewContainerRef, ComponentFactoryResolver, OnDestroy, ComponentRef } from '@angular/core';
 
 import { BLOCK_TYPE_METADATA_KEY } from '../../decorators/metadata-key';
 import { CMS } from '../../cms';

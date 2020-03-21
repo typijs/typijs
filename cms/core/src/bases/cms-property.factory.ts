@@ -55,6 +55,12 @@ export class CmsPropertyFactory {
     }
 }
 
+//TODO: In Angular 9, should use the providerIn: 'any' for this service. Detail: https://indepth.dev/angulars-root-and-any-provider-scopes/
+/**
+ * In Angular 9, should use the providerIn: 'any' for this service
+ * 
+ * Detail: https://indepth.dev/angulars-root-and-any-provider-scopes/
+ */
 @Injectable()
 export class CmsPropertyFactoryResolver {
     constructor(@Inject(PROPERTY_PROVIDERS_TOKEN) private propertyFactories: CmsPropertyFactory[]) { }

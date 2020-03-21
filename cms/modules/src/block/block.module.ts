@@ -8,6 +8,7 @@ import { faCubes, faFolder, faCube, faFolderPlus, faPlusSquare, faBars } from '@
 
 import { CoreModule } from '@angular-cms/core';
 
+//import { CmsBsDropdownModule, CmsAngularSplitModule } from '../shared/libs';
 import { CmsAngularSplitModule } from '../shared/libs/angular-split/module';
 import { CmsBsDropdownModule } from '../shared/libs/ngx-bootstrap/bs-dropdown.module';
 import { DndModule } from '../shared/drag-drop/dnd.module';
@@ -24,8 +25,8 @@ import { BlockTreeService } from './block-tree.service';
         ReactiveFormsModule,
         RouterModule,
         FontAwesomeModule,
-        CmsAngularSplitModule.forRoot(),
-        CmsBsDropdownModule.forRoot(),
+        CmsAngularSplitModule,
+        CmsBsDropdownModule,
         CoreModule,
         TreeModule,
         DndModule

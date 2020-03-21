@@ -43,5 +43,5 @@ export * from './services/browser-location.service';
 export * from './services/browser-storage.service';
 
 export * from './cms';
-export { CoreModule, CMS_PROVIDERS } from './core.module';
+export * from './core.module';
 export * from './angular-cms.module';

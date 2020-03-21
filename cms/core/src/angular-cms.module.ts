@@ -1,9 +1,14 @@
-import { ModuleWithProviders, Injector, NgModule } from '@angular/core';
-import { Routes } from '@angular/router';
+import { ModuleWithProviders, Injector, NgModule, PLATFORM_ID } from '@angular/core';
+import { Routes, RouteReuseStrategy } from '@angular/router';
+import { EVENT_MANAGER_PLUGINS } from '@angular/platform-browser';
 
 import { CMS } from './cms';
-import { CoreModule, CMS_PROVIDERS } from "./core.module";
+import { CoreModule } from "./core.module";
 import { setAppInjector } from './utils/appInjector';
+import { OutsideZoneEventPlugin } from './utils/outside-zone-event-plugin';
+import { CustomRouteReuseStrategy } from './utils/route-reuse-strategy';
+
+import { LOCAL_STORAGE, localStorageFactory } from './services/browser-storage.service';
 
 import { PAGE_TYPE_INDICATOR, BLOCK_TYPE_INDICATOR, MEDIA_TYPE_INDICATOR } from './decorators/metadata-key';
 import { PROPERTY_PROVIDERS_TOKEN, getCmsPropertyFactory, CmsPropertyFactory } from './bases/cms-property.factory';
@@ -11,19 +16,37 @@ import { CmsProperty, CmsPropertyRender } from './bases/cms-property';
 
 import { UIHint } from './constants/ui-hint';
 import { CmsModuleConfig, ClassOf } from './constants/types';
+
 import { CmsContentRender } from './render/cms-content';
-import { ContentAreaRender } from './render/content-area/content-area';
 import { PROPERTY_PROVIDERS_RENDER_TOKEN, getCmsPropertyRenderFactory, CmsPropertyRenderFactory } from './render/property-render.factory';
+
+import { ContentAreaRender } from './render/content-area/content-area';
 import { TextRender } from './render/properties/text';
 import { XHtmlRender } from './render/properties/xhtml';
 import { UrlRender } from './render/properties/url';
 import { UrlListRender } from './render/properties/url-list';
 
+export const CMS_PROVIDERS = [
+    {
+        provide: EVENT_MANAGER_PLUGINS,
+        useClass: OutsideZoneEventPlugin,
+        multi: true
+    },
+    {
+        provide: RouteReuseStrategy,
+        useClass: CustomRouteReuseStrategy
+    },
+    {
+        provide: LOCAL_STORAGE,
+        useFactory: localStorageFactory,
+        deps: [PLATFORM_ID]
+    }
+]
 
 /**
  * Re-export Core Module to used on client
  */
-@NgModule({ imports: [CoreModule] })
+@NgModule({ exports: [CoreModule] })
 export class AngularCms {
     constructor(private injector: Injector) {
         setAppInjector(this.injector);

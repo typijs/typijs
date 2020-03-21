@@ -4,6 +4,7 @@ import { Media, MediaService, MEDIA_TYPE } from '@angular-cms/core';
 
 import { SubjectService } from '../shared/services/subject.service';
 import { SubscriptionDestroy } from '../shared/subscription-destroy';
+//import { TreeComponent, TreeConfig, TreeNode, NodeMenuItemAction, TreeMenuActionEvent } from '../shared/tree';
 import { TreeComponent } from '../shared/tree/components/tree.component';
 import { TreeConfig } from '../shared/tree/interfaces/tree-config';
 import { NodeMenuItemAction, TreeMenuActionEvent } from '../shared/tree/interfaces/tree-menu';

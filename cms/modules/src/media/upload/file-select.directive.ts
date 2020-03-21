@@ -1,10 +1,10 @@
-import { Directive, EventEmitter, ElementRef, Input, HostListener, Output } from '@angular/core';
+import { Directive, EventEmitter, ElementRef, HostListener, Output } from '@angular/core';
 
 @Directive({ selector: '[cmsFileSelect]' })
 export class FileSelectDirective {
     @Output() public onFileSelected: EventEmitter<File[]> = new EventEmitter<File[]>();
 
-    public constructor(private element: ElementRef) {}
+    public constructor(private element: ElementRef) { }
 
     private isEmptyAfterSelection(): boolean {
         return !!this.element.nativeElement.attributes.multiple;
@@ -20,7 +20,7 @@ export class FileSelectDirective {
             .map(index => {
                 chooseFiles.push(files[index])
             });
-        
+
         this.onFileSelected.emit(chooseFiles);
 
         if (this.isEmptyAfterSelection()) {

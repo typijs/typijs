@@ -1,7 +1,9 @@
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { AngularSplitModule } from 'angular-split';
 
-@NgModule()
+@NgModule({
+    exports: [AngularSplitModule]
+})
 export class CmsAngularSplitModule {
     public static forRoot(): ModuleWithProviders<AngularSplitModule> {
         return {

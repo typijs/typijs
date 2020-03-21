@@ -42,10 +42,7 @@ export abstract class BaseLayoutComponent implements OnInit {
     }
 
     ngAfterViewInit() {
-        // BUGFIX: https://github.com/angular/angular/issues/6005#issuecomment-165911194
-        //setTimeout(_ => this.initCreatingWidget()) 
         this.insertPoints = this.cmsLayout.insertPoints;
-
         this.componentRefs = this.creatingWidgets();
         this._changeDetectionRef.detectChanges();
     }

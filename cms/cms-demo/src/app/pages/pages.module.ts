@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
-import { CoreModule } from '@angular-cms/core';
+import { AngularCms } from '@angular-cms/core';
 
 import { HomeComponent } from './home/home.component';
 import { ArticleComponent } from './article/article.component';
@@ -22,7 +22,7 @@ const PAGES_COMPONENT = [
         CommonModule,
         FormsModule,
         RouterModule,
-        CoreModule
+        AngularCms
     ],
     entryComponents: [
         ...PAGES_COMPONENT
