@@ -1,8 +1,9 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 import { CmsProperty } from '@angular-cms/core';
 
 @Component({
-    template: `
+  selector: '[textProperty]',
+  template: `
     <div class="form-group row" [formGroup]="formGroup">
         <label [attr.for]="id" class="col-sm-4 col-form-label">{{label}}</label>
         <div class="col-sm-8">
@@ -15,5 +16,5 @@ import { CmsProperty } from '@angular-cms/core';
     </div>
   `
 })
-export class InputComponent extends CmsProperty {
+export class TextProperty extends CmsProperty {
 }

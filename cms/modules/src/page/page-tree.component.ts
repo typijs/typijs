@@ -1,4 +1,4 @@
-import { Component, ViewChild, Injector } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Page, PageService } from '@angular-cms/core';
@@ -35,59 +35,26 @@ const PageMenuItemAction = {
             </ng-template>
         </cms-tree>
         `,
-    styles: [`
-        .page-node {
-            width: calc(100% - 20px);
-            cursor: pointer;
-            display: inline-block;
-        }
-
-        .page-node:hover {
-            font-weight: bold;
-            border-bottom: 1px solid #a4b7c1!important;
-        }
-  `]
+    styleUrls: ['./page-tree.scss'],
+    providers: [PageTreeService]
 })
 export class PageTreeComponent extends SubscriptionDestroy {
     @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
 
-    root: TreeNode = new TreeNode({ id: '0', name: 'Root', hasChildren: true });
+    root: TreeNode;
     treeConfig: TreeConfig;
 
     constructor(
-        private injector: Injector,
+        private pageTreeService: PageTreeService,
         private pageService: PageService,
         private subjectService: SubjectService,
         private router: Router,
         private route: ActivatedRoute) {
         super()
-        this.treeConfig = {
-            service: this.injector.get(PageTreeService),
-            menuItems: [
-                {
-                    action: PageMenuItemAction.NewPage,
-                    name: "New Page"
-                },
-                {
-                    action: NodeMenuItemAction.Cut,
-                    name: "Cut"
-                },
-                {
-                    action: NodeMenuItemAction.Copy,
-                    name: "Copy"
-                },
-                {
-                    action: NodeMenuItemAction.Paste,
-                    name: "Paste"
-                },
-                {
-                    action: PageMenuItemAction.DeletePage,
-                    name: "Delete"
-                },
-            ]
-        }
+        this.root = new TreeNode({ id: '0', name: 'Root', hasChildren: true });
+        this.treeConfig = this.initTreeConfiguration();
     }
-
+    
     ngOnInit() {
         this.subscriptions.push(this.subjectService.pageCreated$.subscribe((createdPage: Page) => {
             //Reload parent page
@@ -136,5 +103,33 @@ export class PageTreeComponent extends SubscriptionDestroy {
             this.cmsTree.selectNode({ id: pageToDelete.parentId, isNeedToScroll: true });
             this.cmsTree.reloadSubTree(pageToDelete.parentId);
         });
+    }
+
+    private initTreeConfiguration(): TreeConfig {
+        return {
+            service: this.pageTreeService,
+            menuItems: [
+                {
+                    action: PageMenuItemAction.NewPage,
+                    name: "New Page"
+                },
+                {
+                    action: NodeMenuItemAction.Cut,
+                    name: "Cut"
+                },
+                {
+                    action: NodeMenuItemAction.Copy,
+                    name: "Copy"
+                },
+                {
+                    action: NodeMenuItemAction.Paste,
+                    name: "Paste"
+                },
+                {
+                    action: PageMenuItemAction.DeletePage,
+                    name: "Delete"
+                },
+            ]
+        }
     }
 }

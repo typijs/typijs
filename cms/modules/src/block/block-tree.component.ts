@@ -68,51 +68,25 @@ const BlockMenuItemAction = {
         </as-split-area>
     </as-split>
         `,
-    styleUrls: ['./block-tree.component.scss']
+    styleUrls: ['./block-tree.scss'],
+    providers: [BlockTreeService]
 })
 export class BlockTreeComponent extends SubscriptionDestroy {
     @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
     blocks: Array<Block>;
 
-    root: TreeNode = new TreeNode({ id: '0', name: 'Block', hasChildren: true });
+    root: TreeNode;
     treeConfig: TreeConfig;
 
     constructor(
-        private injector: Injector,
+        private blockTreeService: BlockTreeService,
         private router: Router,
         private route: ActivatedRoute,
         private blockService: BlockService,
         private subjectService: SubjectService) {
         super();
-        this.treeConfig = {
-            service: this.injector.get(BlockTreeService),
-            menuItems: [
-                {
-                    action: BlockMenuItemAction.NewBlock,
-                    name: "New Block"
-                },
-                {
-                    action: NodeMenuItemAction.NewNodeInline,
-                    name: "New Folder"
-                },
-                {
-                    action: NodeMenuItemAction.EditNowInline,
-                    name: "Rename"
-                },
-                {
-                    action: NodeMenuItemAction.Copy,
-                    name: "Copy"
-                },
-                {
-                    action: NodeMenuItemAction.Paste,
-                    name: "Paste"
-                },
-                {
-                    action: BlockMenuItemAction.DeleteFolder,
-                    name: "Delete"
-                },
-            ]
-        }
+        this.root = new TreeNode({ id: '0', name: 'Block', hasChildren: true });
+        this.treeConfig = this.initTreeConfiguration();
     }
 
     ngOnInit() {
@@ -178,5 +152,37 @@ export class BlockTreeComponent extends SubscriptionDestroy {
             console.log(deleteResult);
             this.cmsTree.reloadSubTree(nodeToDelete.parentId);
         });
+    }
+
+    private initTreeConfiguration(): TreeConfig {
+        return {
+            service: this.blockTreeService,
+            menuItems: [
+                {
+                    action: BlockMenuItemAction.NewBlock,
+                    name: "New Block"
+                },
+                {
+                    action: NodeMenuItemAction.NewNodeInline,
+                    name: "New Folder"
+                },
+                {
+                    action: NodeMenuItemAction.EditNowInline,
+                    name: "Rename"
+                },
+                {
+                    action: NodeMenuItemAction.Copy,
+                    name: "Copy"
+                },
+                {
+                    action: NodeMenuItemAction.Paste,
+                    name: "Paste"
+                },
+                {
+                    action: BlockMenuItemAction.DeleteFolder,
+                    name: "Delete"
+                },
+            ]
+        }
     }
 }

@@ -12,24 +12,24 @@ import { CoreModule, CMS } from '@angular-cms/core';
 import { CmsBsDropdownModule } from '../shared/libs/ngx-bootstrap/bs-dropdown.module';
 import { DndModule } from '../shared/drag-drop/dnd.module';
 
-import { InputComponent } from './input/input.component';
+import { TextProperty } from './text/text.property';
 
-import { TextareaComponent } from './textarea/textarea.component';
+import { TextareaProperty } from './textarea/textarea.property';
 
 import { ObjectListProperty } from './object-list/object-list.property';
 import { ObjectListControl } from './object-list/object-list.control';
 
-import { TinymceComponent } from './xhtml/tinymce.component';
-import { DropdownComponent } from './select/dropdown/dropdown.component';
+import { XHtmlProperty } from './xhtml/xhtml.property';
+import { DropdownProperty } from './select/dropdown/dropdown.property';
 
-import { CheckboxComponent } from './select/checkbox/checkbox.component';
+import { CheckboxProperty } from './select/checkbox/checkbox.property';
 import { CheckboxGroupControl } from './select/checkbox/checkbox-group.control';
 
 import { ContentAreaControl } from './content-area/content-area.control';
 import { ContentAreaProperty } from './content-area/content-area.property';
 
 import { ContentReferenceControl } from './content-reference/content-reference.control';
-import { ContentReferenceComponent } from './content-reference/content-reference.component';
+import { ContentReferenceProperty } from './content-reference/content-reference.property';
 
 import { registerCmsProperties } from './registerCmsProperties';
 
@@ -48,45 +48,45 @@ registerCmsProperties();
         DndModule
     ],
     declarations: [
-        InputComponent,
-        TextareaComponent,
-        DropdownComponent,
+        TextProperty,
+        TextareaProperty,
+        DropdownProperty,
         CheckboxGroupControl,
-        CheckboxComponent,
+        CheckboxProperty,
         ObjectListProperty,
         ObjectListControl,
-        TinymceComponent,
+        XHtmlProperty,
         ContentAreaProperty,
         ContentAreaControl,
 
         ContentReferenceControl,
-        ContentReferenceComponent
+        ContentReferenceProperty
     ],
     entryComponents: [
-        InputComponent,
-        TextareaComponent,
-        DropdownComponent,
-        CheckboxComponent,
+        TextProperty,
+        TextareaProperty,
+        DropdownProperty,
+        CheckboxProperty,
         ObjectListProperty,
-        TinymceComponent,
+        XHtmlProperty,
         ContentAreaProperty,
-        ContentReferenceComponent
+        ContentReferenceProperty
     ],
     exports: [
-        InputComponent,
-        TextareaComponent,
-        DropdownComponent,
-        CheckboxComponent,
+        TextProperty,
+        TextareaProperty,
+        DropdownProperty,
+        CheckboxProperty,
         ObjectListProperty,
-        TinymceComponent,
+        XHtmlProperty,
         ContentAreaProperty,
 
         ContentReferenceControl,
-        ContentReferenceComponent
+        ContentReferenceProperty
     ]
 })
 export class PropertiesModule {
-    constructor(private library: FaIconLibrary) {
+    constructor(library: FaIconLibrary) {
         library.addIcons(faFolder, faFile, faImage, faCube, faBars, faHashtag, faList);
     }
 }

@@ -1,0 +1,33 @@
+.media-container {
+  height: 100%;
+
+  .media-node {
+    width: calc(100% - 20px);
+    cursor: pointer;
+    display: inline-block;
+
+    &:hover {
+      font-weight: bold;
+      border-bottom: 1px solid #a4b7c1 !important;
+    }
+  }
+
+  .drop-zone {
+    height: calc(100vh - 55px);
+    position: relative;
+    z-index: 99;
+    display: none;
+    margin: -2px;
+    background-color: #999;
+  }
+
+  .drag-over {
+    .list-media {
+      display: none;
+    }
+
+    .drop-zone {
+      display: block;
+    }
+  }
+}

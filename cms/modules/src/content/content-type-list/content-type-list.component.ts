@@ -1,7 +1,12 @@
 import { Component, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
+import { ActivatedRoute, Router, UrlSegment, Params } from '@angular/router';
 
-import { Block, BlockService, BLOCK_TYPE_METADATA_KEY, CMS, Page, PageService, PAGE_TYPE_METADATA_KEY, BLOCK_TYPE, PAGE_TYPE, slugify } from '@angular-cms/core';
+import {
+    BLOCK_TYPE, PAGE_TYPE, slugify,
+    ContentType, ContentTypeService,
+    Block, BlockService,
+    Page, PageService,
+} from '@angular-cms/core';
 
 import { SubjectService } from '../../shared/services/subject.service';
 import { SubscriptionDestroy } from '../../shared/subscription-destroy';
@@ -9,86 +14,67 @@ import { SubscriptionDestroy } from '../../shared/subscription-destroy';
 
 @Component({
     templateUrl: './content-type-list.component.html',
+    styleUrls: ['./content-type-list.scss']
 })
 export class ContentTypeListComponent extends SubscriptionDestroy implements OnDestroy {
-
-    type: string;
     contentName: string;
-    contentTypes: Array<any> = [];
-    parentId: string;
+    contentTypes: ContentType[] = [];
+    private typeOfContent: string;
+    private parentId: string;
 
     constructor(
+        private router: Router,
+        private route: ActivatedRoute,
         private pageService: PageService,
         private blockService: BlockService,
         private subjectService: SubjectService,
-        private router: Router,
-        private route: ActivatedRoute) { super() }
+        private contentTypeService: ContentTypeService
+    ) { super() }
 
     ngOnInit() {
-        this.subscriptions.push(this.route.params.subscribe(params => {
+        this.subscriptions.push(this.route.params.subscribe((params: Params) => {
             this.parentId = params['parentId'] || undefined;
-            const url: UrlSegment[] = this.route.snapshot.url;
-            this.type = url.length >= 2 && url[0].path == 'new' ? url[1].path : '';
+            this.typeOfContent = this.getTypeContentFromUrl(this.route.snapshot.url)
 
-            switch (this.type) {
+            switch (this.typeOfContent) {
                 case PAGE_TYPE:
                     this.contentName = "New Page";
-                    this.getAllPageTypes();
+                    this.contentTypes = this.contentTypeService.getAllPageTypes();
                     break;
                 case BLOCK_TYPE:
                     this.contentName = "New Block";
-                    this.getAllBlockTypes();
+                    this.contentTypes = this.contentTypeService.getAllBlockTypes();
                     break;
             }
         }));
     }
 
-    createNewContent(contentType) {
+    private getTypeContentFromUrl(url: UrlSegment[]) {
+        return url.length >= 2 && url[0].path == 'new' ? url[1].path : '';
+    }
+
+    createNewContent(contentType: ContentType) {
         if (this.contentName) {
-            let content: any = {
+            const content: any = {
                 name: this.contentName,
-                contentType: contentType.typeRef.name,
+                contentType: contentType.name,
                 parentId: this.parentId,
                 //TODO: should move generate the url segment to back-end
                 urlSegment: slugify(this.contentName)
             }
 
-            switch (this.type) {
+            switch (this.typeOfContent) {
                 case PAGE_TYPE:
-                    this.savePage(content);
+                    this.createNewPage(content);
                     break;
                 case BLOCK_TYPE:
-                    this.saveBlock(content);
+                    this.createNewBlock(content);
                     break;
             }
         }
     }
 
-    private getAllPageTypes() {
-        this.contentTypes = [];
-        Object.keys(CMS.PAGE_TYPES).map(key => CMS.PAGE_TYPES[key]).forEach(pageType => {
-            let pageTypeMetadata = Reflect.getMetadata(PAGE_TYPE_METADATA_KEY, pageType);
-
-            this.contentTypes.push({
-                typeRef: pageType,
-                metadata: pageTypeMetadata,
-            })
-        });
-    }
-
-    private getAllBlockTypes() {
-        this.contentTypes = [];
-        Object.keys(CMS.BLOCK_TYPES).map(key => CMS.BLOCK_TYPES[key]).forEach(blockType => {
-            let blockTypeMetadata = Reflect.getMetadata(BLOCK_TYPE_METADATA_KEY, blockType);
-
-            this.contentTypes.push({
-                typeRef: blockType,
-                metadata: blockTypeMetadata,
-            })
-        });
-    }
-
-    private savePage(content: any) {
+    private createNewPage(content: Partial<Page>) {
         this.pageService.createContent(content).subscribe(
             (createdPage: Page) => {
                 this.subjectService.firePageCreated(createdPage);
@@ -98,7 +84,7 @@ export class ContentTypeListComponent extends SubscriptionDestroy implements OnD
         )
     }
 
-    private saveBlock(content: any) {
+    private createNewBlock(content: Partial<Block>) {
         this.blockService.createContent(content).subscribe(
             (createdBlock: Block) => {
                 this.subjectService.fireBlockCreated(createdBlock);

@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "dev": "ng serve --proxy-config proxy.conf.json --open",
+    "build:libs": "ng build core && ng build modules && ng build portal",
     "build:ssr": "concurrently \"ng build\" \"ng run cms-demo:server\"",
     "build:ssr:prod": "concurrently \"ng build --prod\" \"ng run cms-demo:server\"",
     "start:ssr": "ts-node -P ./cms-demo/server.tsconfig.json ./cms-demo/server.ts",

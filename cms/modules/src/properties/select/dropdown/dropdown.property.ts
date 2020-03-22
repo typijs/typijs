@@ -1,7 +1,8 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
-import { SelectProperty } from './../select-property';
+import { Component } from '@angular/core';
+import { SelectProperty } from '../select-property';
 
 @Component({
+    selector: '[dropdownProperty]',
     template: `
         <div class="form-group row" [formGroup]="formGroup">
             <label [attr.for]="id" class="col-sm-4 col-form-label">{{label}}</label>
@@ -13,5 +14,5 @@ import { SelectProperty } from './../select-property';
         </div>
     `
 })
-export class DropdownComponent extends SelectProperty {
+export class DropdownProperty extends SelectProperty {
 }

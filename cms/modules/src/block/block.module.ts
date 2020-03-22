@@ -15,7 +15,6 @@ import { DndModule } from '../shared/drag-drop/dnd.module';
 import { TreeModule } from '../shared/tree/tree.module';
 
 import { BlockTreeComponent } from './block-tree.component';
-import { BlockTreeService } from './block-tree.service';
 
 @NgModule({
     imports: [
@@ -39,11 +38,10 @@ import { BlockTreeService } from './block-tree.service';
     ],
     exports: [
         BlockTreeComponent
-    ],
-    providers: [BlockTreeService]
+    ]
 })
 export class BlockModule {
-    constructor(private library: FaIconLibrary) {
+    constructor(library: FaIconLibrary) {
         library.addIcons(faFolder, faCubes, faCube, faFolderPlus, faPlusSquare, faBars);
     }
 }

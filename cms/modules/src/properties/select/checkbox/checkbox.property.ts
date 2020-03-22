@@ -2,6 +2,7 @@ import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { SelectProperty } from '../select-property';
 
 @Component({
+    selector: '[checkboxProperty]',
     template: `
         <div class="form-group row" [formGroup]="formGroup">
             <label class="col-sm-4 col-form-label">{{label}}</label>
@@ -12,5 +13,5 @@ import { SelectProperty } from '../select-property';
         </div>
     `
 })
-export class CheckboxComponent extends SelectProperty {
+export class CheckboxProperty extends SelectProperty {
 }
