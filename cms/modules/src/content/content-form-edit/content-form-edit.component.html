@@ -31,7 +31,7 @@
                             <div>
                                 <tabset>
                                     <tab *ngFor="let tabz of formTabs" [heading]="tabz.title">
-                                        <ng-template [cmsInsertPoint]="tabz.content"></ng-template>
+                                        <ng-template [cmsInsertPoint]="tabz.name"></ng-template>
                                     </tab>
                                 </tabset>
                             </div>

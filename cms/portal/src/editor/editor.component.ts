@@ -1,14 +1,13 @@
 import { Component, ChangeDetectorRef } from '@angular/core';
-import { BaseLayoutComponent } from '../shared/base-layout.component';
-
 import { CMS, CmsComponentConfig } from '@angular-cms/core';
 
+import { BaseLayoutComponent } from '../shared/base-layout.component';
 import { WidgetService } from '../services/widget.service';
 
 @Component({
     template: `<cms-layout [rightTabs]="rightTabs" [leftTabs]="leftTabs"></cms-layout>`
 })
-export class AdminLayoutComponent extends BaseLayoutComponent {
+export class EditorComponent extends BaseLayoutComponent {
 
     constructor(
         _changeDetectionRef: ChangeDetectorRef,
@@ -17,6 +16,6 @@ export class AdminLayoutComponent extends BaseLayoutComponent {
     }
 
     protected getCmsWidgets(): Array<CmsComponentConfig> {
-        return CMS.ADMIN_WIDGETS();
+        return CMS.EDITOR_WIDGETS();
     }
 }

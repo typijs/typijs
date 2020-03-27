@@ -87,7 +87,7 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
         this.currentContent = this.getPopulatedContentData(contentData, this.contentTypeProperties);
 
         if (this.contentTypeProperties.length > 0) {
-            this.formTabs = this.createFormTabs(this.contentTypeProperties);
+            this.formTabs = this.extractFormTabsFromProperties(this.contentTypeProperties);
             this.contentFormGroup = this.createFormGroup(this.contentTypeProperties);
         }
     }
@@ -119,19 +119,19 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
         }
     }
 
-    private createFormTabs(properties: ContentTypeProperty[]): CmsTab[] {
+    private extractFormTabsFromProperties(properties: ContentTypeProperty[]): CmsTab[] {
         const tabs: CmsTab[] = [];
 
         properties.forEach((property: ContentTypeProperty) => {
             if (property.metadata.hasOwnProperty('groupName')) {
                 if (tabs.findIndex(x => x.title == property.metadata.groupName) == -1) {
-                    tabs.push({ title: property.metadata.groupName, content: `${property.metadata.groupName}` });
+                    tabs.push({ title: property.metadata.groupName, name: `${property.metadata.groupName}` });
                 }
             }
         });
 
         if (properties.findIndex((property: ContentTypeProperty) => !property.metadata.groupName) != -1) {
-            tabs.push({ title: this.defaultGroup, content: `${this.defaultGroup}` });
+            tabs.push({ title: this.defaultGroup, name: `${this.defaultGroup}` });
         }
 
         return tabs.sort(sortTabByTitle);
@@ -168,7 +168,7 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
         if (!this.formTabs || this.formTabs.length == 0) return propertyControls;
 
         this.formTabs.forEach(tab => {
-            const viewContainerRef = this.insertPoints.find(x => x.name == tab.content).viewContainerRef;
+            const viewContainerRef = this.insertPoints.find(x => x.name == tab.name).viewContainerRef;
             viewContainerRef.clear();
 
             properties.filter(x => (x.metadata.groupName == tab.title || (!x.metadata.groupName && tab.title == this.defaultGroup))).forEach(property => {

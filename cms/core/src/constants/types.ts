@@ -55,12 +55,12 @@ export type CmsRootConfig = {
 }
 
 export type CmsModuleConfig = {
-    module: any,
-    roots: Array<CmsRootConfig>
+    module: CmsObject,
+    roots: Array<CmsRootConfig>,
 }
 
 export type CmsTab = {
-    title: string,
-    content: string
+    name: string,
+    title: string
 }
 
