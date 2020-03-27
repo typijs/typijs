@@ -6,8 +6,9 @@ import { CMS } from '@angular-cms/core';
 
 import './cms-module-register';
 import { PortalComponent } from './portal.component';
-import { EditorLayoutComponent } from './editor-layout/editor-layout.component';
-import { AdminLayoutComponent } from './admin-layout/admin-layout.component';
+import { EditorComponent } from './editor/editor.component';
+import { AdminComponent } from './admin/admin.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 const cmsRoutes: Routes = [
     {
@@ -15,17 +16,25 @@ const cmsRoutes: Routes = [
         children: [
             {
                 path: '',
-                component: EditorLayoutComponent
+                component: DashboardComponent
+            },
+            {
+                path: 'dashboard',
+                component: DashboardComponent
             },
             {
                 path: 'editor',
-                component: EditorLayoutComponent,
+                component: EditorComponent,
                 children: CMS.EDITOR_ROUTES()
             },
             {
                 path: 'admin',
-                component: AdminLayoutComponent,
+                component: AdminComponent,
                 children: CMS.ADMIN_ROUTES()
+            },
+            {
+                path: 'preview',
+                component: AdminComponent
             }
         ]
     }

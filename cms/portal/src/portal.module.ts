@@ -9,8 +9,9 @@ import { CmsAngularSplitModule, CmsBsDropdownModule, CmsTabsModule, CmsProgressb
 import { CmsHeaderComponent } from './shared/components/cms-header/cms-header.component';
 import { CmsLayoutComponent } from './shared/components/cms-layout/cms-layout.component';
 import { ReplaceDirective } from './shared/directives/replace/replace.directive';
-import { AdminLayoutComponent } from './admin-layout/admin-layout.component';
-import { EditorLayoutComponent } from './editor-layout/editor-layout.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { AdminComponent } from './admin/admin.component';
+import { EditorComponent } from './editor/editor.component';
 import { WidgetService } from './services/widget.service';
 import { PortalComponent } from './portal.component';
 import { PortalRoutingModule } from './portal.routing';
@@ -38,8 +39,9 @@ import { PortalRoutingModule } from './portal.routing';
     CmsLayoutComponent,
     CmsHeaderComponent,
     ReplaceDirective,
-    EditorLayoutComponent,
-    AdminLayoutComponent
+    DashboardComponent,
+    AdminComponent,
+    EditorComponent
   ],
   providers: [WidgetService]
 })
