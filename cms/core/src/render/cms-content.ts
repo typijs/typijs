@@ -31,6 +31,11 @@ export class CmsContentRender implements OnDestroy {
         private pageService: PageService) { }
 
     ngOnInit() {
+        // Step 1: Check Is Authenticated
+        // Step 2: Check user is Editor
+        // Step 3: Check if has 'ngeditmode=True' and 'ngid=xxxx'
+        // Step 4: Get data by those params
+        // Step 5: Else get data by url
         this.resolveContentDataByUrl();
     }
 
