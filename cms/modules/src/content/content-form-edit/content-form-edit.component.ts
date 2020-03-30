@@ -15,6 +15,9 @@ import {
 import { ContentAreaItem } from "../../properties/content-area/ContentAreaItem";
 import { SubjectService } from '../../shared/services/subject.service';
 import { SubscriptionDestroy } from '../../shared/subscription-destroy';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+
+
 
 @Component({
     templateUrl: './content-form-edit.component.html',
@@ -27,6 +30,10 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
     contentFormGroup: FormGroup = new FormGroup({});
     formTabs: CmsTab[] = [];
     currentContent: Partial<Page> & Content;
+    editMode: 'AllProperties' | 'OnPageEdit' = 'AllProperties';
+
+    showIframeHider: boolean = false;
+    previewUrl: SafeResourceUrl;
 
     private typeOfContent: 'page' | 'block' | 'media' | string;
     private contentTypeProperties: ContentTypeProperty[] = [];
@@ -41,20 +48,22 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
         private pageService: PageService,
         private blockService: BlockService,
         private subjectService: SubjectService,
-        private changeDetectionRef: ChangeDetectorRef
+        private changeDetectionRef: ChangeDetectorRef,
+        private sanitizer: DomSanitizer
     ) { super(); }
 
     ngOnInit() {
         this.subscriptions.push(this.route.params.subscribe(params => {
             const contentId = params['id'];
             this.typeOfContent = this.getTypeContentFromUrl(this.route.snapshot.url)
-
+            this.editMode = 'AllProperties';
             if (contentId) {
                 switch (this.typeOfContent) {
                     case PAGE_TYPE:
                         this.pageService.getContent(contentId).subscribe(contentData => {
                             this.subjectService.firePageSelected(contentData);
                             this.contentTypeProperties = this.contentTypeService.getPageTypeProperties(contentData.contentType);
+                            this.previewUrl = this.getPublishedUrlOfContent(contentData);
                             this.bindDataForContentForm(contentData)
                         });
                         break;
@@ -67,9 +76,17 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
                 }
             }
         }));
+
+        this.subscriptions.push(this.subjectService.portalLayoutChanged$.subscribe((showIframeHider: boolean) => {
+            this.showIframeHider = showIframeHider;
+        }))
     }
 
-    private getTypeContentFromUrl(url: UrlSegment[]) {
+    private getPublishedUrlOfContent(contentData: Page): SafeResourceUrl {
+        return this.sanitizer.bypassSecurityTrustResourceUrl(`http://localhost:4200${contentData.publishedLinkUrl}?ngeditmode=True&ngid=${contentData._id}`)
+    }
+
+    private getTypeContentFromUrl(url: UrlSegment[]): string {
         return url.length >= 2 && url[0].path == 'content' ? url[1].path : '';
     }
 
@@ -83,7 +100,6 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
     }
 
     private bindDataForContentForm(contentData: Page | Block | Media) {
-
         this.currentContent = this.getPopulatedContentData(contentData, this.contentTypeProperties);
 
         if (this.contentTypeProperties.length > 0) {

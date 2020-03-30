@@ -8,12 +8,15 @@
 // export * from './shared/drag-drop';
 
 export * from './shared/libs/ngx-bootstrap/bs-dropdown.module';
-export * from './shared/libs/ngx-bootstrap/tabs.module';
+export * from './shared/libs/ngx-bootstrap/buttons.module';
 export * from './shared/libs/ngx-bootstrap/modal.module';
 export * from './shared/libs/ngx-bootstrap/progressbar.module';
+export * from './shared/libs/ngx-bootstrap/tabs.module';
+
 export * from './shared/libs/angular-split/module';
 
 export * from './shared/drag-drop/dnd.module';
+export * from './shared/services/subject.service';
 
 export * from './content/content.module';
 export * from './content/content-type-list/content-type-list.component';

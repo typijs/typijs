@@ -15,6 +15,26 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
         this.siteDefinitionModel = SiteDefinitionModel;
     }
 
+    public getPopulatedContentById = async (id: string): Promise<IPageDocument> => {
+        if (!id) id = null;
+
+        const pageDoc = await this.contentModel.findOne({ _id: id })
+            .lean()
+            .populate({
+                path: 'childItems.content',
+                match: { isDeleted: false }
+            })
+            .populate({
+                path: 'publishedChildItems.content',
+                match: { isDeleted: false }
+            })
+            .exec();
+
+        const startPageLinkUrl = await this.getStartPageLinkUrl(null);
+        pageDoc.publishedLinkUrl = this.getPublishedLinkUrl(startPageLinkUrl, pageDoc)
+        return pageDoc;
+    }
+
     public getPublishedPageByUrl = async (encodedUrl: string): Promise<IPublishedPage> => {
         //need to check isPageDeleted = false
         //get domain from url
@@ -25,8 +45,7 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
         const originalUrl = urlObj.origin; // --> https://example.org:80
         const pathUrl = urlObj.pathname; // --> /abc/xyz
 
-        const startPage = await this.getStartPageFromHostname(originalUrl);
-        const startPageLinkUrl = startPage != null ? startPage.linkUrl : '';
+        const startPageLinkUrl = await this.getStartPageLinkUrl(originalUrl);
         const linkUrl = `${startPageLinkUrl}${pathUrl}`;
 
         const publishedPage = await this.getPublishedPageByLinkUrl(linkUrl);
@@ -50,8 +69,7 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
         const publishedPages = await this.publishedContentModel.find({ parentId: parentId, isDeleted: false }).lean().exec()
         if (publishedPages.length == 0) return [];
 
-        const startPage = await this.getStartPageFromHostname(null);
-        const startPageLinkUrl = startPage != null ? startPage.linkUrl : '';
+        const startPageLinkUrl = await this.getStartPageLinkUrl(null);
         publishedPages.forEach(page => page.publishedLinkUrl = this.getPublishedLinkUrl(startPageLinkUrl, page));
 
         return publishedPages
@@ -124,6 +142,11 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
         return publishedPage.linkUrl;
     }
 
+    private getStartPageLinkUrl = async (hostname: string): Promise<string> => {
+        const startPage = await this.getStartPageFromHostname(null);
+        return startPage != null ? startPage.linkUrl : '';
+    }
+
     private getStartPageFromHostname = async (hostname: string): Promise<IPublishedPageDocument> => {
         const siteDefinition = await this.getSiteDefinitionBySiteUrl(hostname);
         return siteDefinition != null ? siteDefinition.startPage : null;
@@ -173,7 +196,7 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
         //update link url
         const segments = currentContent.linkUrl.split('/').filter(x => x);
         let newLinkUrl = newParentContent.linkUrl;
-        for (let j = segments.length - 1, k = 1; k <= currentContent.ancestors.length - index; j-- , k++) {
+        for (let j = segments.length - 1, k = 1; k <= currentContent.ancestors.length - index; j--, k++) {
             newLinkUrl = newLinkUrl == '/' ? `/${segments[j]}` : `${newLinkUrl}/${segments[j]}`;
         }
 

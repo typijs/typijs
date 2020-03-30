@@ -1,6 +1,7 @@
 import { Input, ViewEncapsulation, ViewChildren, Component, QueryList, Inject } from '@angular/core';
 
 import { CmsTab, InsertPointDirective, BrowserStorageService } from '@angular-cms/core';
+import { SubjectService } from '@angular-cms/modules';
 
 type PanelConfig = {
     visible: boolean,
@@ -41,7 +42,9 @@ export class CmsLayoutComponent {
     private readonly layoutConfigKey: string = 'cms-layout-config-key';
     private readonly headerSizeDefault: number = 55;
 
-    constructor(private storageService: BrowserStorageService) { }
+    constructor(
+        private storageService: BrowserStorageService,
+        private subjectService: SubjectService) { }
 
     ngOnInit() {
         if (this.storageService.get(this.layoutConfigKey)) {
@@ -73,10 +76,14 @@ export class CmsLayoutComponent {
     }
 
     onDragEnd(eventData: { gutterNum: number, sizes: Array<number> }) {
+        this.subjectService.portalLayoutChanged$.next(false);
         // Set size for all visible columns
         this.layoutConfig.panels.filter(x => x.visible == true).forEach((row, index) => row.size = eventData.sizes[index])
-
         this.saveLocalStorage();
+    }
+
+    onDragStart() {
+        this.subjectService.portalLayoutChanged$.next(true);
     }
 
     private saveLocalStorage() {

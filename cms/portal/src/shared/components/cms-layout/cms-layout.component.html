@@ -8,7 +8,7 @@
         </as-split-area>
         <!-- cms main body -->
         <as-split-area size="*">
-            <as-split unit="pixel" gutterSize="2" (dragEnd)="onDragEnd($event)">
+            <as-split unit="pixel" gutterSize="2" (dragStart)="onDragStart()" (dragEnd)="onDragEnd($event)">
                 <!-- cms left panel -->
                 <as-split-area [size]="layoutConfig.panels[0].size" order="1"
                     [visible]="layoutConfig.panels[0].visible">

@@ -36,13 +36,33 @@ export class CmsContentRender implements OnDestroy {
         // Step 3: Check if has 'ngeditmode=True' and 'ngid=xxxx'
         // Step 4: Get data by those params
         // Step 5: Else get data by url
-        this.resolveContentDataByUrl();
+        const params = this.getParamsFromUrl();
+        if (params.get('ngeditmode') && params.get('ngid')) {
+            this.resolveContentDataById(params.get('ngid'));
+        } else {
+            this.resolveContentDataByUrl();
+        }
     }
 
     ngOnDestroy() {
         if (this.pageComponentRef) {
             this.pageComponentRef.destroy();
         }
+    }
+
+    private getParamsFromUrl(): URLSearchParams {
+        const location = this.locationService.getLocation();
+        return new URLSearchParams(location.search);
+    }
+
+    private resolveContentDataById(id: string) {
+        this.pageService.getContent(id).subscribe((currentPage: Page) => {
+            if (currentPage) {
+                const pageType = this.contentTypeService.getPageType(currentPage.contentType);
+                pageType.properties.forEach(property => this.populateReferenceProperty(currentPage, property));
+                this.pageComponentRef = this.createPageComponent(new PageData(currentPage), pageType.metadata);
+            }
+        })
     }
 
     private resolveContentDataByUrl() {
