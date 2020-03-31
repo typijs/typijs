@@ -4,13 +4,22 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CMS, CoreModule } from '@angular-cms/core';
-import { CmsAngularSplitModule, CmsBsDropdownModule, CmsTabsModule, CmsProgressbarModule, CmsModalModule, DndModule } from '@angular-cms/modules';
+import {
+  CmsAngularSplitModule,
+  CmsBsDropdownModule,
+  CmsButtonsModule,
+  CmsTabsModule,
+  CmsProgressbarModule,
+  CmsModalModule,
+  DndModule
+} from '@angular-cms/modules';
 
 import { CmsHeaderComponent } from './shared/components/cms-header/cms-header.component';
 import { CmsLayoutComponent } from './shared/components/cms-layout/cms-layout.component';
 import { ReplaceDirective } from './shared/directives/replace/replace.directive';
-import { AdminLayoutComponent } from './admin-layout/admin-layout.component';
-import { EditorLayoutComponent } from './editor-layout/editor-layout.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { AdminComponent } from './admin/admin.component';
+import { EditorComponent } from './editor/editor.component';
 import { WidgetService } from './services/widget.service';
 import { PortalComponent } from './portal.component';
 import { PortalRoutingModule } from './portal.routing';
@@ -25,8 +34,10 @@ import { PortalRoutingModule } from './portal.routing';
     CmsAngularSplitModule.forRoot(),
     CmsTabsModule.forRoot(),
     CmsBsDropdownModule.forRoot(),
+    CmsButtonsModule.forRoot(),
     CmsProgressbarModule.forRoot(),
     CmsModalModule.forRoot(),
+
     DndModule.forRoot(),
 
     ...CMS.NG_MODULES,
@@ -38,8 +49,9 @@ import { PortalRoutingModule } from './portal.routing';
     CmsLayoutComponent,
     CmsHeaderComponent,
     ReplaceDirective,
-    EditorLayoutComponent,
-    AdminLayoutComponent
+    DashboardComponent,
+    AdminComponent,
+    EditorComponent
   ],
   providers: [WidgetService]
 })

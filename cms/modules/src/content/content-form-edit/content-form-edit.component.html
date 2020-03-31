@@ -1,19 +1,40 @@
 <div class="h-100">
     <as-split gutterSize="0" unit="pixel" direction="vertical" class="has-lock-area">
         <as-split-area size="40" lockSize="true">
-            <div class="float-right">
-                <button type="button" class="btn btn-sm btn-primary mr-1" [disabled]="!formId.dirty"
-                    (click)="formId.ngSubmit.emit(false)">
-                    <i class="fa fa-dot-circle-o "></i>Update</button>
-                <button type="button" class="btn btn-sm btn-success" [disabled]="!formId.valid"
-                    (click)="formId.ngSubmit.emit(true)">
-                    <i class="fa fa-ban "></i>Publish</button>
+            <div class="d-flex">
+                <div>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb m-0 p-2">
+                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Library</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="ml-auto mr-2">
+                    <button type="button" class="btn btn-sm btn-primary mr-1" [disabled]="!formId.dirty"
+                        (click)="formId.ngSubmit.emit(false)">
+                        <fa-icon class="mr-1" [icon]="['fas', 'save']"></fa-icon>Update
+                    </button>
+                    <button type="button" class="btn btn-sm btn-success" [disabled]="!formId.valid"
+                        (click)="formId.ngSubmit.emit(true)">
+                        <fa-icon class="mr-1" [icon]="['fas', 'file-export']"></fa-icon>Publish
+                    </button>
+                </div>
+                <div class="btn-group" btnRadioGroup [(ngModel)]="editMode">
+                    <label class="btn btn-sm btn-primary" btnRadio="AllProperties" role="button">
+                        <fa-icon [icon]="['fas', 'list']"></fa-icon>
+                    </label>
+                    <label class="btn btn-sm btn-primary" btnRadio="OnPageEdit" role="button">
+                        <fa-icon [icon]="['fas', 'desktop']"></fa-icon>
+                    </label>
+                </div>
             </div>
         </as-split-area>
         <as-split-area size="*">
-            <div class="row">
-                <div class="col-lg-12">
-                    <form (ngSubmit)="updateContent($event, formId)" [formGroup]="contentFormGroup" #formId="ngForm">
+            <form class="m-0" (ngSubmit)="updateContent($event, formId)" [formGroup]="contentFormGroup"
+                #formId="ngForm">
+                <div class="row" *ngIf="editMode == 'AllProperties'">
+                    <div class="col-lg-12">
                         <div class="card">
                             <div class="card-header">
                                 <dl class="row" *ngIf="currentContent">
@@ -31,14 +52,19 @@
                             <div>
                                 <tabset>
                                     <tab *ngFor="let tabz of formTabs" [heading]="tabz.title">
-                                        <ng-template [cmsInsertPoint]="tabz.content"></ng-template>
+                                        <ng-template [cmsInsertPoint]="tabz.name"></ng-template>
                                     </tab>
                                 </tabset>
                             </div>
 
                         </div>
-                    </form>
+
+                    </div>
                 </div>
+            </form>
+            <div class='h-100 iframe-container' *ngIf="editMode == 'OnPageEdit'">
+                <iframe frameborder="0" width="100%" height="100%" [src]="previewUrl"></iframe>
+                <div [hidden]="showIframeHider === false" class="hack-iframe-hider"></div>
             </div>
         </as-split-area>
     </as-split>

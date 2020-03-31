@@ -3,7 +3,13 @@ import { Routes } from '@angular/router';
 import { ContentTypeMetadata } from '../decorators/content-type.decorator';
 import { PropertyMetadata } from '../decorators/property.decorator';
 
+/**
+ * Function.prototype
+ */
 export type ClassOf<T> = new (...args: any[]) => T;
+/**
+ * Object.prototype
+ */
 export type CmsObject = { [key: string]: any };
 
 export type ContentType = {
@@ -55,12 +61,12 @@ export type CmsRootConfig = {
 }
 
 export type CmsModuleConfig = {
-    module: any,
-    roots: Array<CmsRootConfig>
+    module: CmsObject,
+    roots: Array<CmsRootConfig>,
 }
 
 export type CmsTab = {
-    title: string,
-    content: string
+    name: string,
+    title: string
 }
 

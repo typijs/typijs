@@ -14,14 +14,14 @@ import { TreeStore } from '../tree-store';
             <fa-icon [icon]="node.isExpanded ? ['fas', 'minus-square']: ['fas', 'plus-square']" (click)="node.expand()"></fa-icon>
         </span>
         <span *ngIf="!node.hasChildren" class="no-children mr-2"></span>
-        <span *ngIf="!shouldShowInputForTreeNode(node)" (click)="selectNode(node)" [ngClass]="{'font-weight-bold': node.isSelected && node.id != '0'}">
+        <span *ngIf="!(node.isNew || node.isEditing)" (click)="selectNode(node)" [ngClass]="{'font-weight-bold': node.isSelected && node.id != '0'}">
             <span *ngIf="!templates?.treeNodeTemplate" >{{ node.name }}</span>
             <ng-container   [ngTemplateOutlet]="templates.treeNodeTemplate" 
                             [ngTemplateOutletContext]="{ $implicit: node, node: node}">
             </ng-container>
         </span>
         
-        <div *ngIf="shouldShowInputForTreeNode(node)" class="form-group row d-inline-block mb-2">
+        <div *ngIf="node.isNew || node.isEditing" class="form-group row d-inline-block mb-2">
             <form class="form-inline" (ngSubmit)="submitInlineNode(node)" #inlineNodeForm="ngForm">
                 <div class="form-group mx-sm-3">
                     <input type="text" required autofocus class="form-control form-control-sm" 
@@ -74,10 +74,6 @@ export class TreeNodeComponent extends TreeBaseComponent {
             block: 'center',
             inline: 'center'
         });
-    }
-
-    shouldShowInputForTreeNode(node: TreeNode) {
-        return node.isNew || node.isEditing;
     }
 
     onMenuItemSelected(action: NodeMenuItemAction, node: TreeNode) {

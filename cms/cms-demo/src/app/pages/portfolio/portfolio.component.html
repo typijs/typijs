@@ -1,6 +1,8 @@
 <div class="main1" *ngIf="portfolioPages$ | async as portfolioPages">
     <div class="content">
-        <h2>{{currentContent.header}}</h2>
+        <h2>
+            <ng-container [cmsProperty]="getProperty('header')"></ng-container>
+        </h2>
     </div>
     <div class="grids_of_4">
         <div *ngFor="let item of portfolioPages.slice(0, 4)" class="grid_1_of_4 images_1_of_4">

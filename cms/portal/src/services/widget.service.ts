@@ -1,4 +1,4 @@
-import { Injectable, QueryList, ComponentFactoryResolver, Inject } from '@angular/core';
+import { Injectable, QueryList, ComponentFactoryResolver, Inject, ViewContainerRef, ComponentRef } from '@angular/core';
 
 import {
     InsertPointDirective,
@@ -14,18 +14,22 @@ export class WidgetService {
 
     constructor(@Inject(ComponentFactoryResolver) private componentFactoryResolver: ComponentFactoryResolver) { }
 
-    initWidgets(
+    createWidgetComponents(
         registeredWidgets: Array<CmsComponentConfig>,
         insertPoints: QueryList<InsertPointDirective>,
-        tabs: Array<CmsTab>,
-        position: CmsWidgetPosition): Array<any> {
+        tabs: Array<CmsTab>): ComponentRef<any>[] {
 
-        let componentRefs: Array<any> = [];
+        const componentRefs: Array<any> = [];
         if (tabs) {
             tabs.forEach((tab: CmsTab) => {
-                let viewContainerRef = insertPoints.find(x => x.name == tab.content).viewContainerRef;
+                //get View Container Ref for each tab
+                const viewContainerRef = insertPoints.find(x => x.name == tab.name).viewContainerRef;
+                if (!viewContainerRef) return;
+
                 viewContainerRef.clear();
-                registeredWidgets.filter(x => x.position == position && (x.group == tab.title || (!x.group && tab.title == this.defaultGroup))).forEach(widget => {
+                //get registered widgets for each tab
+                const registeredWidgetsInTab = registeredWidgets.filter(x => x.group == tab.title || (!x.group && tab.title == this.defaultGroup));
+                registeredWidgetsInTab.forEach(widget => {
                     componentRefs.push(this.createWidget(viewContainerRef, widget));
                 });
             });
@@ -34,26 +38,26 @@ export class WidgetService {
         return componentRefs;
     }
 
-    initWidgetTab(registeredWidgets: Array<CmsComponentConfig>, position: CmsWidgetPosition): Array<CmsTab> {
-        let tabs = [];
-        let widgets = registeredWidgets.filter(widget => widget.position == position);
+    extractCmsTabsFromRegisteredWidgets(registeredWidgets: Array<CmsComponentConfig>, position: CmsWidgetPosition): Array<CmsTab> {
+        const tabs: CmsTab[] = [];
+        const widgets = registeredWidgets.filter(widget => widget.position == position);
 
         widgets.forEach(widget => {
             if (widget.hasOwnProperty('group')) {
                 if (tabs.findIndex(x => x.title == widget.group) == -1) {
-                    tabs.push({ title: widget.group, content: `${position}_${widget.group}` });
+                    tabs.push({ title: widget.group, name: `${position}_${widget.group}` });
                 }
             }
         });
 
         if (widgets.findIndex(widget => !widget.group) != -1) {
-            tabs.push({ title: this.defaultGroup, content: `${position}_${this.defaultGroup}` });
+            tabs.push({ title: this.defaultGroup, name: `${position}_${this.defaultGroup}` });
         }
 
         return tabs.sort(sortTabByTitle);
     }
 
-    private createWidget(viewContainerRef, widget: CmsComponentConfig): any {
+    private createWidget(viewContainerRef: ViewContainerRef, widget: CmsComponentConfig): ComponentRef<any> {
         let componentFactory = this.componentFactoryResolver.resolveComponentFactory(widget.component);
         return viewContainerRef.createComponent(componentFactory);
     }

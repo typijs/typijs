@@ -9,12 +9,16 @@ import {
     CmsPropertyFactoryResolver, InsertPointDirective,
     Content, Media, Block, Page, ChildItemRef,
     ContentTypeProperty, ContentTypeService,
-    PageService, BlockService
+    PageService, BlockService,
+    ngEditMode, ngId
 } from '@angular-cms/core';
 
 import { ContentAreaItem } from "../../properties/content-area/ContentAreaItem";
 import { SubjectService } from '../../shared/services/subject.service';
 import { SubscriptionDestroy } from '../../shared/subscription-destroy';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+
+
 
 @Component({
     templateUrl: './content-form-edit.component.html',
@@ -27,6 +31,10 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
     contentFormGroup: FormGroup = new FormGroup({});
     formTabs: CmsTab[] = [];
     currentContent: Partial<Page> & Content;
+    editMode: 'AllProperties' | 'OnPageEdit' = 'AllProperties';
+
+    showIframeHider: boolean = false;
+    previewUrl: SafeResourceUrl;
 
     private typeOfContent: 'page' | 'block' | 'media' | string;
     private contentTypeProperties: ContentTypeProperty[] = [];
@@ -41,20 +49,22 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
         private pageService: PageService,
         private blockService: BlockService,
         private subjectService: SubjectService,
-        private changeDetectionRef: ChangeDetectorRef
+        private changeDetectionRef: ChangeDetectorRef,
+        private sanitizer: DomSanitizer
     ) { super(); }
 
     ngOnInit() {
         this.subscriptions.push(this.route.params.subscribe(params => {
             const contentId = params['id'];
             this.typeOfContent = this.getTypeContentFromUrl(this.route.snapshot.url)
-
+            this.editMode = 'AllProperties';
             if (contentId) {
                 switch (this.typeOfContent) {
                     case PAGE_TYPE:
                         this.pageService.getContent(contentId).subscribe(contentData => {
                             this.subjectService.firePageSelected(contentData);
                             this.contentTypeProperties = this.contentTypeService.getPageTypeProperties(contentData.contentType);
+                            this.previewUrl = this.getPublishedUrlOfContent(contentData);
                             this.bindDataForContentForm(contentData)
                         });
                         break;
@@ -67,9 +77,17 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
                 }
             }
         }));
+
+        this.subscriptions.push(this.subjectService.portalLayoutChanged$.subscribe((showIframeHider: boolean) => {
+            this.showIframeHider = showIframeHider;
+        }))
     }
 
-    private getTypeContentFromUrl(url: UrlSegment[]) {
+    private getPublishedUrlOfContent(contentData: Page): SafeResourceUrl {
+        return this.sanitizer.bypassSecurityTrustResourceUrl(`http://localhost:4200${contentData.publishedLinkUrl}?${ngEditMode}=True&${ngId}=${contentData._id}`)
+    }
+
+    private getTypeContentFromUrl(url: UrlSegment[]): string {
         return url.length >= 2 && url[0].path == 'content' ? url[1].path : '';
     }
 
@@ -83,11 +101,10 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
     }
 
     private bindDataForContentForm(contentData: Page | Block | Media) {
-
         this.currentContent = this.getPopulatedContentData(contentData, this.contentTypeProperties);
 
         if (this.contentTypeProperties.length > 0) {
-            this.formTabs = this.createFormTabs(this.contentTypeProperties);
+            this.formTabs = this.extractFormTabsFromProperties(this.contentTypeProperties);
             this.contentFormGroup = this.createFormGroup(this.contentTypeProperties);
         }
     }
@@ -119,19 +136,19 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
         }
     }
 
-    private createFormTabs(properties: ContentTypeProperty[]): CmsTab[] {
+    private extractFormTabsFromProperties(properties: ContentTypeProperty[]): CmsTab[] {
         const tabs: CmsTab[] = [];
 
         properties.forEach((property: ContentTypeProperty) => {
             if (property.metadata.hasOwnProperty('groupName')) {
                 if (tabs.findIndex(x => x.title == property.metadata.groupName) == -1) {
-                    tabs.push({ title: property.metadata.groupName, content: `${property.metadata.groupName}` });
+                    tabs.push({ title: property.metadata.groupName, name: `${property.metadata.groupName}` });
                 }
             }
         });
 
         if (properties.findIndex((property: ContentTypeProperty) => !property.metadata.groupName) != -1) {
-            tabs.push({ title: this.defaultGroup, content: `${this.defaultGroup}` });
+            tabs.push({ title: this.defaultGroup, name: `${this.defaultGroup}` });
         }
 
         return tabs.sort(sortTabByTitle);
@@ -168,7 +185,7 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
         if (!this.formTabs || this.formTabs.length == 0) return propertyControls;
 
         this.formTabs.forEach(tab => {
-            const viewContainerRef = this.insertPoints.find(x => x.name == tab.content).viewContainerRef;
+            const viewContainerRef = this.insertPoints.find(x => x.name == tab.name).viewContainerRef;
             viewContainerRef.clear();
 
             properties.filter(x => (x.metadata.groupName == tab.title || (!x.metadata.groupName && tab.title == this.defaultGroup))).forEach(property => {

@@ -13,7 +13,7 @@ export * from './bases/content-data';
 export * from './bases/selection-factory';
 
 export * from './render/cms-content';
-
+export * from './constants';
 export * from './constants/content-type';
 export * from './constants/types';
 export * from './constants/ui-hint'

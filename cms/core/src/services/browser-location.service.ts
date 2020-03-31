@@ -5,7 +5,8 @@ import { REQUEST } from '@nguniversal/express-engine/tokens';
 //export abstract class LocationRef extends Location { }
 export type LocationRef = {
     origin: string,
-    pathname: string
+    pathname: string,
+    search: string
 }
 
 @Injectable({
@@ -29,5 +30,10 @@ export class BrowserLocationService {
             origin: 'http://localhost:4200',
             pathname: ''
         };
+    }
+
+    getURLSearchParams(): URLSearchParams {
+        const location = this.getLocation();
+        return new URLSearchParams(location.search);
     }
 }

@@ -1,6 +1,7 @@
 import 'reflect-metadata';
-import { Component, ComponentFactoryResolver, ComponentRef, OnDestroy, ViewChild } from '@angular/core';
+import { Component, ComponentFactoryResolver, ComponentRef, OnDestroy, ViewChild, OnInit } from '@angular/core';
 
+import { ngEditMode, ngId } from '../constants';
 import { UIHint } from '../constants/ui-hint';
 import { ContentTypeProperty } from '../constants/types';
 import { ContentTypeMetadata } from '../decorators/content-type.decorator';
@@ -19,7 +20,7 @@ import { ContentTypeService } from '../services/content-type.service';
     selector: 'cms-content',
     template: `<ng-template cmsInsertPoint></ng-template>`
 })
-export class CmsContentRender implements OnDestroy {
+export class CmsContentRender implements OnInit, OnDestroy {
 
     private pageComponentRef: ComponentRef<any>;
     @ViewChild(InsertPointDirective, { static: true }) pageEditHost: InsertPointDirective;
@@ -31,13 +32,33 @@ export class CmsContentRender implements OnDestroy {
         private pageService: PageService) { }
 
     ngOnInit() {
-        this.resolveContentDataByUrl();
+        // Step 1: Check Is Authenticated
+        // Step 2: Check user is Editor
+        // Step 3: Check if has 'ngeditmode=True' and 'ngid=xxxx'
+        // Step 4: Get data by those params
+        // Step 5: Else get data by url
+        const params = this.locationService.getURLSearchParams();
+        if (params.get(ngEditMode) && params.get(ngId)) {
+            this.resolveContentDataById(params.get(ngId));
+        } else {
+            this.resolveContentDataByUrl();
+        }
     }
 
     ngOnDestroy() {
         if (this.pageComponentRef) {
             this.pageComponentRef.destroy();
         }
+    }
+
+    private resolveContentDataById(id: string) {
+        this.pageService.getContent(id).subscribe((currentPage: Page) => {
+            if (currentPage) {
+                const pageType = this.contentTypeService.getPageType(currentPage.contentType);
+                pageType.properties.forEach(property => this.populateReferenceProperty(currentPage, property));
+                this.pageComponentRef = this.createPageComponent(new PageData(currentPage), pageType.metadata);
+            }
+        })
     }
 
     private resolveContentDataByUrl() {
