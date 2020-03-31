@@ -3,7 +3,7 @@ import { Input } from '@angular/core';
 import { ContentData } from './content-data';
 import { ContentTypeService } from '../services/content-type.service';
 import { AppInjector } from '../utils/appInjector';
-import { PropertyModel } from '../constants/types';
+import { PropertyModel } from '../types';
 
 export abstract class CmsComponent<T extends ContentData> {
     @Input() currentContent: T;

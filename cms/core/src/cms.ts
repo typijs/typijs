@@ -1,5 +1,5 @@
 import { Routes, Route } from '@angular/router';
-import { CmsModuleConfig, CmsModuleRoot, CmsComponentConfig, CmsObject, ClassOf } from './constants/types';
+import { CmsModuleConfig, CmsModuleRoot, CmsComponentConfig, CmsObject, ClassOf } from './types';
 import { CmsProperty, CmsPropertyRender } from './bases/cms-property';
 
 

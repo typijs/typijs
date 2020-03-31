@@ -69,4 +69,3 @@ export type CmsTab = {
     name: string,
     title: string
 }
-

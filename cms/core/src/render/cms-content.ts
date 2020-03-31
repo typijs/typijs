@@ -2,8 +2,8 @@ import 'reflect-metadata';
 import { Component, ComponentFactoryResolver, ComponentRef, OnDestroy, ViewChild, OnInit } from '@angular/core';
 
 import { ngEditMode, ngId } from '../constants';
-import { UIHint } from '../constants/ui-hint';
-import { ContentTypeProperty } from '../constants/types';
+import { UIHint } from '../types/ui-hint';
+import { ContentTypeProperty } from '../types';
 import { ContentTypeMetadata } from '../decorators/content-type.decorator';
 
 import { InsertPointDirective } from '../directives/insert-point.directive';

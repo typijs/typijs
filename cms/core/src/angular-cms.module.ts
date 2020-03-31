@@ -14,8 +14,8 @@ import { PAGE_TYPE_INDICATOR, BLOCK_TYPE_INDICATOR, MEDIA_TYPE_INDICATOR } from 
 import { PROPERTY_PROVIDERS_TOKEN, getCmsPropertyFactory, CmsPropertyFactory } from './bases/cms-property.factory';
 import { CmsProperty, CmsPropertyRender } from './bases/cms-property';
 
-import { UIHint } from './constants/ui-hint';
-import { CmsModuleConfig, ClassOf } from './constants/types';
+import { UIHint } from './types/ui-hint';
+import { CmsModuleConfig, ClassOf } from './types';
 
 import { CmsContentRender } from './render/cms-content';
 import { PROPERTY_PROVIDERS_RENDER_TOKEN, getCmsPropertyRenderFactory, CmsPropertyRenderFactory } from './render/property-render.factory';
