@@ -9,7 +9,8 @@ import {
     CmsPropertyFactoryResolver, InsertPointDirective,
     Content, Media, Block, Page, ChildItemRef,
     ContentTypeProperty, ContentTypeService,
-    PageService, BlockService
+    PageService, BlockService,
+    ngEditMode, ngId
 } from '@angular-cms/core';
 
 import { ContentAreaItem } from "../../properties/content-area/ContentAreaItem";
@@ -83,7 +84,7 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
     }
 
     private getPublishedUrlOfContent(contentData: Page): SafeResourceUrl {
-        return this.sanitizer.bypassSecurityTrustResourceUrl(`http://localhost:4200${contentData.publishedLinkUrl}?ngeditmode=True&ngid=${contentData._id}`)
+        return this.sanitizer.bypassSecurityTrustResourceUrl(`http://localhost:4200${contentData.publishedLinkUrl}?${ngEditMode}=True&${ngId}=${contentData._id}`)
     }
 
     private getTypeContentFromUrl(url: UrlSegment[]): string {

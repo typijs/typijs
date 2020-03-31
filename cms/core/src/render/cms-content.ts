@@ -1,6 +1,7 @@
 import 'reflect-metadata';
-import { Component, ComponentFactoryResolver, ComponentRef, OnDestroy, ViewChild } from '@angular/core';
+import { Component, ComponentFactoryResolver, ComponentRef, OnDestroy, ViewChild, OnInit } from '@angular/core';
 
+import { ngEditMode, ngId } from '../constants';
 import { UIHint } from '../constants/ui-hint';
 import { ContentTypeProperty } from '../constants/types';
 import { ContentTypeMetadata } from '../decorators/content-type.decorator';
@@ -19,7 +20,7 @@ import { ContentTypeService } from '../services/content-type.service';
     selector: 'cms-content',
     template: `<ng-template cmsInsertPoint></ng-template>`
 })
-export class CmsContentRender implements OnDestroy {
+export class CmsContentRender implements OnInit, OnDestroy {
 
     private pageComponentRef: ComponentRef<any>;
     @ViewChild(InsertPointDirective, { static: true }) pageEditHost: InsertPointDirective;
@@ -36,9 +37,9 @@ export class CmsContentRender implements OnDestroy {
         // Step 3: Check if has 'ngeditmode=True' and 'ngid=xxxx'
         // Step 4: Get data by those params
         // Step 5: Else get data by url
-        const params = this.getParamsFromUrl();
-        if (params.get('ngeditmode') && params.get('ngid')) {
-            this.resolveContentDataById(params.get('ngid'));
+        const params = this.locationService.getURLSearchParams();
+        if (params.get(ngEditMode) && params.get(ngId)) {
+            this.resolveContentDataById(params.get(ngId));
         } else {
             this.resolveContentDataByUrl();
         }
@@ -48,11 +49,6 @@ export class CmsContentRender implements OnDestroy {
         if (this.pageComponentRef) {
             this.pageComponentRef.destroy();
         }
-    }
-
-    private getParamsFromUrl(): URLSearchParams {
-        const location = this.locationService.getLocation();
-        return new URLSearchParams(location.search);
     }
 
     private resolveContentDataById(id: string) {

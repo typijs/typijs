@@ -31,4 +31,9 @@ export class BrowserLocationService {
             pathname: ''
         };
     }
+
+    getURLSearchParams(): URLSearchParams {
+        const location = this.getLocation();
+        return new URLSearchParams(location.search);
+    }
 }
