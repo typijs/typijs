@@ -31,10 +31,6 @@ const cmsRoutes: Routes = [
                 path: 'admin',
                 component: AdminComponent,
                 children: CMS.ADMIN_ROUTES()
-            },
-            {
-                path: 'preview',
-                component: AdminComponent
             }
         ]
     }

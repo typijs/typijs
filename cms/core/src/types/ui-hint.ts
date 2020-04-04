@@ -1,4 +1,4 @@
-export type CmsPropertyType = {
+export type CmsPropertyUIType = {
     Text: string;
     Number: string;
     Textarea: string;
@@ -18,7 +18,7 @@ export type CmsPropertyType = {
 }
 
 //build-in property types
-export const UIHint: CmsPropertyType = {
+export const UIHint: CmsPropertyUIType = {
     Text: 'Text',
     Number: 'Number',
     Textarea: 'Textarea',

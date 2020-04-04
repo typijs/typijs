@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, BehaviorSubject } from 'rxjs';
 import { Page, Block, Media } from '@angular-cms/core';
 import { ContentAreaItem } from '../../properties/content-area/ContentAreaItem';
 
@@ -20,6 +20,8 @@ export class SubjectService {
   pageSelected$: Subject<Page> = new Subject<Page>();
 
   contentAreaDropFinished$: Subject<ContentAreaItem> = new Subject<ContentAreaItem>();
+
+  portalLayoutChanged$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   fireBlockFolderCreated(createdBlockFolder: Block) {
     this.blockFolderCreated$.next(createdBlockFolder);
