@@ -56,7 +56,7 @@ export class CmsContentRender implements OnInit, OnDestroy {
             if (currentPage) {
                 const pageType = this.contentTypeService.getPageType(currentPage.contentType);
                 pageType.properties.forEach(property => this.populateReferenceProperty(currentPage, property));
-                this.pageComponentRef = this.createPageComponent(new PageData(currentPage), pageType.metadata);
+                this.pageComponentRef = this.createPageComponent(currentPage, pageType.metadata);
             }
         })
     }
@@ -68,7 +68,7 @@ export class CmsContentRender implements OnInit, OnDestroy {
             if (currentPage) {
                 const pageType = this.contentTypeService.getPageType(currentPage.contentType);
                 pageType.properties.forEach(property => this.populateReferenceProperty(currentPage, property));
-                this.pageComponentRef = this.createPageComponent(new PageData(currentPage), pageType.metadata);
+                this.pageComponentRef = this.createPageComponent(currentPage, pageType.metadata);
             }
         })
     }
@@ -94,14 +94,14 @@ export class CmsContentRender implements OnInit, OnDestroy {
         }
     }
 
-    private createPageComponent(pageData: PageData, pageMetadata: ContentTypeMetadata): ComponentRef<any> {
+    private createPageComponent(page: Page, pageMetadata: ContentTypeMetadata): ComponentRef<any> {
         if (pageMetadata) {
             const viewContainerRef = this.pageEditHost.viewContainerRef;
             viewContainerRef.clear();
 
             const pageFactory = this.componentFactoryResolver.resolveComponentFactory(pageMetadata.componentRef);
             const pageComponentRef = viewContainerRef.createComponent(pageFactory);
-            (<CmsComponent<PageData>>pageComponentRef.instance).currentContent = pageData;
+            (<CmsComponent<PageData>>pageComponentRef.instance).currentContent = new PageData(page);
             return pageComponentRef;
         }
     }
