@@ -13,7 +13,6 @@ export function getCmsPropertyRenderFactory(propertyUIHint: string) {
     };
 };
 
-@Injectable()
 export class CmsPropertyRenderFactory {
     protected propertyUIHint: string;
     protected componentFactoryResolver: ComponentFactoryResolver;

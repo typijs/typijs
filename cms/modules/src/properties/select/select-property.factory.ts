@@ -4,8 +4,7 @@ import { FormGroup } from '@angular/forms';
 import { CmsPropertyFactory, UIHint, ContentTypeProperty, ISelectionFactory } from '@angular-cms/core';
 import { SelectProperty } from './select-property';
 
-@Injectable()
-export class SelectPropertyFactory extends CmsPropertyFactory {
+export abstract class SelectPropertyFactory extends CmsPropertyFactory {
     constructor(propertyUIHint: string, injector: Injector) {
         super(propertyUIHint, injector);
     }
