@@ -1,4 +1,4 @@
-import { Property, PageType, UIHint, ValidationTypes, PageData } from '@angular-cms/core';
+import { Property, PageType, UIHint, ValidationTypes, PageData, CmsImage } from '@angular-cms/core';
 import { ArticleComponent } from './article.component';
 
 @PageType({
@@ -23,9 +23,9 @@ export class ArticlePage extends PageData {
 
     @Property({
         displayName: "Image Teaser",
-        displayType: UIHint.Text
+        displayType: UIHint.Image
     })
-    image: string;
+    image: CmsImage;
 
     @Property({
         displayName: "Summary",

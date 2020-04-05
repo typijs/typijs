@@ -4,7 +4,9 @@
             <!-- start header-->
             <div class="header" *ngIf="menuItems$ | async as menuItems">
                 <div class="logo">
-                    <a href="javascript:void(0)" [routerLink]="['']"><img [src]="startPage.logo" alt=""></a>
+                    <a href="javascript:void(0)" [routerLink]="['']">
+                        <img *ngIf='startPage.logo' [src]="startPage.logo.src" [alt]="startPage.logo.src">
+                    </a>
                 </div>
                 <div class="cssmenu">
                     <ul>

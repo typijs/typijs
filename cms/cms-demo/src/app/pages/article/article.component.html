@@ -11,7 +11,7 @@
             </h4>
             <h5>January 3rd, 2013 , Posted by&nbsp;<a href="javascript:void(0)">{{currentContent.author}}</a></h5>
             <div class="blog_para">
-                <img src="" alt="">
+                <ng-container [cmsProperty]="getProperty('image')"></ng-container>
                 <p class="para1">
                     <ng-container [cmsProperty]="getProperty('content')"></ng-container>
                 </p>

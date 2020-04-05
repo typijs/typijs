@@ -10,10 +10,12 @@ export type CmsPropertyUIType = {
     RadioButtons: string;
     ContentArea: string;
     ContentReference: string;
+    Image: string;
     Url: string;
     UrlList: string;
     InputList: string;
     Datepicker: string;
+    Timepicker: string;
     [key: string]: string;
 }
 
@@ -30,6 +32,7 @@ export const UIHint: CmsPropertyUIType = {
     RadioButtons: 'RadioButtons',
     ContentArea: 'ContentArea',
     ContentReference: 'ContentReference',
+    Image: 'Image',
     Url: 'Url',
     UrlList: 'UrlList',
     InputList: 'InputList',

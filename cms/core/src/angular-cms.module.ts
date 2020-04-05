@@ -26,6 +26,7 @@ import { TextRender } from './render/properties/text';
 import { XHtmlRender } from './render/properties/xhtml';
 import { UrlRender } from './render/properties/url';
 import { UrlListRender } from './render/properties/url-list';
+import { ImageRender } from './render/properties/image';
 
 export const CMS_PROVIDERS = [
     {
@@ -58,6 +59,7 @@ export class AngularCms {
         this.registerPropertyRender(UIHint.Text, TextRender)
         this.registerPropertyRender(UIHint.Textarea, TextRender)
         this.registerPropertyRender(UIHint.XHtml, XHtmlRender)
+        this.registerPropertyRender(UIHint.Image, ImageRender);
         this.registerPropertyRender(UIHint.Url, UrlRender);
         this.registerPropertyRender(UIHint.UrlList, UrlListRender);
 

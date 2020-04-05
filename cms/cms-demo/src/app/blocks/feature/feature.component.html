@@ -1,5 +1,5 @@
 <div class="banner-division d_img">
-    <img *ngIf="currentContent.image" [src]="currentContent.image" alt="">
+    <ng-container [cmsProperty]="getProperty('image')"></ng-container>
 </div>
 
 <div class="banner-division">

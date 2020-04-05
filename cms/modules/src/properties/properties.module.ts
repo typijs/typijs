@@ -4,10 +4,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faFile, faFolder, faCube, faImage, faBars, faHashtag, faList } from '@fortawesome/free-solid-svg-icons';
+import { faFile, faFolder, faCube, faImage, faBars, faHashtag, faList, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { EditorModule } from '@tinymce/tinymce-angular';
 
-import { CoreModule, CMS } from '@angular-cms/core';
+import { CoreModule } from '@angular-cms/core';
 
 import { CmsBsDropdownModule } from '../shared/libs/ngx-bootstrap/bs-dropdown.module';
 import { DndModule } from '../shared/drag-drop/dnd.module';
@@ -32,6 +32,8 @@ import { ContentReferenceControl } from './content-reference/content-reference.c
 import { ContentReferenceProperty } from './content-reference/content-reference.property';
 
 import { registerCmsProperties } from './registerCmsProperties';
+import { ImageReferenceProperty } from './image-reference/image-reference.property';
+import { ImageReferenceControl } from './image-reference/image-reference.control';
 
 registerCmsProperties();
 
@@ -56,11 +58,15 @@ registerCmsProperties();
         ObjectListProperty,
         ObjectListControl,
         XHtmlProperty,
+
         ContentAreaProperty,
         ContentAreaControl,
 
         ContentReferenceControl,
-        ContentReferenceProperty
+        ContentReferenceProperty,
+
+        ImageReferenceControl,
+        ImageReferenceProperty
     ],
     entryComponents: [
         TextProperty,
@@ -70,7 +76,8 @@ registerCmsProperties();
         ObjectListProperty,
         XHtmlProperty,
         ContentAreaProperty,
-        ContentReferenceProperty
+        ContentReferenceProperty,
+        ImageReferenceProperty
     ],
     exports: [
         TextProperty,
@@ -82,11 +89,12 @@ registerCmsProperties();
         ContentAreaProperty,
 
         ContentReferenceControl,
-        ContentReferenceProperty
+        ContentReferenceProperty,
+        ImageReferenceProperty
     ]
 })
 export class PropertiesModule {
     constructor(library: FaIconLibrary) {
-        library.addIcons(faFolder, faFile, faImage, faCube, faBars, faHashtag, faList);
+        library.addIcons(faFolder, faFile, faImage, faCube, faBars, faHashtag, faList, faTimes);
     }
 }

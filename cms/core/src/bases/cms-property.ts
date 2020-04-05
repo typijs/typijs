@@ -28,6 +28,17 @@ export abstract class CmsProperty {
 }
 
 export abstract class CmsPropertyRender {
-    @Input() value: any;
+    @Input()
+    set value(value: any) {
+        this._value = value;
+        this.onValueChange(value);
+    }
+    get value(): any {
+        return this._value;
+    }
+    private _value: any;
+
     @Input() property: ContentTypeProperty;
+
+    protected onValueChange(value) {};
 }
