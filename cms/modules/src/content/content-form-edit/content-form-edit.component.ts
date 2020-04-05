@@ -127,7 +127,7 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
                 if (Array.isArray(contentAreaItems)) {
                     contentAreaItems.forEach(areaItem => {
                         const matchItem = childItems.find(x => x.content._id == areaItem._id);
-                        Object.assign(areaItem, { name: matchItem.content.name, isPublished: matchItem.content.isPublished })
+                        if (matchItem) Object.assign(areaItem, { name: matchItem.content.name, isPublished: matchItem.content.isPublished });
                     })
                 }
                 return contentAreaItems;

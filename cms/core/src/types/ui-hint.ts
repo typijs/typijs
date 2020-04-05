@@ -1,4 +1,4 @@
-export type CmsPropertyType = {
+export type CmsPropertyUIType = {
     Text: string;
     Number: string;
     Textarea: string;
@@ -10,15 +10,17 @@ export type CmsPropertyType = {
     RadioButtons: string;
     ContentArea: string;
     ContentReference: string;
+    Image: string;
     Url: string;
     UrlList: string;
     InputList: string;
     Datepicker: string;
+    Timepicker: string;
     [key: string]: string;
 }
 
 //build-in property types
-export const UIHint: CmsPropertyType = {
+export const UIHint: CmsPropertyUIType = {
     Text: 'Text',
     Number: 'Number',
     Textarea: 'Textarea',
@@ -30,6 +32,7 @@ export const UIHint: CmsPropertyType = {
     RadioButtons: 'RadioButtons',
     ContentArea: 'ContentArea',
     ContentReference: 'ContentReference',
+    Image: 'Image',
     Url: 'Url',
     UrlList: 'UrlList',
     InputList: 'InputList',

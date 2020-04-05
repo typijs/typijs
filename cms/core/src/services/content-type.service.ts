@@ -10,7 +10,7 @@ import {
     MEDIA_TYPE_METADATA_KEY
 } from '../decorators/metadata-key';
 import { ContentTypeMetadata } from '../decorators/content-type.decorator';
-import { ContentTypeProperty, ContentType } from '../constants/types';
+import { ContentTypeProperty, ContentType } from '../types/content-type';
 
 @Injectable({
     providedIn: 'root'
@@ -33,12 +33,20 @@ export class ContentTypeService {
      * @returns page type properties 
      */
     getPageTypeProperties(pageTypeName: string): ContentTypeProperty[] {
-        const contentType = CMS.PAGE_TYPES[pageTypeName];
-        return this.getContentTypeProperties(contentType);
+        const contentTypeTarget = CMS.PAGE_TYPES[pageTypeName];
+        if(!contentTypeTarget) throw new Error(`The ${pageTypeName} has not registered yet`)
+        return this.getContentTypeProperties(contentTypeTarget);
     }
 
+    /**
+     * Gets page type property based on property name
+     * @param pageTypeName 
+     * @param propertyName 
+     * @returns page type property 
+     */
     getPageTypeProperty(pageTypeName: string, propertyName: string): ContentTypeProperty {
         const contentTypeTarget = CMS.PAGE_TYPES[pageTypeName];
+        if(!contentTypeTarget) throw new Error(`The ${pageTypeName} has not registered yet`)
         return { name: propertyName, metadata: Reflect.getMetadata(PROPERTY_METADATA_KEY, contentTypeTarget, propertyName) }
     }
 
@@ -48,12 +56,22 @@ export class ContentTypeService {
      * @returns Return the array of ContentTypeProperty object
      */
     getBlockTypeProperties(blockTypeName: string): ContentTypeProperty[] {
-        const contentType = CMS.BLOCK_TYPES[blockTypeName];
-        return this.getContentTypeProperties(contentType);
+        const contentTypeTarget = CMS.BLOCK_TYPES[blockTypeName];
+        if(!contentTypeTarget) throw new Error(`The ${blockTypeName} has not registered yet`)
+
+        return this.getContentTypeProperties(contentTypeTarget);
     }
 
+    /**
+     * Gets block type property based property name
+     * @param blockTypeName 
+     * @param propertyName 
+     * @returns block type property 
+     */
     getBlockTypeProperty(blockTypeName: string, propertyName: string): ContentTypeProperty {
         const contentTypeTarget = CMS.BLOCK_TYPES[blockTypeName];
+        if(!contentTypeTarget) throw new Error(`The ${blockTypeName} has not registered yet`)
+
         return { name: propertyName, metadata: Reflect.getMetadata(PROPERTY_METADATA_KEY, contentTypeTarget, propertyName) }
     }
 
@@ -65,6 +83,8 @@ export class ContentTypeService {
      */
     getPageType(pageTypeName: string): ContentType {
         const contentTypeTarget = CMS.PAGE_TYPES[pageTypeName];
+        if(!contentTypeTarget) throw new Error(`The ${pageTypeName} has not registered yet`)
+
         const pageMetadata: ContentTypeMetadata = Reflect.getMetadata(PAGE_TYPE_METADATA_KEY, contentTypeTarget);
         return <ContentType>{
             name: pageTypeName,
@@ -80,6 +100,8 @@ export class ContentTypeService {
      */
     getBlockType(blockTypeName: string): ContentType {
         const contentTypeTarget = CMS.BLOCK_TYPES[blockTypeName];
+        if(!contentTypeTarget) throw new Error(`The ${blockTypeName} has not registered yet`)
+        
         const pageMetadata: ContentTypeMetadata = Reflect.getMetadata(BLOCK_TYPE_METADATA_KEY, contentTypeTarget);
         return <ContentType>{
             name: blockTypeName,
@@ -95,6 +117,8 @@ export class ContentTypeService {
      */
     getMediaType(mediaTypeName: string): ContentType {
         const contentTypeTarget = CMS.MEDIA_TYPES[mediaTypeName];
+        if(!contentTypeTarget) throw new Error(`The ${mediaTypeName} has not registered yet`)
+
         const pageMetadata: ContentTypeMetadata = Reflect.getMetadata(MEDIA_TYPE_METADATA_KEY, contentTypeTarget);
         return <ContentType>{
             name: mediaTypeName,

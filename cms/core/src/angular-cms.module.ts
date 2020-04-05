@@ -14,8 +14,9 @@ import { PAGE_TYPE_INDICATOR, BLOCK_TYPE_INDICATOR, MEDIA_TYPE_INDICATOR } from 
 import { PROPERTY_PROVIDERS_TOKEN, getCmsPropertyFactory, CmsPropertyFactory } from './bases/cms-property.factory';
 import { CmsProperty, CmsPropertyRender } from './bases/cms-property';
 
-import { UIHint } from './constants/ui-hint';
-import { CmsModuleConfig, ClassOf } from './constants/types';
+import { UIHint } from './types/ui-hint';
+import { CmsModuleConfig } from './types/module-config';
+import { ClassOf } from './types';
 
 import { CmsContentRender } from './render/cms-content';
 import { PROPERTY_PROVIDERS_RENDER_TOKEN, getCmsPropertyRenderFactory, CmsPropertyRenderFactory } from './render/property-render.factory';
@@ -25,6 +26,7 @@ import { TextRender } from './render/properties/text';
 import { XHtmlRender } from './render/properties/xhtml';
 import { UrlRender } from './render/properties/url';
 import { UrlListRender } from './render/properties/url-list';
+import { ImageRender } from './render/properties/image';
 
 export const CMS_PROVIDERS = [
     {
@@ -57,6 +59,7 @@ export class AngularCms {
         this.registerPropertyRender(UIHint.Text, TextRender)
         this.registerPropertyRender(UIHint.Textarea, TextRender)
         this.registerPropertyRender(UIHint.XHtml, XHtmlRender)
+        this.registerPropertyRender(UIHint.Image, ImageRender);
         this.registerPropertyRender(UIHint.Url, UrlRender);
         this.registerPropertyRender(UIHint.UrlList, UrlListRender);
 

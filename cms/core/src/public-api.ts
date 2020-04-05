@@ -14,9 +14,10 @@ export * from './bases/selection-factory';
 
 export * from './render/cms-content';
 export * from './constants';
-export * from './constants/content-type';
-export * from './constants/types';
-export * from './constants/ui-hint'
+export * from './types';
+export * from './types/module-config';
+export * from './types/content-type';
+export * from './types/ui-hint'
 
 export * from './decorators/metadata-key';
 export * from './decorators/content-type.decorator';
@@ -33,7 +34,7 @@ export * from './models/content.model';
 export * from './models/media.model';
 export * from './models/page.model';
 
-export { slugify, sortTabByTitle, clone, generateUUID } from './helpers/common';
+export { sortTabByTitle, clone, generateUUID } from './helpers/common';
 
 export * from './services/content-type.service';
 export * from './services/block.service';

@@ -1,10 +1,14 @@
 <div class="banner-division d_img">
-    <img *ngIf="currentContent.image" [src]="currentContent.image" alt="">
+    <ng-container [cmsProperty]="getProperty('image')"></ng-container>
 </div>
 
 <div class="banner-division">
-    <h3>{{currentContent.header}}</h3>
-    <div [innerHTML]="currentContent.summary"></div>
+    <h3>
+        <ng-container [cmsProperty]="getProperty('header')"></ng-container>
+    </h3>
+    <div>
+        <ng-container [cmsProperty]="getProperty('summary')"></ng-container>
+    </div>
     <a [href]="currentContent.link">Read more</a>
 </div>
 <div class="clear"></div>

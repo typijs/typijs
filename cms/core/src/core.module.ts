@@ -14,6 +14,7 @@ import { XHtmlRender } from './render/properties/xhtml';
 import { UrlRender } from './render/properties/url';
 import { UrlListRender } from './render/properties/url-list';
 import { TextRender } from './render/properties/text';
+import { ImageRender } from './render/properties/image';
 
 @NgModule({
   imports: [
@@ -29,7 +30,8 @@ import { TextRender } from './render/properties/text';
     TextRender,
     UrlListRender,
     UrlRender,
-    XHtmlRender
+    XHtmlRender,
+    ImageRender
   ],
   exports: [
     CmsContentRender,
@@ -40,6 +42,7 @@ import { TextRender } from './render/properties/text';
   entryComponents: [
     ContentAreaRender,
     TextRender,
+    ImageRender,
     UrlListRender,
     UrlRender,
     XHtmlRender

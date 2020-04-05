@@ -4,7 +4,18 @@
   "lib": {
     "entryFile": "src/public-api.ts",
     "umdModuleIds": {
-      "@angular-cms/core": "@angular-cms/core"
+      "@angular-cms/core": "AngularCmsCore",
+      "ngx-bootstrap/component-loader": "NgxBootstrapComponentLoader",
+      "ngx-bootstrap/positioning": "NgxBootstrapPositioning",
+      "ngx-bootstrap/dropdown": "NgxBootstrapDropdown",
+      "ngx-bootstrap/buttons": "NgxBootstrapButtons",
+      "ngx-bootstrap/modal": "NgxBootstrapModal",
+      "ngx-bootstrap/progressbar": "NgxBootstrapProgressbar",
+      "ngx-bootstrap/tabs": "NgxBootstrapTabs",
+      "angular-split": "AngularSplit",
+      "@fortawesome/angular-fontawesome": "AngularFontAwesome",
+      "@fortawesome/free-solid-svg-icons": "FontAwesomeFreeSolidSvgIcons",
+      "@tinymce/tinymce-angular": "TinymceAngular"
     }
   }
 }

@@ -20,14 +20,14 @@
     margin: -2px;
     background-color: #999;
   }
+}
 
-  .drag-over {
-    .list-media {
-      display: none;
-    }
+.drag-over {
+  as-split {
+    display: none;
+  }
 
-    .drop-zone {
-      display: block;
-    }
+  .drop-zone {
+    display: block;
   }
 }

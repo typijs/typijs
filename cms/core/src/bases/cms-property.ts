@@ -2,7 +2,7 @@ import { Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { generateUUID } from '../helpers/common';
-import { ContentTypeProperty } from '../constants/types';
+import { ContentTypeProperty } from '../types/content-type';
 
 export abstract class CmsProperty {
     @Input() label: string;
@@ -28,6 +28,17 @@ export abstract class CmsProperty {
 }
 
 export abstract class CmsPropertyRender {
-    @Input() value: any;
+    @Input()
+    set value(value: any) {
+        this._value = value;
+        this.onValueChange(value);
+    }
+    get value(): any {
+        return this._value;
+    }
+    private _value: any;
+
     @Input() property: ContentTypeProperty;
+
+    protected onValueChange(value) {};
 }

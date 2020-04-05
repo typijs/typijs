@@ -6,6 +6,7 @@ export abstract class ContentData {
     public parentId?: string;
     public contentType: string;
     public name: string;
+    public type: 'page' | 'block';
 }
 
 export class BlockData extends ContentData {
@@ -15,7 +16,8 @@ export class BlockData extends ContentData {
             id: block._id,
             parentId: block.parentId,
             contentType: block.contentType,
-            name: block.name
+            name: block.name,
+            type: 'block'
         }, block.properties);
 
         Object.assign(this, blockData);
@@ -34,7 +36,8 @@ export class PageData extends ContentData {
             parentId: page.parentId,
             urlSegment: page.urlSegment,
             contentType: page.contentType,
-            name: page.name
+            name: page.name,
+            type: 'page'
         }, page.properties);
 
         Object.assign(this, pageData);

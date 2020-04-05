@@ -1,4 +1,4 @@
-import { BlockData, BlockType, Property, ValidationTypes, UIHint } from '@angular-cms/core';
+import { BlockData, BlockType, Property, ValidationTypes, UIHint, CmsImage } from '@angular-cms/core';
 import { FeatureComponent } from './feature.component';
 
 @BlockType({
@@ -22,9 +22,9 @@ export class FeatureBlock extends BlockData {
 
     @Property({
         displayName: "Image Teaser",
-        displayType: UIHint.Text
+        displayType: UIHint.Image
     })
-    image: string;
+    image: CmsImage;
 
     @Property({
         displayName: "Read More Link",

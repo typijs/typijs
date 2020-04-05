@@ -3,7 +3,8 @@ import { Input } from '@angular/core';
 import { ContentData } from './content-data';
 import { ContentTypeService } from '../services/content-type.service';
 import { AppInjector } from '../utils/appInjector';
-import { PropertyModel } from '../constants/types';
+import { PropertyModel, ContentTypeProperty } from '../types/content-type';
+import { PAGE_TYPE, BLOCK_TYPE } from '../constants';
 
 export abstract class CmsComponent<T extends ContentData> {
     @Input() currentContent: T;
@@ -11,7 +12,15 @@ export abstract class CmsComponent<T extends ContentData> {
 
     public getProperty<K extends keyof T>(propertyName: K): PropertyModel {
         const contentType = this.currentContent.contentType;
-        const propertyInfo = this.contentTypeService.getPageTypeProperty(contentType, propertyName.toString());
+        const type = this.currentContent.type;
+        let propertyInfo: ContentTypeProperty = null;
+
+        if (type == PAGE_TYPE) {
+            propertyInfo = this.contentTypeService.getPageTypeProperty(contentType, propertyName.toString());
+        }
+        else if (type == BLOCK_TYPE) {
+            propertyInfo = this.contentTypeService.getBlockTypeProperty(contentType, propertyName.toString());
+        }
 
         return <PropertyModel>{
             value: this.currentContent[propertyName],

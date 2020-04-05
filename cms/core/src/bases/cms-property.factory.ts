@@ -3,7 +3,8 @@ import { FormGroup } from '@angular/forms';
 
 import { CMS } from '../cms';
 import { CmsProperty } from './cms-property';
-import { ClassOf, ContentTypeProperty } from '../constants/types';
+import { ClassOf } from '../types';
+import { ContentTypeProperty } from '../types/content-type';
 
 // https://stackoverflow.com/questions/51824125/injection-of-multiple-instances-in-angular
 export const PROPERTY_PROVIDERS_TOKEN: InjectionToken<CmsPropertyFactory[]> = new InjectionToken<CmsPropertyFactory[]>('PROPERTY_PROVIDERS_TOKEN');
@@ -14,7 +15,6 @@ export function getCmsPropertyFactory(propertyUIHint: string) {
     };
 };
 
-@Injectable()
 export class CmsPropertyFactory {
     protected propertyUIHint: string;
     protected componentFactoryResolver: ComponentFactoryResolver;

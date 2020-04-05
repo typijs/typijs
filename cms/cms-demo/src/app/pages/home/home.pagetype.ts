@@ -1,4 +1,4 @@
-import { Property, PageType, UIHint, PageData } from '@angular-cms/core';
+import { Property, PageType, UIHint, PageData, CmsImage } from '@angular-cms/core';
 import { HomeComponent } from './home.component';
 
 @PageType({
@@ -10,9 +10,9 @@ export class HomePage extends PageData {
 
     @Property({
         displayName: "Logo",
-        displayType: UIHint.Text
+        displayType: UIHint.Image
     })
-    logo: string;
+    logo: CmsImage;
 
     @Property({
         displayName: "Latest Projects Page Root",
