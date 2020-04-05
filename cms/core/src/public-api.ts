@@ -14,8 +14,9 @@ export * from './bases/selection-factory';
 
 export * from './render/cms-content';
 export * from './constants';
-export * from './constants/content-type';
 export * from './types';
+export * from './types/module-config';
+export * from './types/content-type';
 export * from './types/ui-hint'
 
 export * from './decorators/metadata-key';

@@ -3,8 +3,8 @@ import { Input } from '@angular/core';
 import { ContentData } from './content-data';
 import { ContentTypeService } from '../services/content-type.service';
 import { AppInjector } from '../utils/appInjector';
-import { PropertyModel, ContentTypeProperty } from '../types';
-import { PAGE_TYPE, BLOCK_TYPE } from '../constants/content-type';
+import { PropertyModel, ContentTypeProperty } from '../types/content-type';
+import { PAGE_TYPE, BLOCK_TYPE } from '../constants';
 
 export abstract class CmsComponent<T extends ContentData> {
     @Input() currentContent: T;

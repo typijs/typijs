@@ -15,7 +15,8 @@ import { PROPERTY_PROVIDERS_TOKEN, getCmsPropertyFactory, CmsPropertyFactory } f
 import { CmsProperty, CmsPropertyRender } from './bases/cms-property';
 
 import { UIHint } from './types/ui-hint';
-import { CmsModuleConfig, ClassOf } from './types';
+import { CmsModuleConfig } from './types/module-config';
+import { ClassOf } from './types';
 
 import { CmsContentRender } from './render/cms-content';
 import { PROPERTY_PROVIDERS_RENDER_TOKEN, getCmsPropertyRenderFactory, CmsPropertyRenderFactory } from './render/property-render.factory';

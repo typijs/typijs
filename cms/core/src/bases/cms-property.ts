@@ -2,7 +2,7 @@ import { Input } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { generateUUID } from '../helpers/common';
-import { ContentTypeProperty } from '../types';
+import { ContentTypeProperty } from '../types/content-type';
 
 export abstract class CmsProperty {
     @Input() label: string;

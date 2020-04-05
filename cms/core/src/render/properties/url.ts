@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, HostBinding } from '@angular/core';
 import { CmsPropertyRender } from '../../bases/cms-property';
+import { CmsLink } from '../../types';
 
 @Component({
     selector: '[urlRender]',

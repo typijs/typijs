@@ -3,7 +3,7 @@ import { Component, ComponentFactoryResolver, ComponentRef, OnDestroy, ViewChild
 
 import { ngEditMode, ngId } from '../constants';
 import { UIHint } from '../types/ui-hint';
-import { ContentTypeProperty } from '../types';
+import { ContentTypeProperty } from '../types/content-type';
 import { ContentTypeMetadata } from '../decorators/content-type.decorator';
 
 import { InsertPointDirective } from '../directives/insert-point.directive';
