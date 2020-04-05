@@ -6,6 +6,7 @@ import { IPageVersionDocument, PageVersionModel } from "./models/page-version.mo
 import { IPublishedPageDocument, PublishedPageModel, IPublishedPage } from './models/published-page.model';
 import { ISiteDefinitionDocument, SiteDefinitionModel } from '../site-definition/site-definition.model';
 import { NotFoundException } from '../../errorHandling';
+import { slugify } from '../../utils/slugify';
 
 export class PageService extends ContentService<IPageDocument, IPageVersionDocument, IPublishedPageDocument> {
 
@@ -81,7 +82,7 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
         //create new page
         //update parent page's has children property
         const parentPage = await this.getDocumentById(pageObj.parentId);
-        const urlSegment = await this.generateUrlSegment(0, pageObj.urlSegment, parentPage ? parentPage._id : null);
+        const urlSegment = await this.generateUrlSegment(0, slugify(pageObj.name), parentPage ? parentPage._id : null);
         const savedPage = await this.createPage(pageObj, parentPage, urlSegment);
 
         if (savedPage) await this.updateHasChildren(parentPage);

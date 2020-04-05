@@ -2,7 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, UrlSegment, Params } from '@angular/router';
 
 import {
-    BLOCK_TYPE, PAGE_TYPE, slugify,
+    BLOCK_TYPE, PAGE_TYPE,
     ContentType, ContentTypeService,
     Block, BlockService,
     Page, PageService,
@@ -58,9 +58,7 @@ export class ContentTypeListComponent extends SubscriptionDestroy implements OnD
             const content: any = {
                 name: this.contentName,
                 contentType: contentType.name,
-                parentId: this.parentId,
-                //TODO: should move generate the url segment to back-end
-                urlSegment: slugify(this.contentName)
+                parentId: this.parentId
             }
 
             switch (this.typeOfContent) {

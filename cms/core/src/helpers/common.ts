@@ -1,18 +1,5 @@
 import { CmsTab } from "../types";
 
-export function slugify(text: string) {
-  return text
-    .toString()
-    .toLowerCase()
-    .trim()
-    .replace(/\s+/g, '-')           // Replace spaces with -
-    .replace(/&/g, '-and-')         // Replace & with 'and'
-    .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
-    .replace(/\-\-+/g, '-')         // Replace multiple - with single -
-    .replace(/^-+/, '')             // Trim - from start of text
-    .replace(/-+$/, '');            // Trim - from end of text
-}
-
 export function sortTabByTitle(tabOne: CmsTab, tabTwo: CmsTab) {
   const titleOne = tabOne.title ? tabOne.title.toUpperCase() : ''; // ignore upper and lowercase
   const titleTwo = tabTwo.title ? tabTwo.title.toUpperCase() : ''; // ignore upper and lowercase

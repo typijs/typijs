@@ -34,7 +34,7 @@ export * from './models/content.model';
 export * from './models/media.model';
 export * from './models/page.model';
 
-export { slugify, sortTabByTitle, clone, generateUUID } from './helpers/common';
+export { sortTabByTitle, clone, generateUUID } from './helpers/common';
 
 export * from './services/content-type.service';
 export * from './services/block.service';
