@@ -6,15 +6,11 @@ import { CMS } from './cms';
 import { InsertPointDirective } from './directives/insert-point.directive';
 import { CmsPropertyFactoryResolver } from './bases/cms-property.factory';
 
-import { CmsPropertyDirective } from './render/cms-property.directive';
+import { CmsPropertyDirective } from './render/property/cms-property.directive';
 import { CmsContentRender } from './render/cms-content';
 import { ContentAreaRender } from './render/content-area/content-area';
 import { ContentAreaDirective } from './render/content-area/content-area.directive';
-import { XHtmlRender } from './render/properties/xhtml';
-import { UrlRender } from './render/properties/url';
-import { UrlListRender } from './render/properties/url-list';
-import { TextRender } from './render/properties/text';
-import { ImageRender } from './render/properties/image';
+import { TextRender, XHtmlRender, ImageRender, UrlRender, UrlListRender, ObjectListRender } from './render/property/property-render';
 
 @NgModule({
   imports: [
@@ -25,27 +21,30 @@ import { ImageRender } from './render/properties/image';
     InsertPointDirective,
     CmsContentRender,
     CmsPropertyDirective,
-    ContentAreaRender,
     ContentAreaDirective,
+
+    ContentAreaRender,
     TextRender,
-    UrlListRender,
-    UrlRender,
     XHtmlRender,
-    ImageRender
+    ImageRender,
+    UrlRender,
+    UrlListRender,
+    ObjectListRender
   ],
   exports: [
     CmsContentRender,
     InsertPointDirective,
-    ContentAreaDirective,
-    CmsPropertyDirective
+    CmsPropertyDirective,
+    ContentAreaDirective
   ],
   entryComponents: [
     ContentAreaRender,
     TextRender,
+    XHtmlRender,
     ImageRender,
-    UrlListRender,
     UrlRender,
-    XHtmlRender
+    UrlListRender,
+    ObjectListRender
   ]
 })
 export class CoreModule {

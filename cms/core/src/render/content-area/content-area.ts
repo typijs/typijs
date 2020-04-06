@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CmsPropertyRender } from '../../bases/cms-property';
+import { CmsPropertyRender } from "../property/property-render";
 
 @Component({
     selector: '[contentAreaRender]',

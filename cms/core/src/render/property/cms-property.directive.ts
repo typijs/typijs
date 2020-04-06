@@ -1,8 +1,8 @@
 import { ComponentRef, Directive, ElementRef, Input, NgZone, OnDestroy, OnInit, Renderer2, ViewContainerRef } from '@angular/core';
 
-import { ngEditMode } from '../constants';
-import { PropertyModel } from '../types/content-type';
-import { BrowserLocationService } from '../services/browser-location.service';
+import { ngEditMode } from '../../constants';
+import { PropertyModel } from '../../types/content-type';
+import { BrowserLocationService } from '../../services/browser-location.service';
 import { CmsPropertyRenderFactoryResolver } from './property-render.factory';
 
 
