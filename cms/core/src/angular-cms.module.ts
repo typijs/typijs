@@ -12,21 +12,19 @@ import { LOCAL_STORAGE, localStorageFactory } from './services/browser-storage.s
 
 import { PAGE_TYPE_INDICATOR, BLOCK_TYPE_INDICATOR, MEDIA_TYPE_INDICATOR } from './decorators/metadata-key';
 import { PROPERTY_PROVIDERS_TOKEN, getCmsPropertyFactory, CmsPropertyFactory } from './bases/cms-property.factory';
-import { CmsProperty, CmsPropertyRender } from './bases/cms-property';
+import { CmsProperty } from './bases/cms-property';
+import { CmsPropertyRender } from "./render/property/property-render";
 
 import { UIHint } from './types/ui-hint';
 import { CmsModuleConfig } from './types/module-config';
 import { ClassOf } from './types';
 
 import { CmsContentRender } from './render/cms-content';
-import { PROPERTY_PROVIDERS_RENDER_TOKEN, getCmsPropertyRenderFactory, CmsPropertyRenderFactory } from './render/property-render.factory';
+import { PROPERTY_PROVIDERS_RENDER_TOKEN, getCmsPropertyRenderFactory, CmsPropertyRenderFactory } from './render/property/property-render.factory';
 
 import { ContentAreaRender } from './render/content-area/content-area';
-import { TextRender } from './render/properties/text';
-import { XHtmlRender } from './render/properties/xhtml';
-import { UrlRender } from './render/properties/url';
-import { UrlListRender } from './render/properties/url-list';
-import { ImageRender } from './render/properties/image';
+import { TextRender, XHtmlRender, ImageRender, UrlRender, UrlListRender, ObjectListRender } from './render/property/property-render';
+
 
 export const CMS_PROVIDERS = [
     {
@@ -62,6 +60,7 @@ export class AngularCms {
         this.registerPropertyRender(UIHint.Image, ImageRender);
         this.registerPropertyRender(UIHint.Url, UrlRender);
         this.registerPropertyRender(UIHint.UrlList, UrlListRender);
+        this.registerPropertyRender(UIHint.ObjectList, ObjectListRender);
 
         return {
             ngModule: AngularCms,
