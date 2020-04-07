@@ -1,4 +1,4 @@
-export interface ITimestamps {
+export type Timestamps = {
     createdAt: Date;
     updatedAt: Date;
 }

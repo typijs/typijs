@@ -1,8 +1,7 @@
 import * as mongoose from 'mongoose';
 
-import { SiteDefinitionModel } from './site-definition.model';
 import { BaseCtrl } from '../shared/base.controller';
-import { ISiteDefinitionDocument } from './site-definition.model';
+import { ISiteDefinitionDocument, SiteDefinitionModel } from './site-definition.model';
 
 export class SiteDefinitionCtrl extends BaseCtrl<mongoose.Model<ISiteDefinitionDocument>> {
     constructor() { super(SiteDefinitionModel); }

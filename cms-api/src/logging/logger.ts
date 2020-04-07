@@ -2,8 +2,8 @@ import * as winston from 'winston';
 
 import { CONFIG } from '../config/config';
 import { HttpException } from '../errorHandling';
-import { errorStackTracerFormat, getTransports } from './winstonHelper';
 import { MorganToken } from './morganHelper';
+import { errorStackTracerFormat, getTransports } from './winstonHelper';
 
 const options: winston.LoggerOptions = {
     level: CONFIG.LOG.LEVEL,
@@ -19,7 +19,7 @@ const options: winston.LoggerOptions = {
 
 export const logger = winston.createLogger(options);
 
-export class LoggerStream {
+class LoggerStream {
     write(message: string) {
         const messageObj: MorganToken = JSON.parse(message);
 

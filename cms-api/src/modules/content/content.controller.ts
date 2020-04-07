@@ -1,8 +1,8 @@
 import * as express from 'express';
 
+import { FolderController } from '../folder/folder.controller';
 import { IContentDocument, IContentVersionDocument, IPublishedContentDocument } from './content.model';
 import { ContentService } from './content.service';
-import { FolderController } from '../folder/folder.controller';
 
 export abstract class ContentController<T extends IContentDocument, V extends IContentVersionDocument & T, P extends IPublishedContentDocument & V> extends FolderController<T> {
   private contentService: ContentService<T, V, P>;

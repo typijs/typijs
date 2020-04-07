@@ -1,4 +1,4 @@
-import { nameof, nameofFactory } from "../utils";
+import { nameOfFactory } from "../utils";
 
 export enum MorganLogFormat {
     Combined = "combined",
@@ -8,7 +8,7 @@ export enum MorganLogFormat {
     Tiny = "tiny"
 }
 
-export interface MorganToken {
+export type MorganToken = {
     method?: string,
     url?: string,
     urlReferrer?: string,
@@ -22,7 +22,7 @@ export interface MorganToken {
     userAgent?: string
 }
 
-const morganToken = nameofFactory<MorganToken>();
+const morganToken = nameOfFactory<MorganToken>();
 //Output '{"status"\:":status","remote-addr"\:":remote-addr","remote-user"\:":remote-user","method"\:":method","url"\:":url","http"\:":http-version","referrer"\:":referrer","agent"\:":user-agent","length"\:":res[content-length]"}'
 export function morganJsonFormat(tokens, req, res) {
     const jsonBody = [

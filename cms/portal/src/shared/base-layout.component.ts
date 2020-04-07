@@ -59,8 +59,8 @@ export abstract class BaseLayoutComponent implements OnInit {
 
     ngOnDestroy() {
         if (this.componentRefs) {
-            this.componentRefs.forEach(cmpref => {
-                cmpref.destroy();
+            this.componentRefs.forEach(cmpRef => {
+                cmpRef.destroy();
             })
             this.componentRefs = [];
         }
