@@ -2,7 +2,6 @@ import { Directive, ElementRef, HostListener, Input, Output, EventEmitter, OnIni
 
 import { Observable, of, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { clone } from '@angular-cms/core';
 
 import { DropEvent } from '../drop-event.model';
 import { DndService } from '../dnd.service';
@@ -178,7 +177,7 @@ export class Droppable implements OnInit, OnDestroy {
         if (listNode.contains(newTarget) && !event._dndPhShown) {
             // Signalize to potential parent lists that a placeholder is already shown.
             event._dndPhShown = true;
-        } else {
+        } else if(this.placeholder) {
             this.placeholder.remove();
         }
     }
@@ -217,7 +216,7 @@ export class Droppable implements OnInit, OnDestroy {
                 this.onDrop.emit(new DropEvent(e, this.dndService.dragData, this.getPlaceholderIndex()));
                 this.dndService.dragData = null;
                 this.dndService.scope = null;
-                this.placeholder.remove();
+                if(this.placeholder) this.placeholder.remove();
             }
         });
     }
