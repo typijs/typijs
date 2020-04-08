@@ -2,6 +2,12 @@ import { Component, forwardRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CmsControl } from '../cms-control';
 
+const OBJECT_LIST_VALUE_ACCESSOR = {
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => ObjectListControl),
+    multi: true
+}
+
 @Component({
     selector: 'object-list',
     template: `
@@ -26,14 +32,8 @@ import { CmsControl } from '../cms-control';
                     </a>
                 </div>
             </div>
-`,
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => ObjectListControl),
-            multi: true
-        }
-    ]
+        `,
+    providers: [OBJECT_LIST_VALUE_ACCESSOR]
 })
 export class ObjectListControl extends CmsControl {
     private _model: Array<any>;

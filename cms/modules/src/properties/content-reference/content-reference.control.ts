@@ -2,13 +2,19 @@ import { Component, forwardRef, Input } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CmsControl } from '../cms-control';
 
+const CONTENT_REFERENCE_VALUE_ACCESSOR = {
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => ContentReferenceControl),
+    multi: true
+}
+
 @Component({
     selector: 'content-reference',
     template: `
             <div class="tab-content" droppable (onDrop)="onDropItem($event)">
                 <div class="tab-pane active">
                     <div *ngIf="model">
-                        <i class="fa fa-comment fa-fw"></i> {{model.name}}
+                        {{model.name}}
                         <span class="pull-right text-muted small"><em>{{model.value}}</em>
                         </span>
                     </div>
@@ -16,13 +22,7 @@ import { CmsControl } from '../cms-control';
                 <div dragPlaceholder></div>
             </div>
 `,
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => ContentReferenceControl),
-            multi: true
-        }
-    ]
+    providers: [CONTENT_REFERENCE_VALUE_ACCESSOR]
 })
 export class ContentReferenceControl extends CmsControl {
 

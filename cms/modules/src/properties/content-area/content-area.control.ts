@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input } from '@angular/core';
+import { Component, forwardRef, Input, Provider } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { generateUUID } from '@angular-cms/core';
 
@@ -6,6 +6,12 @@ import { DropEvent } from '../../shared/drag-drop/drop-event.model';
 import { SubjectService } from '../../shared/services/subject.service';
 import { ContentAreaItem } from './ContentAreaItem';
 import { CmsControl } from '../cms-control';
+
+const CONTENT_AREA_VALUE_ACCESSOR: Provider = {
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => ContentAreaControl),
+    multi: true
+}
 
 @Component({
     selector: 'content-area',
@@ -47,17 +53,11 @@ import { CmsControl } from '../cms-control';
             </div>
     `,
     styles: [`
-        .list-group {
+        .content-area .list-group {
             min-height: 80px;
         }
     `],
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => ContentAreaControl),
-            multi: true
-        }
-    ]
+    providers: [CONTENT_AREA_VALUE_ACCESSOR]
 })
 export class ContentAreaControl extends CmsControl {
     @Input() name: string;
