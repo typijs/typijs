@@ -11,6 +11,7 @@ import { CmsContentRender } from './render/cms-content';
 import { ContentAreaRender } from './render/content-area/content-area';
 import { ContentAreaDirective } from './render/content-area/content-area.directive';
 import { TextRender, XHtmlRender, ImageRender, UrlRender, UrlListRender, ObjectListRender } from './render/property/property-render';
+import { SafePipe } from './pipes/safe.pipe';
 
 @NgModule({
   imports: [
@@ -18,6 +19,8 @@ import { TextRender, XHtmlRender, ImageRender, UrlRender, UrlListRender, ObjectL
     HttpClientModule
   ],
   declarations: [
+    SafePipe,
+
     InsertPointDirective,
     CmsContentRender,
     CmsPropertyDirective,
@@ -32,6 +35,7 @@ import { TextRender, XHtmlRender, ImageRender, UrlRender, UrlListRender, ObjectL
     ObjectListRender
   ],
   exports: [
+    SafePipe,
     CmsContentRender,
     InsertPointDirective,
     CmsPropertyDirective,
