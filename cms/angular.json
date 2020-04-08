@@ -25,28 +25,13 @@
             "aot": false,
             "assets": [
               "cms-demo/src/favicon.ico",
-              "cms-demo/src/assets",
-              {
-                "glob": "**/*",
-                "input": "node_modules/tinymce/skins",
-                "output": "/tinymce/skins/"
-              },
-              {
-                "glob": "**/*",
-                "input": "node_modules/tinymce/themes",
-                "output": "/tinymce/themes/"
-              },
-              {
-                "glob": "**/*",
-                "input": "node_modules/tinymce/plugins",
-                "output": "/tinymce/plugins/"
-              }
+              "cms-demo/src/assets"
             ],
             "styles": [
               "cms-demo/src/styles.scss"
             ],
             "scripts": [
-              "node_modules/tinymce/tinymce.min.js"
+              "node_modules/quill/dist/quill.js"
             ]
           },
           "configurations": {

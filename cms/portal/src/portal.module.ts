@@ -23,6 +23,7 @@ import { EditorComponent } from './editor/editor.component';
 import { WidgetService } from './services/widget.service';
 import { PortalComponent } from './portal.component';
 import { PortalRoutingModule } from './portal.routing';
+import { QuillModule } from 'ngx-quill';
 
 @NgModule({
   imports: [
@@ -37,6 +38,7 @@ import { PortalRoutingModule } from './portal.routing';
     CmsButtonsModule.forRoot(),
     CmsProgressbarModule.forRoot(),
     CmsModalModule.forRoot(),
+    QuillModule.forRoot(),
 
     DndModule.forRoot(),
 

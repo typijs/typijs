@@ -15,7 +15,7 @@
       "angular-split": "AngularSplit",
       "@fortawesome/angular-fontawesome": "AngularFontAwesome",
       "@fortawesome/free-solid-svg-icons": "FontAwesomeFreeSolidSvgIcons",
-      "@tinymce/tinymce-angular": "TinymceAngular"
+      "ngx-quill": "NgxQuill"
     }
   }
 }

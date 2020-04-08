@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
+import { QuillEditorComponent } from 'ngx-quill';
+
 import { CmsProperty } from '@angular-cms/core';
-import { EventObj } from '@tinymce/tinymce-angular/editor/Events';
+import { DropEvent } from '../../shared/drag-drop/drop-event.model';
 
 @Component({
     selector: '[xhtmlProperty]',
@@ -8,34 +10,29 @@ import { EventObj } from '@tinymce/tinymce-angular/editor/Events';
         <div class="form-group row" [formGroup]="formGroup">
             <label [attr.for]="id" class="col-sm-4 col-form-label">{{label}}</label>
             <div class="col-sm-8">
-                <editor  
-                    [id]="id" 
-                    [formControlName]="propertyName" 
-                    [init]="editorInitObject"
-                    (onDrop)="onDrop($event)"></editor>
+                <div droppable (onDrop)="onDropItem($event)">
+                    <quill-editor
+                        #editor
+                        [styles]="{'height': '250px'}"
+                        [formControlName]="propertyName"></quill-editor>
+                </div>
             </div>
         </div>
     `
 })
 export class XHtmlProperty extends CmsProperty {
-    editorInstance: any;
-    editorInitObject: Record<string, any> = {
-        base_url: '/tinymce',
-        suffix: '.min',
-        height: 300,
-        setup: editor => {
-            this.editorInstance = editor;
-            //editor.on("drop", (e) => this.onDropEvent(e));
-        }
-    };
+    @ViewChild('editor', {
+        static: true
+    }) editor: QuillEditorComponent
 
-    onDrop(event: EventObj<DragEvent>) {
-        console.log(event);
-        const dragData = JSON.parse(event.event.dataTransfer.getData('data'));
-        const { _id, name } = dragData;
+    onDropItem(e: DropEvent) {
+        const { _id, id, name, owner, guid, extendProperties, type, contentType, isPublished } = e.dragData;
+
         const src = `http://localhost:3000/api/assets/${_id}/${name}`;
-
-        this.editorInstance.execCommand('mceInsertContent', false, `<img alt="${name}" height="100" src="${src}" />`)
-        event.event.stopImmediatePropagation()
+        if (this.editor.quillEditor) {
+            const quillEditor = this.editor.quillEditor;
+            const range = quillEditor.getSelection(true);
+            quillEditor.insertEmbed(range.index, 'image', src, 'user')
+        }
     }
 }
