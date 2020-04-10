@@ -1,5 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { takeUntil } from 'rxjs/operators';
 
 import { Page, PageService } from '@angular-cms/core';
 //import { TreeNode, TreeComponent, TreeConfig, NodeMenuItemAction, TreeMenuActionEvent } from '../shared/tree';
@@ -54,25 +55,29 @@ export class PageTreeComponent extends SubscriptionDestroy {
         this.root = new TreeNode({ id: '0', name: 'Root', hasChildren: true });
         this.treeConfig = this.initTreeConfiguration();
     }
-    
-    ngOnInit() {
-        this.subscriptions.push(this.subjectService.pageCreated$.subscribe((createdPage: Page) => {
-            //Reload parent page
-            //Reload the children of parent to update the created page
-            this.cmsTree.selectNode({ id: createdPage._id, isNeedToScroll: true });
-            this.cmsTree.reloadSubTree(createdPage.parentId);
-        }));
 
-        this.subscriptions.push(this.subjectService.pageSelected$.subscribe((selectedPage: Page) => {
-            this.cmsTree.locateToSelectedNode(new TreeNode({
-                id: selectedPage._id,
-                isNeedToScroll: true,
-                name: selectedPage.name,
-                hasChildren: selectedPage.hasChildren,
-                parentId: selectedPage.parentId,
-                parentPath: selectedPage.parentPath
-            }));
-        }));
+    ngOnInit() {
+        this.subjectService.pageCreated$
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe((createdPage: Page) => {
+                //Reload parent page
+                //Reload the children of parent to update the created page
+                this.cmsTree.selectNode({ id: createdPage._id, isNeedToScroll: true });
+                this.cmsTree.reloadSubTree(createdPage.parentId);
+            });
+
+        this.subjectService.pageSelected$
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe((selectedPage: Page) => {
+                this.cmsTree.locateToSelectedNode(new TreeNode({
+                    id: selectedPage._id,
+                    isNeedToScroll: true,
+                    name: selectedPage.name,
+                    hasChildren: selectedPage.hasChildren,
+                    parentId: selectedPage.parentId,
+                    parentPath: selectedPage.parentPath
+                }));
+            });
     }
 
     pageSelected(node: TreeNode) {

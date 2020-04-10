@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { takeUntil } from 'rxjs/operators';
 
 import { TreeStore } from '../tree-store';
 import { TreeNode } from '../interfaces/tree-node';
@@ -47,25 +48,27 @@ export class TreeChildrenComponent extends TreeBaseComponent implements OnInit {
     constructor(private treeStore: TreeStore) { super() }
 
     ngOnInit() {
-        this.subscriptions.push(this.treeStore.getTreeNodesSubjectByKey$(this.root.id).subscribe((nodes: TreeNode[]) => {
-            //Trigger render the the sub tree
-            const selectedNode = this.treeStore.getSelectedNode();
-            this.nodeChildren = this.setExpandStateForNewNodeChildren(nodes);
-            this.nodeChildren.forEach(child => {
-                if (selectedNode && selectedNode.id == child.id) {
-                    this.treeStore.fireNodeSelectedInner(selectedNode);
-                }
-            })
-        }));
+        this.treeStore.getTreeNodesSubjectByKey$(this.root.id)
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe((nodes: TreeNode[]) => {
+                //Trigger render the the sub tree
+                const selectedNode = this.treeStore.getSelectedNode();
+                this.nodeChildren = this.setExpandStateForNewNodeChildren(nodes);
+                this.nodeChildren.forEach(child => {
+                    if (selectedNode && selectedNode.id == child.id) {
+                        this.treeStore.fireNodeSelectedInner(selectedNode);
+                    }
+                })
+            });
 
         //using this event to set all other child node is false
-        this.subscriptions.push(this.treeStore.nodeSelectedInner$.subscribe(selectedNode => {
+        this.treeStore.nodeSelectedInner$.subscribe(selectedNode => {
             this.nodeChildren.forEach(childNode => {
                 childNode.isSelected = selectedNode.id == childNode.id;
                 if (childNode.isSelected && selectedNode.isNeedToScroll)
                     this.treeStore.fireScrollToSelectedNode(childNode);
             })
-        }));
+        });
 
         if (this.config) {
             this.treeService = this.config.service;

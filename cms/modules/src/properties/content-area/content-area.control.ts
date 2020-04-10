@@ -1,6 +1,7 @@
 import { Component, forwardRef, Input, Provider } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { generateUUID } from '@angular-cms/core';
+import { takeUntil } from 'rxjs/operators';
 
 import { DropEvent } from '../../shared/drag-drop/drop-event.model';
 import { SubjectService } from '../../shared/services/subject.service';
@@ -70,12 +71,14 @@ export class ContentAreaControl extends CmsControl {
 
     constructor(private subjectService: SubjectService) {
         super();
-        this.subscriptions.push(this.subjectService.contentAreaDropFinished$.subscribe((item: ContentAreaItem) => {
-            // Handle swap item between content area by drag and drop
-            if (item.owner == this.name) {
-                this.removeItem(item);
-            }
-        }));
+        this.subjectService.contentAreaDropFinished$
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe((item: ContentAreaItem) => {
+                // Handle swap item between content area by drag and drop
+                if (item.owner == this.name) {
+                    this.removeItem(item);
+                }
+            });
     }
     //Writes a new value to the element.
     //This method is called by the forms API to write to the view when programmatic changes from model to view are requested.

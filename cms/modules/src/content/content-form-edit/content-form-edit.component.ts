@@ -1,6 +1,7 @@
 import { Component, ViewChildren, QueryList, OnInit, ChangeDetectorRef, ComponentRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, UrlSegment } from '@angular/router';
+import { takeUntil } from 'rxjs/operators';
 
 import {
     PAGE_TYPE, BLOCK_TYPE, MEDIA_TYPE, FOLDER_BLOCK, FOLDER_MEDIA,
@@ -36,7 +37,7 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
 
     private typeOfContent: 'page' | 'block' | 'media' | string;
     private contentTypeProperties: ContentTypeProperty[] = [];
-    private componentRefs: any[] = [];
+    private componentRefs: ComponentRef<any>[] = [];
     private readonly defaultGroup: string = "Content";
 
     constructor(
@@ -51,25 +52,29 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
     ) { super(); }
 
     ngOnInit() {
-        this.subscriptions.push(this.route.params.subscribe(params => {
-            const contentId = params['id'];
-            this.typeOfContent = this.getTypeContentFromUrl(this.route.snapshot.url)
-            this.editMode = 'AllProperties';
-            if (contentId) {
-                switch (this.typeOfContent) {
-                    case PAGE_TYPE:
-                        this.subscribeGetPageContent(contentId);
-                        break;
-                    case BLOCK_TYPE:
-                        this.subscribeGetBlockContent(contentId);
-                        break;
+        this.route.params
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(params => {
+                const contentId = params['id'];
+                this.typeOfContent = this.getTypeContentFromUrl(this.route.snapshot.url)
+                this.editMode = 'AllProperties';
+                if (contentId) {
+                    switch (this.typeOfContent) {
+                        case PAGE_TYPE:
+                            this.subscribeGetPageContent(contentId);
+                            break;
+                        case BLOCK_TYPE:
+                            this.subscribeGetBlockContent(contentId);
+                            break;
+                    }
                 }
-            }
-        }));
+            });
 
-        this.subscriptions.push(this.subjectService.portalLayoutChanged$.subscribe((showIframeHider: boolean) => {
-            this.showIframeHider = showIframeHider;
-        }))
+        this.subjectService.portalLayoutChanged$
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe((showIframeHider: boolean) => {
+                this.showIframeHider = showIframeHider;
+            })
     }
 
     private subscribeGetPageContent(contentId: string): void {
@@ -281,7 +286,7 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
     }
 
     ngOnDestroy() {
-        this.unsubscribe();
+        this.onUnsubscribe();
         if (this.insertPoints)
             this.insertPoints.map(x => x.viewContainerRef).forEach(containerRef => containerRef.clear());
 

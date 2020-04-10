@@ -1,4 +1,5 @@
-import { Component, Input, Output, EventEmitter, ElementRef } from '@angular/core';
+import { Component, Input, ElementRef } from '@angular/core';
+import { takeUntil } from 'rxjs/operators';
 
 import { TreeNode } from '../interfaces/tree-node';
 import { TreeConfig } from '../interfaces/tree-config';
@@ -58,9 +59,11 @@ export class TreeNodeComponent extends TreeBaseComponent {
     }
 
     ngOnInit() {
-        this.subscriptions.push(this.treeStore.scrollToSelectedNode$.subscribe((scrollToNode: TreeNode) => {
-            if (scrollToNode.id == this.node.id) this.scrollIntoNode();
-        }));
+        this.treeStore.scrollToSelectedNode$
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe((scrollToNode: TreeNode) => {
+                if (scrollToNode.id == this.node.id) this.scrollIntoNode();
+            });
 
         if (this.config) {
             this.menuItems = this.config.menuItems;
