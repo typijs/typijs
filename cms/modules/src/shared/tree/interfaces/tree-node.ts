@@ -14,8 +14,7 @@ export class TreeNode {
 
   hasChildren: boolean = false;
   parentPath: string;
-  //variable to store extend data ex content type, published or not... depend on type of tree
-  extendProperties: any = {};
+  [propName: string]: any;
 
   public constructor(init?: Partial<TreeNode>) {
     Object.assign(this, init);

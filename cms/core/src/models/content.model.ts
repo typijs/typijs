@@ -30,4 +30,5 @@ export class Content {
     properties: { [key: string]: any };
 
     isDirty: boolean;
+    [propName: string]: any;
 }

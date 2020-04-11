@@ -14,7 +14,6 @@ import { TreeNode } from '../shared/tree/interfaces/tree-node';
 import { MediaTreeService } from './media-tree.service';
 import { UploadService } from './upload/upload.service';
 import { FileModalComponent } from './upload/file-modal.component';
-import { ContentTreeNode } from '../constants';
 
 const MediaMenuItemAction = {
     DeleteFolder: 'DeleteFolder',
@@ -116,11 +115,9 @@ export class MediaTreeComponent extends SubscriptionDestroy {
         //load child block in folder
         this.mediaService.getContentInFolder(folderId).subscribe(childMedias => {
             childMedias.forEach(media => Object.assign(media, {
-                extendProperties: <ContentTreeNode>{
-                    type: MEDIA_TYPE,
-                    contentType: media.contentType,
-                    isPublished: media.isPublished
-                }
+                type: MEDIA_TYPE,
+                contentType: media.contentType,
+                isPublished: media.isPublished
             }));
             this.medias = childMedias;
             this.medias.forEach(file => {

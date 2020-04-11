@@ -47,8 +47,8 @@ export class ImageReferenceControl extends CmsControl {
     }
 
     isDropAllowed = (dragData) => {
-        if (!dragData.extendProperties) return false;
-        const { contentType, type } = dragData.extendProperties;
+        if (!dragData) return false;
+        const { contentType, type } = dragData;
 
         return contentType == 'ImageContent' && type == "media"
     }

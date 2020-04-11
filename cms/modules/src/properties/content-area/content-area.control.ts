@@ -88,8 +88,7 @@ export class ContentAreaControl extends CmsControl {
 
     isDropAllowed = (dragData) => {
         if (!this.allowedTypes) return true;
-        const { extendProperties } = dragData;
-        const contentType = extendProperties ? extendProperties.contentType : dragData.contentType
+        const { contentType } = dragData;
         return this.allowedTypes.indexOf(contentType) > -1;
     }
 
@@ -103,15 +102,15 @@ export class ContentAreaControl extends CmsControl {
         if (!this._model) this._model = [];
 
         const itemIndex = e.index;
-        const { _id, id, name, owner, guid, extendProperties, type, contentType, isPublished } = e.dragData;
+        const { _id, id, name, owner, guid, type, contentType, isPublished } = e.dragData;
         const item: ContentAreaItem = {
             _id: _id ? _id : id,
             name: name,
             owner: owner,
             guid: guid,
-            type: extendProperties ? extendProperties.type : type,
-            contentType: extendProperties ? extendProperties.contentType : contentType,
-            isPublished: extendProperties ? extendProperties.isPublished : isPublished
+            type: type,
+            contentType: contentType,
+            isPublished: isPublished
         };
 
         if (item.owner == this.name) {

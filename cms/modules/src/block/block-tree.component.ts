@@ -12,7 +12,6 @@ import { NodeMenuItemAction, TreeMenuActionEvent } from '../shared/tree/interfac
 import { BlockTreeService } from './block-tree.service';
 import { SubscriptionDestroy } from '../shared/subscription-destroy';
 import { SubjectService } from '../shared/services/subject.service';
-import { ContentTreeNode } from '../constants';
 
 const BlockMenuItemAction = {
     DeleteFolder: 'DeleteFolder',
@@ -115,11 +114,9 @@ export class BlockTreeComponent extends SubscriptionDestroy {
         //load child block in folder
         this.blockService.getContentInFolder(node.id).subscribe((childBlocks: Block[]) => {
             childBlocks.forEach(block => Object.assign(block, {
-                extendProperties: <ContentTreeNode>{
-                    type: BLOCK_TYPE,
-                    contentType: block.contentType,
-                    isPublished: block.isPublished
-                }
+                type: BLOCK_TYPE,
+                contentType: block.contentType,
+                isPublished: block.isPublished
             }));
             this.blocks = childBlocks
         })
