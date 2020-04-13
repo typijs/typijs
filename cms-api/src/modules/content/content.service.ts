@@ -1,13 +1,22 @@
 import * as mongoose from 'mongoose';
-import { IContentDocument, RefContent, IContentHasChildItems, IContentVersionDocument, IPublishedContentDocument, IContentVersion, IPublishedContent, IContent } from './content.model';
-import { cmsPage } from '../page/models/page.model';
+
+import { NotFoundException } from '../../errorHandling';
 import { cmsBlock } from '../block/models/block.model';
-import { cmsMedia } from '../media/models/media.model';
-import { cmsPublishedPage } from '../page/models/published-page.model';
 import { cmsPublishedBlock } from '../block/models/published-block.model';
-import { BaseService } from '../shared/base.service';
+import { cmsMedia } from '../media/models/media.model';
 import { cmsPublishedMedia } from '../media/models/published-media.model';
-import { HttpException, NotFoundException } from '../../errorHandling';
+import { cmsPage } from '../page/models/page.model';
+import { cmsPublishedPage } from '../page/models/published-page.model';
+import { BaseService } from '../shared/base.service';
+import {
+    IContent,
+    IContentDocument,
+    IContentVersion,
+    IContentVersionDocument,
+    IPublishedContent,
+    IPublishedContentDocument,
+    RefContent
+} from './content.model';
 
 export class ContentService<T extends IContentDocument, V extends IContentVersionDocument & T, P extends IPublishedContentDocument & V> extends BaseService<T> {
     protected contentModel: mongoose.Model<T>;

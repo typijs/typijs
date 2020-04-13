@@ -4,6 +4,7 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 import { TreeNode } from '../../shared/tree/interfaces/tree-node';
 import { UploadService, UploadProgress } from './upload.service';
 import { ModalComponent } from '../../shared/modal.component';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'file-modal',
@@ -94,12 +95,14 @@ export class FileModalComponent extends ModalComponent {
         this.config = {
             ignoreBackdropClick: true
         }
-        this.subscriptions.push(this.uploadService.fileUploadProgress$.subscribe(data => {
-            this.targetFolder = data.folder;
-            this.progress = data.uploadProgress;
-            this.chooseFiles = data.files;
-            if (!this.isModalShown) this.showModal();
-        }));
+        this.uploadService.fileUploadProgress$
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(data => {
+                this.targetFolder = data.folder;
+                this.progress = data.uploadProgress;
+                this.chooseFiles = data.files;
+                if (!this.isModalShown) this.showModal();
+            });
     }
 
     filesSelected(files: File[]) {

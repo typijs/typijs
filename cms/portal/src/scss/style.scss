@@ -2,6 +2,9 @@
 
 @import '~bootstrap/scss/bootstrap';
 
+@import "~quill/dist/quill.core";
+@import "~quill/dist/quill.snow";
+
 @import 'core/core';
 
 html,

@@ -3,6 +3,12 @@ import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CmsImage } from '@angular-cms/core';
 import { CmsControl } from '../cms-control';
 
+const IMAGE_REFERENCE_VALUE_ACCESSOR = {
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => ImageReferenceControl),
+    multi: true
+}
+
 @Component({
     selector: 'image-reference',
     template: `
@@ -22,13 +28,7 @@ import { CmsControl } from '../cms-control';
             min-height: 38.5px;
         }
     `],
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => ImageReferenceControl),
-            multi: true
-        }
-    ]
+    providers: [IMAGE_REFERENCE_VALUE_ACCESSOR]
 })
 export class ImageReferenceControl extends CmsControl {
     model: CmsImage;
@@ -47,8 +47,8 @@ export class ImageReferenceControl extends CmsControl {
     }
 
     isDropAllowed = (dragData) => {
-        if (!dragData.extendProperties) return false;
-        const { contentType, type } = dragData.extendProperties;
+        if (!dragData) return false;
+        const { contentType, type } = dragData;
 
         return contentType == 'ImageContent' && type == "media"
     }

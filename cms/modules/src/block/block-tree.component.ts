@@ -1,5 +1,6 @@
 import { Component, ViewChild, Injector } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { takeUntil } from 'rxjs/operators';
 
 import { Block, BlockService, BLOCK_TYPE } from '@angular-cms/core';
 //import { TreeNode, TreeComponent, TreeConfig, NodeMenuItemAction, TreeMenuActionEvent } from '../shared/tree';
@@ -11,7 +12,6 @@ import { NodeMenuItemAction, TreeMenuActionEvent } from '../shared/tree/interfac
 import { BlockTreeService } from './block-tree.service';
 import { SubscriptionDestroy } from '../shared/subscription-destroy';
 import { SubjectService } from '../shared/services/subject.service';
-import { ContentTreeNode } from '../constants';
 
 const BlockMenuItemAction = {
     DeleteFolder: 'DeleteFolder',
@@ -90,13 +90,19 @@ export class BlockTreeComponent extends SubscriptionDestroy {
     }
 
     ngOnInit() {
-        this.subscriptions.push(this.subjectService.blockFolderCreated$.subscribe(createdFolder => {
-            this.cmsTree.selectNode({ id: createdFolder._id, isNeedToScroll: true })
-            this.cmsTree.reloadSubTree(createdFolder.parentId);
-        }));
-        this.subscriptions.push(this.subjectService.blockCreated$.subscribe(createdBlock => {
-            this.cmsTree.selectNode({ id: createdBlock.parentId })
-        }));
+        this.subjectService.blockFolderCreated$
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(createdFolder => {
+                this.cmsTree.selectNode({ id: createdFolder._id, isNeedToScroll: true })
+                this.cmsTree.reloadSubTree(createdFolder.parentId);
+            });
+
+        this.subjectService.blockCreated$
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(createdBlock => {
+                this.cmsTree.selectNode({ id: createdBlock.parentId })
+            });
+
         this.folderSelected({ id: '0' });
     }
 
@@ -108,11 +114,9 @@ export class BlockTreeComponent extends SubscriptionDestroy {
         //load child block in folder
         this.blockService.getContentInFolder(node.id).subscribe((childBlocks: Block[]) => {
             childBlocks.forEach(block => Object.assign(block, {
-                extendProperties: <ContentTreeNode>{
-                    type: BLOCK_TYPE,
-                    contentType: block.contentType,
-                    isPublished: block.isPublished
-                }
+                type: BLOCK_TYPE,
+                contentType: block.contentType,
+                isPublished: block.isPublished
             }));
             this.blocks = childBlocks
         })

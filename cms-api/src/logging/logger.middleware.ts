@@ -1,7 +1,8 @@
 import * as morgan from 'morgan';
-import { loggerStream } from './logger';
+
 import { CONFIG } from '../config/config';
 import { LogLevel } from '../constants/enums';
+import { loggerStream } from './logger';
 import { morganJsonFormat, MorganLogFormat } from './morganHelper';
 
 export function httpLoggerMiddleware() {

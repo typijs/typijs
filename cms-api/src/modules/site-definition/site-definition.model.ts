@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import { cmsPublishedPage, IPublishedPage, IPublishedPageDocument } from '../page/models/published-page.model';
+import { cmsPublishedPage, IPublishedPageDocument } from '../page/models/published-page.model';
 
 export interface ISiteDefinition {
     startPage: IPublishedPageDocument;

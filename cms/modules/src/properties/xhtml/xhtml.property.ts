@@ -1,5 +1,11 @@
-import { Component } from '@angular/core';
-import { CmsProperty } from '@angular-cms/core';
+import { Component, ViewChild } from '@angular/core';
+import { CmsProperty, PAGE_TYPE, MEDIA_TYPE } from '@angular-cms/core';
+import { DropEvent } from '../../shared/drag-drop/drop-event.model';
+import { QuillEditorComponent } from 'ngx-quill';
+
+import './quill-inline-style';
+import './quill-modules';
+import './ngx-quill.extension';
 
 @Component({
     selector: '[xhtmlProperty]',
@@ -7,10 +13,63 @@ import { CmsProperty } from '@angular-cms/core';
         <div class="form-group row" [formGroup]="formGroup">
             <label [attr.for]="id" class="col-sm-4 col-form-label">{{label}}</label>
             <div class="col-sm-8">
-                <editor [id]="id" [formControlName]="propertyName" [init]="{ base_url: '/tinymce', suffix: '.min'  }"></editor>
+                <div droppable (onDrop)="onDropItem($event)">
+                    <quill-editor
+                        #editor
+                        [formControlName]="propertyName"
+                        [styles]="{'height': '250px'}"
+                        [modules] = "modules"
+                        (onEditorCreated)="onEditorCreated($event)"></quill-editor>
+                </div>
             </div>
         </div>
     `
 })
 export class XHtmlProperty extends CmsProperty {
+    @ViewChild('editor', { static: true }) editor: QuillEditorComponent;
+
+    modules: { [key: string]: any } = {}
+    constructor() {
+        super();
+        this.modules = {
+            imageResize: {},
+            clickMeButton: { handler: this.handleClickMe}
+        }
+    }
+
+    handleClickMe(event) {
+
+    }
+
+    onEditorCreated(quill) {
+    }
+
+    onDropItem(e: DropEvent) {
+        const { type } = e.dragData;
+        switch (type) {
+            case PAGE_TYPE:
+                this.insertPageUrl(e.dragData);
+                break;
+            case MEDIA_TYPE:
+                this.insertImageUrl(e.dragData);
+                break;
+        }
+    }
+
+    private insertImageUrl(dragData) {
+        const { _id, name } = dragData;
+        const src = `http://localhost:3000/api/assets/${_id}/${name}`;
+        const insertOps = [
+            { insert: { image: src }, attributes: { width: '150' } }
+        ]
+        this.editor.insertAtCursorPosition(insertOps);
+    }
+
+    private insertPageUrl(dragData) {
+        const { name, linkUrl } = dragData;
+        const insertOps = [
+            { insert: name, attributes: { link: linkUrl } }
+        ]
+        this.editor.insertAtCursorPosition(insertOps);
+    }
 }

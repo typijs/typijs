@@ -1,6 +1,7 @@
 import { Component, ViewChildren, QueryList, OnInit, ChangeDetectorRef, ComponentRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, UrlSegment } from '@angular/router';
+import { takeUntil } from 'rxjs/operators';
 
 import {
     PAGE_TYPE, BLOCK_TYPE, MEDIA_TYPE, FOLDER_BLOCK, FOLDER_MEDIA,
@@ -16,8 +17,6 @@ import {
 import { ContentAreaItem } from "../../properties/content-area/ContentAreaItem";
 import { SubjectService } from '../../shared/services/subject.service';
 import { SubscriptionDestroy } from '../../shared/subscription-destroy';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-
 
 
 @Component({
@@ -34,11 +33,11 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
     editMode: 'AllProperties' | 'OnPageEdit' = 'AllProperties';
 
     showIframeHider: boolean = false;
-    previewUrl: SafeResourceUrl;
+    previewUrl: string;
 
     private typeOfContent: 'page' | 'block' | 'media' | string;
     private contentTypeProperties: ContentTypeProperty[] = [];
-    private componentRefs: any[] = [];
+    private componentRefs: ComponentRef<any>[] = [];
     private readonly defaultGroup: string = "Content";
 
     constructor(
@@ -49,42 +48,53 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
         private pageService: PageService,
         private blockService: BlockService,
         private subjectService: SubjectService,
-        private changeDetectionRef: ChangeDetectorRef,
-        private sanitizer: DomSanitizer
+        private changeDetectionRef: ChangeDetectorRef
     ) { super(); }
 
     ngOnInit() {
-        this.subscriptions.push(this.route.params.subscribe(params => {
-            const contentId = params['id'];
-            this.typeOfContent = this.getTypeContentFromUrl(this.route.snapshot.url)
-            this.editMode = 'AllProperties';
-            if (contentId) {
-                switch (this.typeOfContent) {
-                    case PAGE_TYPE:
-                        this.pageService.getContent(contentId).subscribe(contentData => {
-                            this.subjectService.firePageSelected(contentData);
-                            this.contentTypeProperties = this.contentTypeService.getPageTypeProperties(contentData.contentType);
-                            this.previewUrl = this.getPublishedUrlOfContent(contentData);
-                            this.bindDataForContentForm(contentData)
-                        });
-                        break;
-                    case BLOCK_TYPE:
-                        this.blockService.getContent(contentId).subscribe(contentData => {
-                            this.contentTypeProperties = this.contentTypeService.getBlockTypeProperties(contentData.contentType);
-                            this.bindDataForContentForm(contentData)
-                        });
-                        break;
+        this.route.params
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(params => {
+                const contentId = params['id'];
+                this.typeOfContent = this.getTypeContentFromUrl(this.route.snapshot.url)
+                this.editMode = 'AllProperties';
+                if (contentId) {
+                    switch (this.typeOfContent) {
+                        case PAGE_TYPE:
+                            this.subscribeGetPageContent(contentId);
+                            break;
+                        case BLOCK_TYPE:
+                            this.subscribeGetBlockContent(contentId);
+                            break;
+                    }
                 }
-            }
-        }));
+            });
 
-        this.subscriptions.push(this.subjectService.portalLayoutChanged$.subscribe((showIframeHider: boolean) => {
-            this.showIframeHider = showIframeHider;
-        }))
+        this.subjectService.portalLayoutChanged$
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe((showIframeHider: boolean) => {
+                this.showIframeHider = showIframeHider;
+            })
     }
 
-    private getPublishedUrlOfContent(contentData: Page): SafeResourceUrl {
-        return this.sanitizer.bypassSecurityTrustResourceUrl(`http://localhost:4200${contentData.publishedLinkUrl}?${ngEditMode}=True&${ngId}=${contentData._id}`)
+    private subscribeGetPageContent(contentId: string): void {
+        this.pageService.getContent(contentId).subscribe(contentData => {
+            this.subjectService.firePageSelected(contentData);
+            this.contentTypeProperties = this.contentTypeService.getPageTypeProperties(contentData.contentType);
+            this.previewUrl = this.getPublishedUrlOfContent(contentData);
+            this.bindDataForContentForm(contentData)
+        });
+    }
+
+    private subscribeGetBlockContent(contentId: string): void {
+        this.blockService.getContent(contentId).subscribe(contentData => {
+            this.contentTypeProperties = this.contentTypeService.getBlockTypeProperties(contentData.contentType);
+            this.bindDataForContentForm(contentData)
+        });
+    }
+
+    private getPublishedUrlOfContent(contentData: Page): string {
+        return `http://localhost:4200${contentData.publishedLinkUrl}?${ngEditMode}=True&${ngId}=${contentData._id}`
     }
 
     private getTypeContentFromUrl(url: UrlSegment[]): string {
@@ -276,7 +286,7 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
     }
 
     ngOnDestroy() {
-        this.unsubscribe();
+        this.onUnsubscribe();
         if (this.insertPoints)
             this.insertPoints.map(x => x.viewContainerRef).forEach(containerRef => containerRef.clear());
 

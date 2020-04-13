@@ -1,12 +1,13 @@
 import * as mongoose from 'mongoose';
-import { ContentService } from '../content/content.service';
 
-import { IPageDocument, PageModel, IPage } from "./models/page.model";
-import { IPageVersionDocument, PageVersionModel } from "./models/page-version.model";
-import { IPublishedPageDocument, PublishedPageModel, IPublishedPage } from './models/published-page.model';
-import { ISiteDefinitionDocument, SiteDefinitionModel } from '../site-definition/site-definition.model';
 import { NotFoundException } from '../../errorHandling';
 import { slugify } from '../../utils/slugify';
+import { ContentService } from '../content/content.service';
+import { ISiteDefinitionDocument, SiteDefinitionModel } from '../site-definition/site-definition.model';
+import { IPageVersionDocument, PageVersionModel } from "./models/page-version.model";
+import { IPage, IPageDocument, PageModel } from "./models/page.model";
+import { IPublishedPage, IPublishedPageDocument, PublishedPageModel } from './models/published-page.model';
+
 
 export class PageService extends ContentService<IPageDocument, IPageVersionDocument, IPublishedPageDocument> {
 

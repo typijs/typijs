@@ -1,6 +1,7 @@
 import { Input, Component, HostBinding } from '@angular/core';
 import { ContentTypeProperty } from '../../types/content-type';
 import { CmsImage, CmsLink } from '../../types';
+import { DomSanitizer, SafeHtml, SafeUrl } from '@angular/platform-browser';
 
 export abstract class CmsPropertyRender {
     @Input()
@@ -30,10 +31,12 @@ export class TextRender extends CmsPropertyRender { }
     template: ``
 })
 export class XHtmlRender extends CmsPropertyRender {
-    @HostBinding('innerHTML') innerHtml;
+    @HostBinding('innerHTML') innerHtml: SafeHtml;
+
+    constructor(protected sanitizer: DomSanitizer) { super(); }
 
     protected onValueChange(value: string) {
-        if (value) this.innerHtml = value;
+        if (value) this.innerHtml = this.sanitizer.bypassSecurityTrustHtml(value);
     }
 }
 
@@ -42,12 +45,13 @@ export class XHtmlRender extends CmsPropertyRender {
     template: `{{value.text}}`
 })
 export class UrlRender extends CmsPropertyRender {
-    @HostBinding('attr.href') href;
+    @HostBinding('attr.href') href: SafeUrl;
     @HostBinding('attr.target') target;
 
+    constructor(protected sanitizer: DomSanitizer) { super(); }
     protected onValueChange(value: CmsLink) {
         if (value) {
-            this.href = value.url;
+            this.href = this.sanitizer.bypassSecurityTrustUrl(value.url);
             this.target = value.target;
         }
     }
@@ -58,12 +62,13 @@ export class UrlRender extends CmsPropertyRender {
     template: ``
 })
 export class ImageRender extends CmsPropertyRender {
-    @HostBinding('attr.src') src;
+    @HostBinding('attr.src') src: SafeUrl;
     @HostBinding('attr.alt') alt;
 
+    constructor(protected sanitizer: DomSanitizer) { super(); }
     protected onValueChange(value: CmsImage) {
         if (value) {
-            this.src = value.src;
+            this.src = this.sanitizer.bypassSecurityTrustUrl(value.src);
             this.alt = value.alt;
         }
     }

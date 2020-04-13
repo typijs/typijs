@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router';
 
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faFile, faFolder, faCube, faImage, faBars, faHashtag, faList, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { EditorModule } from '@tinymce/tinymce-angular';
+import { QuillModule } from 'ngx-quill';
 
 import { CoreModule } from '@angular-cms/core';
 
@@ -43,7 +43,7 @@ registerCmsProperties();
         FormsModule,
         ReactiveFormsModule,
         RouterModule,
-        EditorModule,
+        QuillModule,
         FontAwesomeModule,
         CmsBsDropdownModule,
         CoreModule,

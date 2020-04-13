@@ -1,11 +1,18 @@
-import { Component, forwardRef, Input } from '@angular/core';
+import { Component, forwardRef, Input, Provider } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { generateUUID } from '@angular-cms/core';
+import { takeUntil } from 'rxjs/operators';
 
 import { DropEvent } from '../../shared/drag-drop/drop-event.model';
 import { SubjectService } from '../../shared/services/subject.service';
 import { ContentAreaItem } from './ContentAreaItem';
 import { CmsControl } from '../cms-control';
+
+const CONTENT_AREA_VALUE_ACCESSOR: Provider = {
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => ContentAreaControl),
+    multi: true
+}
 
 @Component({
     selector: 'content-area',
@@ -47,17 +54,11 @@ import { CmsControl } from '../cms-control';
             </div>
     `,
     styles: [`
-        .list-group {
+        .content-area .list-group {
             min-height: 80px;
         }
     `],
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => ContentAreaControl),
-            multi: true
-        }
-    ]
+    providers: [CONTENT_AREA_VALUE_ACCESSOR]
 })
 export class ContentAreaControl extends CmsControl {
     @Input() name: string;
@@ -70,12 +71,14 @@ export class ContentAreaControl extends CmsControl {
 
     constructor(private subjectService: SubjectService) {
         super();
-        this.subscriptions.push(this.subjectService.contentAreaDropFinished$.subscribe((item: ContentAreaItem) => {
-            // Handle swap item between content area by drag and drop
-            if (item.owner == this.name) {
-                this.removeItem(item);
-            }
-        }));
+        this.subjectService.contentAreaDropFinished$
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe((item: ContentAreaItem) => {
+                // Handle swap item between content area by drag and drop
+                if (item.owner == this.name) {
+                    this.removeItem(item);
+                }
+            });
     }
     //Writes a new value to the element.
     //This method is called by the forms API to write to the view when programmatic changes from model to view are requested.
@@ -85,8 +88,7 @@ export class ContentAreaControl extends CmsControl {
 
     isDropAllowed = (dragData) => {
         if (!this.allowedTypes) return true;
-        const { extendProperties } = dragData;
-        const contentType = extendProperties ? extendProperties.contentType : dragData.contentType
+        const { contentType } = dragData;
         return this.allowedTypes.indexOf(contentType) > -1;
     }
 
@@ -100,15 +102,15 @@ export class ContentAreaControl extends CmsControl {
         if (!this._model) this._model = [];
 
         const itemIndex = e.index;
-        const { _id, id, name, owner, guid, extendProperties, type, contentType, isPublished } = e.dragData;
+        const { _id, id, name, owner, guid, type, contentType, isPublished } = e.dragData;
         const item: ContentAreaItem = {
             _id: _id ? _id : id,
             name: name,
             owner: owner,
             guid: guid,
-            type: extendProperties ? extendProperties.type : type,
-            contentType: extendProperties ? extendProperties.contentType : contentType,
-            isPublished: extendProperties ? extendProperties.isPublished : isPublished
+            type: type,
+            contentType: contentType,
+            isPublished: isPublished
         };
 
         if (item.owner == this.name) {

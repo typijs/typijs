@@ -63,7 +63,7 @@
                 </div>
             </form>
             <div class='h-100 iframe-container' *ngIf="editMode == 'OnPageEdit'">
-                <iframe frameborder="0" width="100%" height="100%" [src]="previewUrl"></iframe>
+                <iframe frameborder="0" width="100%" height="100%" [src]="previewUrl | safe: 'resource'"></iframe>
                 <div [hidden]="showIframeHider === false" class="hack-iframe-hider"></div>
             </div>
         </as-split-area>

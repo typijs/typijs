@@ -5,7 +5,8 @@
     "entryFile": "src/public-api.ts",
     "umdModuleIds": {
       "@angular-cms/core": "AngularCmsCore",
-      "@angular-cms/modules": "AngularCmsModules"
+      "@angular-cms/modules": "AngularCmsModules",
+      "ngx-quill": "NgxQuill"
     }
   }
 }

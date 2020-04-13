@@ -1,4 +1,4 @@
-import { Input, ViewEncapsulation, ViewChildren, Component, QueryList, Inject } from '@angular/core';
+import { Input, ViewChildren, Component, QueryList } from '@angular/core';
 
 import { CmsTab, InsertPointDirective, BrowserStorageService } from '@angular-cms/core';
 import { SubjectService } from '@angular-cms/modules';

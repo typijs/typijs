@@ -1,5 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, UrlSegment, Params } from '@angular/router';
+import { takeUntil } from 'rxjs/operators';
 
 import {
     BLOCK_TYPE, PAGE_TYPE,
@@ -32,21 +33,23 @@ export class ContentTypeListComponent extends SubscriptionDestroy implements OnD
     ) { super() }
 
     ngOnInit() {
-        this.subscriptions.push(this.route.params.subscribe((params: Params) => {
-            this.parentId = params['parentId'] || undefined;
-            this.typeOfContent = this.getTypeContentFromUrl(this.route.snapshot.url)
+        this.route.params
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe((params: Params) => {
+                this.parentId = params['parentId'] || undefined;
+                this.typeOfContent = this.getTypeContentFromUrl(this.route.snapshot.url)
 
-            switch (this.typeOfContent) {
-                case PAGE_TYPE:
-                    this.contentName = "New Page";
-                    this.contentTypes = this.contentTypeService.getAllPageTypes();
-                    break;
-                case BLOCK_TYPE:
-                    this.contentName = "New Block";
-                    this.contentTypes = this.contentTypeService.getAllBlockTypes();
-                    break;
-            }
-        }));
+                switch (this.typeOfContent) {
+                    case PAGE_TYPE:
+                        this.contentName = "New Page";
+                        this.contentTypes = this.contentTypeService.getAllPageTypes();
+                        break;
+                    case BLOCK_TYPE:
+                        this.contentName = "New Block";
+                        this.contentTypes = this.contentTypeService.getAllBlockTypes();
+                        break;
+                }
+            });
     }
 
     private getTypeContentFromUrl(url: UrlSegment[]) {

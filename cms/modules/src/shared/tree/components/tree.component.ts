@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnInit, ContentChild, TemplateRef, ViewEncapsulation } from '@angular/core';
+import { takeUntil } from 'rxjs/operators';
 
 import { TreeStore } from '../tree-store';
 import { TreeNode } from '../interfaces/tree-node';
@@ -125,20 +126,28 @@ export class TreeComponent extends SubscriptionDestroy implements OnInit {
     }
 
     private subscribeAndEmitNodeMenuItemSelectedEvent() {
-        this.subscriptions.push(this.treeStore.nodeMenuActionEvent$.subscribe(actionEvent => {
-            this.menuItemSelected.emit(actionEvent);
-        }));
+        this.treeStore.nodeMenuActionEvent$
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(actionEvent => {
+                this.menuItemSelected.emit(actionEvent);
+            });
 
-        this.subscriptions.push(this.treeStore.nodeCut$.subscribe(node => {
-            this.nodeCut.emit(node);
-        }));
+        this.treeStore.nodeCut$
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(node => {
+                this.nodeCut.emit(node);
+            });
 
-        this.subscriptions.push(this.treeStore.nodeCopied$.subscribe(node => {
-            this.nodeCopied.emit(node);
-        }));
+        this.treeStore.nodeCopied$
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(node => {
+                this.nodeCopied.emit(node);
+            });
 
-        this.subscriptions.push(this.treeStore.nodePasted$.subscribe(node => {
-            this.nodePasted.emit(node);
-        }));
+        this.treeStore.nodePasted$
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(node => {
+                this.nodePasted.emit(node);
+            });
     }
 }

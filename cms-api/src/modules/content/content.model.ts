@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 import { cmsUser } from '../user/user.model';
-import { ICommonMetadata, ITimestamps } from '../shared/base.model';
+import { ICommonMetadata, Timestamps } from '../shared/base.model';
 
 export type RefContent = {
     refPath: string;
@@ -30,11 +30,11 @@ export interface IContentHasChildItems {
     publishedChildItems: RefContent[];
 }
 
-export interface IFolder extends ISoftDeletedContent, IHierarchyContent, ICommonMetadata, ITimestamps {
+export interface IFolder extends ISoftDeletedContent, IHierarchyContent, ICommonMetadata, Timestamps {
     name: string;
 }
 
-export interface IContent extends IContentHasChildItems, IPublishableContent, ISoftDeletedContent, IHierarchyContent, ICommonMetadata, ITimestamps {
+export interface IContent extends IContentHasChildItems, IPublishableContent, ISoftDeletedContent, IHierarchyContent, ICommonMetadata, Timestamps {
     name: string;
 
     contentType: string;

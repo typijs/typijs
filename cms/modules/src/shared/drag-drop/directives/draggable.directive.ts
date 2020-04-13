@@ -125,7 +125,7 @@ export class Draggable implements OnDestroy {
             // Firefox requires setData() to be called otherwise the drag does not work.
             // We don't use setData() to transfer data anymore so this is just a dummy call.
             if (e.dataTransfer != null) {
-                e.dataTransfer.setData('text', '');
+                e.dataTransfer.setData('data', JSON.stringify(this.dragData));
             }
 
             // Set dragImage

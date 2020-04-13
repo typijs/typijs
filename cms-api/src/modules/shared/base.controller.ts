@@ -1,7 +1,7 @@
 import * as express from 'express';
 import * as mongoose from 'mongoose';
 
-abstract class BaseCtrl<T extends mongoose.Model<mongoose.Document>> {
+export abstract class BaseCtrl<T extends mongoose.Model<mongoose.Document>> {
 
   constructor(mongooseModel: T) {
     this.model = mongooseModel;
@@ -52,5 +52,3 @@ abstract class BaseCtrl<T extends mongoose.Model<mongoose.Document>> {
       .catch(err => next(err));
   }
 }
-
-export { BaseCtrl }

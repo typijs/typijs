@@ -1,13 +1,15 @@
 import { OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
 
 export abstract class SubscriptionDestroy implements OnDestroy {
-    protected subscriptions: Subscription[] = [];
+    protected unsubscribe$: Subject<any> = new Subject();
+
     ngOnDestroy(): void {
-        this.unsubscribe();
+        this.onUnsubscribe();
     }
 
-    protected unsubscribe() {
-        this.subscriptions.forEach(subscriber => subscriber && subscriber.unsubscribe());
+    protected onUnsubscribe() {
+        this.unsubscribe$.next();
+        this.unsubscribe$.complete();
     }
 }

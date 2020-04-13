@@ -1,12 +1,17 @@
 import * as express from 'express';
 import * as mime from 'mime-types';
 
-import { IMediaDocument, FileContent, ImageContent, VideoContent } from './models/media.model';
-import * as upload from './upload';
 import { ContentController } from '../content/content.controller';
-import { IMediaVersionDocument } from './models/media-version.model';
-import { IPublishedMediaDocument } from './models/published-media.model';
 import { MediaService } from './media.service';
+import { IMediaVersionDocument } from './models/media-version.model';
+import {
+    FileContent,
+    ImageContent,
+    IMediaDocument,
+    VideoContent
+} from './models/media.model';
+import { IPublishedMediaDocument } from './models/published-media.model';
+import { uploadFile } from './upload';
 
 
 export class MediaController extends ContentController<IMediaDocument, IMediaVersionDocument, IPublishedMediaDocument> {
@@ -41,7 +46,7 @@ export class MediaController extends ContentController<IMediaDocument, IMediaVer
 
     uploadMedia = (fieldName: string): any => {
         if (!fieldName) fieldName = 'file';
-        return upload.uploadFile.single(fieldName);
+        return uploadFile.single(fieldName);
     }
 
     processMedia = async (req: express.Request, res: express.Response, next: express.NextFunction) => {

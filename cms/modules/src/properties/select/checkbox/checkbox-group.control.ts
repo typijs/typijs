@@ -1,7 +1,12 @@
 import { Component, forwardRef, Input } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { SelectItem } from '@angular-cms/core';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CmsControl } from '../../cms-control';
+
+const CHECKBOX_GROUP_VALUE_ACCESSOR = {
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => CheckboxGroupControl),
+    multi: true
+}
 
 @Component({
     selector: 'checkbox-group',
@@ -12,13 +17,7 @@ import { CmsControl } from '../../cms-control';
         </label>
     </div>
 `,
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => CheckboxGroupControl),
-            multi: true
-        }
-    ]
+    providers: [CHECKBOX_GROUP_VALUE_ACCESSOR]
 })
 export class CheckboxGroupControl extends CmsControl {
 

@@ -1,7 +1,7 @@
 import * as mongoose from 'mongoose';
 
-import { ContentService } from "../content/content.service";
 import { IContentDocument, IFolderDocument } from "../content/content.model";
+import { ContentService } from "../content/content.service";
 import { BaseService } from '../shared/base.service';
 
 export class FolderService<T extends IContentDocument> extends BaseService<T>{
