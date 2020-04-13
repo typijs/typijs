@@ -3,6 +3,8 @@ import { CmsProperty, PAGE_TYPE, MEDIA_TYPE } from '@angular-cms/core';
 import { DropEvent } from '../../shared/drag-drop/drop-event.model';
 import { QuillEditorComponent } from 'ngx-quill';
 
+import './quill-inline-style';
+import './quill-modules';
 import './ngx-quill.extension';
 
 @Component({
@@ -14,8 +16,10 @@ import './ngx-quill.extension';
                 <div droppable (onDrop)="onDropItem($event)">
                     <quill-editor
                         #editor
+                        [formControlName]="propertyName"
                         [styles]="{'height': '250px'}"
-                        [formControlName]="propertyName"></quill-editor>
+                        [modules] = "modules"
+                        (onEditorCreated)="onEditorCreated($event)"></quill-editor>
                 </div>
             </div>
         </div>
@@ -24,6 +28,21 @@ import './ngx-quill.extension';
 export class XHtmlProperty extends CmsProperty {
     @ViewChild('editor', { static: true }) editor: QuillEditorComponent;
 
+    modules: { [key: string]: any } = {}
+    constructor() {
+        super();
+        this.modules = {
+            imageResize: {},
+            clickMeButton: { handler: this.handleClickMe}
+        }
+    }
+
+    handleClickMe(event) {
+
+    }
+
+    onEditorCreated(quill) {
+    }
 
     onDropItem(e: DropEvent) {
         const { type } = e.dragData;

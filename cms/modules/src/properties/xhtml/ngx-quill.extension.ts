@@ -1,4 +1,3 @@
-import Quill from 'quill'
 import { QuillEditorComponent } from 'ngx-quill';
 
 export type InsertOperator = {
