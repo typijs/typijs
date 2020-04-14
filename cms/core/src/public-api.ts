@@ -42,6 +42,7 @@ export * from './services/page.service';
 export * from './services/media.service';
 export * from './services/browser-location.service';
 export * from './services/browser-storage.service';
+export * from './services/config.service';
 
 export * from './cms';
 export * from './core.module';

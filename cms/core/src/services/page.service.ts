@@ -12,7 +12,7 @@ import { btoa } from '../helpers/base64';
 })
 export class PageService extends ContentService<Page> {
 
-  protected apiUrl: string = "http://localhost:3000/api/page";
+  protected apiUrl: string = `${this.baseApiUrl}/page`;
   constructor(
     private locationService: BrowserLocationService,
     httpClient: HttpClient) {

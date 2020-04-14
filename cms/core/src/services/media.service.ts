@@ -10,9 +10,10 @@ import { ContentService } from './content.service';
 })
 export class MediaService extends ContentService<Media> {
 
-  protected apiUrl: string = "http://localhost:3000/api/media";
+  protected apiUrl: string = `${this.baseApiUrl}/media`;
   constructor(httpClient: HttpClient) {
     super(httpClient);
+
   }
 
   uploadMedia(folderId: string = '', file: File): Observable<HttpEvent<any>> {

@@ -9,7 +9,7 @@ import { ContentService } from './content.service';
 })
 export class BlockService extends ContentService<Block> {
 
-  protected apiUrl: string = "http://localhost:3000/api/block";
+  protected apiUrl: string = `${this.baseApiUrl}/block`;
   constructor(httpClient: HttpClient) {
     super(httpClient);
   }

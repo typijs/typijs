@@ -2,12 +2,20 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { Content } from '../models/content.model';
+import { ConfigService } from './config.service';
+import { AppInjector } from '../utils/appInjector';
 
-export abstract class FolderService<T extends Content>  {
+export class BaseService {
+  protected baseApiUrl: string = AppInjector.get(ConfigService).baseApiUrl;
+}
+
+export abstract class FolderService<T extends Content> extends BaseService {
 
   protected abstract apiUrl: string;
   protected httpClient: HttpClient;
+
   constructor(httpClient: HttpClient) {
+    super();
     this.httpClient = httpClient;
   }
 
