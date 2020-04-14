@@ -121,7 +121,7 @@ export class MediaTreeComponent extends SubscriptionDestroy {
             }));
             this.medias = childMedias;
             this.medias.forEach(file => {
-                file["path"] = `http://localhost:3000/api/assets/${file._id}/${file.name}?w=50&h=50`;
+                file["path"] = `${this.mediaService.getImageUrl(file._id, file.name)}?w=50&h=50`;
             })
         })
     }
