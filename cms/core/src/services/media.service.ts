@@ -11,9 +11,9 @@ import { ContentService } from './content.service';
 export class MediaService extends ContentService<Media> {
 
   protected apiUrl: string = `${this.baseApiUrl}/media`;
+  private apiAssetUrl: string = `${this.baseApiUrl}/assets`;
   constructor(httpClient: HttpClient) {
     super(httpClient);
-
   }
 
   uploadMedia(folderId: string = '', file: File): Observable<HttpEvent<any>> {
@@ -27,5 +27,15 @@ export class MediaService extends ContentService<Media> {
       reportProgress: true
     });
     return this.httpClient.request(req);
+  }
+
+  /**
+   * Gets image url
+   * @param id The id of media
+   * @param fileName File name must include the correct extension
+   * @returns image url 
+   */
+  getImageUrl(id: string, fileName: string): string {
+    return `${this.apiAssetUrl}/${id}/${fileName}`;
   }
 }
