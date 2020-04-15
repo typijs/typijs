@@ -52,7 +52,7 @@ import { SafePipe } from './pipes/safe.pipe';
   ]
 })
 export class CoreModule {
-  public static forRoot(): ModuleWithProviders<CoreModule> {
+  public static forChild(): ModuleWithProviders<CoreModule> {
     return {
       ngModule: CoreModule,
       providers: [...CMS.PROPERTY_PROVIDERS, CmsPropertyFactoryResolver]

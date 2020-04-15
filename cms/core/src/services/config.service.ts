@@ -8,6 +8,13 @@ export type Configuration = {
     appUrl: string
 }
 
+const defaultConfig: Configuration = {
+    baseApiUrl: 'http://localhost:3000/api',
+    appUrl: 'http://localhost:4200'
+}
+
+const configPath = '/assets/config.json';
+
 export function configLoadFactory(configService: ConfigService) {
     return (): Promise<boolean> => {
         return new Promise<boolean>((resolve: (a: boolean) => void): void => {
@@ -21,10 +28,6 @@ export function configLoadFactory(configService: ConfigService) {
                     catchError((error: { status: number }, caught: Observable<void>): ObservableInput<{}> => {
                         if (error.status !== 404) {
                             resolve(false);
-                        }
-                        const defaultConfig = {
-                            baseApiUrl: 'http://localhost:3000/api',
-                            appUrl: 'http://localhost:4200'
                         }
                         configService.setConfig(defaultConfig);
                         resolve(true);
@@ -52,7 +55,7 @@ export class ConfigService {
     }
 
     loadConfig() {
-        return this.http.get<Configuration>('/assets/config.json')
+        return this.http.get<Configuration>(configPath)
     }
 
     setConfig(configuration: Configuration) {

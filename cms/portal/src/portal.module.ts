@@ -48,7 +48,7 @@ import { QuillModule } from 'ngx-quill';
     DndModule.forRoot(),
 
     ...CMS.NG_MODULES,
-    CoreModule.forRoot(),
+    CoreModule.forChild(),
     PortalRoutingModule
   ],
   declarations: [
