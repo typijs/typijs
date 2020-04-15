@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faCubes, faFolder, faCube, faFolderPlus, faPlusSquare, faBars } from '@fortawesome/free-solid-svg-icons';
+import { faCubes, faFolder, faCube, faFolderPlus, faPlusSquare, faBars, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 import { CoreModule } from '@angular-cms/core';
 
@@ -42,6 +42,6 @@ import { BlockTreeComponent } from './block-tree.component';
 })
 export class BlockModule {
     constructor(library: FaIconLibrary) {
-        library.addIcons(faFolder, faCubes, faCube, faFolderPlus, faPlusSquare, faBars);
+        library.addIcons(faFolder, faCubes, faCube, faFolderPlus, faPlusSquare, faBars, faPlus);
     }
 }

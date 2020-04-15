@@ -31,7 +31,9 @@ const PageMenuItemAction = {
                     <fa-icon class="mr-1" *ngIf="node.id == '0'" [icon]="['fas', 'sitemap']"></fa-icon>
                     <fa-icon class="mr-1" *ngIf="node.id != '0'" [icon]="['fas', 'file']"></fa-icon>
                     <span>{{node.name}}</span>
-                    <span *ngIf="node.id == '0'" class="badge badge-info float-right mt-2 mr-1" [routerLink]="['new/page']">NEW</span>
+                    <a role="button"  class="btn btn-xs btn-secondary mr-1 float-right" href="javascript:void(0)" *ngIf="node.id == '0'" [routerLink]="['new/page']">
+                        <fa-icon [icon]="['fas', 'plus']"></fa-icon>
+                    </a>
                 </span>
             </ng-template>
         </cms-tree>

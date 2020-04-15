@@ -12,7 +12,7 @@
                 <!-- cms left panel -->
                 <as-split-area [size]="layoutConfig.panels[0].size" order="1"
                     [visible]="layoutConfig.panels[0].visible">
-                    <tabset class="tab-container-left">
+                    <tabset *ngIf="leftTabs && leftTabs.length > 0" class="tab-container-left">
                         <tab *ngFor="let tabz of leftTabs" [heading]="tabz.title">
                             <ng-template [cmsInsertPoint]="tabz.name"></ng-template>
                         </tab>
@@ -24,13 +24,20 @@
                     <as-split class="has-lock-area" gutterSize="0" unit="pixel" direction="vertical">
                         <!-- header in main content -->
                         <as-split-area size="40" lockSize="true">
-                            <div>
-                                <button type="button" class="btn btn-sm"
-                                    [ngClass]="{'btn-outline-primary': layoutConfig.panels[0].visible, 'btn-primary': !layoutConfig.panels[0].visible}"
-                                    (click)="toggleLeftPanel()">Left</button>
-                                <button type="button" class="btn btn-sm float-right"
-                                    [ngClass]="{'btn-outline-primary': layoutConfig.panels[2].visible, 'btn-primary': !layoutConfig.panels[2].visible}"
-                                    (click)="toggleRightPanel()">Right</button>
+                            <div class='d-flex'>
+                                <button type="button" class="btn btn-sm btn-primary" (click)="toggleLeftPanel()">
+                                    <fa-icon *ngIf='layoutConfig.panels[0].visible' [icon]="['fas', 'chevron-left']">
+                                    </fa-icon>
+                                    <fa-icon *ngIf='!layoutConfig.panels[0].visible' [icon]="['fas', 'chevron-right']">
+                                    </fa-icon>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-primary ml-auto"
+                                    (click)="toggleRightPanel()">
+                                    <fa-icon *ngIf='!layoutConfig.panels[2].visible' [icon]="['fas', 'chevron-left']">
+                                    </fa-icon>
+                                    <fa-icon *ngIf='layoutConfig.panels[2].visible' [icon]="['fas', 'chevron-right']">
+                                    </fa-icon>
+                                </button>
                             </div>
                         </as-split-area>
                         <!-- header in main content -->
@@ -46,7 +53,7 @@
                 <!-- cms right panel -->
                 <as-split-area [size]="layoutConfig.panels[2].size" order="3"
                     [visible]="layoutConfig.panels[2].visible">
-                    <tabset class="tab-container-right">
+                    <tabset *ngIf="rightTabs && rightTabs.length > 0" class="tab-container-right">
                         <tab *ngFor="let tabz of rightTabs" [heading]="tabz.title">
                             <ng-template [cmsInsertPoint]="tabz.name"></ng-template>
                         </tab>

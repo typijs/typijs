@@ -3,6 +3,10 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faChevronRight, faChevronLeft, faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
+
 import { CMS, CoreModule } from '@angular-cms/core';
 import {
   CmsAngularSplitModule,
@@ -32,6 +36,7 @@ import { QuillModule } from 'ngx-quill';
     FormsModule,
     ReactiveFormsModule,
 
+    FontAwesomeModule,
     CmsAngularSplitModule.forRoot(),
     CmsTabsModule.forRoot(),
     CmsBsDropdownModule.forRoot(),
@@ -57,4 +62,8 @@ import { QuillModule } from 'ngx-quill';
   ],
   providers: [WidgetService]
 })
-export class CmsPortalModule { }
+export class CmsPortalModule {
+  constructor(library: FaIconLibrary) {
+    library.addIcons(faChevronRight, faChevronLeft, faAngleUp, faAngleDown);
+  }
+}
