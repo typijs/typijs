@@ -10,8 +10,8 @@ import { ObjectListControl } from './object-list.control';
     selector: '[objectListProperty]',
     template: `
     <div class="form-group row" [formGroup]="formGroup">
-        <label [attr.for]="id" class="col-sm-4 col-form-label">{{label}}</label>
-        <div class="col-sm-8">
+        <label [attr.for]="id" class="col-3 col-form-label">{{label}}</label>
+        <div class="col-5">
             <div class="card">
                 <div class="card-body">
                     <object-list [formControlName]="propertyName"></object-list>

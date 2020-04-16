@@ -5,8 +5,8 @@ import { CmsProperty } from '@angular-cms/core';
   selector: '[textProperty]',
   template: `
     <div class="form-group row" [formGroup]="formGroup">
-        <label [attr.for]="id" class="col-sm-4 col-form-label">{{label}}</label>
-        <div class="col-sm-8">
+        <label [attr.for]="id" class="col-3 col-form-label">{{label}}</label>
+        <div class="col-5">
             <input type="text" class="form-control" 
                     [id]="id" 
                     [placeholder]="label"

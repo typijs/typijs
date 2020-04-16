@@ -5,8 +5,8 @@ import { SelectProperty } from '../select-property';
     selector: '[dropdownProperty]',
     template: `
         <div class="form-group row" [formGroup]="formGroup">
-            <label [attr.for]="id" class="col-sm-4 col-form-label">{{label}}</label>
-            <div class="col-sm-8">
+            <label [attr.for]="id" class="col-3 col-form-label">{{label}}</label>
+            <div class="col-5">
                 <select *ngIf="selectItems" class="form-control" [id]="id" [formControlName]="propertyName" [name]="propertyName">
                     <option *ngFor="let selectItem of selectItems" [value]="selectItem.value">{{selectItem.text}}</option>
                 </select>
