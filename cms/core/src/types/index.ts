@@ -22,3 +22,10 @@ export type CmsLink = {
     text: string
     target: '_blank ' | '_self' | '_parent' | '_top'
 }
+
+export type ContentReference = {
+    id: string
+    type: 'page' | 'block' | 'media' | 'folder_block' | 'folder_media'
+    contentType: string
+    [propName: string]: any
+}
