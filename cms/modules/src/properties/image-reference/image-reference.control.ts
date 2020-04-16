@@ -1,6 +1,7 @@
 import { Component, forwardRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { CmsImage } from '@angular-cms/core';
+import { CmsImage, MediaService, MEDIA_TYPE } from '@angular-cms/core';
+import { DropEvent } from '../../shared/drag-drop/drop-event.model';
 import { CmsControl } from '../cms-control';
 
 const IMAGE_REFERENCE_VALUE_ACCESSOR = {
@@ -33,15 +34,19 @@ const IMAGE_REFERENCE_VALUE_ACCESSOR = {
 export class ImageReferenceControl extends CmsControl {
     model: CmsImage;
 
+    constructor(private mediaService: MediaService) {
+        super();
+    }
+
     writeValue(value: CmsImage): void {
         this.model = value;
     }
 
-    onDropImage(e: any) {
+    onDropImage(e: DropEvent) {
         const { _id, name } = e.dragData;
         this.model = <CmsImage>{
             alt: name,
-            src: `http://localhost:3000/api/assets/${_id}/${name}`
+            src: this.mediaService.getImageUrl(_id, name)
         }
         this.onChange(this.model);
     }
@@ -50,7 +55,7 @@ export class ImageReferenceControl extends CmsControl {
         if (!dragData) return false;
         const { contentType, type } = dragData;
 
-        return contentType == 'ImageContent' && type == "media"
+        return contentType == 'ImageContent' && type == MEDIA_TYPE
     }
 
     removeImage() {

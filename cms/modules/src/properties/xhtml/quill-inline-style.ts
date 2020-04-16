@@ -1,6 +1,5 @@
 import Quill from 'quill'
 
-// configure Quill to use inline styles so the email's format properly
 const DirectionAttribute = Quill.import('attributors/attribute/direction');
 Quill.register(DirectionAttribute, true);
 

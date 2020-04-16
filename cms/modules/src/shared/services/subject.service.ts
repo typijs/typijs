@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject, BehaviorSubject } from 'rxjs';
 import { Page, Block, Media } from '@angular-cms/core';
-import { ContentAreaItem } from '../../properties/content-area/ContentAreaItem';
+import { ContentAreaItem } from '../../properties/content-area/content-area.model';
 
 @Injectable({
   // we declare that this service should be created
@@ -19,7 +19,7 @@ export class SubjectService {
   pageCreated$: Subject<Page> = new Subject<Page>();
   pageSelected$: Subject<Page> = new Subject<Page>();
 
-  contentAreaDropFinished$: Subject<ContentAreaItem> = new Subject<ContentAreaItem>();
+  contentDropFinished$: Subject<Partial<ContentAreaItem>> = new Subject<Partial<ContentAreaItem>>();
 
   portalLayoutChanged$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
@@ -47,7 +47,7 @@ export class SubjectService {
     this.pageSelected$.next(selectedPage);
   }
 
-  fireContentAreaDropFinished(contentAreaItem: ContentAreaItem) {
-    this.contentAreaDropFinished$.next(contentAreaItem);
+  fireContentDropFinished(contentAreaItem: Partial<ContentAreaItem>) {
+    this.contentDropFinished$.next(contentAreaItem);
   }
 }

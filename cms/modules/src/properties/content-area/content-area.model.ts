@@ -1,3 +1,5 @@
+import { TypeOfContent } from '../../types';
+
 export interface ContentAreaItem {
     //mongoose Object id
     _id: string;
@@ -7,7 +9,7 @@ export interface ContentAreaItem {
     owner: string;
     name: string;
     //type of content area item
-    type: 'page' | 'block' | 'media' | 'folder_block' | 'folder_media';
+    type: TypeOfContent;
     contentType: string;
     isPublished: boolean;
 }

@@ -1,4 +1,4 @@
-import { ModuleWithProviders, Injector, NgModule, PLATFORM_ID } from '@angular/core';
+import { ModuleWithProviders, Injector, NgModule, PLATFORM_ID, APP_INITIALIZER } from '@angular/core';
 import { Routes, RouteReuseStrategy } from '@angular/router';
 import { EVENT_MANAGER_PLUGINS } from '@angular/platform-browser';
 
@@ -24,9 +24,16 @@ import { PROPERTY_PROVIDERS_RENDER_TOKEN, getCmsPropertyRenderFactory, CmsProper
 
 import { ContentAreaRender } from './render/content-area/content-area';
 import { TextRender, XHtmlRender, ImageRender, UrlRender, UrlListRender, ObjectListRender } from './render/property/property-render';
+import { ConfigService, configLoadFactory } from './services/config.service';
 
 
 export const CMS_PROVIDERS = [
+    {
+        provide: APP_INITIALIZER,
+        useFactory: configLoadFactory,
+        deps: [ConfigService],
+        multi: true
+    },
     {
         provide: EVENT_MANAGER_PLUGINS,
         useClass: OutsideZoneEventPlugin,

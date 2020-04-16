@@ -6,7 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { CoreModule } from '@angular-cms/core';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faList, faDesktop, faSave, faFileExport } from '@fortawesome/free-solid-svg-icons';
+import { faList, faDesktop, faSave, faFileExport, faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 
 //import { CmsAngularSplitModule, CmsTabsModule } from '../shared/libs';
 import { CmsAngularSplitModule } from '../shared/libs/angular-split/module';
@@ -41,6 +41,6 @@ import { ContentFormEditComponent } from './content-form-edit/content-form-edit.
 })
 export class ContentModule {
     constructor(library: FaIconLibrary) {
-        library.addIcons(faList, faDesktop, faSave, faFileExport);
+        library.addIcons(faList, faDesktop, faSave, faFileExport, faExternalLinkAlt);
     }
 }

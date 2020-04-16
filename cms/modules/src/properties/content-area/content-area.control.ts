@@ -5,7 +5,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { DropEvent } from '../../shared/drag-drop/drop-event.model';
 import { SubjectService } from '../../shared/services/subject.service';
-import { ContentAreaItem } from './ContentAreaItem';
+import { ContentAreaItem } from './content-area.model';
 import { CmsControl } from '../cms-control';
 
 const CONTENT_AREA_VALUE_ACCESSOR: Provider = {
@@ -61,7 +61,7 @@ const CONTENT_AREA_VALUE_ACCESSOR: Provider = {
     providers: [CONTENT_AREA_VALUE_ACCESSOR]
 })
 export class ContentAreaControl extends CmsControl {
-    @Input() name: string;
+    @Input() propertyName: string;
     @Input() allowedTypes: string[];
 
     private _model: ContentAreaItem[];
@@ -71,11 +71,11 @@ export class ContentAreaControl extends CmsControl {
 
     constructor(private subjectService: SubjectService) {
         super();
-        this.subjectService.contentAreaDropFinished$
+        this.subjectService.contentDropFinished$
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe((item: ContentAreaItem) => {
                 // Handle swap item between content area by drag and drop
-                if (item.owner == this.name) {
+                if (item.owner == this.propertyName) {
                     this.removeItem(item);
                 }
             });
@@ -113,7 +113,7 @@ export class ContentAreaControl extends CmsControl {
             isPublished: isPublished
         };
 
-        if (item.owner == this.name) {
+        if (item.owner == this.propertyName) {
             // Sort item in content area by dnd
             const itemGuid = item.guid;
             // Insert new item
@@ -124,9 +124,9 @@ export class ContentAreaControl extends CmsControl {
         }
         else {
             // Fire event to handle swap item between Content area
-            this.subjectService.fireContentAreaDropFinished(item);
+            if (item.owner && item.guid) this.subjectService.fireContentDropFinished(item);
             // Insert new item
-            item.owner = this.name;
+            item.owner = this.propertyName;
             this.insertItemToModel(itemIndex, item);
             this.onChange(this._model);
         }

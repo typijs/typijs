@@ -21,3 +21,32 @@ body {
     height: 100%;
   }
 }
+
+/* Bootstrap button extra small */
+.btn-group-xs>.btn,
+.btn-xs {
+  padding: .125rem .2rem;
+  font-size: .875rem;
+  line-height: .5;
+}
+
+/* Custom scroll bar */
+/* width */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #bfbfbf;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #888;
+}

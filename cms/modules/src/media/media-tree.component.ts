@@ -41,7 +41,9 @@ const MediaMenuItemAction = {
                                 <fa-icon class="mr-1" *ngIf="node.id == 0" [icon]="['fas', 'photo-video']"></fa-icon>
                                 <fa-icon class="mr-1" *ngIf="node.id != 0" [icon]="['fas', 'folder']"></fa-icon>
                                 <span class="node-name">{{node.name}}</span>
-                                <span *ngIf="node.id == '0'" class="badge badge-info float-right mt-2 mr-1" (click)="clickToCreateFolder(node)">New Folder</span>
+                                <button type="button" class="btn btn-xs btn-secondary float-right mr-1" *ngIf="node.id == '0'" (click)="clickToCreateFolder(node)">
+                                    <fa-icon [icon]="['fas', 'folder-plus']"></fa-icon>
+                                </button>
                             </span>
                         </ng-template>
                     </cms-tree>
@@ -54,7 +56,7 @@ const MediaMenuItemAction = {
                             class="list-group-item list-group-item-action flex-column align-items-start p-1" 
                             [routerLink]="['content/media', media._id]">
                             <div class="d-flex align-items-center">
-                                <img class="mr-1" [src]='media["path"]'/>
+                                <img class="mr-1" [src]='media.path'/>
                                 <div class="w-100 mr-2 text-truncate">{{media.name}}</div>
                                 <fa-icon class="ml-auto" [icon]="['fas', 'bars']"></fa-icon>
                             </div>
@@ -121,7 +123,7 @@ export class MediaTreeComponent extends SubscriptionDestroy {
             }));
             this.medias = childMedias;
             this.medias.forEach(file => {
-                file["path"] = `http://localhost:3000/api/assets/${file._id}/${file.name}?w=50&h=50`;
+                file.path = `${this.mediaService.getImageUrl(file._id, file.name)}?w=50&h=50`;
             })
         })
     }

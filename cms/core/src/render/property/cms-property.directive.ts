@@ -60,12 +60,12 @@ export class CmsPropertyDirective implements OnInit, OnDestroy {
     }
 
     private setDefaultBorderStyle() {
-        this.renderer.setStyle(this.elementRef.nativeElement.parentElement, 'border', '1px solid #35cbff');
+        this.renderer.setStyle(this.elementRef.nativeElement.parentElement, 'outline', '1px solid #35cbff');
         this.renderer.setStyle(this.elementRef.nativeElement.parentElement, 'box-shadow', '');
     }
 
     private setHoverBorderStyle() {
-        this.renderer.setStyle(this.elementRef.nativeElement.parentElement, 'border', '1px solid #9FC733');
+        this.renderer.setStyle(this.elementRef.nativeElement.parentElement, 'outline', '1px solid #9FC733');
         this.renderer.setStyle(this.elementRef.nativeElement.parentElement, 'box-shadow', '0 0 5px #9FC733');
     }
 

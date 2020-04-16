@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faFolder, faPhotoVideo } from '@fortawesome/free-solid-svg-icons';
+import { faFolder, faFolderPlus, faPhotoVideo } from '@fortawesome/free-solid-svg-icons';
 
 import { CoreModule } from '@angular-cms/core';
 
@@ -59,6 +59,6 @@ import { FileSelectDirective } from './upload/file-select.directive';
 })
 export class MediaModule {
     constructor(library: FaIconLibrary) {
-        library.addIcons(faFolder, faPhotoVideo);
+        library.addIcons(faFolder, faPhotoVideo, faFolderPlus);
     }
 }

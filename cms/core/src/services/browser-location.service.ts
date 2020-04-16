@@ -1,6 +1,7 @@
 import { PLATFORM_ID, Injectable, Inject, Optional } from '@angular/core';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { REQUEST } from '@nguniversal/express-engine/tokens';
+import { ConfigService } from './config.service';
 
 //export abstract class LocationRef extends Location { }
 export type LocationRef = {
@@ -14,6 +15,7 @@ export type LocationRef = {
 })
 export class BrowserLocationService {
     constructor(
+        private configService: ConfigService,
         @Inject(PLATFORM_ID) private platformId: Object,
         @Optional() @Inject(REQUEST) private request?: any) { }
 
@@ -27,7 +29,7 @@ export class BrowserLocationService {
             };
         }
         return <LocationRef>{
-            origin: 'http://localhost:4200',
+            origin: this.configService.appUrl,
             pathname: ''
         };
     }

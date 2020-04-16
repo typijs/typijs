@@ -35,8 +35,12 @@ const BlockMenuItemAction = {
                         <fa-icon class="mr-1" *ngIf="node.id == '0'" [icon]="['fas', 'cubes']"></fa-icon>
                         <fa-icon class="mr-1" *ngIf="node.id != '0'" [icon]="['fas', 'folder']"></fa-icon>
                         <span class="node-name">{{node.name}}</span>
-                        <fa-icon [icon]="['fas', 'folder-plus']" *ngIf="node.id == '0'" class="float-right mr-1" size="lg" (click)="clickToCreateFolder(node)"></fa-icon>
-                        <fa-icon [icon]="['fas', 'plus-square']" *ngIf="node.id == '0'" class="float-right mr-1" size="lg" [routerLink]="['new/block']"></fa-icon>
+                        <button type="button" class="btn btn-xs btn-secondary float-right mr-1" *ngIf="node.id == '0'" (click)="clickToCreateFolder(node)">
+                            <fa-icon [icon]="['fas', 'folder-plus']"></fa-icon>
+                        </button>
+                        <a role="button"  class="btn btn-xs btn-secondary mr-1 float-right" href="javascript:void(0)" *ngIf="node.id == '0'" [routerLink]="['new/block']">
+                            <fa-icon [icon]="['fas', 'plus']"></fa-icon>
+                        </a>
                     </span>
                 </ng-template>
             </cms-tree>

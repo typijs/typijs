@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faFile, faFolder, faSitemap } from '@fortawesome/free-solid-svg-icons';
+import { faFile, faFolder, faSitemap, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 import { CoreModule } from '@angular-cms/core';
 
@@ -44,6 +44,6 @@ import { PageTreeComponent } from './page-tree.component';
 })
 export class PageModule {
     constructor(library: FaIconLibrary) {
-        library.addIcons(faFolder, faSitemap, faFile);
+        library.addIcons(faFolder, faSitemap, faFile, faPlus);
     }
 }

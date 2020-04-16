@@ -1,7 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
-import { CmsProperty, PAGE_TYPE, MEDIA_TYPE } from '@angular-cms/core';
-import { DropEvent } from '../../shared/drag-drop/drop-event.model';
 import { QuillEditorComponent } from 'ngx-quill';
+
+import { CmsProperty, PAGE_TYPE, MEDIA_TYPE, MediaService } from '@angular-cms/core';
+import { DropEvent } from '../../shared/drag-drop/drop-event.model';
 
 import './quill-inline-style';
 import './quill-modules';
@@ -11,8 +12,8 @@ import './ngx-quill.extension';
     selector: '[xhtmlProperty]',
     template: `
         <div class="form-group row" [formGroup]="formGroup">
-            <label [attr.for]="id" class="col-sm-4 col-form-label">{{label}}</label>
-            <div class="col-sm-8">
+            <label [attr.for]="id" class="col-3 col-form-label">{{label}}</label>
+            <div class="col-8">
                 <div droppable (onDrop)="onDropItem($event)">
                     <quill-editor
                         #editor
@@ -29,11 +30,11 @@ export class XHtmlProperty extends CmsProperty {
     @ViewChild('editor', { static: true }) editor: QuillEditorComponent;
 
     modules: { [key: string]: any } = {}
-    constructor() {
+    constructor(private mediaService: MediaService) {
         super();
         this.modules = {
             imageResize: {},
-            clickMeButton: { handler: this.handleClickMe}
+            clickMeButton: { handler: this.handleClickMe }
         }
     }
 
@@ -58,7 +59,7 @@ export class XHtmlProperty extends CmsProperty {
 
     private insertImageUrl(dragData) {
         const { _id, name } = dragData;
-        const src = `http://localhost:3000/api/assets/${_id}/${name}`;
+        const src = this.mediaService.getImageUrl(_id, name);
         const insertOps = [
             { insert: { image: src }, attributes: { width: '150' } }
         ]

@@ -14,7 +14,7 @@ import {
     ngEditMode, ngId
 } from '@angular-cms/core';
 
-import { ContentAreaItem } from "../../properties/content-area/ContentAreaItem";
+import { ContentAreaItem } from "../../properties/content-area/content-area.model";
 import { SubjectService } from '../../shared/services/subject.service';
 import { SubscriptionDestroy } from '../../shared/subscription-destroy';
 

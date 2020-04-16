@@ -1,4 +1,4 @@
-import { Property, PageType, UIHint, PageData, CmsImage } from '@angular-cms/core';
+import { Property, PageType, UIHint, PageData, CmsImage, ContentReference } from '@angular-cms/core';
 import { HomeComponent } from './home.component';
 
 @PageType({
@@ -15,10 +15,11 @@ export class HomePage extends PageData {
     logo: CmsImage;
 
     @Property({
-        displayName: "Latest Projects Page Root",
-        displayType: UIHint.Text
+        displayName: "Projects Page Root",
+        displayType: UIHint.ContentReference,
+        allowedTypes: ['PortfolioPage'],
     })
-    latestProjectRoot: string;
+    latestProjectRoot: ContentReference;
 
     @Property({
         displayName: "Highlight Features",

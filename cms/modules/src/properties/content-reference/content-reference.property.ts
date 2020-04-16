@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 import { CmsProperty } from '@angular-cms/core';
 
@@ -6,16 +6,14 @@ import { CmsProperty } from '@angular-cms/core';
     selector: '[contentReferenceProperty]',
     template: `
     <div class="form-group row" [formGroup]="formGroup">
-        <label [attr.for]="id" class="col-sm-4 col-form-label">{{label}}</label>
-        <div class="col-sm-8">
-            <div class="card">
-                <div class="card-body" >
-                    <content-reference [formControlName]="propertyName" [name]="propertyName"></content-reference>
-                </div>
-            </div>
+        <label [attr.for]="id" class="col-3 col-form-label">{{label}}</label>
+        <div class="col-5">
+            <content-reference [formControlName]="propertyName" [allowedTypes]="allowedTypes"></content-reference>
         </div>
     </div>
   `
 })
 
-export class ContentReferenceProperty extends CmsProperty {}
+export class ContentReferenceProperty extends CmsProperty {
+    @Input() allowedTypes: string[];
+}

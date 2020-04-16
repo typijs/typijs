@@ -10,15 +10,18 @@
                         </ol>
                     </nav>
                 </div>
-                <div class="ml-auto mr-2">
+                <div class="ml-auto mr-2" *ngIf="currentContent">
                     <button type="button" class="btn btn-sm btn-primary mr-1" [disabled]="!formId.dirty"
                         (click)="formId.ngSubmit.emit(false)">
                         <fa-icon class="mr-1" [icon]="['fas', 'save']"></fa-icon>Update
                     </button>
-                    <button type="button" class="btn btn-sm btn-success" [disabled]="!formId.valid"
+                    <button type="button" class="btn btn-sm btn-success mr-1" [disabled]="!formId.valid"
                         (click)="formId.ngSubmit.emit(true)">
                         <fa-icon class="mr-1" [icon]="['fas', 'file-export']"></fa-icon>Publish
                     </button>
+                    <a class="btn btn-sm btn-primary" target="_blank" [href]="currentContent.linkUrl">
+                        <fa-icon [icon]="['fas', 'external-link-alt']"></fa-icon>
+                    </a>
                 </div>
                 <div class="btn-group" btnRadioGroup [(ngModel)]="editMode">
                     <label class="btn btn-sm btn-primary" btnRadio="AllProperties" role="button">
@@ -39,8 +42,10 @@
                             <div class="card-header">
                                 <dl class="row" *ngIf="currentContent">
                                     <dt class="col-sm-3">Name</dt>
-                                    <dd class="col-sm-9">
-                                        <input type="text" class="form-control" name="name" formControlName="name"></dd>
+                                    <dd class="col-sm-5">
+                                        <input type="text" class="form-control" name="name" formControlName="name">
+                                    </dd>
+                                    <dt class='col-sm-4'></dt>
                                     <dt class="col-sm-3">Name in url</dt>
                                     <dd class="col-sm-9">{{currentContent.urlSegment}}</dd>
                                     <dt class="col-sm-3">Link url</dt>

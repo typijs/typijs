@@ -12,6 +12,7 @@ import { ObjectListFactory } from './object-list/object-list.factory';
 import { DropdownPropertyFactory, CheckboxPropertyFactory } from './select/select-property.factory';
 import { ContentReferenceProperty } from './content-reference/content-reference.property';
 import { ImageReferenceProperty } from './image-reference/image-reference.property';
+import { ContentReferenceFactory } from './content-reference/content-reference.factory';
 
 export function registerCmsProperties() {
     AngularCms.registerProperties([
@@ -22,7 +23,7 @@ export function registerCmsProperties() {
         [UIHint.Dropdown, DropdownProperty, DropdownPropertyFactory],
         [UIHint.Checkbox, CheckboxProperty, CheckboxPropertyFactory],
         [UIHint.ContentArea, ContentAreaProperty, ContentAreaFactory],
-        [UIHint.ContentReference, ContentReferenceProperty],
+        [UIHint.ContentReference, ContentReferenceProperty, ContentReferenceFactory],
         [UIHint.Image, ImageReferenceProperty]
     ])
 }

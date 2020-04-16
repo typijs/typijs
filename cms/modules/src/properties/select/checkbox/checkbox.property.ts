@@ -5,8 +5,8 @@ import { SelectProperty } from '../select-property';
     selector: '[checkboxProperty]',
     template: `
         <div class="form-group row" [formGroup]="formGroup">
-            <label class="col-sm-4 col-form-label">{{label}}</label>
-            <div class="col-sm-8">
+            <label class="col-3 col-form-label">{{label}}</label>
+            <div class="col-5">
                 <checkbox-group [formControlName]="propertyName" [selectItems] = "selectItems">
                 </checkbox-group>
             </div>
