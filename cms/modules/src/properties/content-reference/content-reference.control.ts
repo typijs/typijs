@@ -4,7 +4,7 @@ import { PAGE_TYPE, ContentReference } from '@angular-cms/core';
 
 import { DropEvent } from '../../shared/drag-drop/drop-event.model';
 import { SubjectService } from '../../shared/services/subject.service';
-import { ContentAreaItem } from '../content-area/ContentAreaItem';
+import { ContentAreaItem } from '../content-area/content-area.model';
 import { CmsControl } from '../cms-control';
 
 const CONTENT_REFERENCE_VALUE_ACCESSOR = {
