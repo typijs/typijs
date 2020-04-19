@@ -1,4 +1,6 @@
+import 'reflect-metadata';
 import * as express from 'express';
+import { Injectable } from 'injection-js';
 
 import { ContentController } from '../content/content.controller';
 import { PageService } from './page.service';
@@ -7,6 +9,7 @@ import { IPageDocument } from './models/page.model';
 import { IPageVersionDocument } from './models/page-version.model';
 import { IPublishedPageDocument } from './models/published-page.model';
 
+@Injectable()
 export class PageController extends ContentController<IPageDocument, IPageVersionDocument, IPublishedPageDocument> {
 
   private pageService: PageService;
@@ -50,6 +53,4 @@ export class PageController extends ContentController<IPageDocument, IPageVersio
       .then((savedPage: IPageDocument) => res.status(200).json(savedPage))
       .catch(error => next(error));
   }
-
-
 }

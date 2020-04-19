@@ -8,7 +8,6 @@ import { IPageVersionDocument, PageVersionModel } from "./models/page-version.mo
 import { IPage, IPageDocument, PageModel } from "./models/page.model";
 import { IPublishedPage, IPublishedPageDocument, PublishedPageModel } from './models/published-page.model';
 
-
 export class PageService extends ContentService<IPageDocument, IPageVersionDocument, IPublishedPageDocument> {
 
     private siteDefinitionModel: mongoose.Model<ISiteDefinitionDocument>

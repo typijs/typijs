@@ -1,10 +1,9 @@
 import { Router } from 'express';
-import { BlockService } from './block.service';
+import { injector } from '../../injector';
 import { BlockController } from './block.controller';
 
 const block: Router = Router();
-const blockService: BlockService = new BlockService();
-const blockController = new BlockController(blockService);
+const blockController = <BlockController>injector.get(BlockController);
 
 block.get('/folders/:parentId?', blockController.getFoldersByParentId);
 
