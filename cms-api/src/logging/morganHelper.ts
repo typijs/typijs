@@ -1,4 +1,6 @@
 import { nameOfFactory } from "../utils";
+import { HttpException } from '../errorHandling';
+import { logger } from "./logger";
 
 export enum MorganLogFormat {
     Combined = "combined",
@@ -41,3 +43,19 @@ export function morganJsonFormat(tokens, req, res) {
 
     return `{${jsonBody}}`;
 }
+
+class MorganStream {
+    write(message: string) {
+        const messageObj: MorganToken = JSON.parse(message);
+
+        const httpStatus = messageObj.status;
+        const errorMessage = `${httpStatus} - ${messageObj.method} - ${messageObj.url}`;
+        if (httpStatus < 400) {
+            logger.info(errorMessage);
+        } else {
+            logger.error('', new HttpException(httpStatus, errorMessage));
+        }
+    }
+}
+
+export const morganStream = new MorganStream();

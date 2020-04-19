@@ -1,8 +1,6 @@
 import * as winston from 'winston';
 
 import { CONFIG } from '../config/config';
-import { HttpException } from '../errorHandling';
-import { MorganToken } from './morganHelper';
 import { errorStackTracerFormat, getTransports } from './winstonHelper';
 
 const options: winston.LoggerOptions = {
@@ -18,19 +16,3 @@ const options: winston.LoggerOptions = {
 };
 
 export const logger = winston.createLogger(options);
-
-class LoggerStream {
-    write(message: string) {
-        const messageObj: MorganToken = JSON.parse(message);
-
-        const httpStatus = messageObj.status;
-        const errorMessage = `${httpStatus} - ${messageObj.method} - ${messageObj.url}`;
-        if (httpStatus < 400) {
-            logger.info(errorMessage);
-        } else {
-            logger.error('', new HttpException(httpStatus, errorMessage));
-        }
-    }
-}
-
-export const loggerStream = new LoggerStream();

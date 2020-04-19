@@ -2,26 +2,25 @@ import * as morgan from 'morgan';
 
 import { CONFIG } from '../config/config';
 import { LogLevel } from '../constants/enums';
-import { loggerStream } from './logger';
-import { morganJsonFormat, MorganLogFormat } from './morganHelper';
+import { morganJsonFormat, MorganLogFormat, morganStream } from './morganHelper';
 
-export function httpLoggerMiddleware() {
+export function loggingMiddleware() {
 
     let morganMiddleware;
 
     switch (CONFIG.LOG.LEVEL) {
         //Log all requests to winston
         case LogLevel.Debug: {
-            morganMiddleware = morgan(morganJsonFormat, { stream: loggerStream });
+            morganMiddleware = morgan(morganJsonFormat, {
+                stream: morganStream
+            });
             break;
         }
         //log only 4xx and 5xx responses to winston
         case LogLevel.Error: {
             morganMiddleware = morgan(morganJsonFormat, {
-                skip: function (req, res) {
-                    return res.statusCode < 400
-                },
-                stream: loggerStream
+                skip: function (req, res) { return res.statusCode < 400 },
+                stream: morganStream
             });
             break;
         }

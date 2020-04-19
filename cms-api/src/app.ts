@@ -5,11 +5,11 @@ import * as helmet from 'helmet';
 import * as path from 'path';
 import * as cookieParser from 'cookie-parser';
 
-import { httpLoggerMiddleware } from './logging';
-import { connectToTheDatabase } from './db/dbConnect';
-
-import { appRouter } from './routes';
+import { loggingMiddleware } from './logging';
 import { errorMiddleware } from './errorHandling';
+
+import { connectToTheDatabase } from './db/dbConnect';
+import { appRouter } from './routes';
 
 export class App {
   public express: express.Application;
@@ -27,7 +27,7 @@ export class App {
     this.express.use(cors({
       origin: 'http://localhost:4200'
     }));
-    this.express.use(httpLoggerMiddleware());
+    this.express.use(loggingMiddleware());
     this.express.use(bodyParser.json());
     this.express.use(bodyParser.urlencoded({ extended: false }));
     this.express.use(cookieParser());
