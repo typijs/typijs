@@ -5,7 +5,7 @@ import { EVENT_MANAGER_PLUGINS } from '@angular/platform-browser';
 import { CMS } from './cms';
 import { CoreModule } from "./core.module";
 import { setAppInjector } from './utils/appInjector';
-import { OutsideZoneEventPlugin } from './utils/outside-zone-event-plugin';
+import { UndetectedEventPlugin } from './utils/undetected.event';
 import { CustomRouteReuseStrategy } from './utils/route-reuse-strategy';
 
 import { LOCAL_STORAGE, localStorageFactory } from './services/browser-storage.service';
@@ -36,7 +36,7 @@ export const CMS_PROVIDERS = [
     },
     {
         provide: EVENT_MANAGER_PLUGINS,
-        useClass: OutsideZoneEventPlugin,
+        useClass: UndetectedEventPlugin,
         multi: true
     },
     {
@@ -60,15 +60,7 @@ export class AngularCms {
     }
 
     public static forRoot(): ModuleWithProviders<AngularCms> {
-        this.registerPropertyRender(UIHint.ContentArea, ContentAreaRender)
-        this.registerPropertyRender(UIHint.Text, TextRender)
-        this.registerPropertyRender(UIHint.Textarea, TextRender)
-        this.registerPropertyRender(UIHint.XHtml, XHtmlRender)
-        this.registerPropertyRender(UIHint.Image, ImageRender);
-        this.registerPropertyRender(UIHint.Url, UrlRender);
-        this.registerPropertyRender(UIHint.UrlList, UrlListRender);
-        this.registerPropertyRender(UIHint.ObjectList, ObjectListRender);
-
+        this.registerPropertyRenders();
         return {
             ngModule: AngularCms,
             providers: [...CMS_PROVIDERS, ...CMS.PROPERTY_PROVIDERS]
@@ -152,6 +144,17 @@ export class AngularCms {
         } else {
             CMS.PROPERTY_PROVIDERS.push({ provide: PROPERTY_PROVIDERS_RENDER_TOKEN, useFactory: getCmsPropertyRenderFactory(uniquePropertyUIHint), deps: [Injector], multi: true });
         }
+    }
+
+    private static registerPropertyRenders() {
+        this.registerPropertyRender(UIHint.ContentArea, ContentAreaRender)
+        this.registerPropertyRender(UIHint.Text, TextRender)
+        this.registerPropertyRender(UIHint.Textarea, TextRender)
+        this.registerPropertyRender(UIHint.XHtml, XHtmlRender)
+        this.registerPropertyRender(UIHint.Image, ImageRender);
+        this.registerPropertyRender(UIHint.Url, UrlRender);
+        this.registerPropertyRender(UIHint.UrlList, UrlListRender);
+        this.registerPropertyRender(UIHint.ObjectList, ObjectListRender);
     }
 
     /**

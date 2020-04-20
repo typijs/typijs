@@ -9,15 +9,15 @@ import { ContentService } from '@angular-cms/core';
 })
 export class LayoutComponent {
   startPage: any;
-  constructor(private contentService: ContentService) {}
+  constructor(private contentService: ContentService) { }
 
   ngOnInit() {
-    this.contentService.getStartPage().subscribe(res=>{
+    this.contentService.getStartPage().subscribe(res => {
       this.startPage = res.properties;
     })
   }
 
   clickGutter() {
-    console.log('click footer');
+    console.log('click footer without trigger change detection');
   }
 }
