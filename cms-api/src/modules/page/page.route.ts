@@ -1,10 +1,9 @@
 import { Router } from 'express';
-import { PageService } from './page.service';
+import { injector } from '../../injector';
 import { PageController } from './page.controller';
 
 const page: Router = Router();
-const pageService: PageService = new PageService();
-const pageController = new PageController(pageService);
+const pageController =  <PageController>injector.get(PageController);
 
 //get published children of page
 page.get('/published/children/:parentId', pageController.getPublishedPageChildren); //query param url =??

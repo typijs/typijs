@@ -1,10 +1,9 @@
 import { Router } from 'express';
-import { MediaService } from './media.service';
+import { injector } from '../../injector';
 import { MediaController } from './media.controller';
 
 const media: Router = Router();
-const mediaService: MediaService = new MediaService();
-const mediaController = new MediaController(mediaService);
+const mediaController = <MediaController>injector.get(MediaController);
 
 media.get('/folders/:parentId?', mediaController.getFoldersByParentId);
 

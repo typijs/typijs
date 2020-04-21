@@ -18,7 +18,7 @@ export const connectToTheDatabase = (async () => {
     logger.info(`Connected to MongoDB on ${mongodbConnection}`);
   } catch (err) {
     console.log(`${err} Could not connect to the database. Exiting Now...`);
-    logger.error(`${err} Could not connect to the database. Exiting Now...`);
+    logger.error(`Could not connect to the database. Exiting Now...`, err);
     process.exit();
   }
 })

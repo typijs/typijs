@@ -5,6 +5,8 @@
     "entryFile": "src/public-api.ts",
     "umdModuleIds": {
       "@angular-cms/core": "AngularCmsCore",
+      "@fortawesome/angular-fontawesome": "AngularFontAwesome",
+      "@fortawesome/free-solid-svg-icons": "FontAwesomeFreeSolidSvgIcons",
       "ngx-bootstrap/component-loader": "NgxBootstrapComponentLoader",
       "ngx-bootstrap/positioning": "NgxBootstrapPositioning",
       "ngx-bootstrap/dropdown": "NgxBootstrapDropdown",
@@ -13,10 +15,9 @@
       "ngx-bootstrap/progressbar": "NgxBootstrapProgressbar",
       "ngx-bootstrap/tabs": "NgxBootstrapTabs",
       "angular-split": "AngularSplit",
-      "@fortawesome/angular-fontawesome": "AngularFontAwesome",
-      "@fortawesome/free-solid-svg-icons": "FontAwesomeFreeSolidSvgIcons",
       "ngx-quill": "NgxQuill",
-      "quill": "Quill"
+      "quill": "Quill",
+      "quill-image-resize-module": "QuillImageResizeModule"
     }
   }
 }

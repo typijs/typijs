@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 
-import { NotFoundException } from '../../errorHandling';
+import { DocumentNotFoundException } from '../../errorHandling';
 import { cmsBlock } from '../block/models/block.model';
 import { cmsPublishedBlock } from '../block/models/published-block.model';
 import { cmsMedia } from '../media/models/media.model';
@@ -229,7 +229,7 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
     private getDescendants = async <K extends T>(mongooseModel: mongoose.Model<K>, parentId: string): Promise<K[]> => {
         //get source content 
         const parentContent = await this.getDocumentById(parentId);
-        if (!parentContent) throw new NotFoundException(parentId);
+        if (!parentContent) throw new DocumentNotFoundException(parentId);
         if (!parentContent.parentPath) parentContent.parentPath = ',';
 
         const startWithParentPathRegExp = new RegExp("^" + `${parentContent.parentPath}${parentContent._id},`);
@@ -248,7 +248,7 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
     protected createCopiedContent = async (sourceContentId: string, targetParentId: string): Promise<T> => {
         //get source content 
         const sourceContent = await this.getDocumentById(sourceContentId);
-        if (!sourceContent) throw new NotFoundException(sourceContentId);
+        if (!sourceContent) throw new DocumentNotFoundException(sourceContentId);
 
         //create copy content
         const newContent = this.createModelInstance(sourceContent.toObject());
@@ -296,7 +296,7 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
     protected createCutContent = async (sourceContentId: string, targetParentId: string): Promise<T> => {
         //get source content 
         const sourceContent = await this.getDocumentById(sourceContentId);
-        if (!sourceContent) throw new NotFoundException(sourceContentId);
+        if (!sourceContent) throw new DocumentNotFoundException(sourceContentId);
 
         const targetParent = await this.getDocumentById(targetParentId);
 
