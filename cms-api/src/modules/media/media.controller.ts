@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+import { Injectable } from 'injection-js';
 import * as express from 'express';
 import * as mime from 'mime-types';
 
@@ -13,7 +15,7 @@ import {
 import { IPublishedMediaDocument } from './models/published-media.model';
 import { uploadFile } from './upload';
 
-
+@Injectable()
 export class MediaController extends ContentController<IMediaDocument, IMediaVersionDocument, IPublishedMediaDocument> {
 
     private mediaService: MediaService;

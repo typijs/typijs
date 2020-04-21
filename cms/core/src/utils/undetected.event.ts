@@ -2,13 +2,17 @@ import { Injectable } from '@angular/core';
 import { EventManager } from '@angular/platform-browser';
 
 /**
- * Credit to Michael Strobel from:
- * https://github.com/kryops/ng2-events
+ * Listen to events without triggering change detection
+ * 
+ * Credit: https://github.com/kryops/ng2-events/blob/master/src/undetected/undetected.event.ts
+ * 
+ * Usage:
+ * <button (undetected.click)="handleClick()"></button>
  */
 @Injectable()
-export class OutsideZoneEventPlugin {
+export class UndetectedEventPlugin {
     manager: EventManager;
-    private prefixEventName = 'outside-angular-zone.';
+    private prefixEventName = 'undetected.';
 
     supports(eventName: string): boolean {
         return eventName.indexOf(this.prefixEventName) === 0;

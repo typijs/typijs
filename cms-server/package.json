@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
+    "preserve": "tsc -p ../cms-api",
     "serve": "node dist/server.js",
     "predev": "tsc -p ../cms-api",
     "dev": "concurrently \"tsc -w -p ../cms-api\" \"nodemon --inspect --watch ../cms-api/dist dist/server.js\"",
@@ -14,7 +15,8 @@
   "author": "danghung1202@gmail.com",
   "dependencies": {
     "@angular-cms/api": "0.0.1",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "tslib": "^1.11.1"
   },
   "devDependencies": {
     "@types/express": "^4.17.1",

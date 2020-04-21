@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+import { Injectable } from 'injection-js';
 import * as express from 'express';
 
 import { IBlockDocument } from './models/block.model';
@@ -6,6 +8,7 @@ import { IBlockVersionDocument } from './models/block-version.model';
 import { IPublishedBlockDocument } from './models/published-block.model';
 import { BlockService } from './block.service';
 
+@Injectable()
 export class BlockController extends ContentController<IBlockDocument, IBlockVersionDocument, IPublishedBlockDocument> {
 
     private blockService: BlockService;

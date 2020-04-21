@@ -3,7 +3,7 @@
  */
 
 export * from './utils/appInjector';
-export * from './utils/outside-zone-event-plugin';
+export * from './utils/undetected.event';
 export * from './utils/route-reuse-strategy';
 
 export * from './bases/cms-component';

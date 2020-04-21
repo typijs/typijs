@@ -12,6 +12,26 @@ export class DefaultRouteReuseStrategy implements RouteReuseStrategy {
     }
 }
 
+/**
+ * Custom route reuse strategy
+ * 
+ * Usage:
+ * ```typescript
+ * const routes: Routes = [
+        {
+            path: '',
+            component: LayoutComponent,
+            children: [
+            {
+                path: '**',
+                data: { reuse: false }, //pass reuse param to CustomRouteReuseStrategy
+                component: CmsContentRender,
+            }
+            ]
+        }
+    ]
+ * ```
+ */
 @Injectable()
 export class CustomRouteReuseStrategy extends DefaultRouteReuseStrategy {
     shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot): boolean {
