@@ -1,14 +1,12 @@
 import * as bodyParser from 'body-parser';
+import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
 import * as express from 'express';
-import * as helmet from 'helmet';
 import * as path from 'path';
-import * as cookieParser from 'cookie-parser';
-
-import { loggingMiddleware } from './logging';
-import { errorMiddleware } from './errorHandling';
 
 import { connectToTheDatabase } from './db/dbConnect';
+import { errorConverter, errorHandler } from './errorHandling';
+import { loggingMiddleware } from './logging';
 import { appRouter } from './routes';
 
 export class App {
@@ -17,10 +15,14 @@ export class App {
   constructor() {
     this.express = express();
 
-    connectToTheDatabase();
+    this.setDatabaseConnection();
     this.setMiddlewares();
     this.setRoutes();
     this.setErrorHandling();
+  }
+
+  private setDatabaseConnection() {
+    connectToTheDatabase();
   }
 
   private setMiddlewares(): void {
@@ -37,12 +39,13 @@ export class App {
   private setRoutes(): void {
     this.express.use('/', express.static(path.join(__dirname, '../public')));
     this.express.use('/api', appRouter);
-    this.express.get('/*', function (req, res) {
+    this.express.get('/*', function (req: express.Request, res: express.Response) {
       res.sendFile(path.join(__dirname, '../public/index.html'));
     });
   }
 
   private setErrorHandling(): void {
-    this.express.use(errorMiddleware);
+    this.express.use(errorConverter);
+    this.express.use(errorHandler);
   }
 }

@@ -4,6 +4,10 @@ import { CONFIG } from '../config/config';
 import { LogLevel } from '../constants/enums';
 import { morganJsonFormat, MorganLogFormat, morganStream } from './morganHelper';
 
+/**
+ * Create a new morgan logger middleware
+ * @returns morgan logger middleware
+ */
 export function loggingMiddleware() {
 
     let morganMiddleware;

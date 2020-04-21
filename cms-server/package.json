@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
+    "preserve": "tsc -p ../cms-api",
     "serve": "node dist/server.js",
     "predev": "tsc -p ../cms-api",
     "dev": "concurrently \"tsc -w -p ../cms-api\" \"nodemon --inspect --watch ../cms-api/dist dist/server.js\"",

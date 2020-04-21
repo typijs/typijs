@@ -1,5 +1,4 @@
 import { nameOfFactory } from "../utils";
-import { HttpException } from '../errorHandling';
 import { logger } from "./logger";
 
 export enum MorganLogFormat {
@@ -52,8 +51,6 @@ class MorganStream {
         const errorMessage = `${httpStatus} - ${messageObj.method} - ${messageObj.url}`;
         if (httpStatus < 400) {
             logger.info(errorMessage);
-        } else {
-            logger.error('', new HttpException(httpStatus, errorMessage));
         }
     }
 }

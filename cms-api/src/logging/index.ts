@@ -1,2 +1,2 @@
 export * from './logger';
-export * from './logging.middleware';
+export * from './loggingMiddleware';

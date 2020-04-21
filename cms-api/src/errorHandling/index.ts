@@ -1,2 +1,3 @@
-export * from './error.middleware';
+export * from './errorConverter';
+export * from './errorHandler';
 export * from './exceptions';
