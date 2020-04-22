@@ -1,8 +1,9 @@
 import { Router } from 'express';
+import { asyncRouterHandler } from '../../errorHandling';
 import { injector } from '../../injector';
 import { MediaController } from './media.controller';
 
-const media: Router = Router();
+const media: Router = asyncRouterHandler(Router());
 const mediaController = <MediaController>injector.get(MediaController);
 
 media.get('/folders/:parentId?', mediaController.getFoldersByParentId);

@@ -1,2 +1,2 @@
-export * from './HttpException';
+export * from './Exception';
 export * from './DocumentNotFoundException';

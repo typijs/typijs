@@ -1,5 +1,6 @@
 import * as express from 'express';
 import * as mongoose from 'mongoose';
+import * as httpStatus from 'http-status';
 
 import { IContentDocument } from '../content/content.model';
 import { FolderService } from './folder.service';
@@ -12,33 +13,25 @@ export abstract class FolderController<T extends IContentDocument> {
     }
 
     //Create new folder
-    createFolderContent = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    createFolderContent = async (req: express.Request, res: express.Response) => {
         const contentFolder = this.folderService.createModelInstance(req.body);
-
-        //get parent folder
-        this.folderService.createContentFolder(contentFolder)
-            .then(item => res.status(200).json(item))
-            .catch(err => next(err))
+        const item = await this.folderService.createContentFolder(contentFolder)
+        res.status(httpStatus.OK).json(item)
     }
 
-    updateFolderName = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    updateFolderName = async (req: express.Request, res: express.Response) => {
         const contentFolder = this.folderService.createModelInstance(req.body);
-
-        this.folderService.updateFolderName(req.params.id, contentFolder.name)
-            .then(item => res.status(200).json(item))
-            .catch(err => next(err));
+        const item = await this.folderService.updateFolderName(req.params.id, contentFolder.name)
+        res.status(httpStatus.OK).json(item)
     }
 
-    getFoldersByParentId = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        this.folderService.getFolderChildren(req.params.parentId)
-            .then(items => res.status(200).json(items))
-            .catch(err => next(err))
+    getFoldersByParentId = async (req: express.Request, res: express.Response) => {
+        const items = await this.folderService.getFolderChildren(req.params.parentId)
+        res.status(httpStatus.OK).json(items)
     }
 
-    getContentsByFolder = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        this.folderService.getContentsByFolder(req.params.parentId)
-            .then(items => res.status(200).json(items))
-            .catch(err => next(err))
+    getContentsByFolder = async (req: express.Request, res: express.Response) => {
+        const items = this.folderService.getContentsByFolder(req.params.parentId)
+        res.status(httpStatus.OK).json(items)
     }
-
 }

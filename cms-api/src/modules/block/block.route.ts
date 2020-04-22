@@ -1,8 +1,9 @@
 import { Router } from 'express';
+import { asyncRouterHandler } from '../../errorHandling';
 import { injector } from '../../injector';
 import { BlockController } from './block.controller';
 
-const block: Router = Router();
+const block: Router = asyncRouterHandler(Router());
 const blockController = <BlockController>injector.get(BlockController);
 
 block.get('/folders/:parentId?', blockController.getFoldersByParentId);

@@ -11,7 +11,7 @@ export function errorHandler(err: AppError, req: Request, res: Response, next: N
   logger.error(err);
 
   const response = {
-    code: statusCode,
+    statusCode,
     message,
     ...(CONFIG.APP.ENV === NodeEnv.Development && { stack: err.stack })
   }

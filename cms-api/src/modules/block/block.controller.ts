@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import { Injectable } from 'injection-js';
+import * as httpStatus from 'http-status';
 import * as express from 'express';
 
 import { IBlockDocument } from './models/block.model';
@@ -17,11 +18,9 @@ export class BlockController extends ContentController<IBlockDocument, IBlockVer
         this.blockService = blockService;
     }
 
-    update = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-        const pageDocument = this.blockService.createModelInstance(req.body);
-
-        this.blockService.updateAndPublishContent(req.params.id, pageDocument)
-            .then((savedPage: IBlockDocument) => res.status(200).json(savedPage))
-            .catch(error => next(error));
+    update = async (req: express.Request, res: express.Response) => {
+        const blockDocument = this.blockService.createModelInstance(req.body);
+        const savedBlock = await this.blockService.updateAndPublishContent(req.params.id, blockDocument)
+        res.status(httpStatus.OK).json(savedBlock)
     }
 }

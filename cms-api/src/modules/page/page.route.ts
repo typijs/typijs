@@ -1,12 +1,13 @@
 import { Router } from 'express';
+import { asyncRouterHandler } from '../../errorHandling';
 import { injector } from '../../injector';
 import { PageController } from './page.controller';
 
-const page: Router = Router();
-const pageController =  <PageController>injector.get(PageController);
+const page: Router = asyncRouterHandler(Router());
+const pageController = <PageController>injector.get(PageController);
 
 //get published children of page
-page.get('/published/children/:parentId', pageController.getPublishedPageChildren); //query param url =??
+page.get('/published/children/:parentId', pageController.getPublishedPageChildren);
 //get published page by url
 page.get('/published/:url', pageController.getByUrl); //query param url =??
 //get children of page

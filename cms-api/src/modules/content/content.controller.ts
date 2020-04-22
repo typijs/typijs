@@ -1,4 +1,5 @@
 import * as express from 'express';
+import * as httpStatus from 'http-status';
 
 import { FolderController } from '../folder/folder.controller';
 import { IContentDocument, IContentVersionDocument, IPublishedContentDocument } from './content.model';
@@ -12,38 +13,31 @@ export abstract class ContentController<T extends IContentDocument, V extends IC
     this.contentService = contentService;
   }
 
-  get = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    this.contentService.getPopulatedContentById(req.params.id)
-      .then(item => res.status(200).json(item))
-      .catch(err => next(err));
+  get = async (req: express.Request, res: express.Response) => {
+    const item = await this.contentService.getPopulatedContentById(req.params.id)
+    res.status(httpStatus.OK).json(item)
   }
 
-  insert = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  insert = async (req: express.Request, res: express.Response) => {
     const contentDocument = this.contentService.createModelInstance(req.body);
-
-    //get parent folder
-    this.contentService.executeCreateContentFlow(contentDocument)
-      .then(item => res.status(200).json(item))
-      .catch(err => next(err))
+    const item = await this.contentService.executeCreateContentFlow(contentDocument)
+    res.status(httpStatus.OK).json(item)
   }
 
-  delete = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    this.contentService.executeDeleteContentFlow(req.params.id)
-      .then((deleteResult: [T, any]) => res.status(200).json(deleteResult))
-      .catch(error => next(error));
+  delete = async (req: express.Request, res: express.Response) => {
+    const deleteResult = await this.contentService.executeDeleteContentFlow(req.params.id)
+    res.status(httpStatus.OK).json(deleteResult)
   }
 
-  cut = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  cut = async (req: express.Request, res: express.Response) => {
     const { sourceContentId, targetParentId } = req.body;
-    this.contentService.executeCutContentFlow(sourceContentId, targetParentId)
-      .then(item => res.status(200).json(item))
-      .catch(error => next(error));
+    const item = await this.contentService.executeCutContentFlow(sourceContentId, targetParentId)
+    res.status(httpStatus.OK).json(item)
   }
 
-  copy = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  copy = async (req: express.Request, res: express.Response) => {
     const { sourceContentId, targetParentId } = req.body;
-    this.contentService.executeCopyContentFlow(sourceContentId, targetParentId)
-      .then(item => res.status(200).json(item))
-      .catch(error => next(error));
+    const item = await this.contentService.executeCopyContentFlow(sourceContentId, targetParentId)
+    res.status(httpStatus.OK).json(item)
   }
 }
