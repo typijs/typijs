@@ -1,7 +1,8 @@
-import { HttpException } from './HttpException';
+import * as httpStatus from 'http-status';
+import { Exception } from './Exception';
 
-export class DocumentNotFoundException extends HttpException {
+export class DocumentNotFoundException extends Exception {
     constructor(documentId: string) {
-        super(404, `The Document with id ${documentId} is not found`);
+        super(httpStatus.NOT_FOUND, `The Document with id ${documentId} is not found`);
     }
 }

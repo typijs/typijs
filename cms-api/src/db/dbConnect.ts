@@ -1,18 +1,18 @@
 import * as mongoose from 'mongoose';
 import { logger } from '../logging';
-import { CONFIG } from '../config/config';
+import { config } from '../config/config';
 
 function getMongoConnection() {
-  let AUTHENTICATION = '';
-  if (CONFIG.MONGO.DB_USER && CONFIG.MONGO.DB_PASSWORD) {
-    AUTHENTICATION = `${CONFIG.MONGO.DB_USER}:${CONFIG.MONGO.DB_PASSWORD}@`;
+  let authentication = '';
+  if (config.mongoose.dbUser && config.mongoose.dbPassword) {
+    authentication = `${config.mongoose.dbUser}:${config.mongoose.dbPassword}@`;
   }
-  return `mongodb://${AUTHENTICATION}${CONFIG.MONGO.DB_HOST}:${CONFIG.MONGO.DB_PORT}/${CONFIG.MONGO.DB_NAME}`;
+  return `mongodb://${authentication}${config.mongoose.host}:${config.mongoose.port}/${config.mongoose.dbName}`;
 }
 
 export const connectToTheDatabase = (async () => {
   try {
-    var mongodbConnection = getMongoConnection();
+    const mongodbConnection = getMongoConnection();
     await mongoose.connect(mongodbConnection, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true, useFindAndModify: false });
     console.log('Connected to MongoDB on', mongodbConnection);
     logger.info(`Connected to MongoDB on ${mongodbConnection}`);

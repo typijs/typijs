@@ -1,6 +1,6 @@
 import * as morgan from 'morgan';
 
-import { CONFIG } from '../config/config';
+import { config } from '../config/config';
 import { LogLevel } from '../constants/enums';
 import { morganJsonFormat, MorganLogFormat, morganStream } from './morganHelper';
 
@@ -12,7 +12,7 @@ export function loggingMiddleware() {
 
     let morganMiddleware;
 
-    switch (CONFIG.LOG.LEVEL) {
+    switch (config.log.level) {
         //Log all requests to winston
         case LogLevel.Debug: {
             morganMiddleware = morgan(morganJsonFormat, {

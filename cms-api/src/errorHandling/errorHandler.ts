@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { CONFIG } from '../config/config';
+import { config } from '../config/config';
 import { NodeEnv } from '../constants/enums';
 import { logger } from '../logging';
 import { AppError } from './AppError';
@@ -11,9 +11,9 @@ export function errorHandler(err: AppError, req: Request, res: Response, next: N
   logger.error(err);
 
   const response = {
-    code: statusCode,
+    statusCode,
     message,
-    ...(CONFIG.APP.ENV === NodeEnv.Development && { stack: err.stack })
+    ...(config.app.env === NodeEnv.Development && { stack: err.stack })
   }
 
   res.status(statusCode).send(response);
