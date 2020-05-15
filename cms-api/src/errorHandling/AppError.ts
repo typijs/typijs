@@ -1,3 +1,6 @@
+/**
+ * Base App error class: All application error must be inherited from this class
+ */
 export class AppError extends Error {
     public statusCode: number;
     public message: string;

@@ -26,13 +26,18 @@ export class App {
   }
 
   private setMiddlewares(): void {
+    // enable CORS - Cross Origin Resource Sharing
     this.express.use(cors({
       origin: 'http://localhost:4200'
     }));
+    // request logging
     this.express.use(loggingMiddleware());
+    // parse body params and attache them to req.body
     this.express.use(bodyParser.json());
     this.express.use(bodyParser.urlencoded({ extended: false }));
     this.express.use(cookieParser());
+    // gzip compression
+    //this.express.use(compress());
     //this.express.use(helmet());
   }
 
@@ -45,7 +50,9 @@ export class App {
   }
 
   private setErrorHandling(): void {
+    //add middleware to convert all errors to AppError class
     this.express.use(errorConverter);
+    //handler for all errors
     this.express.use(errorHandler);
   }
 }
