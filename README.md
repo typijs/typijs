@@ -115,6 +115,35 @@ Check it out with other nice features:
 
 However, it still need a storage to store data, right?. Angular CMS uses the API system which was built by ExpressJS (NodeJS framework) and MongoDB (using mongoose as ORM)
 
+## Screenshots
+
+**The minimal, simple, clear screen for Editor to edit content**
+
+![cms-demo-site](resources/images/new-cms-editor.jpg)
+
+**On page preview**
+
+![cms-demo-site](resources/images/on-page-preview.jpg)
+
+**Upload media by drag & drop**
+
+![cms-demo-site](resources/images/upload-media-progress.jpg)
+
+**Edit content by drag & drop block into Content area**
+
+![cms-demo-site](resources/images/dnd-item-content-area.jpg)
+
+**Drop image into Html editor**
+
+![cms-demo-site](resources/images/drop-image-wyswyg.jpg)
+
+**Content tree view with menu and inline edit**
+
+![cms-demo-site](resources/images/tree-view-menu.jpg)
+
+![cms-demo-site](resources/images/tree-view-inline.jpg)
+
+
 ## Prerequisites
 Need to install
 * Node.js version 10.9.0 or later
