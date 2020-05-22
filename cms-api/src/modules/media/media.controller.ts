@@ -39,7 +39,7 @@ export class MediaController extends ContentController<IMediaDocument, IMediaVer
             res.writeHead(httpStatus.OK, { 'Content-type': mime.lookup(fileName) });
             stream.pipe(res);
         } else {
-            res.status(404).json("404 - File Not Found");
+            res.status(httpStatus.NOT_FOUND).json(`${httpStatus.NOT_FOUND}-File Not Found`);
         }
     }
 
