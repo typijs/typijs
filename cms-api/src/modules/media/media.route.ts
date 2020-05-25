@@ -14,7 +14,7 @@ media.put('/folder/:id', mediaController.updateFolderName);
 
 media.get('/children/:parentId?', mediaController.getContentsByFolder);
 
-media.post('/upload/:parentId?', mediaController.uploadMedia('file'), mediaController.processMedia)
+media.post('/upload/:parentId?', validate(requiredParentId), mediaController.storeMediaInDisk('file'), mediaController.processMedia)
 
 media.post('/cut', mediaController.cut);
 

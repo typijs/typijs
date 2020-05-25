@@ -14,7 +14,7 @@ import {
     VideoContent
 } from './models/media.model';
 import { IPublishedMediaDocument } from './models/published-media.model';
-import { uploadFile } from './upload';
+import { uploadFile } from './multerUpload';
 
 @Injectable()
 export class MediaController extends ContentController<IMediaDocument, IMediaVersionDocument, IPublishedMediaDocument> {
@@ -43,7 +43,7 @@ export class MediaController extends ContentController<IMediaDocument, IMediaVer
         }
     }
 
-    uploadMedia = (fieldName: string): any => {
+    storeMediaInDisk = (fieldName: string): any => {
         if (!fieldName) fieldName = 'file';
         return uploadFile.single(fieldName);
     }
