@@ -1,4 +1,8 @@
-export function slugify(text: string): string {
+/**
+ * The function to generate search engine friendly and user friendly URL slugs
+ * @param text will be url or whatever
+ */
+export const slugify = (text: string): string => {
     const a = 'àáâäæãåāăąçćčđďèéêëēėęěğǵḧîïíīįìłḿñńǹňôöòóœøōõőṕŕřßśšşșťțûüùúūǘůűųẃẍÿýžźż·/_,:;'
     const b = 'aaaaaaaaaacccddeeeeeeeegghiiiiiilmnnnnoooooooooprrsssssttuuuuuuuuuwxyyzzz------'
     const p = new RegExp(a.split('').join('|'), 'g')

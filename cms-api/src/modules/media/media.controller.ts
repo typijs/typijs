@@ -14,7 +14,7 @@ import {
     VideoContent
 } from './models/media.model';
 import { IPublishedMediaDocument } from './models/published-media.model';
-import { uploadFile } from './upload';
+import { uploadFile } from './multerUpload';
 
 @Injectable()
 export class MediaController extends ContentController<IMediaDocument, IMediaVersionDocument, IPublishedMediaDocument> {
@@ -39,11 +39,11 @@ export class MediaController extends ContentController<IMediaDocument, IMediaVer
             res.writeHead(httpStatus.OK, { 'Content-type': mime.lookup(fileName) });
             stream.pipe(res);
         } else {
-            res.status(404).json("404 - File Not Found");
+            res.status(httpStatus.NOT_FOUND).json(`${httpStatus.NOT_FOUND}-File Not Found`);
         }
     }
 
-    uploadMedia = (fieldName: string): any => {
+    storeMediaInDisk = (fieldName: string): any => {
         if (!fieldName) fieldName = 'file';
         return uploadFile.single(fieldName);
     }

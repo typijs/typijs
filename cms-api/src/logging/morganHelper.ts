@@ -1,4 +1,4 @@
-import { nameOfFactory } from "../utils";
+import { nameOfFactory } from "../utils/nameOf";
 import { logger } from "./logger";
 
 export enum MorganLogFormat {
