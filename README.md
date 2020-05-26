@@ -146,7 +146,7 @@ However, it still need a storage to store data, right?. Angular CMS uses the API
 
 ## Prerequisites
 Need to install
-* Node.js version 10.9.0 or later
+* Node.js version 12+ or later
 * MongoDB
 
 ## Module dependency
@@ -216,7 +216,7 @@ We are current on Alpha
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the GNU License - see the [LICENSE](LICENSE) file for details
 
 ## Acknowledgments
 
