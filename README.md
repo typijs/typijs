@@ -145,9 +145,13 @@ However, it still need a storage to store data, right?. Angular CMS uses the API
 
 
 ## Prerequisites
-Need to install
+Must install:
 * Node.js version 12+ or later
 * MongoDB
+  
+Optional:
+* MongoDB Compass Community (Optional)
+* Visual Studio Code
 
 ## Module dependency
 
@@ -195,7 +199,15 @@ For example, in my local, I have the db path like as `D:/ProgramData/MongoDB/dat
 
 > If you install the MongoDB and run it as the service in Window, you can skip this step
 
-2. Final step, under `cms` folder, run the command sequentially
+2.  After the MongDb instance running, you can use the example data under the resources/db. Each json file will be corresponding to one collection in Mongo
+
+> Using Mongo Compass to backup these collections
+   
+
+![cms-demo-site](resources/images/db.jpg)
+
+
+3. Final step, under `cms` folder, run the command sequentially
 ```
     npm install
     ng build core
