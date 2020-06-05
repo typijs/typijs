@@ -9,7 +9,7 @@ export abstract class ContentController<T extends IContentDocument, V extends IC
   private contentService: ContentService<T, V, P>;
 
   constructor(contentService: ContentService<T, V, P>) {
-    super(contentService.getContentModel());
+    super(contentService);
     this.contentService = contentService;
   }
 

@@ -1,42 +1,36 @@
-import * as mongoose from 'mongoose';
-
-import { IContentDocument, IFolderDocument } from "../content/content.model";
-import { ContentService } from "../content/content.service";
+import { IContentDocument, IFolderDocument, IContentModel } from "../content/content.model";
 import { BaseService } from '../shared/base.service';
+import { DocumentNotFoundException } from '../../errorHandling';
 
-export class FolderService<T extends IContentDocument> extends BaseService<T>{
+export abstract class FolderService<T extends IContentDocument> extends BaseService<T>{
 
-    private contentService: ContentService<T, null, null>;
-    private folderModel: mongoose.Model<T>;
+    private folderModel: IContentModel<T>;
 
-    constructor(folderModel: mongoose.Model<T>) {
+    constructor(folderModel: IContentModel<T>) {
         super(folderModel);
         this.folderModel = folderModel;
-        this.contentService = new ContentService(folderModel, null, null);
     }
 
     public createContentFolder = async (contentFolder: T): Promise<IFolderDocument> => {
         contentFolder.contentType = null;
         contentFolder.properties = null;
-        const savedContent = await this.contentService.createContent(contentFolder, parentFolder);
-        if (savedContent) await this.contentService.updateHasChildren(parentFolder);
         const parentFolder = await this.getById(contentFolder.parentId);
+        const savedContent = await this.createContent(contentFolder, parentFolder);
+        if (savedContent) await this.updateHasChildren(parentFolder);
 
         return savedContent;
     }
 
     public updateFolderName = async (id: string, name: string): Promise<IFolderDocument> => {
-        const currentFolder = await this.getDocumentById(id);
-        if (currentFolder) {
-            currentFolder.changed = new Date();
-            //TODO: currentPage.changedBy = userId
-            currentFolder.contentType = null;
-            currentFolder.properties = null;
-            currentFolder.name = name;
-            return currentFolder.save();
-        }
+        const currentFolder = await this.getById(id);
+        if (!currentFolder) throw new DocumentNotFoundException(id);
 
-        return null;
+        currentFolder.updatedAt = new Date();
+        //TODO: currentPage.changedBy = userId
+        currentFolder.contentType = null;
+        currentFolder.properties = null;
+        currentFolder.name = name;
+        return currentFolder.save();
     }
 
     public getFolderChildren = (parentId: string): Promise<IFolderDocument[]> => {
@@ -51,4 +45,7 @@ export class FolderService<T extends IContentDocument> extends BaseService<T>{
         return this.folderModel.find({ parentId: parentId, isDeleted: false, contentType: { $ne: null } }).lean().exec()
     }
 
+    public abstract createContent(newContent: T, parentContent: T): Promise<T>
+
+    public abstract updateHasChildren(content: IContentDocument): Promise<boolean>
 }

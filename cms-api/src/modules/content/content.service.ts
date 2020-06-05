@@ -7,7 +7,6 @@ import { cmsMedia } from '../media/models/media.model';
 import { cmsPublishedMedia } from '../media/models/published-media.model';
 import { cmsPage } from '../page/models/page.model';
 import { cmsPublishedPage } from '../page/models/published-page.model';
-import { BaseService } from '../shared/base.service';
 import {
     IContent,
     IContentDocument,
@@ -15,15 +14,19 @@ import {
     IContentVersionDocument,
     IPublishedContent,
     IPublishedContentDocument,
-    RefContent
+    RefContent,
+    IContentModel,
+    IContentVersionModel,
+    IPublishedContentModel
 } from './content.model';
+import { FolderService } from '../folder/folder.service';
 
-export class ContentService<T extends IContentDocument, V extends IContentVersionDocument & T, P extends IPublishedContentDocument & V> extends BaseService<T> {
-    protected contentModel: mongoose.Model<T>;
-    protected contentVersionModel: mongoose.Model<V>;
-    protected publishedContentModel: mongoose.Model<P>;
+export class ContentService<T extends IContentDocument, V extends IContentVersionDocument & T, P extends IPublishedContentDocument & V> extends FolderService<T> {
+    protected contentModel: IContentModel<T>;
+    protected contentVersionModel: IContentVersionModel<V>;
+    protected publishedContentModel: IPublishedContentModel<P>;
 
-    constructor(contentModel: mongoose.Model<T>, contentVersionModel: mongoose.Model<V>, publishedContentModel: mongoose.Model<P>) {
+    constructor(contentModel: IContentModel<T>, contentVersionModel: IContentVersionModel<V>, publishedContentModel: IPublishedContentModel<P>) {
         super(contentModel);
         this.contentModel = contentModel;
         this.contentVersionModel = contentVersionModel;

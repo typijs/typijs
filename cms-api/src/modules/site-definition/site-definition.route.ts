@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import { asyncRouterHandler } from '../../errorHandling';
-import { SiteDefinitionCtrl } from './site-definition.controller';
+import { SiteDefinitionController } from './site-definition.controller';
 
 const sideDefinition: Router = asyncRouterHandler(Router());
-const controller = new SiteDefinitionCtrl();
+const controller = new SiteDefinitionController();
 
 sideDefinition.get('/site-definition', controller.getAll);
 

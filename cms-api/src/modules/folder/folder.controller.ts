@@ -1,15 +1,16 @@
 import * as express from 'express';
-import * as mongoose from 'mongoose';
 import * as httpStatus from 'http-status';
 
 import { IContentDocument } from '../content/content.model';
 import { FolderService } from './folder.service';
+import { BaseController } from '../shared/base.controller';
 
-export abstract class FolderController<T extends IContentDocument> {
+export abstract class FolderController<T extends IContentDocument> extends BaseController<T> {
     private folderService: FolderService<T>;
 
-    constructor(contentModel: mongoose.Model<T>) {
-        this.folderService = new FolderService(contentModel);
+    constructor(folderService: FolderService<T>) {
+        super(folderService);
+        this.folderService = folderService;
     }
 
     //Create new folder
