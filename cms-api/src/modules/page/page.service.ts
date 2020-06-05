@@ -99,9 +99,9 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
     }
 
     private createPage = async (newPage: IPageDocument, parentPage: IPageDocument, urlSegment: string): Promise<IPageDocument> => {
-        newPage.created = new Date();
+        newPage.createdAt = new Date();
         //pageObj.createdBy = userId;
-        newPage.changed = new Date();
+        newPage.updatedAt = new Date();
         //pageObj.changedBy = userId;
         newPage.parentId = parentPage ? parentPage._id : null;
         newPage.urlSegment = urlSegment;

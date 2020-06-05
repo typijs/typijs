@@ -72,9 +72,9 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
     }
 
     public createContent = (newContent: T, parentContent: T): Promise<T> => {
-        newContent.created = new Date();
+        newContent.createdAt = new Date();
         //TODO: pageObj.createdBy = userId;
-        newContent.changed = new Date();
+        newContent.updatedAt = new Date();
         //TODO: pageObj.changedBy = userId;
         newContent.parentId = parentContent ? parentContent._id : null;
 
@@ -97,7 +97,7 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
         if (!content) return false;
         if (content && content.hasChildren) return true;
 
-        content.changed = new Date();
+        content.updatedAt = new Date();
         content.hasChildren = true;
         const savedContent = await content.save();
         return savedContent.hasChildren;
@@ -109,7 +109,7 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
             currentContent = await this.updateContent(currentContent, contentObj);
         }
 
-        if (contentObj.isPublished && (!currentContent.published || currentContent.changed > currentContent.published)) {
+        if (contentObj.isPublished && (!currentContent.published || currentContent.updatedAt > currentContent.published)) {
             currentContent = await this.executePublishContentFlow(currentContent);
         }
         return currentContent;
@@ -157,7 +157,7 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
     }
 
     private updateContent = (currentContent: T, pageObj: T): Promise<T> => {
-        currentContent.changed = new Date();
+        currentContent.updatedAt = new Date();
         //TODO: currentContent.changedBy = userId
         currentContent.name = pageObj.name;
         currentContent.properties = pageObj.properties;
@@ -209,7 +209,6 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
 
     private softDeleteContent = async (currentContent: T): Promise<T> => {
         if (!currentContent) return null;
-        currentContent.deleted = new Date();
         //TODO: currentContent.deletedBy = userId
         currentContent.isDeleted = true;
         return currentContent.save();
@@ -225,7 +224,7 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
 
         const startWithParentPathRegExp = new RegExp("^" + `${currentContent.parentPath}${currentContent._id},`);
         const conditions = { parentPath: { $regex: startWithParentPathRegExp } };
-        const updateFields: Partial<IContent> = { isDeleted: true, deleted: new Date() };
+        const updateFields: Partial<IContentDocument> = { isDeleted: true, updatedAt: new Date() };
         return this.contentModel.updateMany(conditions, updateFields).exec()
     }
 
