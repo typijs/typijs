@@ -46,7 +46,7 @@ export class BaseService<T extends IBaseDocument> {
         return this.mongooseModel.paginate(filter, options);
     };
 
-    public create = async (doc: T): Promise<T> => {
+    public create = (doc: T): Promise<T> => {
         return this.mongooseModel.create(doc)
     }
 
