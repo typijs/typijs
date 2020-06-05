@@ -1,15 +1,23 @@
-export type Timestamps = {
-    createdAt: Date;
-    updatedAt: Date;
+import { Document, Model } from 'mongoose';
+import { PaginateOptions, PaginateResult } from '../../db/plugins/paginate';
+
+export type FilterQuery = {
+    [key: string]: any;
 }
 
 export interface ICommonMetadata {
-    created: Date;
+    createdAt: Date;
     createdBy: any;
 
-    changed: Date;
-    changedBy: any;
+    updatedAt: Date;
+    updatedBy: any;
+}
 
-    deleted: Date;
-    deletedBy: any;
+export interface IBaseDocument extends ICommonMetadata, Document {
+    //Should defined the member methods here
+
+}
+export interface IBaseModel<T extends IBaseDocument> extends Model<T> {
+    //Should defined the static methods here
+    paginate(filter: FilterQuery, options?: PaginateOptions): Promise<PaginateResult>;
 }

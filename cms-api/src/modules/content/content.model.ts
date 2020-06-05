@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 import { cmsUser } from '../user/user.model';
-import { ICommonMetadata, Timestamps } from '../shared/base.model';
+import { IBaseDocument, IBaseModel } from '../shared/base.model';
 
 export type RefContent = {
     refPath: string;
@@ -30,11 +30,11 @@ export interface IContentHasChildItems {
     publishedChildItems: RefContent[];
 }
 
-export interface IFolder extends ISoftDeletedContent, IHierarchyContent, ICommonMetadata, Timestamps {
+export interface IFolder extends ISoftDeletedContent, IHierarchyContent {
     name: string;
 }
 
-export interface IContent extends IContentHasChildItems, IPublishableContent, ISoftDeletedContent, IHierarchyContent, ICommonMetadata, Timestamps {
+export interface IContent extends IContentHasChildItems, IPublishableContent, ISoftDeletedContent, IHierarchyContent {
     name: string;
 
     contentType: string;
@@ -52,13 +52,19 @@ export interface IPublishedContent extends IContentVersion {
     contentVersionId: any;
 }
 
-export interface IFolderDocument extends IFolder, mongoose.Document { }
+export interface IFolderDocument extends IFolder, IBaseDocument { }
 
-export interface IContentDocument extends IContent, mongoose.Document { }
+export interface IContentDocument extends IContent, IBaseDocument { }
 
-export interface IContentVersionDocument extends IContentVersion, mongoose.Document { }
+export interface IContentVersionDocument extends IContentVersion, IBaseDocument { }
 
-export interface IPublishedContentDocument extends IPublishedContent, mongoose.Document { }
+export interface IPublishedContentDocument extends IPublishedContent, IBaseDocument { }
+
+export interface IContentModel<T extends IContentDocument> extends IBaseModel<T> { }
+
+export interface IContentVersionModel<T extends IContentVersionDocument> extends IBaseModel<T> { }
+
+export interface IPublishedContentModel<T extends IPublishedContentDocument> extends IBaseModel<T> { }
 
 export const ContentSchema = new mongoose.Schema({
     created: { type: Date, default: Date.now },

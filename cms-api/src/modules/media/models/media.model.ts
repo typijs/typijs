@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import { IContentDocument, IContent, ContentSchema } from '../../content/content.model';
+import { IContentDocument, IContent, ContentSchema, IContentModel } from '../../content/content.model';
 
 export interface IMedia extends IContent {
     mimeType: string;
@@ -8,6 +8,7 @@ export interface IMedia extends IContent {
 }
 
 export interface IMediaDocument extends IMedia, IContentDocument { }
+export interface IMediaModel extends IContentModel<IMediaDocument> { }
 
 export const ImageContent = 'ImageContent';
 export const VideoContent = 'VideoContent';
@@ -24,4 +25,4 @@ export const MediaSchema = new mongoose.Schema({
     parentId: { type: mongoose.Schema.Types.ObjectId, ref: cmsMedia }
 }, { timestamps: true });
 
-export const MediaModel: mongoose.Model<IMediaDocument> = mongoose.model<IMediaDocument>(cmsMedia, MediaSchema);
+export const MediaModel: IMediaModel = mongoose.model<IMediaDocument, IMediaModel>(cmsMedia, MediaSchema);
