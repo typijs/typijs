@@ -18,9 +18,9 @@ export class FolderService<T extends IContentDocument> extends BaseService<T>{
     public createContentFolder = async (contentFolder: T): Promise<IFolderDocument> => {
         contentFolder.contentType = null;
         contentFolder.properties = null;
-        const parentFolder = await this.getDocumentById(contentFolder.parentId);
         const savedContent = await this.contentService.createContent(contentFolder, parentFolder);
         if (savedContent) await this.contentService.updateHasChildren(parentFolder);
+        const parentFolder = await this.getById(contentFolder.parentId);
 
         return savedContent;
     }

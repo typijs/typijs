@@ -8,12 +8,12 @@ export class BaseService<T extends mongoose.Document> {
         this.mongooseModel = mongooseModel;
     }
 
-    public createModelInstance = (doc: any): T => {
+    public createModel = (doc: Partial<T>): T => {
         const modelInstance = new this.mongooseModel(doc);
         return Object.assign(modelInstance, doc);
     }
 
-    public getDocumentById = async (id: string): Promise<T> => {
+    public getById = (id: string): Promise<T> => {
         if (!id) id = null;
         const content = await this.mongooseModel.findOne({ _id: id }).exec();
         return content ? content : null;

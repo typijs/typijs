@@ -14,13 +14,13 @@ export abstract class FolderController<T extends IContentDocument> {
 
     //Create new folder
     createFolderContent = async (req: express.Request, res: express.Response) => {
-        const contentFolder = this.folderService.createModelInstance(req.body);
+        const contentFolder = this.folderService.createModel(req.body);
         const item = await this.folderService.createContentFolder(contentFolder)
         res.status(httpStatus.OK).json(item)
     }
 
     updateFolderName = async (req: express.Request, res: express.Response) => {
-        const contentFolder = this.folderService.createModelInstance(req.body);
+        const contentFolder = this.folderService.createModel(req.body);
         const item = await this.folderService.updateFolderName(req.params.id, contentFolder.name)
         res.status(httpStatus.OK).json(item)
     }

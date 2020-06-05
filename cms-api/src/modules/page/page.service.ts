@@ -80,7 +80,7 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
         //generate url segment
         //create new page
         //update parent page's has children property
-        const parentPage = await this.getDocumentById(pageObj.parentId);
+        const parentPage = await this.getById(pageObj.parentId);
         const urlSegment = await this.generateUrlSegment(0, slugify(pageObj.name), parentPage ? parentPage._id : null);
         const savedPage = await this.createPage(pageObj, parentPage, urlSegment);
 
@@ -161,11 +161,11 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
     //Override the `createCopiedContent` method in base class
     protected createCopiedContent = async (sourceContentId: string, targetParentId: string): Promise<IPageDocument> => {
         //get source content 
-        const sourceContent = await this.getDocumentById(sourceContentId);
+        const sourceContent = await this.getById(sourceContentId);
         if (!sourceContent) throw new DocumentNotFoundException(sourceContentId);
 
         //create copy content
-        const newContent = this.createModelInstance(sourceContent);
+        const newContent = this.createModel(sourceContent);
         newContent._id = null;
         newContent.isPublished = false;
         newContent.parentId = targetParentId;
@@ -176,10 +176,10 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
 
     protected createCutContent = async (sourceContentId: string, targetParentId: string): Promise<IPageDocument> => {
         //get source content 
-        const sourceContent = await this.getDocumentById(sourceContentId);
+        const sourceContent = await this.getById(sourceContentId);
         if (!sourceContent) throw new DocumentNotFoundException(sourceContentId);
 
-        const targetParent = await this.getDocumentById(targetParentId);
+        const targetParent = await this.getById(targetParentId);
 
         sourceContent.urlSegment = await this.generateUrlSegment(0, sourceContent.urlSegment, targetParent ? targetParent._id : null);
 

@@ -58,7 +58,7 @@ export class MediaController extends ContentController<IMediaDocument, IMediaVer
             size: file.size,
             contentType: this.getMediaContentType(req.params.fileOriginalName)
         }
-        const mediaDocument = this.mediaService.createModelInstance(mediaObj);
+        const mediaDocument = this.mediaService.createModel(mediaObj);
         const savedMedia = await this.mediaService.executeCreateContentFlow(mediaDocument);
         const publishedMedia = await this.mediaService.executePublishContentFlow(savedMedia);
         res.status(httpStatus.OK).json(publishedMedia)
