@@ -24,6 +24,10 @@ export class BaseService<T extends IBaseDocument> {
         return this.mongooseModel.find(filter).exec();
     }
 
+    public findOne = (filter: FilterQuery): Promise<T> => {
+        return this.mongooseModel.findOne(filter).exec();
+    }
+
     public getAll = (): Promise<T[]> => {
         return this.find({});
     }
