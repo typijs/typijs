@@ -45,6 +45,10 @@ export class UserService extends BaseService<IUserDocument>{
         return await user.save();
     }
 
+    public getUserByEmail = (email: string): Promise<IUserDocument> => {
+        return this.findOne({ email });
+    };
+
     private isEmailTaken = async (email: string, excludeUserId?: string): Promise<boolean> => {
         const user = await this.mongooseModel.findOne({ email, _id: { $ne: excludeUserId } });
         return !!user;
