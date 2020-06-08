@@ -1,14 +1,11 @@
 import * as express from 'express';
-import * as dotenv from 'dotenv';
-import * as jwt from 'jsonwebtoken';
-import * as mongoose from 'mongoose';
-import * as httpStatus from 'http-status';
 import { Injectable } from 'injection-js';
 
-import { UserModel, IUserDocument } from './user.model';
-import { BaseController } from '../shared/base.controller';
-import { UserService } from './user.service';
 import { pick } from '../../utils/pick';
+import { BaseController } from '../shared/base.controller';
+import { IUserDocument } from './user.model';
+import { UserService } from './user.service';
+
 
 @Injectable()
 export class UserController extends BaseController<IUserDocument> {

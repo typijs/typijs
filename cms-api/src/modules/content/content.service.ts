@@ -109,7 +109,7 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
             currentContent = await this.updateContent(currentContent, contentObj);
         }
 
-        if (contentObj.isPublished && (!currentContent.published || currentContent.updatedAt > currentContent.published)) {
+        if (contentObj.isPublished && (!currentContent.publishedAt || currentContent.updatedAt > currentContent.publishedAt)) {
             currentContent = await this.executePublishContentFlow(currentContent);
         }
         return currentContent;
@@ -127,7 +127,7 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
 
     private publishContent = (currentContent: T): Promise<T> => {
         currentContent.isPublished = true;
-        currentContent.published = new Date();
+        currentContent.publishedAt = new Date();
         //TODO: currentContent.publishedBy = userId;
         return currentContent.save()
     }

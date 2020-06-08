@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 import { cmsUser } from '../user/user.model';
-import { IBaseDocument, IBaseModel } from '../shared/base.model';
+import { IBaseDocument, IBaseModel, BaseSchema } from '../shared/base.model';
 
 export type RefContent = {
     refPath: string;
@@ -19,7 +19,7 @@ export interface ISoftDeletedContent {
 }
 
 export interface IPublishableContent {
-    published: Date;
+    publishedAt: Date;
     publishedBy: any;
 
     isPublished: boolean;
@@ -67,17 +67,10 @@ export interface IContentVersionModel<T extends IContentVersionDocument> extends
 export interface IPublishedContentModel<T extends IPublishedContentDocument> extends IBaseModel<T> { }
 
 export const ContentSchema = new mongoose.Schema({
-    created: { type: Date, default: Date.now },
-    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: cmsUser, required: false },
+    ...BaseSchema.obj,
 
-    changed: { type: Date, default: Date.now },
-    changedBy: { type: mongoose.Schema.Types.ObjectId, ref: cmsUser, required: false },
-
-    published: Date,
+    publishedAt: Date,
     publishedBy: { type: mongoose.Schema.Types.ObjectId, ref: cmsUser },
-
-    deleted: Date,
-    deletedBy: { type: mongoose.Schema.Types.ObjectId, ref: cmsUser },
 
     name: { type: String, required: true },
     contentType: { type: String, required: false },

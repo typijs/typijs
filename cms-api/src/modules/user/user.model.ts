@@ -1,8 +1,7 @@
 import * as bcrypt from 'bcryptjs';
 import * as mongoose from 'mongoose';
-
+import { IBaseDocument, IBaseModel, BaseSchema } from '../shared/base.model';
 import { paginate } from '../../db/plugins/paginate';
-import { IBaseDocument, IBaseModel } from '../shared/base.model';
 
 export interface IUser {
     firstName: string;
@@ -20,6 +19,7 @@ export interface IUserDocument extends IUser, IBaseDocument {
 export interface IUserModel extends IBaseModel<IUserDocument> { }
 
 const UserSchema = new mongoose.Schema({
+    ...BaseSchema.obj,
     firstName: { type: String, required: true, trim: true },
     lastName: { type: String, required: true, trim: true },
     username: { type: String, required: true, unique: true, trim: true },
