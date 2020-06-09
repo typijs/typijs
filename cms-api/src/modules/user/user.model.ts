@@ -9,7 +9,8 @@ export interface IUser {
     username: string;
     email: string;
     password: string;
-    role: any[];
+    isActive: boolean;
+    roles: any[];
 }
 
 export interface IUserDocument extends IUser, IBaseDocument {
@@ -25,7 +26,8 @@ const UserSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     password: { type: String, required: true, minlength: 8, trim: true, private: true },
-    role: Array,
+    isActive: { type: Boolean, required: true, default: true },
+    roles: Array,
 }, { timestamps: true });
 
 // Omit the password when returning a user

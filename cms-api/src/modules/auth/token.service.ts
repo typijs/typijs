@@ -95,7 +95,7 @@ export class TokenService extends BaseService<ITokenDocument>{
      * @returns {Promise<string>}
      */
     public generateResetPasswordToken = async (email): Promise<string> => {
-        const user = await this.userService.getUserByEmail(email);
+        const user = await this.userService.getUserByUsername(email);
         if (!user) {
             throw new DocumentNotFoundException(email, `No users found with this email ${email}`);
         }

@@ -16,6 +16,11 @@ export class UserService extends BaseService<IUserDocument>{
         return this.createUser(userDoc);
     }
 
+    public updateById = (id: string, doc: Partial<IUserDocument>): Promise<IUserDocument> => {
+        //TODO: need to remove the username, password, isActive, roles properties from doc
+        return this.updateUserById(id, doc);
+    }
+
     /**
      * Create a user
      * @param {IUserDocument} user
@@ -34,7 +39,7 @@ export class UserService extends BaseService<IUserDocument>{
         return savedUser;
     };
 
-    public updateUserById = async (userId: string, userDoc: IUserDocument): Promise<IUserDocument> => {
+    private updateUserById = async (userId: string, userDoc: Partial<IUserDocument>): Promise<IUserDocument> => {
         const user = await this.findById(userId).exec();
         if (!user) throw new DocumentNotFoundException(userId);
 
@@ -46,17 +51,17 @@ export class UserService extends BaseService<IUserDocument>{
         return await user.save();
     }
 
-    public getUserByEmail = (email: string): Promise<IUserDocument> => {
-        return this.findOne({ email }).exec();
+    public getUserByUsername = (username: string): Promise<IUserDocument> => {
+        return this.findOne({ username }, { lean: true }).exec();
     };
 
     private isEmailTaken = async (email: string, excludeUserId?: string): Promise<boolean> => {
-        const user = await this.findOne({ email, _id: { $ne: excludeUserId } }).exec();
+        const user = await this.findOne({ email, _id: { $ne: excludeUserId } }, { lean: true }).exec();
         return !!user;
     };
 
     private isUsernameTaken = async (username: string): Promise<boolean> => {
-        const user = await this.findOne({ username }).exec();
+        const user = await this.findOne({ username }, { lean: true }).exec();
         return !!user;
     };
 }
