@@ -26,7 +26,7 @@
     "jsonwebtoken": "^8.3.0",
     "mime-types": "^2.1.18",
     "moment": "^2.26.0",
-    "mongoose": "^5.7.1",
+    "mongoose": "^5.9.18",
     "morgan": "^1.9.0",
     "multer": "^1.3.0",
     "reflect-metadata": "^0.1.13",
@@ -43,13 +43,13 @@
     "@types/hapi__joi": "^17.1.0",
     "@types/helmet": "0.0.45",
     "@types/jsonwebtoken": "^8.5.0",
-    "@types/mongoose": "^5.5.18",
+    "@types/mongoose": "^5.7.22",
     "@types/morgan": "^1.9.0",
     "@types/multer": "^1.3.7",
     "@types/node": "^12.7.8",
     "@types/sharp": "^0.17.8",
     "nodemon": "^1.19.2",
     "ts-node": "^8.4.1",
-    "typescript": "~3.5.3"
+    "typescript": "^3.8.3"
   }
 }
