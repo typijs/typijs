@@ -24,7 +24,7 @@ block.post('/cut', validate(cutOrCopyContent), blockController.cut);
 
 block.post('/copy', validate(cutOrCopyContent), blockController.copy);
 
-block.post('/', validate(insertContent), blockController.insert);
+block.post('/', validate(insertContent), blockController.create);
 
 block.put('/:id', validate(requiredContentId), blockController.update);
 

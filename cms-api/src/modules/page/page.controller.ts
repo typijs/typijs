@@ -35,7 +35,7 @@ export class PageController extends ContentController<IPageDocument, IPageVersio
   }
 
   //Override insert base
-  insert = async (req: express.Request, res: express.Response) => {
+  create = async (req: express.Request, res: express.Response) => {
     const item = await this.pageService.executeCreatePageFlow(req.body)
     res.status(httpStatus.OK).json(item)
   }

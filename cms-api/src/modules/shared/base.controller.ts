@@ -1,5 +1,7 @@
 import * as express from 'express';
 import * as httpStatus from 'http-status';
+
+import { pick } from '../../utils/pick';
 import { IBaseDocument } from './base.model';
 import { BaseService } from './base.service';
 
@@ -19,7 +21,13 @@ export abstract class BaseController<T extends IBaseDocument> {
     res.status(httpStatus.OK).json(item)
   }
 
-  insert = async (req: express.Request, res: express.Response) => {
+  public paginate = async (req: express.Request, res: express.Response) => {
+    const options = pick(req.query, ['sortBy', 'limit', 'page']);
+    const result = await this.baseService.paginate({}, options);
+    res.status(httpStatus.OK).json(result);
+  };
+
+  create = async (req: express.Request, res: express.Response) => {
     const item = await this.baseService.create(req.body)
     res.status(httpStatus.OK).json(item)
   }

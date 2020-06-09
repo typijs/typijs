@@ -18,7 +18,7 @@ export abstract class ContentController<T extends IContentDocument, V extends IC
     res.status(httpStatus.OK).json(item)
   }
 
-  insert = async (req: express.Request, res: express.Response) => {
+  create = async (req: express.Request, res: express.Response) => {
     const item = await this.contentService.executeCreateContentFlow(req.body)
     res.status(httpStatus.OK).json(item)
   }

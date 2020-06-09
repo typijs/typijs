@@ -15,7 +15,7 @@ appRouter.use('/block', block);
 appRouter.use('/assets', asset);
 appRouter.use('/media', media);
 // Site Definition
-appRouter.use(sideDefinition);
+appRouter.use('/site-definition', sideDefinition);
 appRouter.use('/user', user)
 
 export { appRouter };

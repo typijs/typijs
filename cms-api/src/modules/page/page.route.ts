@@ -24,7 +24,7 @@ page.post('/cut', validate(cutOrCopyContent), pageController.cut);
 //copy page from parent to another one
 page.post('/copy', validate(cutOrCopyContent), pageController.copy);
 //create the page
-page.post('/', validate(insertContent), pageController.insert);
+page.post('/', validate(insertContent), pageController.create);
 //update pate
 page.put('/:id', validate(requiredContentId), pageController.update);
 //soft delete page
