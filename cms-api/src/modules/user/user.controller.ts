@@ -17,7 +17,7 @@ export class UserController extends BaseController<IUserDocument> {
     public getUsers = async (req: express.Request, res: express.Response) => {
         const filter = pick(req.query, ['name', 'role']);
         const options = pick(req.query, ['sortBy', 'limit', 'page']);
-        const result = await this.userService.queryDocuments(filter, options);
+        const result = await this.userService.paginate(filter, options);
         res.send(result);
     };
 

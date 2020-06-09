@@ -1,5 +1,4 @@
-import { Schema } from "mongoose";
-import { FilterQuery } from "../../modules/shared/base.model";
+import { Schema, Document } from "mongoose";
 
 /**
  * @typedef {Object} PaginateResult
@@ -29,28 +28,25 @@ export type PaginateOptions = {
     page?: number
 }
 
-const defaultQueryOptions: PaginateOptions = {
-    limit: 10,
-    page: 1
-}
 /**
  * Query for documents with pagination
  * @param filter - Query criteria - https://docs.mongodb.com/manual/tutorial/query-documents/
- * @param options 
+ * @param paginateOptions 
  * @returns {Promise<PaginateResult>} Promise<PaginateResult>
  */
-const paginateImplement = (filter: FilterQuery, options: PaginateOptions): Promise<PaginateResult> => {
+const paginateImplement = (filter, paginateOptions: PaginateOptions, queryOptions?: any): Promise<PaginateResult> => {
     const sort = {};
-    if (options.sortBy) {
-        const parts = options.sortBy.split(':');
+    if (paginateOptions.sortBy) {
+        const parts = paginateOptions.sortBy.split(':');
         sort[parts[0]] = parts[1] === 'desc' ? -1 : 1;
     }
-    const limit = options.limit ? options.limit : 10;
-    const page = options.page ? options.page : 1;
+    const limit = paginateOptions.limit ? paginateOptions.limit : 10;
+    const page = paginateOptions.page ? paginateOptions.page : 1;
     const skip = (page - 1) * limit;
 
-    const countPromise = this.countDocuments(filter).exec();
-    const docsPromise = this.find(filter).sort(sort).skip(skip).limit(limit).exec();
+    const countPromise = this.count(filter).exec();
+    const docsQuery = this.find(filter).sort(sort).skip(skip).limit(limit)
+    const docsPromise = queryOptions ? docsQuery.setOptions(queryOptions).exec() : docsQuery.exec();
 
     return Promise.all([countPromise, docsPromise]).then((values) => {
         const [totalResults, results] = values;
@@ -67,7 +63,7 @@ const paginateImplement = (filter: FilterQuery, options: PaginateOptions): Promi
 }
 
 export const paginate = (schema: Schema) => {
-    schema.statics.paginate = function (filter: FilterQuery, options: PaginateOptions = defaultQueryOptions): Promise<PaginateResult> {
-        return paginateImplement(filter, options)
+    schema.statics.paginate = function (filter, paginateOptions: PaginateOptions, queryOptions?): Promise<PaginateResult> {
+        return paginateImplement(filter, paginateOptions, queryOptions)
     }
 };

@@ -20,7 +20,7 @@ export interface IBaseDocument extends ICommonMetadata, Document {
 }
 export interface IBaseModel<T extends IBaseDocument> extends Model<T> {
     //Should defined the static methods here
-    paginate(filter: FilterQuery, options?: PaginateOptions): Promise<PaginateResult>;
+    paginate(filter: FilterQuery<T>, paginateOptions?: PaginateOptions, queryOptions?: QueryOptions): Promise<PaginateResult>;
 }
 
 export const BaseSchema = new mongoose.Schema({
