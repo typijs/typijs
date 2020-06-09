@@ -12,7 +12,8 @@ export class UserService extends BaseService<IUserDocument>{
     }
 
     public create = (doc: IUserDocument): Promise<IUserDocument> => {
-        return this.createUser(doc);
+        const userDoc = this.createModel(doc);
+        return this.createUser(userDoc);
     }
 
     /**
@@ -34,7 +35,7 @@ export class UserService extends BaseService<IUserDocument>{
     };
 
     public updateUserById = async (userId: string, userDoc: IUserDocument): Promise<IUserDocument> => {
-        const user = await this.getById(userId);
+        const user = await this.findById(userId).exec();
         if (!user) throw new DocumentNotFoundException(userId);
 
         if (userDoc.email && (await this.isEmailTaken(userDoc.email, userId))) {
@@ -46,16 +47,16 @@ export class UserService extends BaseService<IUserDocument>{
     }
 
     public getUserByEmail = (email: string): Promise<IUserDocument> => {
-        return this.findOne({ email });
+        return this.findOne({ email }).exec();
     };
 
     private isEmailTaken = async (email: string, excludeUserId?: string): Promise<boolean> => {
-        const user = await this.mongooseModel.findOne({ email, _id: { $ne: excludeUserId } });
+        const user = await this.findOne({ email, _id: { $ne: excludeUserId } }).exec();
         return !!user;
     };
 
     private isUsernameTaken = async (username: string): Promise<boolean> => {
-        const user = await this.mongooseModel.findOne({ username });
+        const user = await this.findOne({ username }).exec();
         return !!user;
     };
 }
