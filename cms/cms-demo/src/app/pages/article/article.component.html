@@ -1,14 +1,20 @@
 <div class="main1">
     <div class="content">
-        <h2>{{currentContent.title}}</h2>
+        <h2>
+            <ng-container [cmsProperty]="getProperty('title')"></ng-container>
+        </h2>
     </div>
     <div class="blog">
         <div class="blog_list">
-            <h4><a href="">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</a></h4>
+            <h4>
+                <ng-container [cmsProperty]="getProperty('title')"></ng-container>
+            </h4>
             <h5>January 3rd, 2013 , Posted by&nbsp;<a href="javascript:void(0)">{{currentContent.author}}</a></h5>
             <div class="blog_para">
-                <img src="" alt="">
-                <p class="para1" [innerHTML]="currentContent.content"></p>
+                <ng-container [cmsProperty]="getProperty('image')"></ng-container>
+                <p class="para1">
+                    <ng-container [cmsProperty]="getProperty('content')"></ng-container>
+                </p>
                 <div class="clear"></div>
             </div>
         </div>

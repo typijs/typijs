@@ -9,20 +9,20 @@ import { PortfolioBlockComponent } from './portfolio-block.component';
 export class PortfolioBlock extends BlockData {
     @Property({
         displayName: "Header",
-        displayType: UIHint.Input,
+        displayType: UIHint.Text,
         validates: [ValidationTypes.required("This field is required")]
     })
     header: string;
 
     @Property({
         displayName: "Header Icon",
-        displayType: UIHint.Input
+        displayType: UIHint.Text
     })
     icon: string;
 
     @Property({
         displayName: "Summary",
-        displayType: UIHint.Xhtml
+        displayType: UIHint.XHtml
     })
     summary: string;
 }

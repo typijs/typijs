@@ -1,14 +1,22 @@
+import 'reflect-metadata';
+import { Injectable } from 'injection-js';
 import * as express from 'express';
 import * as mime from 'mime-types';
+import * as httpStatus from 'http-status';
 
-import { IMediaDocument, FileContent, ImageContent, VideoContent } from './models/media.model';
-import * as upload from './upload';
 import { ContentController } from '../content/content.controller';
-import { IMediaVersionDocument } from './models/media-version.model';
-import { IPublishedMediaDocument } from './models/published-media.model';
 import { MediaService } from './media.service';
+import { IMediaVersionDocument } from './models/media-version.model';
+import {
+    FileContent,
+    ImageContent,
+    IMediaDocument,
+    VideoContent
+} from './models/media.model';
+import { IPublishedMediaDocument } from './models/published-media.model';
+import { uploadFile } from './multerUpload';
 
-
+@Injectable()
 export class MediaController extends ContentController<IMediaDocument, IMediaVersionDocument, IPublishedMediaDocument> {
 
     private mediaService: MediaService;
@@ -17,7 +25,7 @@ export class MediaController extends ContentController<IMediaDocument, IMediaVer
         this.mediaService = mediaService;
     }
 
-    getMediaById = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    getMediaById = async (req: express.Request, res: express.Response) => {
         const widthStr = req.query.w ? req.query.w : req.query.width;
         const heightStr = req.query.h ? req.query.h : req.query.height;
         const width = widthStr ? parseInt(widthStr, 10) : undefined;
@@ -26,25 +34,21 @@ export class MediaController extends ContentController<IMediaDocument, IMediaVer
         const fileId = req.params.fileId;
         const fileName = req.params.fileName;
 
-        try {
-            const stream = await this.mediaService.createReadMediaStream(fileId, fileName, width, height)
-            if (stream) {
-                res.writeHead(200, { 'Content-type': mime.lookup(fileName) });
-                stream.pipe(res);
-            } else {
-                res.status(404).json("404 - File Not Found");
-            }
-        } catch (error) {
-            next(error);
+        const stream = await this.mediaService.createReadMediaStream(fileId, fileName, width, height)
+        if (stream) {
+            res.writeHead(httpStatus.OK, { 'Content-type': mime.lookup(fileName) });
+            stream.pipe(res);
+        } else {
+            res.status(httpStatus.NOT_FOUND).json(`${httpStatus.NOT_FOUND}-File Not Found`);
         }
     }
 
-    uploadMedia = (fieldName: string): any => {
+    storeMediaInDisk = (fieldName: string): any => {
         if (!fieldName) fieldName = 'file';
-        return upload.uploadFile.single(fieldName);
+        return uploadFile.single(fieldName);
     }
 
-    processMedia = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+    processMedia = async (req: express.Request, res: express.Response) => {
         const file: Express.Multer.File = req.file;
         const mediaObj: Partial<IMediaDocument> = {
             _id: req.params.fileId,
@@ -54,22 +58,19 @@ export class MediaController extends ContentController<IMediaDocument, IMediaVer
             size: file.size,
             contentType: this.getMediaContentType(req.params.fileOriginalName)
         }
-        try {
-            const mediaDocument = this.mediaService.createModelInstance(mediaObj);
-            const savedMedia = await this.mediaService.executeCreateContentFlow(mediaDocument);
-            const publishedMedia = await this.mediaService.executePublishContentFlow(savedMedia);
-            res.status(200).json(publishedMedia)
-
-        } catch (error) {
-            next(error);
-        }
+        const mediaDocument = this.mediaService.createModelInstance(mediaObj);
+        const savedMedia = await this.mediaService.executeCreateContentFlow(mediaDocument);
+        const publishedMedia = await this.mediaService.executePublishContentFlow(savedMedia);
+        res.status(httpStatus.OK).json(publishedMedia)
     }
 
     private getMediaContentType = (fileName: string) => {
-        if (fileName.match(/\.(jpg|jpeg|png|gif)$/)) {
+        if (!fileName) return FileContent;
+
+        if (fileName.toLowerCase().match(/\.(jpg|jpeg|png|gif)$/)) {
             return ImageContent;
         }
-        if (fileName.match(/\.(avi|flv|wmv|mov|mp4)$/)) {
+        if (fileName.toLowerCase().match(/\.(avi|flv|wmv|mov|mp4)$/)) {
             return VideoContent;
         }
 

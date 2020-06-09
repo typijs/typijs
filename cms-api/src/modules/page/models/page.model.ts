@@ -5,6 +5,8 @@ import { IContentDocument, ContentSchema, ContentHasChildItemsSchema, IContentHa
 export interface IPage extends IContent {
   urlSegment: string;
   linkUrl: string;
+  //not map to db
+  publishedLinkUrl?: string;
 
   isVisibleOnSite: boolean;
   sortIndex: number;

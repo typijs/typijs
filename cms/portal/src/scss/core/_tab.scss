@@ -1,0 +1,30 @@
+.tab-content {
+  margin-top: -1px;
+  background: #fff;
+  border: 1px solid $border-color;
+
+  .tab-pane {
+    padding: $spacer;
+  }
+}
+
+.card-block {
+  .tab-content {
+    margin-top: 0;
+    border: 0;
+  }
+}
+
+.tab-container-right .tab-content,
+.tab-container-left .tab-content {
+  height: calc(100% - 42px);
+
+  .tab-pane {
+    padding: 0px;
+    overflow: auto;
+  }
+
+  tab {
+    height: 100%;
+  }
+}

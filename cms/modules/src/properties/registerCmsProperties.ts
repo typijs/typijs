@@ -1,21 +1,29 @@
-import { AngularCmsModule, UIHint } from '@angular-cms/core';
+import { AngularCms, UIHint } from '@angular-cms/core';
 
-import { InputComponent } from './input/input.component';
-import { TextareaComponent } from './textarea/textarea.component';
-import { PropertyListComponent } from './property-list/property-list.component';
-import { TinymceComponent } from './xhtml/tinymce.component';
-import { DropdownComponent } from './select/dropdown/dropdown.component';
-import { CheckboxComponent } from './select/checkbox/checkbox.component';
-import { ContentAreaComponent } from './content-area/content-area.component';
+import { TextProperty } from './text/text.property';
+import { TextareaProperty } from './textarea/textarea.property';
+import { ObjectListProperty } from './object-list/object-list.property';
+import { XHtmlProperty } from './xhtml/xhtml.property';
+import { DropdownProperty } from './select/dropdown/dropdown.property';
+import { CheckboxProperty } from './select/checkbox/checkbox.property';
+import { ContentAreaProperty } from './content-area/content-area.property';
+import { ContentAreaFactory } from './content-area/content-area.factory';
+import { ObjectListFactory } from './object-list/object-list.factory';
+import { DropdownPropertyFactory, CheckboxPropertyFactory } from './select/select-property.factory';
+import { ContentReferenceProperty } from './content-reference/content-reference.property';
+import { ImageReferenceProperty } from './image-reference/image-reference.property';
+import { ContentReferenceFactory } from './content-reference/content-reference.factory';
 
 export function registerCmsProperties() {
-    AngularCmsModule.registerProperties([
-        [UIHint.Input, InputComponent],
-        [UIHint.Textarea, TextareaComponent],
-        [UIHint.PropertyList, PropertyListComponent],
-        [UIHint.Xhtml, TinymceComponent],
-        [UIHint.Select, DropdownComponent],
-        [UIHint.Checkbox, CheckboxComponent],
-        [UIHint.ContentArea, ContentAreaComponent]
+    AngularCms.registerProperties([
+        [UIHint.Text, TextProperty],
+        [UIHint.Textarea, TextareaProperty],
+        [UIHint.ObjectList, ObjectListProperty, ObjectListFactory],
+        [UIHint.XHtml, XHtmlProperty],
+        [UIHint.Dropdown, DropdownProperty, DropdownPropertyFactory],
+        [UIHint.Checkbox, CheckboxProperty, CheckboxPropertyFactory],
+        [UIHint.ContentArea, ContentAreaProperty, ContentAreaFactory],
+        [UIHint.ContentReference, ContentReferenceProperty, ContentReferenceFactory],
+        [UIHint.Image, ImageReferenceProperty]
     ])
 }

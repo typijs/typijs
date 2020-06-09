@@ -1,0 +1,26 @@
+/* Draggable*/
+.drag-border {
+  border: #f57c82 dashed 2px;
+}
+
+/* Droppable */
+.drag-hint-border {
+  border: #3c763d dashed 2px;
+  min-height: 20px;
+}
+
+.drag-over-border {
+  border: #fbbc05 dashed 2px;
+  box-shadow: 0 0 5px #fbbc05;
+  min-height: 20px;
+}
+
+.drag-transit {
+  border: #3500FF dashed 2px;
+}
+
+/* Sortable */
+.drag-over-expand {
+  transition: all .2s ease-in-out;
+  transform: scale(1.05);
+}

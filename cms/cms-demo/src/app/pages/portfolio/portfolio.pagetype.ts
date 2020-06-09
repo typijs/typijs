@@ -10,14 +10,14 @@ export class PortfolioPage extends PageData {
 
     @Property({
         displayName: "Header",
-        displayType: UIHint.Input,
+        displayType: UIHint.Text,
         validates: [ValidationTypes.required("This field is required")]
     })
     header: string;
 
     @Property({
         displayName: "Number Items Per Page",
-        displayType: UIHint.Input
+        displayType: UIHint.Text
     })
     numberItemsPerPage: Number;
 }

@@ -7,12 +7,12 @@ import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontaweso
 import { faBars, faCaretDown, faCaretRight, faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
 
 import { CoreModule } from '@angular-cms/core';
+import { CmsBsDropdownModule } from '../libs/ngx-bootstrap/bs-dropdown.module';
+import { DndModule } from '../drag-drop/dnd.module';
 
 import { TreeNodeComponent } from './components/tree-node.component';
 import { TreeChildrenComponent } from './components/tree-children.component';
 import { TreeComponent } from './components/tree.component';
-import { CmsBsDropdownModule } from '../ngx-bootstrap/bs-dropdown.module';
-import { DndModule } from '../dnd/dnd.module';
 
 @NgModule({
     imports: [
@@ -21,9 +21,10 @@ import { DndModule } from '../dnd/dnd.module';
         FormsModule,
         ReactiveFormsModule,
         FontAwesomeModule,
+        CmsBsDropdownModule,
+
         CoreModule,
-        DndModule,
-        CmsBsDropdownModule.forRoot()
+        DndModule
     ],
     declarations: [
         TreeNodeComponent,

@@ -5,12 +5,14 @@ import { Observable } from 'rxjs';
 import { Page } from '../models/page.model';
 import { ContentService } from './content.service';
 import { BrowserLocationService } from './browser-location.service';
-import { btoa } from '../utils/base64';
+import { btoa } from '../helpers/base64';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class PageService extends ContentService<Page> {
 
-  protected apiUrl: string = "http://localhost:3000/api/page";
+  protected apiUrl: string = `${this.baseApiUrl}/page`;
   constructor(
     private locationService: BrowserLocationService,
     httpClient: HttpClient) {

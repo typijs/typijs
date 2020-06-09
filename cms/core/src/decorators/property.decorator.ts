@@ -1,9 +1,9 @@
-import { Validators } from '@angular/forms';
 import "reflect-metadata";
+import { Validators } from '@angular/forms';
 
-import { PROPERTIES_METADATA_KEY, PROPERTY_METADATA_KEY } from '../constants/meta-keys';
+import { PROPERTIES_METADATA_KEY, PROPERTY_METADATA_KEY } from './metadata-key';
 
-type ValidateMetadata = {
+export type ValidateMetadata = {
     validateFn: Function;
     message?: string
 }
@@ -13,19 +13,38 @@ export type PropertyMetadata = {
     description?: string;
     displayType?: string;
     selectionFactory?: any;
-    propertyListItemType?: any,
+    objectListItemType?: any,
     order?: number;
     groupName?: string;
-    validates?: Array<ValidateMetadata>;
+    validates?: ValidateMetadata[];
+    allowedTypes?: string[];
+    // be only used as private property for internal methods
+    _propertyType?: string
+    [key: string]: any;
 }
 
+/**
+ * The property decorator factory
+ * 
+ * The factory, is just a function that receives any parameters you want and returns a function with a decorator signature
+ * 
+ * https://www.typescriptlang.org/docs/handbook/decorators.html#decorator-factories
+ * @param metadata 
+ */
 export function Property(metadata: PropertyMetadata) {
-    return function (target: object, propertyKey: string) {
+    function propertyDecorator(target: object, propertyKey: string) {
         const properties: string[] = Reflect.getMetadata(PROPERTIES_METADATA_KEY, target.constructor) || [];
-        properties.push(propertyKey);
+        if (properties.indexOf(propertyKey) == -1) properties.push(propertyKey);
         Reflect.defineMetadata(PROPERTIES_METADATA_KEY, properties, target.constructor);
+
+        //Obtaining type metadata using the reflect metadata API
+        const propertyTypeMetadata = Reflect.getMetadata("design:type", target, propertyKey);
+        if (propertyTypeMetadata) Object.assign(metadata, { _propertyType: propertyTypeMetadata.name })
+
         return Reflect.defineMetadata(PROPERTY_METADATA_KEY, metadata, target.constructor, propertyKey);
     }
+
+    return propertyDecorator;
 }
 
 export class ValidationTypes {

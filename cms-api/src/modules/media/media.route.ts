@@ -1,32 +1,36 @@
 import { Router } from 'express';
-import { MediaService } from './media.service';
+import { asyncRouterHandler } from '../../errorHandling';
+import { injector } from '../../injector';
+import { validate } from '../../validation/validateMiddleware';
+import { requiredParentId, updateFolderName, createFolder } from '../folder/folder.validation';
+import { requiredContentId, cutOrCopyContent } from '../content/content.validation';
 import { MediaController } from './media.controller';
+import { getMediaById } from './media.validation';
 
-const media: Router = Router();
-const mediaService: MediaService = new MediaService();
-const mediaController = new MediaController(mediaService);
+const media: Router = asyncRouterHandler(Router());
+const mediaController = <MediaController>injector.get(MediaController);
 
-media.get('/folders/:parentId?', mediaController.getFoldersByParentId);
+media.get('/folders/:parentId?', validate(requiredParentId), mediaController.getFoldersByParentId);
 
-media.post('/folder', mediaController.createFolderContent);
+media.get('/children/:parentId?', validate(requiredParentId), mediaController.getContentsByFolder);
 
-media.put('/folder/:id', mediaController.updateFolderName);
+media.post('/folder', validate(createFolder), mediaController.createFolderContent);
 
-media.get('/children/:parentId?', mediaController.getContentsByFolder);
+media.put('/folder/:id', validate(updateFolderName), mediaController.updateFolderName);
 
-media.post('/upload/:parentId?', mediaController.uploadMedia('file'), mediaController.processMedia)
+media.post('/upload/:parentId?', validate(requiredParentId), mediaController.storeMediaInDisk('file'), mediaController.processMedia)
 
-media.post('/cut', mediaController.cut);
+media.post('/cut', validate(cutOrCopyContent), mediaController.cut);
 
-media.post('/copy', mediaController.copy);
+media.post('/copy', validate(cutOrCopyContent), mediaController.copy);
 
-media.get('/:id', mediaController.get);
+media.get('/:id', validate(requiredContentId), mediaController.get);
 
-media.delete('/:id', mediaController.delete);
+media.delete('/:id', validate(requiredContentId), mediaController.delete);
 
 export { media };
 
 const asset: Router = Router();
-asset.get('/:fileId/:fileName', mediaController.getMediaById);
+asset.get('/:fileId/:fileName', validate(getMediaById), mediaController.getMediaById);
 
 export { asset };

@@ -1,11 +1,11 @@
 import { Component, Input, Output, EventEmitter, OnInit, ContentChild, TemplateRef, ViewEncapsulation } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { TreeStore } from '../tree-store';
 import { TreeNode } from '../interfaces/tree-node';
 import { TreeConfig, TreeNodeTemplate } from '../interfaces/tree-config';
-import { NodeMenuItemAction } from '../interfaces/tree-menu';
-import { SubscriptionComponent } from '../../subscription.component';
+import { NodeMenuItemAction, TreeMenuActionEvent } from '../interfaces/tree-menu';
+import { SubscriptionDestroy } from '../../subscription-destroy';
 
 @Component({
     selector: 'cms-tree',
@@ -18,7 +18,7 @@ import { SubscriptionComponent } from '../../subscription.component';
                         [config]="config" 
                         [templates]="templates"
                         (selectNode)="selectNode($event)"
-                        (menuItemSelected)="menuItemSelected($event)"
+                        (menuItemSelected)="handleNodeMenuItemSelected($event)"
                         (nodeOnBlur)="nodeOnBlur($event)"
                         (submitInlineNode)="submitInlineNode($event)"
                         (cancelInlineNode)="cancelInlineNode($event)">
@@ -28,7 +28,7 @@ import { SubscriptionComponent } from '../../subscription.component';
                         [config]="config" 
                         [templates]="templates"
                         (selectNode)="selectNode($event)"
-                        (menuItemSelected)="menuItemSelected($event)"
+                        (menuItemSelected)="handleNodeMenuItemSelected($event)"
                         (nodeOnBlur)="nodeOnBlur($event)"
                         (submitInlineNode)="submitInlineNode($event)"
                         (cancelInlineNode)="cancelInlineNode($event)">
@@ -40,7 +40,7 @@ import { SubscriptionComponent } from '../../subscription.component';
     encapsulation: ViewEncapsulation.None,
     providers: [TreeStore]
 })
-export class TreeComponent extends SubscriptionComponent implements OnInit {
+export class TreeComponent extends SubscriptionDestroy implements OnInit {
 
     @ContentChild('treeNodeTemplate', { static: true }) treeNodeTemplate: TemplateRef<any>;
     @ContentChild('loadingTemplate', { static: true }) loadingTemplate: TemplateRef<any>;
@@ -49,13 +49,12 @@ export class TreeComponent extends SubscriptionComponent implements OnInit {
     @Input() root: TreeNode;
 
     @Output() nodeSelected: EventEmitter<Partial<TreeNode>> = new EventEmitter();
-    @Output() nodeCreated: EventEmitter<TreeNode> = new EventEmitter();
     @Output() nodeInlineCreated: EventEmitter<TreeNode> = new EventEmitter();
     @Output() nodeInlineUpdated: EventEmitter<TreeNode> = new EventEmitter();
     @Output() nodeCut: EventEmitter<any> = new EventEmitter();
     @Output() nodeCopied: EventEmitter<any> = new EventEmitter();
     @Output() nodePasted: EventEmitter<any> = new EventEmitter();
-    @Output() nodeDeleteEvent: EventEmitter<any> = new EventEmitter();
+    @Output() menuItemSelected: EventEmitter<TreeMenuActionEvent> = new EventEmitter();
 
     public templates: TreeNodeTemplate;
 
@@ -82,35 +81,31 @@ export class TreeComponent extends SubscriptionComponent implements OnInit {
     }
 
     nodeOnBlur(node: TreeNode) {
-        if(!node.name) this.cancelInlineNode(node);
+        if (!node.name) this.cancelInlineNode(node);
     }
 
     submitInlineNode(node: TreeNode) {
         if (node.name && node.isNew) {
             this.nodeInlineCreated.emit(node);
             return;
-        } 
+        }
         if (node.name && !node.isNew && node.isEditing) {
             this.nodeInlineUpdated.emit(node);
             node.isEditing = false;
             return;
-        } 
+        }
     }
 
     cancelInlineNode(node: TreeNode) {
-        if(node.isNew) {
+        if (node.isNew) {
             this.treeStore.cancelNewNodeInline(this.root, node);
             return;
         }
 
-        if(!node.isNew && node.isEditing) {
+        if (!node.isNew && node.isEditing) {
             this.treeStore.cancelNodeInlineEdit(node);
             return;
         }
-    }
-
-    menuItemSelected(nodeAction: { action: NodeMenuItemAction, node: TreeNode }) {
-        this.treeStore.handleNodeMenuItemSelected(nodeAction);
     }
 
     //Reload the node data
@@ -126,25 +121,33 @@ export class TreeComponent extends SubscriptionComponent implements OnInit {
         });
     }
 
+    handleNodeMenuItemSelected(nodeAction: { action: NodeMenuItemAction, node: TreeNode }) {
+        this.treeStore.handleNodeMenuItemSelected(nodeAction);
+    }
+
     private subscribeAndEmitNodeMenuItemSelectedEvent() {
-        this.subscriptions.push(this.treeStore.nodeCreated$.subscribe(node => {
-            this.nodeCreated.emit(node);
-        }));
+        this.treeStore.nodeMenuActionEvent$
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(actionEvent => {
+                this.menuItemSelected.emit(actionEvent);
+            });
 
-        this.subscriptions.push(this.treeStore.nodeCut$.subscribe(node => {
-            this.nodeCut.emit(node);
-        }));
+        this.treeStore.nodeCut$
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(node => {
+                this.nodeCut.emit(node);
+            });
 
-        this.subscriptions.push(this.treeStore.nodeCopied$.subscribe(node => {
-            this.nodeCopied.emit(node);
-        }));
+        this.treeStore.nodeCopied$
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(node => {
+                this.nodeCopied.emit(node);
+            });
 
-        this.subscriptions.push(this.treeStore.nodePasted$.subscribe(node => {
-            this.nodePasted.emit(node);
-        }));
-
-        this.subscriptions.push(this.treeStore.nodeDelete$.subscribe(node => {
-            this.nodeDeleteEvent.emit(node);
-        }));
+        this.treeStore.nodePasted$
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(node => {
+                this.nodePasted.emit(node);
+            });
     }
 }

@@ -1,10 +1,9 @@
 import { Component, ViewChild } from '@angular/core';
 
-import { ServiceLocator } from '@angular-cms/core';
-
 import { TreeNode } from '../shared/tree/interfaces/tree-node';
-import { TreeComponent } from '../shared/tree/components/tree.component';
 import { TreeConfig } from '../shared/tree/interfaces/tree-config';
+
+import { TreeComponent } from '../shared/tree/components/tree.component';
 import { PageTreeService } from './page-tree.service';
 
 @Component({
@@ -30,17 +29,17 @@ import { PageTreeService } from './page-tree.service';
             margin-left: 10px;
             display:block;
         }
-        `]
+        `],
+    providers: [PageTreeService]
 })
 export class PageTreeReadonlyComponent {
     @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
 
-    root: TreeNode = new TreeNode({ id: '0' });
-    treeConfig: TreeConfig = {
-        service: ServiceLocator.Instance.get(PageTreeService),
-    }
+    root: TreeNode;
+    treeConfig: TreeConfig;
 
-    constructor(
-    ) {
+    constructor(private pageTreeService: PageTreeService) {
+        this.root = new TreeNode({ id: '0' });
+        this.treeConfig = { service: this.pageTreeService }
     }
 }

@@ -1,136 +1,174 @@
-import { Component, ViewChildren, QueryList, ComponentFactoryResolver, Inject, Injector, OnInit, ChangeDetectorRef, ComponentRef } from '@angular/core';
+import { Component, ViewChildren, QueryList, OnInit, ChangeDetectorRef, ComponentRef } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { ActivatedRoute, UrlSegment } from '@angular/router';
+import { takeUntil } from 'rxjs/operators';
 
-import { PROPERTY_METADATA_KEY, PROPERTIES_METADATA_KEY, Media, Block, Page, ChildItemRef, Content } from '@angular-cms/core';
-import { CMS, UIHint, CmsProperty, InsertPointDirective, ISelectionFactory, PropertyMetadata, CmsTab, sortTabByTitle, clone } from '@angular-cms/core';
-import { PageService, BlockService } from '@angular-cms/core';
+import {
+    PAGE_TYPE, BLOCK_TYPE, MEDIA_TYPE, FOLDER_BLOCK, FOLDER_MEDIA,
+    UIHint, CmsTab,
+    sortTabByTitle,
+    CmsPropertyFactoryResolver, InsertPointDirective,
+    Content, Media, Block, Page, ChildItemRef,
+    ContentTypeProperty, ContentTypeService,
+    PageService, BlockService,
+    ngEditMode, ngId
+} from '@angular-cms/core';
 
-import { PropertyListComponent } from '../../properties/property-list/property-list.component';
-import { SelectProperty } from '../../properties/select/select-property';
-
-import { PAGE_TYPE, BLOCK_TYPE } from './../../constants';
+import { ContentAreaItem } from "../../properties/content-area/content-area.model";
 import { SubjectService } from '../../shared/services/subject.service';
+import { SubscriptionDestroy } from '../../shared/subscription-destroy';
 
-type FormProperty = {
-    name: string,
-    metadata: PropertyMetadata
-}
 
 @Component({
-    templateUrl: './content-form-edit.component.html'
+    templateUrl: './content-form-edit.component.html',
+    styleUrls: ['./content-form-edit.scss']
 })
-export class ContentFormEditComponent implements OnInit {
-    private subParams: Subscription;
-
-    contentForm: FormGroup = new FormGroup({});
-    formTabs: Array<CmsTab> = [];
-    currentContent: Partial<Page> & Content;
-
-    private typeOfContent: string;
-    private propertyMetadatas: Array<FormProperty> = [];
-    private componentRefs: Array<any> = [];
-    private defaultGroup: string = "Content";
+export class ContentFormEditComponent extends SubscriptionDestroy implements OnInit {
 
     @ViewChildren(InsertPointDirective) insertPoints: QueryList<InsertPointDirective>;
 
+    contentFormGroup: FormGroup = new FormGroup({});
+    formTabs: CmsTab[] = [];
+    currentContent: Partial<Page> & Content;
+    editMode: 'AllProperties' | 'OnPageEdit' = 'AllProperties';
+
+    showIframeHider: boolean = false;
+    previewUrl: string;
+
+    private typeOfContent: 'page' | 'block' | 'media' | string;
+    private contentTypeProperties: ContentTypeProperty[] = [];
+    private componentRefs: ComponentRef<any>[] = [];
+    private readonly defaultGroup: string = "Content";
+
     constructor(
-        private componentFactoryResolver: ComponentFactoryResolver,
-        private injector: Injector,
+        private propertyFactoryResolver: CmsPropertyFactoryResolver,
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
+        private contentTypeService: ContentTypeService,
         private pageService: PageService,
         private blockService: BlockService,
         private subjectService: SubjectService,
         private changeDetectionRef: ChangeDetectorRef
-    ) { }
+    ) { super(); }
 
     ngOnInit() {
-        this.subParams = this.route.params.subscribe(params => {
-            const contentId = params['id'] || '';
-            this.typeOfContent = params['type'];
-
-            if (contentId) {
-                switch (this.typeOfContent) {
-                    case PAGE_TYPE:
-                        this.pageService.getContent(contentId).subscribe(contentData => {
-                            this.subjectService.firePageSelected(contentData);
-                            this.bindDataForContentForm(contentData, CMS.PAGE_TYPES[contentData.contentType])
-                        });
-                        break;
-                    case BLOCK_TYPE:
-                        this.blockService.getContent(contentId).subscribe(contentData => {
-                            this.bindDataForContentForm(contentData, CMS.BLOCK_TYPES[contentData.contentType])
-                        });
-                        break;
+        this.route.params
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe(params => {
+                const contentId = params['id'];
+                this.typeOfContent = this.getTypeContentFromUrl(this.route.snapshot.url)
+                this.editMode = 'AllProperties';
+                if (contentId) {
+                    switch (this.typeOfContent) {
+                        case PAGE_TYPE:
+                            this.subscribeGetPageContent(contentId);
+                            break;
+                        case BLOCK_TYPE:
+                            this.subscribeGetBlockContent(contentId);
+                            break;
+                    }
                 }
-            }
+            });
+
+        this.subjectService.portalLayoutChanged$
+            .pipe(takeUntil(this.unsubscribe$))
+            .subscribe((showIframeHider: boolean) => {
+                this.showIframeHider = showIframeHider;
+            })
+    }
+
+    private subscribeGetPageContent(contentId: string): void {
+        this.pageService.getContent(contentId).subscribe(contentData => {
+            this.subjectService.firePageSelected(contentData);
+            this.contentTypeProperties = this.contentTypeService.getPageTypeProperties(contentData.contentType);
+            this.previewUrl = this.getPublishedUrlOfContent(contentData);
+            this.bindDataForContentForm(contentData)
         });
+    }
+
+    private subscribeGetBlockContent(contentId: string): void {
+        this.blockService.getContent(contentId).subscribe(contentData => {
+            this.contentTypeProperties = this.contentTypeService.getBlockTypeProperties(contentData.contentType);
+            this.bindDataForContentForm(contentData)
+        });
+    }
+
+    private getPublishedUrlOfContent(contentData: Page): string {
+        return `http://localhost:4200${contentData.publishedLinkUrl}?${ngEditMode}=True&${ngId}=${contentData._id}`
+    }
+
+    private getTypeContentFromUrl(url: UrlSegment[]): string {
+        return url.length >= 2 && url[0].path == 'content' ? url[1].path : '';
     }
 
     ngAfterViewInit() {
         this.insertPoints.changes.subscribe((newValue: QueryList<InsertPointDirective>) => {
             if (newValue.length > 0) {
-                this.componentRefs = this.createPropertyComponents(this.propertyMetadatas);
+                this.componentRefs = this.createPropertyComponents(this.contentTypeProperties);
                 this.changeDetectionRef.detectChanges();
             }
         });
     }
 
-    private bindDataForContentForm(contentData: Page | Block | Media, contentType: string) {
-        this.currentContent = contentData;
-        this.propertyMetadatas = [];
+    private bindDataForContentForm(contentData: Page | Block | Media) {
+        this.currentContent = this.getPopulatedContentData(contentData, this.contentTypeProperties);
 
-        if (contentType) {
-            this.propertyMetadatas = this.createPropertyMetadatas(contentType);
-            if (this.propertyMetadatas.length > 0) {
-                this.propertyMetadatas.forEach(propertyMeta => this.populateReferenceProperty(propertyMeta));
-                this.formTabs = this.createFormTabs(this.propertyMetadatas);
-                this.contentForm = this.createFormGroup(this.propertyMetadatas);
-            }
+        if (this.contentTypeProperties.length > 0) {
+            this.formTabs = this.extractFormTabsFromProperties(this.contentTypeProperties);
+            this.contentFormGroup = this.createFormGroup(this.contentTypeProperties);
         }
     }
 
-    private createPropertyMetadatas(contentType: string): Array<FormProperty> {
-        const metadatas = [];
-        //get all properties of content type
-        const properties: string[] = Reflect.getMetadata(PROPERTIES_METADATA_KEY, contentType);
-        if (properties) {
-            properties.forEach(propertyName => {
-                const propertyMeta: FormProperty = {
-                    name: propertyName,
-                    metadata: Reflect.getMetadata(PROPERTY_METADATA_KEY, contentType, propertyName)
+    private getPopulatedContentData(contentData: Page | Block | Media, propertiesMetadata: ContentTypeProperty[]): Partial<Page> & Content {
+        propertiesMetadata.forEach(propertyMeta => {
+            if (contentData.properties) contentData.properties[propertyMeta.name] = this.getPopulatedReferenceProperty(contentData, propertyMeta);
+        });
+
+        return contentData;
+    }
+
+    private getPopulatedReferenceProperty(contentData: Page | Block | Media, property: ContentTypeProperty): any {
+        const childItems = contentData.childItems;
+        const displayType = property.metadata.displayType;
+
+        switch (displayType) {
+            case UIHint.ContentArea:
+                const contentAreaItems: ContentAreaItem[] = contentData.properties[property.name];
+                if (Array.isArray(contentAreaItems)) {
+                    contentAreaItems.forEach(areaItem => {
+                        const matchItem = childItems.find(x => x.content._id == areaItem._id);
+                        if (matchItem) Object.assign(areaItem, { name: matchItem.content.name, isPublished: matchItem.content.isPublished });
+                    })
                 }
-
-                metadatas.push(propertyMeta);
-            });
+                return contentAreaItems;
+            default:
+                return contentData.properties[property.name];
         }
-        return metadatas;
     }
 
-    private createFormTabs(properties: Array<FormProperty>): Array<CmsTab> {
+    private extractFormTabsFromProperties(properties: ContentTypeProperty[]): CmsTab[] {
         const tabs: CmsTab[] = [];
 
-        properties.forEach((property: FormProperty) => {
+        properties.forEach((property: ContentTypeProperty) => {
             if (property.metadata.hasOwnProperty('groupName')) {
                 if (tabs.findIndex(x => x.title == property.metadata.groupName) == -1) {
-                    tabs.push({ title: property.metadata.groupName, content: `${property.metadata.groupName}` });
+                    tabs.push({ title: property.metadata.groupName, name: `${property.metadata.groupName}` });
                 }
             }
         });
 
-        if (properties.findIndex((property: FormProperty) => !property.metadata.groupName) != -1) {
-            tabs.push({ title: this.defaultGroup, content: `${this.defaultGroup}` });
+        if (properties.findIndex((property: ContentTypeProperty) => !property.metadata.groupName) != -1) {
+            tabs.push({ title: this.defaultGroup, name: `${this.defaultGroup}` });
         }
 
         return tabs.sort(sortTabByTitle);
     }
 
-    private createFormGroup(properties: Array<FormProperty>): FormGroup {
+    private createFormGroup(properties: ContentTypeProperty[]): FormGroup {
         if (properties) {
             const formModel = this.currentContent.properties ? this.currentContent.properties : {};
             const formControls: { [key: string]: any } = this.createDefaultFormControls();
+
             properties.forEach(property => {
                 const validators = [];
                 if (property.metadata.validates) {
@@ -138,7 +176,6 @@ export class ContentFormEditComponent implements OnInit {
                         validators.push(validate.validateFn);
                     })
                 }
-
                 formControls[property.name] = [formModel[property.name], validators]
             });
             return this.formBuilder.group(formControls);
@@ -148,105 +185,40 @@ export class ContentFormEditComponent implements OnInit {
 
     private createDefaultFormControls(): { [key: string]: any } {
         const formControls: { [key: string]: any } = {};
-        formControls["name"] = [this.currentContent.name, Validators.required];
+        formControls.name = [this.currentContent.name, Validators.required];
         return formControls;
     }
 
-    private createPropertyComponents(properties: Array<FormProperty>): ComponentRef<any>[] {
-        const formControls: ComponentRef<any>[] = [];
+    private createPropertyComponents(properties: ContentTypeProperty[]): ComponentRef<any>[] {
+        const propertyControls: ComponentRef<any>[] = [];
 
-        if (this.formTabs) {
-            this.formTabs.forEach(tab => {
-                const viewContainerRef = this.insertPoints.find(x => x.name == tab.content).viewContainerRef;
-                viewContainerRef.clear();
+        if (!this.formTabs || this.formTabs.length == 0) return propertyControls;
 
-                properties.filter(x => (x.metadata.groupName == tab.title || (!x.metadata.groupName && tab.title == this.defaultGroup))).forEach(property => {
-                    if (CMS.PROPERTIES[property.metadata.displayType]) {
-                        const propertyFactory = this.componentFactoryResolver.resolveComponentFactory(CMS.PROPERTIES[property.metadata.displayType]);
-                        const propertyComponent = viewContainerRef.createComponent(propertyFactory);
+        this.formTabs.forEach(tab => {
+            const viewContainerRef = this.insertPoints.find(x => x.name == tab.name).viewContainerRef;
+            viewContainerRef.clear();
 
-                        (<CmsProperty>propertyComponent.instance).label = property.metadata.displayName;
-                        (<CmsProperty>propertyComponent.instance).formGroup = this.contentForm;
-                        (<CmsProperty>propertyComponent.instance).propertyName = property.name;
-
-                        if (propertyComponent.instance instanceof SelectProperty) {
-                            (<SelectProperty>propertyComponent.instance).selectItems = (<ISelectionFactory>(this.injector.get(property.metadata.selectionFactory))).GetSelections();
-                        }
-                        else if (propertyComponent.instance instanceof PropertyListComponent) {
-                            (<PropertyListComponent>propertyComponent.instance).itemType = property.metadata.propertyListItemType;
-                        }
-
-                        formControls.push(propertyComponent);
-                    }
-                });
+            properties.filter(x => (x.metadata.groupName == tab.title || (!x.metadata.groupName && tab.title == this.defaultGroup))).forEach(property => {
+                const propertyFactory = this.propertyFactoryResolver.resolvePropertyFactory(property.metadata.displayType);
+                const propertyComponent = propertyFactory.createPropertyComponent(property, this.contentFormGroup);
+                viewContainerRef.insert(propertyComponent.hostView);
+                propertyControls.push(propertyComponent);
             });
-        }
+        });
 
-        return formControls;
+        return propertyControls;
     }
 
-    //get all reference id of blocks in all content area
-    private getChildItems(): ChildItemRef[] {
-        const childItems: ChildItemRef[] = [];
-
-        Object.keys(this.currentContent.properties).forEach(fieldName => {
-            const fieldMeta = this.propertyMetadatas.find(x => x.name == fieldName);
-            if (fieldMeta) {
-                const fieldType = fieldMeta.metadata.displayType;
-
-                switch (fieldType) {
-                    case UIHint.ContentArea:
-                        const fieldValue = this.currentContent.properties[fieldName]
-                        if (Array.isArray(fieldValue)) {
-                            fieldValue.forEach(item => {
-                                if (childItems.findIndex(x => x.content && x.content == item._id) == -1)
-                                    childItems.push({
-                                        refPath: 'cms_Block', //TODO: need to get path based on item which drop on content area
-                                        content: item._id
-                                    })
-                            })
-                        }
-                        break;
-                }
-            }
-        })
-        return childItems;
-    }
-
-    private populateReferenceProperty(property: FormProperty): void {
-        if (this.currentContent.properties) {
-            const childItems = this.currentContent.childItems;
-            const fieldType = property.metadata.displayType;
-            switch (fieldType) {
-                // Content Area
-                case UIHint.ContentArea:
-                    const fieldValue = this.currentContent.properties[property.name]
-                    if (Array.isArray(fieldValue)) {
-                        for (let i = 0; i < fieldValue.length; i++) {
-                            const matchItem = childItems.find(x => x.content._id == fieldValue[i]._id);
-                            if (matchItem) {
-                                fieldValue[i] = clone(matchItem.content);
-                            }
-                        }
-                    }
-                    this.currentContent.properties[property.name] = fieldValue;
-                    break;
-            }
-        }
-    }
-
-    onSubmit(isPublished: boolean, formId: any) {
-        console.log(this.contentForm.value);
-
-        if (this.contentForm.valid) {
+    updateContent(isPublished: boolean, formId: any) {
+        if (this.contentFormGroup.valid) {
             if (this.currentContent) {
                 const properties = {};
-                Object.keys(this.contentForm.value).forEach(key => {
+                Object.keys(this.contentFormGroup.value).forEach(key => {
                     if (this.currentContent.hasOwnProperty(key)) {
-                        this.currentContent[key] = this.contentForm.value[key]
+                        this.currentContent[key] = this.contentFormGroup.value[key]
                     }
                     else {
-                        properties[key] = this.contentForm.value[key];
+                        properties[key] = this.contentFormGroup.value[key];
                     }
                 });
                 this.currentContent.properties = properties;
@@ -275,13 +247,51 @@ export class ContentFormEditComponent implements OnInit {
         }
     }
 
+    //get all reference id of blocks in all content area
+    private getChildItems(): ChildItemRef[] {
+        const childItems: ChildItemRef[] = [];
+
+        Object.keys(this.currentContent.properties).forEach(fieldName => {
+            const fieldMeta = this.contentTypeProperties.find(x => x.name == fieldName);
+            if (fieldMeta) {
+                const fieldType = fieldMeta.metadata.displayType;
+
+                switch (fieldType) {
+                    case UIHint.ContentArea:
+                        const contentAreaItems: ContentAreaItem[] = this.currentContent.properties[fieldName]
+                        if (Array.isArray(contentAreaItems)) {
+                            contentAreaItems.forEach(areaItem => {
+                                if (childItems.findIndex(x => x.content && x.content == areaItem._id) == -1) {
+                                    const refPath = this.getRefPathFromContentType(areaItem.type);
+                                    if (refPath) childItems.push({ refPath: refPath, content: areaItem._id })
+                                }
+                            })
+                        }
+                        break;
+                }
+            }
+        })
+        return childItems;
+    }
+
+    private getRefPathFromContentType(contentAreaItemType: 'page' | 'block' | 'media' | 'folder_block' | 'folder_media'): 'cms_Block' | 'cms_Page' | 'cms_Media' {
+        switch (contentAreaItemType) {
+            case PAGE_TYPE: return 'cms_Page';
+            case BLOCK_TYPE: return 'cms_Block';
+            case FOLDER_BLOCK: return 'cms_Block';
+            case MEDIA_TYPE: return 'cms_Media';
+            case FOLDER_MEDIA: return 'cms_Media';
+            default: return null;
+        }
+    }
+
     ngOnDestroy() {
-        this.subParams.unsubscribe();
+        this.onUnsubscribe();
+        if (this.insertPoints)
+            this.insertPoints.map(x => x.viewContainerRef).forEach(containerRef => containerRef.clear());
 
         if (this.componentRefs) {
-            this.componentRefs.forEach(cmpref => {
-                cmpref.destroy();
-            })
+            this.componentRefs.forEach(cmpRef => { cmpRef.destroy(); })
             this.componentRefs = [];
         }
     }

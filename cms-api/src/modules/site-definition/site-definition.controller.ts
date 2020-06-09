@@ -1,10 +1,9 @@
 import * as mongoose from 'mongoose';
 
-import { SiteDefinitionModel } from './site-definition.model';
-import { BaseCtrl } from '../shared/base.controller';
-import { ISiteDefinitionDocument } from './site-definition.model';
+import { BaseController } from '../shared/base.controller';
+import { ISiteDefinitionDocument, SiteDefinitionModel } from './site-definition.model';
 
-export class SiteDefinitionCtrl extends BaseCtrl<mongoose.Model<ISiteDefinitionDocument>> {
+export class SiteDefinitionCtrl extends BaseController<mongoose.Model<ISiteDefinitionDocument>> {
     constructor() { super(SiteDefinitionModel); }
 
     insertMany = (req, res, next) => {

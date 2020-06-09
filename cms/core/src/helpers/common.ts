@@ -1,39 +1,35 @@
-import { CmsTab } from "../constants/module-config";
-
-export function slugify(text) {
-  return text.toString().toLowerCase()
-    .replace(/\s+/g, '-')           // Replace spaces with -
-    .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
-    .replace(/\-\-+/g, '-')         // Replace multiple - with single -
-    .replace(/^-+/, '')             // Trim - from start of text
-    .replace(/-+$/, '');            // Trim - from end of text
-}
+import { CmsTab } from "../types";
 
 export function sortTabByTitle(tabOne: CmsTab, tabTwo: CmsTab) {
-  var titleOne = tabOne.title ? tabOne.title.toUpperCase() : ''; // ignore upper and lowercase
-  var titleTwo = tabTwo.title ? tabTwo.title.toUpperCase() : ''; // ignore upper and lowercase
+  const titleOne = tabOne.title ? tabOne.title.toUpperCase() : ''; // ignore upper and lowercase
+  const titleTwo = tabTwo.title ? tabTwo.title.toUpperCase() : ''; // ignore upper and lowercase
   if (titleOne < titleTwo) {
     return -1;
   }
   if (titleOne > titleTwo) {
     return 1;
   }
-  // names must be equal
   return 0;
 }
 
 export function generateUUID() {
-  // return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-  //   (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-  // )
+  let d = new Date().getTime();//Timestamp
+  let d2 = (performance && performance.now && (performance.now() * 1000)) || 0;//Time in microseconds since page-load or 0 if unsupported
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
+    let r = Math.random() * 16;//random number between 0 and 16
+    if (d > 0) {//Use timestamp until depleted
+      r = (d + r) % 16 | 0;
+      d = Math.floor(d / 16);
+    } else {//Use microseconds since page-load if supported
+      r = (d2 + r) % 16 | 0;
+      d2 = Math.floor(d2 / 16);
+    }
+    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
   });
 }
 
-export function clone(obj) {
-  let copy;
+export function clone(obj: any) {
+  let copy: any;
 
   // Handle the 3 simple types, and null or undefined
   if (null == obj || "object" != typeof obj) return obj;
@@ -48,7 +44,7 @@ export function clone(obj) {
   // Handle Array
   if (obj instanceof Array) {
     copy = [];
-    for (var i = 0, len = obj.length; i < len; i++) {
+    for (let i = 0, len = obj.length; i < len; i++) {
       copy[i] = clone(obj[i]);
     }
     return copy;
@@ -56,26 +52,8 @@ export function clone(obj) {
 
   // Handle Object
   if (obj instanceof Object) {
-    // copy = {};
-    // for (var attr in obj) {
-    //     if (obj.hasOwnProperty(attr)) copy[attr] = clone(obj[attr]);
-    // }
     return Object.assign({}, obj);
   }
 
   throw new Error("Unable to copy obj! Its type isn't supported.");
-}
-
-const idCounter = {}
-export function uniqueId(prefix = '$lodash$') {
-  if (!idCounter[prefix]) {
-    idCounter[prefix] = 0
-  }
-
-  const id = ++idCounter[prefix]
-  if (prefix === '$lodash$') {
-    return `${id}`
-  }
-
-  return `${prefix + id}`
 }

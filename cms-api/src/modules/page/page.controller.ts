@@ -1,4 +1,7 @@
+import 'reflect-metadata';
 import * as express from 'express';
+import * as httpStatus from 'http-status';
+import { Injectable } from 'injection-js';
 
 import { ContentController } from '../content/content.controller';
 import { PageService } from './page.service';
@@ -7,6 +10,7 @@ import { IPageDocument } from './models/page.model';
 import { IPageVersionDocument } from './models/page-version.model';
 import { IPublishedPageDocument } from './models/published-page.model';
 
+@Injectable()
 export class PageController extends ContentController<IPageDocument, IPageVersionDocument, IPublishedPageDocument> {
 
   private pageService: PageService;
@@ -15,41 +19,31 @@ export class PageController extends ContentController<IPageDocument, IPageVersio
     this.pageService = pageService;
   }
 
-  getByUrl = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    //need to check isPageDeleted = false
-    this.pageService.getPublishedPageByUrl(req.params.url)
-      .then(item => res.status(200).json(item))
-      .catch(err => next(err));
+  getByUrl = async (req: express.Request, res: express.Response) => {
+    const item = await this.pageService.getPublishedPageByUrl(req.params.url);
+    res.status(httpStatus.OK).json(item);
   }
 
-  getPublishedPageChildren = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    this.pageService.getPublishedPageChildren(req.params.parentId)
-      .then(items => res.status(200).json(items))
-      .catch(err => next(err));
+  getPublishedPageChildren = async (req: express.Request, res: express.Response) => {
+    const items = await this.pageService.getPublishedPageChildren(req.params.parentId)
+    res.status(httpStatus.OK).json(items);
   }
 
-  getPageChildren = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    this.pageService.getPageChildren(req.params.parentId)
-      .then(items => res.status(200).json(items))
-      .catch(err => next(err));
+  getPageChildren = async (req: express.Request, res: express.Response, ) => {
+    const items = await this.pageService.getPageChildren(req.params.parentId)
+    res.status(httpStatus.OK).json(items);
   }
 
   //Override insert base
-  insert = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  insert = async (req: express.Request, res: express.Response) => {
     const pageDocument = this.pageService.createModelInstance(req.body);
-
-    return this.pageService.executeCreatePageFlow(pageDocument)
-      .then(item => res.status(200).json(item))
-      .catch(err => next(err))
+    const item = await this.pageService.executeCreatePageFlow(pageDocument)
+    res.status(httpStatus.OK).json(item)
   }
 
-  update = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  update = async (req: express.Request, res: express.Response) => {
     const pageDocument = this.pageService.createModelInstance(req.body);
-
-    this.pageService.updateAndPublishContent(req.params.id, pageDocument)
-      .then((savedPage: IPageDocument) => res.status(200).json(savedPage))
-      .catch(error => next(error));
+    const savedPage = await this.pageService.updateAndPublishContent(req.params.id, pageDocument)
+    res.status(httpStatus.OK).json(savedPage)
   }
-
-
 }

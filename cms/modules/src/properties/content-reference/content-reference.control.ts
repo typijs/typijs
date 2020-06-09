@@ -1,58 +1,79 @@
 import { Component, forwardRef, Input } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { PAGE_TYPE, ContentReference } from '@angular-cms/core';
+
+import { DropEvent } from '../../shared/drag-drop/drop-event.model';
+import { SubjectService } from '../../shared/services/subject.service';
+import { ContentAreaItem } from '../content-area/content-area.model';
+import { CmsControl } from '../cms-control';
+
+const CONTENT_REFERENCE_VALUE_ACCESSOR = {
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => ContentReferenceControl),
+    multi: true
+}
 
 @Component({
     selector: 'content-reference',
     template: `
-            <div class="tab-content" droppable (onDrop)="onDropItem($event)">
-                <div class="tab-pane active">
-                    <div *ngIf="model">
-                        <i class="fa fa-comment fa-fw"></i> {{model.name}}
-                        <span class="pull-right text-muted small"><em>{{model.value}}</em>
-                        </span>
-                    </div>
+        <div class="content-reference border">
+            <div class="p-1 drop-area" droppable [dropScope]="isDropAllowed" (onDrop)="onDropContent($event)">
+                <div class="d-flex align-items-center p-1 bg-light rounded" *ngIf="model">
+                    <fa-icon class="mr-1" [icon]="['fas', 'file']"></fa-icon>
+                    <div class="w-100 mr-2 text-truncate">{{model.name}}</div>
+                    <fa-icon class="ml-auto mr-1" [icon]="['fas', 'times']" (click)="removeContent()"></fa-icon>
                 </div>
-                <div dndPlaceholder></div>
+                <div dragPlaceholder></div>
             </div>
-`,
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => ContentReferenceControl),
-            multi: true
+        </div>
+    `,
+    styles: [`
+        .content-reference .drop-area {
+            min-height: 38.5px;
         }
-    ]
+    `],
+    providers: [CONTENT_REFERENCE_VALUE_ACCESSOR]
 })
-export class ContentReferenceControl implements ControlValueAccessor {
-    private _model: any;
-    private onChange: (m: any) => void;
-    private onTouched: (m: any) => void;
+export class ContentReferenceControl extends CmsControl {
+    @Input() allowedTypes: string[];
+    model: ContentReference;
 
-    @Input() name: string;
-
-    get model() {
-        return this._model;
+    constructor(private subjectService: SubjectService) {
+        super();
     }
 
-    writeValue(value: any): void {
-        this._model = value;
-        if (this._model) {
-            this._model.owner = this.name;
+    writeValue(value: ContentReference): void {
+        this.model = value;
+    }
+
+    isDropAllowed = (dragData) => {
+        const { contentType, type } = dragData;
+
+        if (!this.allowedTypes) return type == PAGE_TYPE;
+        return this.allowedTypes.indexOf(contentType) > -1 && type == PAGE_TYPE;
+    }
+
+    onDropContent(e: DropEvent) {
+        const { _id, id, name, type, contentType, owner, guid } = e.dragData;
+        this.model = <ContentReference>{
+            id: _id ? _id : id,
+            type: type,
+            name: name,
+            contentType: contentType
+        }
+
+        this.onChange(this.model);
+
+        if (owner && guid) {
+            const contentAreaItem: Partial<ContentAreaItem> = {
+                owner: owner,
+                guid: guid
+            }
+            this.subjectService.fireContentDropFinished(contentAreaItem);
         }
     }
 
-    registerOnChange(fn: any): void {
-        this.onChange = fn;
-    }
-
-    registerOnTouched(fn: any): void {
-        this.onTouched = fn;
-    }
-
-    onDropItem(e: any) {
-        this._model = e.dragData;
-        this._model.owner = this.name;
-        
-        this.onChange(this._model);
+    removeContent() {
+        this.model = null;
     }
 }

@@ -1,4 +1,4 @@
-import { Injectable, Inject, InjectionToken, PLATFORM_ID } from '@angular/core';
+import { Injectable, Inject, InjectionToken } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 //export abstract class StorageRef extends Storage { }

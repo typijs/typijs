@@ -1,13 +1,18 @@
-import { Component, Output, Input, EventEmitter } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { TreeNode } from '../../shared/tree/interfaces/tree-node';
+
 import { UploadService } from './upload.service';
 
 @Component({
     selector: 'file-drop',
     template: `
-        <!--UPLOAD-->
         <form #f="ngForm" enctype="multipart/form-data" novalidate>
             <div class="dropbox">
-                <input type="file"  multiple [name]="uploadFieldName" title=" " (change)="filesChange($event.target.files)"/>
+                <input type="file"  
+                    multiple 
+                    cmsFileSelect
+                    [name]="uploadFieldName"
+                    (onFileSelected)="filesSelected($event)"/>
             </div>
         </form>
     `,
@@ -24,24 +29,13 @@ import { UploadService } from './upload.service';
 })
 
 export class FileDropComponent {
-
     @Input() uploadFieldName: string = "files"; //default field file name
-    @Output() onUploadedFile: EventEmitter<any> = new EventEmitter();
+    @Input() targetFolder: Partial<TreeNode>;
 
     constructor(private uploadService: UploadService) {
-        this.reset();
     }
 
-    filesChange(fileList: FileList) {
-        if (!fileList.length) return;
-        let chooseFiles = [];
-        Array.from(Array(fileList.length).keys())
-            .map(index => {
-                chooseFiles.push(fileList[index])
-            });
-        this.uploadService.setFilesToUpload(chooseFiles);
-    }
-
-    reset() {
+    filesSelected(files: File[]) {
+        this.uploadService.uploadFiles(files, this.targetFolder);
     }
 }

@@ -1,13 +1,13 @@
-import * as path from 'path';
 import * as fs from 'fs';
+import * as path from 'path';
 import * as sharp from "sharp";
 
-import * as upload from './upload';
-
-import { IMediaDocument, MediaModel, ImageContent } from "./models/media.model";
 import { ContentService } from "../content/content.service";
 import { IMediaVersionDocument, MediaVersionModel } from "./models/media-version.model";
+import { ImageContent, IMediaDocument, MediaModel } from "./models/media.model";
 import { IPublishedMediaDocument, PublishedMediaModel } from "./models/published-media.model";
+import { UPLOAD_PATH } from './multerUpload';
+
 
 export class MediaService extends ContentService<IMediaDocument, IMediaVersionDocument, IPublishedMediaDocument> {
 
@@ -26,14 +26,14 @@ export class MediaService extends ContentService<IMediaDocument, IMediaVersionDo
     }
 
     private getMediaStream = async (fileId: string, fileExt: string): Promise<fs.ReadStream> => {
-        const fileOriginalPath = path.join(upload.UPLOAD_PATH, fileId, `${fileId}${fileExt}`);
+        const fileOriginalPath = path.join(UPLOAD_PATH, fileId, `${fileId}${fileExt}`);
         const isExisted = await this.existsFile(fileOriginalPath);
         return isExisted ? fs.createReadStream(fileOriginalPath) : null;
     }
 
     private getResizedImageStream = async (fileId: string, fileExt: string, width?: number, height?: number): Promise<fs.ReadStream> => {
-        const fileOriginalPath = path.join(upload.UPLOAD_PATH, fileId, `${fileId}${fileExt}`);
-        const fileResizedPath = width || height ? path.join(upload.UPLOAD_PATH, fileId, `${fileId}_${width}x${height}${fileExt}`) : fileOriginalPath;
+        const fileOriginalPath = path.join(UPLOAD_PATH, fileId, `${fileId}${fileExt}`);
+        const fileResizedPath = width || height ? path.join(UPLOAD_PATH, fileId, `${fileId}_${width}x${height}${fileExt}`) : fileOriginalPath;
         //check existing the fileResizedPath
         const isExisted = await this.existsFile(fileResizedPath);
         if (isExisted) return fs.createReadStream(fileResizedPath);

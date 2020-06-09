@@ -6,15 +6,14 @@ import { page } from './modules/page/page.route';
 import { sideDefinition } from './modules/site-definition/site-definition.route';
 
 const appRouter: Router = Router();
-
+// Page
 appRouter.use('/page', page);
-
 // Blocks
 appRouter.use('/block', block);
-
 // Media
 appRouter.use('/assets', asset);
 appRouter.use('/media', media);
+// Site Definition
 appRouter.use(sideDefinition);
 
 export { appRouter };

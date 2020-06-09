@@ -1,11 +1,12 @@
 import * as mongoose from 'mongoose';
-import { ContentService } from '../content/content.service';
 
-import { IPageDocument, PageModel, IPage } from "./models/page.model";
-import { IPageVersionDocument, PageVersionModel } from "./models/page-version.model";
-import { IPublishedPageDocument, PublishedPageModel, IPublishedPage } from './models/published-page.model';
+import { DocumentNotFoundException } from '../../errorHandling';
+import { slugify } from '../../utils/slugify';
+import { ContentService } from '../content/content.service';
 import { ISiteDefinitionDocument, SiteDefinitionModel } from '../site-definition/site-definition.model';
-import { NotFoundException } from '../../errorHandling';
+import { IPageVersionDocument, PageVersionModel } from "./models/page-version.model";
+import { IPage, IPageDocument, PageModel } from "./models/page.model";
+import { IPublishedPage, IPublishedPageDocument, PublishedPageModel } from './models/published-page.model';
 
 export class PageService extends ContentService<IPageDocument, IPageVersionDocument, IPublishedPageDocument> {
 
@@ -13,6 +14,26 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
     constructor() {
         super(PageModel, PageVersionModel, PublishedPageModel);
         this.siteDefinitionModel = SiteDefinitionModel;
+    }
+
+    public getPopulatedContentById = async (id: string): Promise<IPageDocument> => {
+        if (!id) id = null;
+
+        const pageDoc = await this.contentModel.findOne({ _id: id })
+            .lean()
+            .populate({
+                path: 'childItems.content',
+                match: { isDeleted: false }
+            })
+            .populate({
+                path: 'publishedChildItems.content',
+                match: { isDeleted: false }
+            })
+            .exec();
+
+        const startPageLinkUrl = await this.getStartPageLinkUrl(null);
+        pageDoc.publishedLinkUrl = this.getPublishedLinkUrl(startPageLinkUrl, pageDoc)
+        return pageDoc;
     }
 
     public getPublishedPageByUrl = async (encodedUrl: string): Promise<IPublishedPage> => {
@@ -25,8 +46,7 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
         const originalUrl = urlObj.origin; // --> https://example.org:80
         const pathUrl = urlObj.pathname; // --> /abc/xyz
 
-        const startPage = await this.getStartPageFromHostname(originalUrl);
-        const startPageLinkUrl = startPage != null ? startPage.linkUrl : '';
+        const startPageLinkUrl = await this.getStartPageLinkUrl(originalUrl);
         const linkUrl = `${startPageLinkUrl}${pathUrl}`;
 
         const publishedPage = await this.getPublishedPageByLinkUrl(linkUrl);
@@ -39,7 +59,6 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
 
     public getPageChildren = async (parentId: string): Promise<IPage[]> => {
         if (parentId == '0') parentId = null;
-
         return this.contentModel.find({ parentId: parentId, isDeleted: false }).lean().exec()
     }
 
@@ -50,8 +69,7 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
         const publishedPages = await this.publishedContentModel.find({ parentId: parentId, isDeleted: false }).lean().exec()
         if (publishedPages.length == 0) return [];
 
-        const startPage = await this.getStartPageFromHostname(null);
-        const startPageLinkUrl = startPage != null ? startPage.linkUrl : '';
+        const startPageLinkUrl = await this.getStartPageLinkUrl(null);
         publishedPages.forEach(page => page.publishedLinkUrl = this.getPublishedLinkUrl(startPageLinkUrl, page));
 
         return publishedPages
@@ -63,7 +81,7 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
         //create new page
         //update parent page's has children property
         const parentPage = await this.getDocumentById(pageObj.parentId);
-        const urlSegment = await this.generateUrlSegment(0, pageObj.urlSegment, parentPage ? parentPage._id : null);
+        const urlSegment = await this.generateUrlSegment(0, slugify(pageObj.name), parentPage ? parentPage._id : null);
         const savedPage = await this.createPage(pageObj, parentPage, urlSegment);
 
         if (savedPage) await this.updateHasChildren(parentPage);
@@ -124,6 +142,11 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
         return publishedPage.linkUrl;
     }
 
+    private getStartPageLinkUrl = async (hostname: string): Promise<string> => {
+        const startPage = await this.getStartPageFromHostname(null);
+        return startPage != null ? startPage.linkUrl : '';
+    }
+
     private getStartPageFromHostname = async (hostname: string): Promise<IPublishedPageDocument> => {
         const siteDefinition = await this.getSiteDefinitionBySiteUrl(hostname);
         return siteDefinition != null ? siteDefinition.startPage : null;
@@ -139,7 +162,7 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
     protected createCopiedContent = async (sourceContentId: string, targetParentId: string): Promise<IPageDocument> => {
         //get source content 
         const sourceContent = await this.getDocumentById(sourceContentId);
-        if (!sourceContent) throw new NotFoundException(sourceContentId);
+        if (!sourceContent) throw new DocumentNotFoundException(sourceContentId);
 
         //create copy content
         const newContent = this.createModelInstance(sourceContent);
@@ -154,7 +177,7 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
     protected createCutContent = async (sourceContentId: string, targetParentId: string): Promise<IPageDocument> => {
         //get source content 
         const sourceContent = await this.getDocumentById(sourceContentId);
-        if (!sourceContent) throw new NotFoundException(sourceContentId);
+        if (!sourceContent) throw new DocumentNotFoundException(sourceContentId);
 
         const targetParent = await this.getDocumentById(targetParentId);
 
@@ -173,7 +196,7 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
         //update link url
         const segments = currentContent.linkUrl.split('/').filter(x => x);
         let newLinkUrl = newParentContent.linkUrl;
-        for (let j = segments.length - 1, k = 1; k <= currentContent.ancestors.length - index; j-- , k++) {
+        for (let j = segments.length - 1, k = 1; k <= currentContent.ancestors.length - index; j--, k++) {
             newLinkUrl = newLinkUrl == '/' ? `/${segments[j]}` : `${newLinkUrl}/${segments[j]}`;
         }
 

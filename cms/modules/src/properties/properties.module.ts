@@ -1,32 +1,39 @@
 import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
-import { EditorModule } from '@tinymce/tinymce-angular';
+import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faFile, faFolder, faCube, faImage, faBars, faHashtag, faList, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { QuillModule } from 'ngx-quill';
+
 import { CoreModule } from '@angular-cms/core';
 
-import { DndModule } from '../shared/dnd/dnd.module';
+import { CmsBsDropdownModule } from '../shared/libs/ngx-bootstrap/bs-dropdown.module';
+import { DndModule } from '../shared/drag-drop/dnd.module';
 
-import { InputComponent } from './input/input.component';
+import { TextProperty } from './text/text.property';
 
-import { TextareaComponent } from './textarea/textarea.component';
+import { TextareaProperty } from './textarea/textarea.property';
 
-import { PropertyListComponent } from './property-list/property-list.component';
-import { PropertyListControl } from './property-list/property-list.control';
+import { ObjectListProperty } from './object-list/object-list.property';
+import { ObjectListControl } from './object-list/object-list.control';
 
-import { TinymceComponent } from './xhtml/tinymce.component';
-import { DropdownComponent } from './select/dropdown/dropdown.component';
+import { XHtmlProperty } from './xhtml/xhtml.property';
+import { DropdownProperty } from './select/dropdown/dropdown.property';
 
-import { CheckboxComponent } from './select/checkbox/checkbox.component';
+import { CheckboxProperty } from './select/checkbox/checkbox.property';
 import { CheckboxGroupControl } from './select/checkbox/checkbox-group.control';
 
 import { ContentAreaControl } from './content-area/content-area.control';
-import { ContentAreaComponent } from './content-area/content-area.component';
+import { ContentAreaProperty } from './content-area/content-area.property';
 
 import { ContentReferenceControl } from './content-reference/content-reference.control';
-import { ContentReferenceComponent } from './content-reference/content-reference.component';
+import { ContentReferenceProperty } from './content-reference/content-reference.property';
 
 import { registerCmsProperties } from './registerCmsProperties';
+import { ImageReferenceProperty } from './image-reference/image-reference.property';
+import { ImageReferenceControl } from './image-reference/image-reference.control';
 
 registerCmsProperties();
 
@@ -35,48 +42,59 @@ registerCmsProperties();
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
-        EditorModule,
+        RouterModule,
+        QuillModule,
+        FontAwesomeModule,
+        CmsBsDropdownModule,
         CoreModule,
         DndModule
     ],
     declarations: [
-        InputComponent,
-        TextareaComponent,
-        DropdownComponent,
+        TextProperty,
+        TextareaProperty,
+        DropdownProperty,
         CheckboxGroupControl,
-        CheckboxComponent,
-        PropertyListControl,
-        PropertyListComponent,
-        TinymceComponent,
-        ContentAreaComponent,
+        CheckboxProperty,
+        ObjectListProperty,
+        ObjectListControl,
+        XHtmlProperty,
+
+        ContentAreaProperty,
         ContentAreaControl,
 
         ContentReferenceControl,
-        ContentReferenceComponent
+        ContentReferenceProperty,
+
+        ImageReferenceControl,
+        ImageReferenceProperty
     ],
     entryComponents: [
-        InputComponent,
-        TextareaComponent,
-        DropdownComponent,
-        CheckboxComponent,
-        PropertyListComponent,
-        TinymceComponent,
-        ContentAreaComponent,
-        ContentReferenceComponent
+        TextProperty,
+        TextareaProperty,
+        DropdownProperty,
+        CheckboxProperty,
+        ObjectListProperty,
+        XHtmlProperty,
+        ContentAreaProperty,
+        ContentReferenceProperty,
+        ImageReferenceProperty
     ],
     exports: [
-        InputComponent,
-        TextareaComponent,
-        DropdownComponent,
-        CheckboxComponent,
-        PropertyListComponent,
-        TinymceComponent,
-        ContentAreaComponent,
+        TextProperty,
+        TextareaProperty,
+        DropdownProperty,
+        CheckboxProperty,
+        ObjectListProperty,
+        XHtmlProperty,
+        ContentAreaProperty,
 
         ContentReferenceControl,
-        ContentReferenceComponent
+        ContentReferenceProperty,
+        ImageReferenceProperty
     ]
 })
-export class PropertiesModule { }
-
-
+export class PropertiesModule {
+    constructor(library: FaIconLibrary) {
+        library.addIcons(faFolder, faFile, faImage, faCube, faBars, faHashtag, faList, faTimes);
+    }
+}

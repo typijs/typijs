@@ -16,7 +16,7 @@ export class DragOverDirective {
 
     private containsFiles(event) {
         if (event.dataTransfer.types) {
-            for (var i = 0; i < event.dataTransfer.types.length; i++) {
+            for (let i = 0; i < event.dataTransfer.types.length; i++) {
                 if (event.dataTransfer.types[i] == "Files") {
                     return true;
                 }

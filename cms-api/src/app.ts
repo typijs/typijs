@@ -1,15 +1,13 @@
 import * as bodyParser from 'body-parser';
+import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
 import * as express from 'express';
-import * as helmet from 'helmet';
 import * as path from 'path';
-import * as cookieParser from 'cookie-parser';
 
-import { httpLoggerMiddleware } from './logging';
 import { connectToTheDatabase } from './db/dbConnect';
-
+import { errorConverter, errorHandler } from './errorHandling';
+import { loggingMiddleware } from './logging';
 import { appRouter } from './routes';
-import { errorMiddleware } from './errorHandling';
 
 export class App {
   public express: express.Application;
@@ -17,32 +15,44 @@ export class App {
   constructor() {
     this.express = express();
 
-    connectToTheDatabase();
+    this.setDatabaseConnection();
     this.setMiddlewares();
     this.setRoutes();
     this.setErrorHandling();
   }
 
+  private setDatabaseConnection() {
+    connectToTheDatabase();
+  }
+
   private setMiddlewares(): void {
+    // enable CORS - Cross Origin Resource Sharing
     this.express.use(cors({
       origin: 'http://localhost:4200'
     }));
-    this.express.use(httpLoggerMiddleware());
+    // request logging
+    this.express.use(loggingMiddleware());
+    // parse body params and attache them to req.body
     this.express.use(bodyParser.json());
     this.express.use(bodyParser.urlencoded({ extended: false }));
     this.express.use(cookieParser());
+    // gzip compression
+    //this.express.use(compress());
     //this.express.use(helmet());
   }
 
   private setRoutes(): void {
     this.express.use('/', express.static(path.join(__dirname, '../public')));
     this.express.use('/api', appRouter);
-    this.express.get('/*', function (req, res) {
+    this.express.get('/*', function (req: express.Request, res: express.Response) {
       res.sendFile(path.join(__dirname, '../public/index.html'));
     });
   }
 
   private setErrorHandling(): void {
-    this.express.use(errorMiddleware);
+    //add middleware to convert all errors to AppError class
+    this.express.use(errorConverter);
+    //handler for all errors
+    this.express.use(errorHandler);
   }
 }

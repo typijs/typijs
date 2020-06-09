@@ -1,4 +1,4 @@
-import { Property, PageType, UIHint, PageData } from '@angular-cms/core';
+import { Property, PageType, UIHint, PageData, CmsImage, ContentReference } from '@angular-cms/core';
 import { HomeComponent } from './home.component';
 
 @PageType({
@@ -10,26 +10,30 @@ export class HomePage extends PageData {
 
     @Property({
         displayName: "Logo",
-        displayType: UIHint.Input
+        displayType: UIHint.Image
     })
-    logo: string;
+    logo: CmsImage;
 
     @Property({
-        displayName: "Latest Projects Page Root",
-        displayType: UIHint.Input
+        displayName: "Projects Page Root",
+        displayType: UIHint.ContentReference,
+        allowedTypes: ['PortfolioPage'],
     })
-    latestProjectRoot: string;
+    latestProjectRoot: ContentReference;
 
     @Property({
         displayName: "Highlight Features",
         description: "This is highlight feature will be in banner area",
-        displayType: UIHint.ContentArea
+        displayType: UIHint.ContentArea,
+        allowedTypes: ['FeatureBlock', 'PortfolioBlock'],
+        newProperty: 'abc'
     })
     features: Array<any>;
 
     @Property({
         displayName: "Highlight Portfolios",
         displayType: UIHint.ContentArea,
+        allowedTypes: ['PortfolioBlock']
     })
     portfolios: Array<any>;
 
@@ -42,7 +46,7 @@ export class HomePage extends PageData {
     @Property({
         displayName: "Footer Text",
         description: "This is footer text to show the copyright",
-        displayType: UIHint.Xhtml
+        displayType: UIHint.XHtml
     })
     footerText: string;
 }

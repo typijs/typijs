@@ -4,29 +4,31 @@ import { LogLevel, NodeEnv } from '../constants/enums';
 // Load environment variables from .env file, where API keys and passwords are configured
 dotenv.config();
 
-export const CONFIG = {
-    APP: {
-        //predifined: 'development', 'test', 'production'
-        ENV: process.env.NODE_ENV || NodeEnv.Development,
-        PORT: process.env.PORT || '3000',
+export const config = {
+    app: {
+        //predefined: 'development', 'test', 'production'
+        env: process.env.NODE_ENV || NodeEnv.Development,
+        port: process.env.PORT || '3000',
     },
 
-    MONGO: {
-        DB_HOST: process.env.MONGO_DB_HOST || 'localhost',
-        DB_PORT: process.env.MONGO_DB_PORT || '27017',
-        DB_NAME: process.env.MONGO_DB_NAME || 'angularcms',
-        DB_USER: process.env.MONGO_DB_USER,
-        DB_PASSWORD: process.env.MONGO_DB_PASSWORD,
+    mongoose: {
+        host: process.env.MONGO_DB_HOST || 'localhost',
+        port: process.env.MONGO_DB_PORT || '27017',
+        dbName: process.env.MONGO_DB_NAME || 'angularcms',
+        dbUser: process.env.MONGO_DB_USER,
+        dbPassword: process.env.MONGO_DB_PASSWORD,
     },
 
-    JWT_ENCRYPTION: process.env.JWT_ENCRYPTION || 'jwt_please_change',
-    JWT_EXPIRATION: process.env.JWT_EXPIRATION || '1h',
-    SALT_ROUNDS: process.env.SALT_ROUNDS || 10,
+    jwt: {
+        secret: process.env.JWT_SECRET,
+        accessExpirationMinutes: process.env.JWT_ACCESS_EXPIRATION_MINUTES,
+        refreshExpirationDays: process.env.JWT_REFRESH_EXPIRATION_DAYS,
+        resetPasswordExpirationMinutes: 10,
+    },
 
-    LOG: {
-        LEVEL: process.env.LOG_LEVEL || LogLevel.Error,
-        DIR: process.env.LOG_DIR || 'logs',
-        KEEP_IN_DAYS: process.env.LOG_KEEP_IN_DAYS || '30',
-
+    log: {
+        level: process.env.LOG_LEVEL || LogLevel.Error,
+        folder: process.env.LOG_DIR || 'logs',
+        keepLogsInDays: process.env.LOG_KEEP_IN_DAYS || '30',
     }
 };

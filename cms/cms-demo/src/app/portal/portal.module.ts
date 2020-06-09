@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 
-import { CmsModule } from '@angular-cms/portal';
+import { CmsPortalModule } from '@angular-cms/portal';
 
 @NgModule({
-    imports: [CmsModule]
+    imports: [CmsPortalModule]
 })
 export class PortalModule { }

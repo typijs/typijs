@@ -1,13 +1,42 @@
 import { Routes, Route } from '@angular/router';
-import { PAGE_TYPE_INDICATOR, BLOCK_TYPE_INDICATOR } from './constants/meta-keys';
-import { CmsModuleConfig, CmsModuleRoot, CmsComponentConfig } from './constants/module-config';
+import { CmsObject, ClassOf } from './types';
+import { CmsModuleConfig, CmsModuleRoot, CmsComponentConfig } from './types/module-config';
+import { CmsProperty } from './bases/cms-property';
+import { CmsPropertyRender } from "./render/property/property-render";
 
+
+/**
+ * The type of global CMS model. It keeps all cms configurations
+ */
 export type CmsModel = {
-    PAGE_TYPES: object;
-    BLOCK_TYPES: object;
-    PROPERTIES: object;
+    /**
+     * This property keeps all Page Types class was registered via decorator `@PageType`
+     */
+    PAGE_TYPES: CmsObject;
+    /**
+     * This property keeps all Block Types class was registered via decorator `@BlockType`
+     */
+    BLOCK_TYPES: CmsObject;
+    /**
+     * This property keeps all Media Types class was registered via decorator `@MediaType`
+     */
+    MEDIA_TYPES: CmsObject;
+    /**
+     * This property keeps all the CMS property types including build-in properties such as `ContentArea`, `ObjectList`...
+     * 
+     * Each property type will be mapped to UIHint key
+     */
+    PROPERTIES: { [key: string]: ClassOf<CmsProperty> };
+    PROPERTY_RENDERS: { [key: string]: ClassOf<CmsPropertyRender> };
+    PROPERTY_PROVIDERS: Array<any>;
 
+    /**
+     * The array contains the Cms Module (Include NgModule, Routes, Widgets)
+     */
     MODULES: Array<CmsModuleConfig>;
+    /**
+     * The array contains the Angular NgModule
+     */
     NG_MODULES: Array<any>;
 
     EDITOR_ROUTES(): Array<Route>;
@@ -15,14 +44,15 @@ export type CmsModel = {
 
     ADMIN_ROUTES(): Array<Route>;
     ADMIN_WIDGETS(): Array<CmsComponentConfig>;
-
-    REGISTER_MODULES(): Array<any>;
 }
 
 export const CMS: CmsModel = {
     PAGE_TYPES: {},
     BLOCK_TYPES: {},
+    MEDIA_TYPES: {},
     PROPERTIES: {},
+    PROPERTY_RENDERS: {},
+    PROPERTY_PROVIDERS: [],
 
     MODULES: [],
     NG_MODULES: [],
@@ -58,68 +88,5 @@ export const CMS: CmsModel = {
                 adminWidgets = adminWidgets.concat(widgets);
         });;
         return adminWidgets;
-    },
-
-    REGISTER_MODULES(): Array<any> {
-        return this.MODULES.map(x => x.module);
-    }
-};
-
-//register multi content types with cms
-//https://www.laurivan.com/scan-decorated-classes-in-typescript/
-export function registerContentTypes(theEntryScope: any) {
-    for (let prop in theEntryScope) {
-        if (theEntryScope[prop][PAGE_TYPE_INDICATOR]) {
-            CMS.PAGE_TYPES[prop] = theEntryScope[prop];
-        }
-
-        if (theEntryScope[prop][BLOCK_TYPE_INDICATOR]) {
-            CMS.BLOCK_TYPES[prop] = theEntryScope[prop];
-        }
-    }
-}
-
-//register a property with cms
-export function registerProperty(property: any, uniqueAccessKey?: string) {
-    if (property) {
-        if (uniqueAccessKey) {
-            if (CMS.PROPERTIES.hasOwnProperty(uniqueAccessKey)) {
-                console.warn('Warning: CMS.PROPERTIES has already property ', uniqueAccessKey)
-            }
-            CMS.PROPERTIES[uniqueAccessKey] = property
-        } else {
-            if (CMS.PROPERTIES.hasOwnProperty(property['name'])) {
-                console.warn('Warning: CMS.PROPERTIES has already property ', property['name'])
-            }
-            CMS.PROPERTIES[property['name']] = property;
-        }
-    }
-}
-
-//register multi properties with cms
-export function registerProperties(properties: Array<[string, Function]> | Array<Function>) {
-    if (properties instanceof Array) {
-        for (const property of properties) {
-            if (property instanceof Function) {
-                registerProperty(property);
-            } else if (property instanceof Array && property.length == 2) {
-                registerProperty(property[1], property[0]);
-            }
-        }
-    }
-}
-
-//register module with cms
-export function registerModule(moduleConfig: CmsModuleConfig) {
-    if (moduleConfig && moduleConfig.module && moduleConfig.roots) {
-        let moduleName = moduleConfig.module['name'];
-
-        var existingModule = CMS.MODULES.find(m => m.module['name'] === moduleName);
-        if (existingModule) {
-            console.warn(`The module ${moduleName} has already registed`);
-        } else {
-            CMS.MODULES.push(moduleConfig);
-            CMS.NG_MODULES.push(moduleConfig.module);
-        }
     }
 }

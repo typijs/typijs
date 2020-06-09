@@ -5,8 +5,13 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { CoreModule } from '@angular-cms/core';
+import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faList, faDesktop, faSave, faFileExport, faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 
-import { CmsTabsModule } from '../shared/ngx-bootstrap/tabs.module';
+//import { CmsAngularSplitModule, CmsTabsModule } from '../shared/libs';
+import { CmsAngularSplitModule } from '../shared/libs/angular-split/module';
+import { CmsButtonsModule } from '../shared/libs/ngx-bootstrap/buttons.module';
+import { CmsTabsModule } from '../shared/libs/ngx-bootstrap/tabs.module';
 import { PropertiesModule } from '../properties/properties.module';
 import { ContentTypeListComponent } from './content-type-list/content-type-list.component';
 import { ContentFormEditComponent } from './content-form-edit/content-form-edit.component';
@@ -18,9 +23,11 @@ import { ContentFormEditComponent } from './content-form-edit/content-form-edit.
         FormsModule,
         ReactiveFormsModule,
         RouterModule,
+        FontAwesomeModule,
         CoreModule,
-
-        CmsTabsModule.forRoot(),
+        CmsAngularSplitModule,
+        CmsButtonsModule,
+        CmsTabsModule,
         PropertiesModule,
     ],
     declarations: [
@@ -32,4 +39,8 @@ import { ContentFormEditComponent } from './content-form-edit/content-form-edit.
         ContentTypeListComponent
     ]
 })
-export class ContentModule { }
+export class ContentModule {
+    constructor(library: FaIconLibrary) {
+        library.addIcons(faList, faDesktop, faSave, faFileExport, faExternalLinkAlt);
+    }
+}

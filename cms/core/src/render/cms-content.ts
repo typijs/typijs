@@ -1,36 +1,48 @@
-import { Component, ComponentFactoryResolver, ViewChild, OnDestroy, ComponentRef } from '@angular/core';
 import 'reflect-metadata';
+import { Component, ComponentFactoryResolver, ComponentRef, OnDestroy, ViewChild, OnInit } from '@angular/core';
 
-import { PAGE_TYPE_METADATA_KEY, PROPERTIES_METADATA_KEY, PROPERTY_METADATA_KEY } from '../constants/meta-keys';
-import { PageService } from './../services/page.service';
-import { InsertPointDirective } from './../directives/insert-point.directive';
+import { ngEditMode, ngId } from '../constants';
+import { UIHint } from '../types/ui-hint';
+import { ContentTypeProperty } from '../types/content-type';
+import { ContentTypeMetadata } from '../decorators/content-type.decorator';
 
-import { CMS } from './../cms';
-import { PageData } from './../bases/content-data';
-import { CmsComponent } from './../bases/cms-component';
-import { PropertyMetadata } from '../decorators/property.decorator';
-import { Page } from '../models/page.model';
+import { InsertPointDirective } from '../directives/insert-point.directive';
+
 import { clone } from '../helpers/common';
-import { UIHint } from '../constants/ui-hint';
-import { ContentTypeMetadata } from '../decorators/content-type-metadata';
+import { Page } from '../models/page.model';
+import { CmsComponent } from '../bases/cms-component';
+import { PageData } from '../bases/content-data';
+import { PageService } from '../services/page.service';
 import { BrowserLocationService } from '../services/browser-location.service';
+import { ContentTypeService } from '../services/content-type.service';
 
 @Component({
     selector: 'cms-content',
     template: `<ng-template cmsInsertPoint></ng-template>`
 })
-export class CmsRenderContentComponent implements OnDestroy {
+export class CmsContentRender implements OnInit, OnDestroy {
 
     private pageComponentRef: ComponentRef<any>;
     @ViewChild(InsertPointDirective, { static: true }) pageEditHost: InsertPointDirective;
 
     constructor(
-        private locationService: BrowserLocationService,
         private componentFactoryResolver: ComponentFactoryResolver,
+        private contentTypeService: ContentTypeService,
+        private locationService: BrowserLocationService,
         private pageService: PageService) { }
 
     ngOnInit() {
-        this.resolveContentDataByUrl();
+        // Step 1: Check Is Authenticated
+        // Step 2: Check user is Editor
+        // Step 3: Check if has 'ngeditmode=True' and 'ngid=xxxx'
+        // Step 4: Get data by those params
+        // Step 5: Else get data by url
+        const params = this.locationService.getURLSearchParams();
+        if (params.get(ngEditMode) && params.get(ngId)) {
+            this.resolveContentDataById(params.get(ngId));
+        } else {
+            this.resolveContentDataByUrl();
+        }
     }
 
     ngOnDestroy() {
@@ -39,27 +51,29 @@ export class CmsRenderContentComponent implements OnDestroy {
         }
     }
 
+    private resolveContentDataById(id: string) {
+        this.pageService.getContent(id).subscribe((currentPage: Page) => {
+            if (currentPage) {
+                const pageType = this.contentTypeService.getPageType(currentPage.contentType);
+                pageType.properties.forEach(property => this.populateReferenceProperty(currentPage, property));
+                this.pageComponentRef = this.createPageComponent(currentPage, pageType.metadata);
+            }
+        })
+    }
+
     private resolveContentDataByUrl() {
         const location = this.locationService.getLocation();
         const currentUrl = `${location.origin}${location.pathname}`;
         this.pageService.getPublishedPage(currentUrl).subscribe((currentPage: Page) => {
             if (currentPage) {
-                const contentType = CMS.PAGE_TYPES[currentPage.contentType];
-                const pageMetadata = Reflect.getMetadata(PAGE_TYPE_METADATA_KEY, contentType);
-                const propertiesMetadata = this.getPropertiesMetadata(contentType);
-                propertiesMetadata.forEach(property => this.populateReferenceProperty(currentPage, property));
-
-                this.pageComponentRef = this.createPageComponent(new PageData(currentPage), pageMetadata);
+                const pageType = this.contentTypeService.getPageType(currentPage.contentType);
+                pageType.properties.forEach(property => this.populateReferenceProperty(currentPage, property));
+                this.pageComponentRef = this.createPageComponent(currentPage, pageType.metadata);
             }
         })
     }
 
-    private getPropertiesMetadata(contentType: string): { name: string, metadata: PropertyMetadata }[] {
-        const properties: Array<string> = Reflect.getMetadata(PROPERTIES_METADATA_KEY, contentType);
-        return properties.map(propertyName => ({ name: propertyName, metadata: Reflect.getMetadata(PROPERTY_METADATA_KEY, contentType, propertyName) }))
-    }
-
-    private populateReferenceProperty(currentPage: Page, property: { name: string, metadata: PropertyMetadata }): void {
+    private populateReferenceProperty(currentPage: Page, property: ContentTypeProperty): void {
         if (!currentPage.properties) return;
 
         const childItems = currentPage.publishedChildItems;
@@ -80,14 +94,14 @@ export class CmsRenderContentComponent implements OnDestroy {
         }
     }
 
-    private createPageComponent(pageData: PageData, pageMetadata: ContentTypeMetadata): ComponentRef<any> {
+    private createPageComponent(page: Page, pageMetadata: ContentTypeMetadata): ComponentRef<any> {
         if (pageMetadata) {
             const viewContainerRef = this.pageEditHost.viewContainerRef;
             viewContainerRef.clear();
 
             const pageFactory = this.componentFactoryResolver.resolveComponentFactory(pageMetadata.componentRef);
             const pageComponentRef = viewContainerRef.createComponent(pageFactory);
-            (<CmsComponent<PageData>>pageComponentRef.instance).currentContent = pageData;
+            (<CmsComponent<PageData>>pageComponentRef.instance).currentContent = new PageData(page);
             return pageComponentRef;
         }
     }

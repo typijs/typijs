@@ -1,1 +1,9 @@
-{"_id":{"$oid":"5e37a1697209a154085267bc"},"startPage":"5e379f0ec6afb05688982b35","siteUrl":"http://localhost:4200"}
+[
+  {
+    "_id": {
+      "$oid": "5e37a1697209a154085267bc"
+    },
+    "startPage": "5e379f0ec6afb05688982b35",
+    "siteUrl": "http://localhost:4200"
+  }
+]

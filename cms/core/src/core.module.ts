@@ -1,15 +1,17 @@
-import { NgModule, InjectionToken, PLATFORM_ID } from '@angular/core';
+import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 
-import { ContentAreaDirective } from './directives/content-area.directive';
+import { CMS } from './cms';
 import { InsertPointDirective } from './directives/insert-point.directive';
+import { CmsPropertyFactoryResolver } from './bases/cms-property.factory';
 
-import { BlockService } from './services/block.service';
-import { PageService } from './services/page.service';
-import { MediaService } from './services/media.service';
-
-import { CmsRenderContentComponent } from './render/cms-content';
+import { CmsPropertyDirective } from './render/property/cms-property.directive';
+import { CmsContentRender } from './render/cms-content';
+import { ContentAreaRender } from './render/content-area/content-area';
+import { ContentAreaDirective } from './render/content-area/content-area.directive';
+import { TextRender, XHtmlRender, ImageRender, UrlRender, UrlListRender, ObjectListRender } from './render/property/property-render';
+import { SafePipe } from './pipes/safe.pipe';
 
 @NgModule({
   imports: [
@@ -17,19 +19,43 @@ import { CmsRenderContentComponent } from './render/cms-content';
     HttpClientModule
   ],
   declarations: [
+    SafePipe,
+
     InsertPointDirective,
-    CmsRenderContentComponent,
-    ContentAreaDirective
+    CmsContentRender,
+    CmsPropertyDirective,
+    ContentAreaDirective,
+
+    ContentAreaRender,
+    TextRender,
+    XHtmlRender,
+    ImageRender,
+    UrlRender,
+    UrlListRender,
+    ObjectListRender
   ],
   exports: [
-    CmsRenderContentComponent,
+    SafePipe,
+    CmsContentRender,
     InsertPointDirective,
+    CmsPropertyDirective,
     ContentAreaDirective
   ],
-  providers: [
-    BlockService,
-    PageService,
-    MediaService
+  entryComponents: [
+    ContentAreaRender,
+    TextRender,
+    XHtmlRender,
+    ImageRender,
+    UrlRender,
+    UrlListRender,
+    ObjectListRender
   ]
 })
-export class CoreModule { }
+export class CoreModule {
+  public static forChild(): ModuleWithProviders<CoreModule> {
+    return {
+      ngModule: CoreModule,
+      providers: [...CMS.PROPERTY_PROVIDERS, CmsPropertyFactoryResolver]
+    };
+  }
+}

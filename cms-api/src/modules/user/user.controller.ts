@@ -1,11 +1,12 @@
 import * as dotenv from 'dotenv';
 import * as jwt from 'jsonwebtoken';
 import * as mongoose from 'mongoose';
+import * as httpStatus from 'http-status';
 
 import { User, IUserModel } from './user.model';
-import { BaseCtrl } from '../shared/base.controller';
+import { BaseController } from '../shared/base.controller';
 
-export default class UserCtrl extends BaseCtrl<mongoose.Model<IUserModel>> {
+export default class UserCtrl extends BaseController<mongoose.Model<IUserModel>> {
     constructor() { super(User); }
 
     login = (req, res) => {
@@ -14,7 +15,7 @@ export default class UserCtrl extends BaseCtrl<mongoose.Model<IUserModel>> {
             user.comparePassword(req.body.password, (error, isMatch) => {
                 if (!isMatch) { return res.sendStatus(403); }
                 const token = jwt.sign({ user: user }, process.env.SECRET_TOKEN); // , { expiresIn: 10 } seconds
-                res.status(200).json({ token: token });
+                res.status(httpStatus.OK).json({ token: token });
             });
         });
     }

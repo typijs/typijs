@@ -4,16 +4,17 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faCubes, faFolder } from '@fortawesome/free-solid-svg-icons';
+import { faCubes, faFolder, faCube, faFolderPlus, faPlusSquare, faBars, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 import { CoreModule } from '@angular-cms/core';
 
-import { CmsAngularSplitModule } from '../shared/angular-split/module';
-import { DndModule } from '../shared/dnd/dnd.module';
+//import { CmsBsDropdownModule, CmsAngularSplitModule } from '../shared/libs';
+import { CmsAngularSplitModule } from '../shared/libs/angular-split/module';
+import { CmsBsDropdownModule } from '../shared/libs/ngx-bootstrap/bs-dropdown.module';
+import { DndModule } from '../shared/drag-drop/dnd.module';
 import { TreeModule } from '../shared/tree/tree.module';
 
 import { BlockTreeComponent } from './block-tree.component';
-import { BlockTreeService } from './block-tree.service';
 
 @NgModule({
     imports: [
@@ -23,10 +24,10 @@ import { BlockTreeService } from './block-tree.service';
         ReactiveFormsModule,
         RouterModule,
         FontAwesomeModule,
+        CmsAngularSplitModule,
+        CmsBsDropdownModule,
         CoreModule,
-
         TreeModule,
-        CmsAngularSplitModule.forRoot(),
         DndModule
     ],
     declarations: [
@@ -37,11 +38,10 @@ import { BlockTreeService } from './block-tree.service';
     ],
     exports: [
         BlockTreeComponent
-    ],
-    providers: [BlockTreeService]
+    ]
 })
 export class BlockModule {
-    constructor(private library: FaIconLibrary) {
-        library.addIcons(faFolder, faCubes);
+    constructor(library: FaIconLibrary) {
+        library.addIcons(faFolder, faCubes, faCube, faFolderPlus, faPlusSquare, faBars, faPlus);
     }
 }
