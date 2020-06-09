@@ -4,13 +4,14 @@ import * as moment from 'moment';
 import { config } from '../../config/config';
 import { BaseService } from '../shared/base.service';
 import { UserService } from '../user/user.service';
-import { ITokenDocument, ITokenModel, TokenType, AuthTokens, TokenPayload } from './token.model';
+import { ITokenDocument, TokenType, AuthTokens, TokenPayload, TokenModel } from './token.model';
 import { DocumentNotFoundException } from '../../errorHandling';
+import { Injectable } from 'injection-js';
 
-
+@Injectable()
 export class TokenService extends BaseService<ITokenDocument>{
-    constructor(tokenModel: ITokenModel, private userService: UserService) {
-        super(tokenModel);
+    constructor(private userService: UserService) {
+        super(TokenModel);
     }
 
     /**
@@ -21,7 +22,7 @@ export class TokenService extends BaseService<ITokenDocument>{
      * @returns {string}
      */
     private generateToken = (userId: string, expiry: moment.Moment, secret: jwt.Secret = config.jwt.secret): string => {
-        const payload = {
+        const payload: TokenPayload = {
             sub: userId,
             iat: moment().unix(),
             exp: expiry.unix(),

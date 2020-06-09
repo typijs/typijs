@@ -23,8 +23,8 @@ export const validate = (schema: RequestSchema, options?: Joi.ValidationOptions)
 
     if (error) {
         const errorMessage = error.details.map((details) => details.message).join(', ');
-        return next(new ApiError(httpStatus.BAD_REQUEST, errorMessage));
+        next(new ApiError(httpStatus.BAD_REQUEST, errorMessage));
     }
     Object.assign(req, value);
-    return next();
+    next();
 };

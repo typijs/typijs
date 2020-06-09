@@ -3,11 +3,23 @@ import { IBaseDocument, IBaseModel } from '../shared/base.model';
 import { cmsUser } from '../user/user.model';
 
 export type TokenType = 'refresh' | 'resetPassword';
+
+/**
+ * Standard token payload contains these claims based on jsonwebtoken package.
+ * 
+ * These claims can also be provided in the payload directly with `exp`, `nbf`, `aud`, `sub` and `iss` respectively
+ * 
+ * https://www.npmjs.com/package/jsonwebtoken#token-expiration-exp-claim
+ * @property `sub` mean Subject
+ * @property `iat` Generated jwts will include an iat (issued at) claim by default 
+ * @property `exp` The standard for JWT defines an exp claim for expiration. The expiration is represented as a `NumericDate`
+ */
 export type TokenPayload = {
     sub: string,
     iat: number,
     exp: number,
 }
+
 export type TokenDto = {
     token: string
     expiry: Date
