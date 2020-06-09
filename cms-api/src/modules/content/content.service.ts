@@ -39,8 +39,7 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
     public getPopulatedContentById = (id: string): Promise<T> => {
         if (!id) id = null;
 
-        return this.contentModel.findOne({ _id: id })
-            .lean()
+        return this.findById(id, { lean: true })
             .populate({
                 path: 'childItems.content',
                 match: { isDeleted: false }
@@ -52,8 +51,8 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
     public getPopulatedPublishedContentById = (id: string): Promise<P> => {
         if (!id) id = null;
 
-        return this.publishedContentModel.findOne({ _id: id })
-            .lean()
+        return this.publishedContentModel.findById(id)
+            .setOptions({ lean: true })
             .populate({
                 path: 'publishedChildItems.content',
                 match: { isDeleted: false }
@@ -61,13 +60,14 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
             .exec();
     }
 
-    public executeCreateContentFlow = async (content: T): Promise<T> => {
+    public executeCreateContentFlow = async (content: Partial<T>): Promise<T> => {
+        const contentDoc = this.createModel(content);
         //get page's parent
         //generate url segment
         //create new page
         //update parent page's has children property
-        const parentContent = await this.getById(content.parentId);
-        const savedContent = await this.createContent(content, parentContent);
+        const parentContent = await this.findById(contentDoc.parentId).exec();
+        const savedContent = await this.createContent(contentDoc, parentContent);
         return savedContent;
     }
 
@@ -104,7 +104,7 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
     }
 
     public updateAndPublishContent = async (id: string, contentObj: T): Promise<T> => {
-        let currentContent = await this.getById(id);
+        let currentContent = await this.findById(id).exec();
         if (contentObj.isDirty) {
             currentContent = await this.updateContent(currentContent, contentObj);
         }
@@ -185,7 +185,7 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
 
     public executeDeleteContentFlow = async (id: string): Promise<[T, any]> => {
         //find page
-        const currentContent = await this.getById(id);
+        const currentContent = await this.findById(id).exec();
         //soft delete page
         //soft delete published page
         //soft delete page's children
@@ -197,14 +197,14 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
         ]);
 
         const childCount = await this.countChildrenOfContent(currentContent.parentId);
-        if (childCount == 0) await this.contentModel.findOneAndUpdate({ _id: currentContent.parentId }, { hasChildren: false }).exec()
+        if (childCount == 0) await this.updateById(currentContent.parentId, { hasChildren: false } as any)
 
         console.log(result[2]);
         return [result[0], result[2]];
     }
 
-    private countChildrenOfContent = async (parentId: string): Promise<number> => {
-        return this.contentModel.countDocuments({ parentId: parentId, isDeleted: false }).exec()
+    private countChildrenOfContent = (parentId: string): Promise<number> => {
+        return this.count({ parentId: parentId, isDeleted: false } as any)
     }
 
     private softDeleteContent = async (currentContent: T): Promise<T> => {
@@ -225,18 +225,18 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
         const startWithParentPathRegExp = new RegExp("^" + `${currentContent.parentPath}${currentContent._id},`);
         const conditions = { parentPath: { $regex: startWithParentPathRegExp } };
         const updateFields: Partial<IContentDocument> = { isDeleted: true, updatedAt: new Date() };
-        return this.contentModel.updateMany(conditions, updateFields).exec()
+        return this.contentModel.updateMany(conditions as any, updateFields as any).exec()
     }
 
     private getDescendants = async <K extends T>(mongooseModel: mongoose.Model<K>, parentId: string): Promise<K[]> => {
         //get source content 
-        const parentContent = await this.getById(parentId);
+        const parentContent = await this.findById(parentId).exec();
         if (!parentContent) throw new DocumentNotFoundException(parentId);
         if (!parentContent.parentPath) parentContent.parentPath = ',';
 
         const startWithParentPathRegExp = new RegExp("^" + `${parentContent.parentPath}${parentContent._id},`);
         const conditions = { parentPath: { $regex: startWithParentPathRegExp } };
-        return mongooseModel.find(conditions).exec();
+        return mongooseModel.find(conditions as any).exec();
     }
 
     public executeCopyContentFlow = async (sourceContentId: string, targetParentId: string): Promise<T> => {
@@ -249,7 +249,7 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
     //Can be override in the inherited class
     protected createCopiedContent = async (sourceContentId: string, targetParentId: string): Promise<T> => {
         //get source content 
-        const sourceContent = await this.getById(sourceContentId);
+        const sourceContent = await this.findById(sourceContentId).exec();
         if (!sourceContent) throw new DocumentNotFoundException(sourceContentId);
 
         //create copy content
@@ -297,10 +297,10 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
 
     protected createCutContent = async (sourceContentId: string, targetParentId: string): Promise<T> => {
         //get source content 
-        const sourceContent = await this.getById(sourceContentId);
+        const sourceContent = await this.findById(sourceContentId).exec();
         if (!sourceContent) throw new DocumentNotFoundException(sourceContentId);
 
-        const targetParent = await this.getById(targetParentId);
+        const targetParent = await this.findById(targetParentId).exec();
 
         this.updateParentPathAndAncestorAndLinkUrl(targetParent, sourceContent);
         const updatedContent = await sourceContent.save();
@@ -314,7 +314,7 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
             ancestors: cutContent.ancestors,
             linkUrl: cutContent["linkUrl"]
         }
-        return this.publishedContentModel.findOneAndUpdate({ _id: cutContent._id }, publishContent).exec()
+        return this.publishedContentModel.findOneAndUpdate({ _id: cutContent._id }, publishContent as any).exec()
     }
 
     private createCutDescendantsContent = async (sourceContentId: string, cutContent: T): Promise<[T[], any]> => {

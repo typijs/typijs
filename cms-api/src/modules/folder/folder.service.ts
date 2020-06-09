@@ -4,17 +4,14 @@ import { DocumentNotFoundException } from '../../errorHandling';
 
 export abstract class FolderService<T extends IContentDocument> extends BaseService<T>{
 
-    private folderModel: IContentModel<T>;
-
     constructor(folderModel: IContentModel<T>) {
         super(folderModel);
-        this.folderModel = folderModel;
     }
 
     public createContentFolder = async (contentFolder: T): Promise<IFolderDocument> => {
         contentFolder.contentType = null;
         contentFolder.properties = null;
-        const parentFolder = await this.getById(contentFolder.parentId);
+        const parentFolder = await this.findById(contentFolder.parentId, { lean: true }).exec();
         const savedContent = await this.createContent(contentFolder, parentFolder);
         if (savedContent) await this.updateHasChildren(parentFolder);
 
@@ -22,7 +19,7 @@ export abstract class FolderService<T extends IContentDocument> extends BaseServ
     }
 
     public updateFolderName = async (id: string, name: string): Promise<IFolderDocument> => {
-        const currentFolder = await this.getById(id);
+        const currentFolder = await this.findById(id).exec();
         if (!currentFolder) throw new DocumentNotFoundException(id);
 
         currentFolder.updatedAt = new Date();
@@ -36,13 +33,13 @@ export abstract class FolderService<T extends IContentDocument> extends BaseServ
     public getFolderChildren = (parentId: string): Promise<IFolderDocument[]> => {
         if (parentId == '0') parentId = null;
 
-        return this.folderModel.find({ parentId: parentId, isDeleted: false, contentType: null, mimeType: null }).lean().exec()
+        return this.find({ parentId: parentId, isDeleted: false, contentType: null, mimeType: null } as any, { lean: true }).exec()
     }
 
     public getContentsByFolder = (parentId: string): Promise<T[]> => {
         if (parentId == '0') parentId = null;
 
-        return this.folderModel.find({ parentId: parentId, isDeleted: false, contentType: { $ne: null } }).lean().exec()
+        return this.find({ parentId: parentId, isDeleted: false, contentType: { $ne: null } } as any, { lean: true }).exec()
     }
 
     public abstract createContent(newContent: T, parentContent: T): Promise<T>
