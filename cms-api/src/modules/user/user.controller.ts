@@ -21,4 +21,10 @@ export class UserController extends BaseController<IUserDocument> {
         const result = await this.userService.paginate(filter, options);
         res.status(httpStatus.OK).json(result);
     };
+
+    public createAdminUser = async (req: express.Request, res: express.Response) => {
+        const admin = await this.userService.createAdminUser(req.body);
+        res.status(httpStatus.OK).json(admin);
+    };
+
 }

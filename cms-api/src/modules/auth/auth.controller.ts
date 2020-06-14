@@ -9,6 +9,7 @@ import { TokenService } from './token.service';
 @Injectable()
 export class AuthController {
 
+    private readonly refreshTokenCookie: string = 'refreshToken';
     constructor(private authService: AuthService, private userService: UserService, private tokenService: TokenService) { }
 
     public register = async (req: express.Request, res: express.Response) => {
@@ -21,11 +22,18 @@ export class AuthController {
         const { username, password } = req.body;
         const user = await this.authService.loginUserWithUsernameAndPassword(username, password);
         const tokens = await this.tokenService.generateAuthTokens(user);
-        res.send({ user, tokens });
+        let options: express.CookieOptions = {
+            maxAge: 1000 * 60 * 60 * 24 * 30, // would expire after 30 days
+            httpOnly: true, // The cookie only accessible by the web server
+            signed: true // Indicates if the cookie should be signed
+        }
+        res.cookie(this.refreshTokenCookie, JSON.stringify(tokens.refresh), options);
+        res.status(httpStatus.OK).json({ user, token: tokens.access });
     };
 
     public refreshTokens = async (req: express.Request, res: express.Response) => {
-        const tokens = await this.authService.refreshAuth(req.body.refreshToken);
+        const refreshToken = req.cookies[this.refreshTokenCookie]
+        const tokens = await this.authService.refreshAuth(refreshToken);
         res.send({ ...tokens });
     };
 
