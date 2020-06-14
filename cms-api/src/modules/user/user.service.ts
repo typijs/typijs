@@ -1,17 +1,17 @@
-import * as mongoose from 'mongoose';
 import * as httpStatus from 'http-status';
-
+import { Roles } from '../../config/roles';
+import { DocumentNotFoundException, EmailDuplicateException, Exception } from '../../errorHandling/exceptions';
 import { BaseService } from "../shared/base.service";
-import { IUserDocument, IUserModel } from "./user.model";
-import { EmailDuplicateException, DocumentNotFoundException, Exception } from '../../errorHandling/exceptions';
+import { IUserDocument, IUserModel, UserModel } from "./user.model";
+
 
 export class UserService extends BaseService<IUserDocument>{
 
-    constructor(userModel: IUserModel) {
-        super(userModel);
+    constructor() {
+        super(UserModel);
     }
 
-    public create = (doc: IUserDocument): Promise<IUserDocument> => {
+    public create = (doc: Partial<IUserDocument>): Promise<IUserDocument> => {
         const userDoc = this.createModel(doc);
         return this.createUser(userDoc);
     }
