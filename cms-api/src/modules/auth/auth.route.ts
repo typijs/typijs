@@ -2,7 +2,7 @@ import { Router } from 'express';
 
 import { asyncRouterHandler } from '../../errorHandling';
 import { injector } from '../../injector';
-import { validate } from '../../validation/validateMiddleware';
+import { validate } from '../../validation/validate.middleware';
 import { AuthController } from './auth.controller';
 import * as authValidation from './auth.validation';
 

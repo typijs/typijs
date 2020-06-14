@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { asyncRouterHandler } from '../../errorHandling';
 import { injector } from '../../injector';
-import { validate } from '../../validation/validateMiddleware';
+import { validate } from '../../validation/validate.middleware';
 import { requiredParentId, updateFolderName, createFolder } from '../folder/folder.validation';
 import { requiredContentId, cutOrCopyContent } from '../content/content.validation';
 import { MediaController } from './media.controller';
