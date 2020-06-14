@@ -13,6 +13,14 @@ export const createUser: RequestSchema = {
     })
 }
 
+export const createAdminUser: RequestSchema = {
+    body: Joi.object().keys({
+        ...createUser.body,
+        username: Joi.string().equal(['admin']).required(),
+    })
+}
+
+
 export const updateUser: RequestSchema = {
     ...requiredId,
     body: Joi.object().keys({

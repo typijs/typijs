@@ -21,6 +21,17 @@ export class UserService extends BaseService<IUserDocument>{
         return this.updateUserById(id, doc);
     }
 
+    public createAdminUser = async (doc: Partial<IUserDocument>): Promise<IUserDocument> => {
+        const userDoc = this.createModel(doc);
+        userDoc.username = 'admin';
+        userDoc.roles = [Roles.Admin, Roles.Editor]
+        const admin = await this.createUser(userDoc);
+        if (admin) {
+            //TODO: Create default roles (admin, editor)
+        }
+        return admin;
+    }
+
     /**
      * Create a user
      * @param {IUserDocument} user

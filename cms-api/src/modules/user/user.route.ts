@@ -5,7 +5,7 @@ import { injector } from '../../injector';
 import { validate } from '../../validation/validate.middleware';
 import { requiredId } from '../shared/base.validation';
 import { UserController } from './user.controller';
-import { createUser, updateUser } from './user.validation';
+import { createAdminUser, createUser, updateUser } from './user.validation';
 
 const user: Router = asyncRouterHandler(Router());
 const userController = <UserController>injector.get(UserController);
@@ -15,6 +15,7 @@ user.get('/paginate', userController.getUsers);
 user.get('/:id', validate(requiredId), userController.get);
 //create user
 user.post('/', validate(createUser), userController.create);
+user.post('/admin', validate(createAdminUser), userController.create);
 //update user by id
 user.put('/:id', validate(updateUser), userController.update);
 //delete user by id
