@@ -1,7 +1,6 @@
 import * as mongoose from 'mongoose';
 import { Document, Model, FilterQuery, DocumentQuery } from 'mongoose';
 import { PaginateOptions, PaginateResult } from '../../db/plugins/paginate';
-import { cmsUser } from '../user/user.model';
 
 export type QueryOptions = {
     lean?: boolean;
@@ -24,8 +23,8 @@ export interface IBaseModel<T extends IBaseDocument> extends Model<T> {
 }
 
 export const BaseSchema = new mongoose.Schema({
-    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: cmsUser, required: false },
-    changedBy: { type: mongoose.Schema.Types.ObjectId, ref: cmsUser, required: false }
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'cms_User', required: false },
+    changedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'cms_User', required: false }
 })
 
 export type QueryList<T extends IBaseDocument> = DocumentQuery<T[], T>;

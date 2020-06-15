@@ -144,7 +144,7 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
 
     private createPublishedContent = async (currentContent: T, contentVersionId: string): Promise<P> => {
         //find the existing published page
-        const deletedContent = await this.publishedContentModel.findOneAndDelete({ _id: currentContent._id });
+        const deletedContent = await this.publishedContentModel.findOneAndDelete({ _id: currentContent._id } as any);
 
         const newPublishedPage: IPublishedContent = {
             ...currentContent.toObject(),
@@ -215,7 +215,7 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
     }
 
     private softDeletePublishedContent = async (currentContent: T): Promise<T> => {
-        const publishedPage = await this.publishedContentModel.findOne({ _id: currentContent._id }).exec()
+        const publishedPage = await this.publishedContentModel.findOne({ _id: currentContent._id } as any).exec()
         return await this.softDeleteContent(publishedPage);
     }
 
@@ -314,7 +314,7 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
             ancestors: cutContent.ancestors,
             linkUrl: cutContent["linkUrl"]
         }
-        return this.publishedContentModel.findOneAndUpdate({ _id: cutContent._id }, publishContent as any).exec()
+        return this.publishedContentModel.findOneAndUpdate({ _id: cutContent._id } as any, publishContent as any).exec()
     }
 
     private createCutDescendantsContent = async (sourceContentId: string, cutContent: T): Promise<[T[], any]> => {
