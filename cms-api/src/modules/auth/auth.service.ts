@@ -18,9 +18,9 @@ export class AuthService {
      */
     public loginUserWithUsernameAndPassword = async (username: string, password: string): Promise<IUserDocument> => {
         const user = await this.userService.getUserByUsername(username);
-        if (!user || !(await user.comparePassword(password))) {
-            throw new UnauthorizedException('Incorrect email or password');
-        }
+        if (!user) throw new UnauthorizedException('Incorrect username');
+        if (!(await user.comparePassword(password))) throw new UnauthorizedException('Incorrect password');
+
         return user;
     };
 

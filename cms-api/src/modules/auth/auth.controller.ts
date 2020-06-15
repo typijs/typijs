@@ -5,6 +5,7 @@ import { Injectable } from 'injection-js';
 import { AuthService } from './auth.service';
 import { UserService } from '../user/user.service';
 import { TokenService } from './token.service';
+import { TokenDto } from './token.model';
 
 @Injectable()
 export class AuthController {
@@ -22,20 +23,25 @@ export class AuthController {
         const { username, password } = req.body;
         const user = await this.authService.loginUserWithUsernameAndPassword(username, password);
         const tokens = await this.tokenService.generateAuthTokens(user);
-        let options: express.CookieOptions = {
-            maxAge: 1000 * 60 * 60 * 24 * 30, // would expire after 30 days
-            httpOnly: true, // The cookie only accessible by the web server
-            signed: true // Indicates if the cookie should be signed
-        }
-        res.cookie(this.refreshTokenCookie, JSON.stringify(tokens.refresh), options);
+        this.setRefreshTokenCookie(res, tokens.refresh);
         res.status(httpStatus.OK).json({ user, token: tokens.access });
     };
 
     public refreshTokens = async (req: express.Request, res: express.Response) => {
         const refreshToken = req.cookies[this.refreshTokenCookie]
         const tokens = await this.authService.refreshAuth(refreshToken);
-        res.send({ ...tokens });
+        this.setRefreshTokenCookie(res, tokens.refresh);
+        res.status(httpStatus.OK).json({ token: tokens.access });
     };
+
+    private setRefreshTokenCookie = (res: express.Response, refreshToken: TokenDto) => {
+        let options: express.CookieOptions = {
+            maxAge: 1000 * 60 * 60 * 24 * 30, // would expire after 30 days
+            httpOnly: true, // The cookie only accessible by the web server
+            signed: false // Indicates if the cookie should be signed
+        }
+        res.cookie(this.refreshTokenCookie, refreshToken.token, options);
+    }
 
     public forgotPassword = async (req: express.Request, res: express.Response) => {
         const resetPasswordToken = await this.tokenService.generateResetPasswordToken(req.body.email);

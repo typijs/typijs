@@ -48,7 +48,7 @@ const TokenSchema = new mongoose.Schema(
     {
         token: { type: String, required: true, index: true },
         user: { type: mongoose.SchemaTypes.ObjectId, ref: cmsUser, required: true },
-        type: { type: String, enum: ['refresh', 'resetPassword'], required: true },
+        type: { type: String, enum: ['refresh', 'resetPassword'], required: true, trim: true },
         expiry: { type: Date, required: true },
         blacklisted: { type: Boolean, default: false, },
     },
