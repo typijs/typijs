@@ -2,8 +2,7 @@ import * as httpStatus from 'http-status';
 import { Roles } from '../../config/roles';
 import { DocumentNotFoundException, EmailDuplicateException, Exception } from '../../errorHandling/exceptions';
 import { BaseService } from "../shared/base.service";
-import { IUserDocument, IUserModel, UserModel } from "./user.model";
-
+import { IUserDocument, UserModel } from "./user.model";
 
 export class UserService extends BaseService<IUserDocument>{
 
@@ -63,7 +62,11 @@ export class UserService extends BaseService<IUserDocument>{
     }
 
     public getUserByUsername = (username: string): Promise<IUserDocument> => {
-        return this.findOne({ username }, { lean: true }).exec();
+        return this.findOne({ username }).exec();
+    };
+
+    public getUserByEmail = (email: string): Promise<IUserDocument> => {
+        return this.findOne({ email }, { lean: true }).exec();
     };
 
     private isEmailTaken = async (email: string, excludeUserId?: string): Promise<boolean> => {

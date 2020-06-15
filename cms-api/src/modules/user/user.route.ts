@@ -18,7 +18,7 @@ user.get('/paginate', authGuard.checkRoles([Roles.Admin]), userController.getUse
 user.get('/:id', authGuard.checkAuthenticated(), validate(requiredId), userController.get);
 //create user
 user.post('/', validate(createUser), userController.create);
-user.post('/admin', validate(createAdminUser), userController.create);
+user.post('/admin', validate(createAdminUser), userController.createAdminUser);
 //update user by id
 user.put('/:id', authGuard.checkAuthenticated(), validate(updateUser), userController.update);
 //delete user by id
