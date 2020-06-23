@@ -1,5 +1,5 @@
 import { Content } from './content.model';
-import { PageData } from '../bases/content-data';
+import { PageData } from './content-data';
 
 export class Page extends Content {
     urlSegment: string;

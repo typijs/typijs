@@ -1,7 +1,7 @@
 import { PLATFORM_ID, Injectable, Inject, Optional } from '@angular/core';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { REQUEST } from '@nguniversal/express-engine/tokens';
-import { ConfigService } from './config.service';
+import { ConfigService } from '../config/config.service';
 
 //export abstract class LocationRef extends Location { }
 export type LocationRef = {

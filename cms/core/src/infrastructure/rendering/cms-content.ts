@@ -1,20 +1,18 @@
 import 'reflect-metadata';
-import { Component, ComponentFactoryResolver, ComponentRef, OnDestroy, ViewChild, OnInit } from '@angular/core';
+import { Component, ComponentFactoryResolver, ComponentRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 
-import { ngEditMode, ngId } from '../constants';
-import { UIHint } from '../types/ui-hint';
-import { ContentTypeProperty } from '../types/content-type';
-import { ContentTypeMetadata } from '../decorators/content-type.decorator';
-
-import { InsertPointDirective } from '../directives/insert-point.directive';
-
-import { clone } from '../helpers/common';
-import { Page } from '../models/page.model';
-import { CmsComponent } from '../bases/cms-component';
-import { PageData } from '../bases/content-data';
-import { PageService } from '../services/page.service';
-import { BrowserLocationService } from '../services/browser-location.service';
-import { ContentTypeService } from '../services/content-type.service';
+import { CmsComponent } from '../../bases/cms-component';
+import { ngEditMode, ngId } from '../../constants';
+import { ContentTypeMetadata } from '../../decorators/content-type.decorator';
+import { clone } from '../../helpers/common';
+import { ContentTypeService } from '../../services/content-type.service';
+import { PageData } from '../../services/content/models/content-data';
+import { Page } from '../../services/content/models/page.model';
+import { PageService } from '../../services/content/page.service';
+import { ContentTypeProperty } from '../../types/content-type';
+import { UIHint } from '../../types/ui-hint';
+import { BrowserLocationService } from '../browser/browser-location.service';
+import { InsertPointDirective } from './insert-point.directive';
 
 @Component({
     selector: 'cms-content',

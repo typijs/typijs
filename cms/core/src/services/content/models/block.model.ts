@@ -1,5 +1,5 @@
 import { Content } from './content.model';
-import { BlockData } from '../bases/content-data';
+import { BlockData } from './content-data';
 
 export class Block extends Content { }
 

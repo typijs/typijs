@@ -1,8 +1,8 @@
 import { Injectable, ComponentFactoryResolver, ComponentRef, InjectionToken, Injector, Inject } from '@angular/core';
 
-import { CMS } from '../../cms';
-import { ClassOf } from '../../types';
-import { ContentTypeProperty } from '../../types/content-type';
+import { CMS } from '../../../cms';
+import { ClassOf } from '../../../types';
+import { ContentTypeProperty } from '../../../types/content-type';
 import { CmsPropertyRender } from "./property-render";
 
 // https://stackoverflow.com/questions/51824125/injection-of-multiple-instances-in-angular

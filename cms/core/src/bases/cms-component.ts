@@ -1,6 +1,6 @@
 import { Input } from '@angular/core';
 
-import { ContentData } from './content-data';
+import { ContentData } from '../services/content/models/content-data';
 import { ContentTypeService } from '../services/content-type.service';
 import { AppInjector } from '../utils/appInjector';
 import { PropertyModel, ContentTypeProperty } from '../types/content-type';

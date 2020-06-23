@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 
-import { Block } from '../models/block.model';
 import { ContentService } from './content.service';
+import { Block } from './models/block.model';
+
 
 @Injectable({
   providedIn: 'root'

@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { Page } from '../models/page.model';
+import { Page } from './models/page.model';
 import { ContentService } from './content.service';
-import { BrowserLocationService } from './browser-location.service';
-import { btoa } from '../helpers/base64';
+import { BrowserLocationService } from '../../infrastructure/browser/browser-location.service';
+import { btoa } from '../../helpers/base64';
 
 @Injectable({
   providedIn: 'root'

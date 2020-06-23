@@ -1,6 +1,6 @@
 import { Input, Component, HostBinding } from '@angular/core';
-import { ContentTypeProperty } from '../../types/content-type';
-import { CmsImage, CmsLink } from '../../types';
+import { ContentTypeProperty } from '../../../types/content-type';
+import { CmsImage, CmsLink } from '../../../types';
 import { DomSanitizer, SafeHtml, SafeUrl } from '@angular/platform-browser';
 
 export abstract class CmsPropertyRender {

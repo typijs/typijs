@@ -1,5 +1,5 @@
-import { Page } from '../models/page.model';
-import { Block } from '../models/block.model';
+import { Page } from './page.model';
+import { Block } from './block.model';
 
 export abstract class ContentData {
     public id: string;
