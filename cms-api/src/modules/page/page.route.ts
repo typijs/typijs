@@ -14,7 +14,7 @@ const page: Router = asyncRouterHandler(Router());
 const pageController = <PageController>injector.get(PageController);
 
 //get published children of page
-page.get('/published/children/:parentId', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredParentId), pageController.getPublishedPageChildren);
+page.get('/published/children/:parentId', validate(requiredParentId), pageController.getPublishedPageChildren);
 //get published page by url
 page.get('/published/:url', validate(requiredUrl), pageController.getByUrl);
 //get children of page

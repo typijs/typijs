@@ -16,7 +16,8 @@ export class AuthController {
     public register = async (req: express.Request, res: express.Response) => {
         const user = await this.userService.create(req.body);
         const tokens = await this.tokenService.generateAuthTokens(user);
-        res.status(httpStatus.CREATED).send({ user, tokens });
+        this.setRefreshTokenCookie(res, tokens.refresh);
+        res.status(httpStatus.CREATED).send({ ...user.toJSON(), ...tokens.access });
     };
 
     public login = async (req: express.Request, res: express.Response) => {
@@ -24,14 +25,18 @@ export class AuthController {
         const user = await this.authService.loginUserWithUsernameAndPassword(username, password);
         const tokens = await this.tokenService.generateAuthTokens(user);
         this.setRefreshTokenCookie(res, tokens.refresh);
-        res.status(httpStatus.OK).json({ user, token: tokens.access });
+        res.status(httpStatus.OK).json({ ...user.toJSON(), ...tokens.access });
     };
 
     public refreshTokens = async (req: express.Request, res: express.Response) => {
-        const refreshToken = req.cookies[this.refreshTokenCookie]
-        const tokens = await this.authService.refreshAuth(refreshToken);
-        this.setRefreshTokenCookie(res, tokens.refresh);
-        res.status(httpStatus.OK).json({ token: tokens.access });
+        const refreshToken = req.cookies[this.refreshTokenCookie];
+        if (refreshToken) {
+            const tokens = await this.authService.refreshAuth(refreshToken);
+            this.setRefreshTokenCookie(res, tokens.refresh);
+            res.status(httpStatus.OK).json(tokens.access);
+        } else {
+            res.status(httpStatus.OK).json();
+        }
     };
 
     private setRefreshTokenCookie = (res: express.Response, refreshToken: TokenDto) => {
