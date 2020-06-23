@@ -4,6 +4,7 @@ import { EVENT_MANAGER_PLUGINS } from '@angular/platform-browser';
 
 import { CMS } from './cms';
 import { CoreModule } from "./core.module";
+import { ErrorInterceptor } from './infrastructure/error/error.interceptor';
 import { setAppInjector } from './utils/appInjector';
 import { UndetectedEventPlugin } from './utils/undetected.event';
 import { CustomRouteReuseStrategy } from './utils/route-reuse-strategy';
@@ -34,6 +35,7 @@ export const CMS_PROVIDERS = [
         deps: [ConfigService],
         multi: true
     },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     {
         provide: EVENT_MANAGER_PLUGINS,
         useClass: UndetectedEventPlugin,
