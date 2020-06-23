@@ -1,26 +1,27 @@
 import * as express from 'express';
-import * as mongoose from 'mongoose';
 import * as httpStatus from 'http-status';
 
 import { IContentDocument } from '../content/content.model';
 import { FolderService } from './folder.service';
+import { BaseController } from '../shared/base.controller';
 
-export abstract class FolderController<T extends IContentDocument> {
+export abstract class FolderController<T extends IContentDocument> extends BaseController<T> {
     private folderService: FolderService<T>;
 
-    constructor(contentModel: mongoose.Model<T>) {
-        this.folderService = new FolderService(contentModel);
+    constructor(folderService: FolderService<T>) {
+        super(folderService);
+        this.folderService = folderService;
     }
 
     //Create new folder
     createFolderContent = async (req: express.Request, res: express.Response) => {
-        const contentFolder = this.folderService.createModelInstance(req.body);
+        const contentFolder = this.folderService.createModel(req.body);
         const item = await this.folderService.createContentFolder(contentFolder)
         res.status(httpStatus.OK).json(item)
     }
 
     updateFolderName = async (req: express.Request, res: express.Response) => {
-        const contentFolder = this.folderService.createModelInstance(req.body);
+        const contentFolder = this.folderService.createModel(req.body);
         const item = await this.folderService.updateFolderName(req.params.id, contentFolder.name)
         res.status(httpStatus.OK).json(item)
     }

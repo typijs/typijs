@@ -1,9 +1,9 @@
-import { Routes, Route } from '@angular/router';
-import { CmsObject, ClassOf } from './types';
-import { CmsModuleConfig, CmsModuleRoot, CmsComponentConfig } from './types/module-config';
-import { CmsProperty } from './bases/cms-property';
-import { CmsPropertyRender } from "./render/property/property-render";
+import { Route, Routes } from '@angular/router';
 
+import { CmsProperty } from './bases/cms-property';
+import { CmsPropertyRender } from './infrastructure/rendering/property/property-render';
+import { ClassOf, CmsObject } from './types';
+import { CmsComponentConfig, CmsModuleConfig, CmsModuleRoot } from './types/module-config';
 
 /**
  * The type of global CMS model. It keeps all cms configurations

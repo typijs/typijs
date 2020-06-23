@@ -1,55 +1,44 @@
 import * as express from 'express';
-import * as mongoose from 'mongoose';
 import * as httpStatus from 'http-status';
 
-export abstract class BaseController<T extends mongoose.Model<mongoose.Document>> {
+import { pick } from '../../utils/pick';
+import { IBaseDocument } from './base.model';
+import { BaseService } from './base.service';
 
-  constructor(mongooseModel: T) {
-    this.model = mongooseModel;
+export abstract class BaseController<T extends IBaseDocument> {
+  private baseService: BaseService<T>;
+  constructor(baseService: BaseService<T>) {
+    this.baseService = baseService;
   }
 
-  model: T;
-
-  // Get all
-  getAll = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    this.model.find({})
-      .then(items => res.status(httpStatus.OK).json(items))
-      .catch(err => next(err));
+  getAll = async (req: express.Request, res: express.Response) => {
+    const items = await this.baseService.getAll();
+    res.status(httpStatus.OK).json(items)
   }
 
-  // Count all
-  count = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    this.model.countDocuments({})
-      .then(count => res.status(httpStatus.OK).json(count))
-      .catch(err => next(err));
+  get = async (req: express.Request, res: express.Response) => {
+    const item = await this.baseService.findById(req.params.id).exec()
+    res.status(httpStatus.OK).json(item)
   }
 
-  // Insert
-  insert = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    const obj = new this.model(req.body);
-    obj.save()
-      .then(item => res.status(httpStatus.OK).json(item))
-      .catch(err => next(err));
+  public paginate = async (req: express.Request, res: express.Response) => {
+    const options = pick(req.query, ['sortBy', 'limit', 'page']);
+    const result = await this.baseService.paginate({}, options);
+    res.status(httpStatus.OK).json(result);
+  };
+
+  create = async (req: express.Request, res: express.Response) => {
+    const item = await this.baseService.create(req.body)
+    res.status(httpStatus.OK).json(item)
   }
 
-  // Get by id
-  get = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    this.model.findOne({ _id: req.params.id })
-      .then(item => res.status(httpStatus.OK).json(item))
-      .catch(err => next(err));
+  update = async (req: express.Request, res: express.Response) => {
+    const item = await this.baseService.updateById(req.params.id, req.body)
+    res.status(httpStatus.OK).json(item)
   }
 
-  // Update by id
-  update = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    this.model.findOneAndUpdate({ _id: req.params.id }, req.body)
-      .then(() => res.sendStatus(httpStatus.OK))
-      .catch(err => next(err));
-  }
-
-  // Delete by id
-  delete = (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    this.model.findOneAndDelete({ _id: req.params.id })
-      .then(() => res.sendStatus(httpStatus.OK))
-      .catch(err => next(err));
+  delete = async (req: express.Request, res: express.Response) => {
+    const deleteResult = await this.baseService.deleteById(req.params.id)
+    res.status(httpStatus.OK).json(deleteResult)
   }
 }

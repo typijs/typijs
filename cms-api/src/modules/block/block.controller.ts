@@ -19,7 +19,7 @@ export class BlockController extends ContentController<IBlockDocument, IBlockVer
     }
 
     update = async (req: express.Request, res: express.Response) => {
-        const blockDocument = this.blockService.createModelInstance(req.body);
+        const blockDocument = this.blockService.createModel(req.body);
         const savedBlock = await this.blockService.updateAndPublishContent(req.params.id, blockDocument)
         res.status(httpStatus.OK).json(savedBlock)
     }

@@ -20,9 +20,9 @@ export const config = {
     },
 
     jwt: {
-        secret: process.env.JWT_SECRET,
-        accessExpirationMinutes: process.env.JWT_ACCESS_EXPIRATION_MINUTES,
-        refreshExpirationDays: process.env.JWT_REFRESH_EXPIRATION_DAYS,
+        secret: process.env.JWT_SECRET || '1878B83DE0384DE08D3F69FE1C308D55',
+        accessExpirationMinutes: process.env.JWT_ACCESS_EXPIRATION_MINUTES || '15',
+        refreshExpirationDays: process.env.JWT_REFRESH_EXPIRATION_DAYS || '30',
         resetPasswordExpirationMinutes: 10,
     },
 

@@ -1,38 +1,44 @@
-import { ModuleWithProviders, Injector, NgModule, PLATFORM_ID, APP_INITIALIZER } from '@angular/core';
-import { Routes, RouteReuseStrategy } from '@angular/router';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { APP_INITIALIZER, Injector, ModuleWithProviders, NgModule, PLATFORM_ID } from '@angular/core';
 import { EVENT_MANAGER_PLUGINS } from '@angular/platform-browser';
-
-import { CMS } from './cms';
-import { CoreModule } from "./core.module";
-import { setAppInjector } from './utils/appInjector';
-import { UndetectedEventPlugin } from './utils/undetected.event';
-import { CustomRouteReuseStrategy } from './utils/route-reuse-strategy';
-
-import { LOCAL_STORAGE, localStorageFactory } from './services/browser-storage.service';
-
-import { PAGE_TYPE_INDICATOR, BLOCK_TYPE_INDICATOR, MEDIA_TYPE_INDICATOR } from './decorators/metadata-key';
-import { PROPERTY_PROVIDERS_TOKEN, getCmsPropertyFactory, CmsPropertyFactory } from './bases/cms-property.factory';
+import { RouteReuseStrategy, Routes } from '@angular/router';
 import { CmsProperty } from './bases/cms-property';
-import { CmsPropertyRender } from "./render/property/property-render";
-
-import { UIHint } from './types/ui-hint';
-import { CmsModuleConfig } from './types/module-config';
+import { CmsPropertyFactory, getCmsPropertyFactory, PROPERTY_PROVIDERS_TOKEN } from './bases/cms-property.factory';
+import { CMS } from './cms';
+import { cmsInitializer, ConfigDeps } from './cms.initializer';
+import { CoreModule } from "./core.module";
+import { BLOCK_TYPE_INDICATOR, MEDIA_TYPE_INDICATOR, PAGE_TYPE_INDICATOR } from './decorators/metadata-key';
+import { authCheckFactory } from './infrastructure/auth/auth.factory';
+import { AuthenticationService } from './infrastructure/auth/authentication.service';
+import { JwtInterceptor } from './infrastructure/auth/jwt.interceptor';
+import { localStorageFactory, LOCAL_STORAGE } from './infrastructure/browser/browser-storage.service';
+import { ConfigService } from './infrastructure/config/config.service';
+import { ErrorInterceptor } from './infrastructure/error/error.interceptor';
+import { CmsContentRender } from './infrastructure/rendering/cms-content';
+import { ContentAreaRender } from './infrastructure/rendering/content-area/content-area';
+import { CmsPropertyRender, ImageRender, ObjectListRender, TextRender, UrlListRender, UrlRender, XHtmlRender } from './infrastructure/rendering/property/property-render';
+import { CmsPropertyRenderFactory, getCmsPropertyRenderFactory, PROPERTY_PROVIDERS_RENDER_TOKEN } from './infrastructure/rendering/property/property-render.factory';
 import { ClassOf } from './types';
-
-import { CmsContentRender } from './render/cms-content';
-import { PROPERTY_PROVIDERS_RENDER_TOKEN, getCmsPropertyRenderFactory, CmsPropertyRenderFactory } from './render/property/property-render.factory';
-
-import { ContentAreaRender } from './render/content-area/content-area';
-import { TextRender, XHtmlRender, ImageRender, UrlRender, UrlListRender, ObjectListRender } from './render/property/property-render';
-import { ConfigService, configLoadFactory } from './services/config.service';
-
+import { CmsModuleConfig } from './types/module-config';
+import { UIHint } from './types/ui-hint';
+import { setAppInjector } from './utils/appInjector';
+import { CustomRouteReuseStrategy } from './utils/route-reuse-strategy';
+import { UndetectedEventPlugin } from './utils/undetected.event';
 
 export const CMS_PROVIDERS = [
     {
         provide: APP_INITIALIZER,
-        useFactory: configLoadFactory,
-        deps: [ConfigService],
+        useFactory: cmsInitializer,
+        deps: [ConfigService, ConfigDeps],
         multi: true
+    },
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    {
+        provide: ConfigDeps,
+        // Use a factory that return an array of dependant functions to be executed
+        useFactory: (authenticationService: AuthenticationService, configService: ConfigService) => [authCheckFactory(authenticationService, configService)],
+        deps: [AuthenticationService, ConfigService]
     },
     {
         provide: EVENT_MANAGER_PLUGINS,

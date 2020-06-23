@@ -7,7 +7,7 @@
     <div class="grids_of_4">
         <div *ngFor="let item of portfolioPages.slice(0, 4)" class="grid_1_of_4 images_1_of_4">
             <a [routerLink]="[item.linkUrl]">
-                <img [src]="item.image.src" [title]="item.image.alt" [alt]="item.image.alt">
+                <img *ngIf="item.image" [src]="item.image.src" [title]="item.image.alt" [alt]="item.image.alt">
             </a>
             <h3><a [routerLink]="[item.linkUrl]">{{item.title}}</a></h3>
             <p class="para" [innerHTML]="item.summary"></p>
@@ -18,7 +18,7 @@
     <div class="grids_of_4">
         <div *ngFor="let item of portfolioPages.slice(4, 8)" class="grid_1_of_4 images_1_of_4">
             <a [routerLink]="[item.linkUrl]">
-                <img [src]="item.image.src" [title]="item.image.alt" [alt]="item.image.alt">
+                <img *ngIf="item.image" [src]="item.image.src" [title]="item.image.alt" [alt]="item.image.alt">
             </a>
             <h3><a [routerLink]="[item.linkUrl]">{{item.title}}</a></h3>
             <p class="para" [innerHTML]="item.summary"></p>
