@@ -1,9 +1,16 @@
 import { ModuleWithProviders, Injector, NgModule, PLATFORM_ID, APP_INITIALIZER } from '@angular/core';
 import { Routes, RouteReuseStrategy } from '@angular/router';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { APP_INITIALIZER, Injector, ModuleWithProviders, NgModule, PLATFORM_ID } from '@angular/core';
 import { EVENT_MANAGER_PLUGINS } from '@angular/platform-browser';
 
 import { CMS } from './cms';
+import { cmsInitializer, ConfigDeps } from './cms.initializer';
 import { CoreModule } from "./core.module";
+import { authCheckFactory } from './infrastructure/auth/auth.factory';
+import { AuthenticationService } from './infrastructure/auth/authentication.service';
+import { JwtInterceptor } from './infrastructure/auth/jwt.interceptor';
+import { ConfigService } from './infrastructure/config/config.service';
 import { ErrorInterceptor } from './infrastructure/error/error.interceptor';
 import { setAppInjector } from './utils/appInjector';
 import { UndetectedEventPlugin } from './utils/undetected.event';
@@ -31,11 +38,18 @@ import { ConfigService, configLoadFactory } from './services/config.service';
 export const CMS_PROVIDERS = [
     {
         provide: APP_INITIALIZER,
-        useFactory: configLoadFactory,
-        deps: [ConfigService],
+        useFactory: cmsInitializer,
+        deps: [ConfigService, ConfigDeps],
         multi: true
     },
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    {
+        provide: ConfigDeps,
+        // Use a factory that return an array of dependant functions to be executed
+        useFactory: (authenticationService: AuthenticationService, configService: ConfigService) => [authCheckFactory(authenticationService, configService)],
+        deps: [AuthenticationService, ConfigService]
+    },
     {
         provide: EVENT_MANAGER_PLUGINS,
         useClass: UndetectedEventPlugin,
