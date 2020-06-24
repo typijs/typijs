@@ -22,7 +22,7 @@ export class CmsLoginComponent implements OnInit {
         private formBuilder: FormBuilder,
         private authService: AuthService) {
         // redirect to home if already logged in
-        if (this.authService.userValue) {
+        if (this.authService.authStatus) {
             this.router.navigate(['/']);
         }
     }

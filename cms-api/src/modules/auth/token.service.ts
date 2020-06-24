@@ -80,7 +80,6 @@ export class TokenService extends BaseService<ITokenDocument>{
     private generateToken = (user: IUserDocument, expiry: moment.Moment, secret: jwt.Secret = config.jwt.secret): string => {
         const payload: TokenPayload = {
             roles: user.roles,
-            userId: user.id,
             sub: user.id,
             iat: moment().unix(),
             exp: expiry.unix(),

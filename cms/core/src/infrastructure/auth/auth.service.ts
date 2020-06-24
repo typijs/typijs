@@ -4,22 +4,26 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { BaseService } from '../../services/base.service';
-import { TokenPayload, User } from './user.model';
+import { AuthStatus, TokenResponse } from './auth.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService extends BaseService {
     protected apiUrl: string = `${this.baseApiUrl}/auth`;
-    private userSubject: BehaviorSubject<User>;
-    public user: Observable<User>;
+    private authSubject: BehaviorSubject<AuthStatus>;
+    public authStatus$: Observable<AuthStatus>;
 
     constructor(httpClient: HttpClient) {
         super(httpClient);
-        this.userSubject = new BehaviorSubject<User>(null);
-        this.user = this.userSubject.asObservable();
+        this.authSubject = new BehaviorSubject<AuthStatus>(null);
+        this.authStatus$ = this.authSubject.asObservable();
     }
 
-    public get userValue(): User {
-        return this.userSubject.value;
+    public get authStatus(): AuthStatus {
+        return this.authSubject.value;
+    }
+
+    public get isLoggedIn(): boolean {
+        return this.authStatus && this.authStatus.token ? true : false
     }
 
     setBaseApiUrl = (baseApiUrl: string): AuthService => {
@@ -28,29 +32,35 @@ export class AuthService extends BaseService {
         return this;
     }
 
-    login(username: string, password: string): Observable<User> {
-        return this.httpClient.post<User>(`${this.apiUrl}/login`, { username, password }, { withCredentials: true })
-            .pipe(map(user => {
-                this.userSubject.next(user);
+    login(username: string, password: string): Observable<AuthStatus> {
+        return this.httpClient.post<TokenResponse>(`${this.apiUrl}/login`, { username, password }, { withCredentials: true })
+            .pipe(map(tokenResponse => {
+                const authStatus = new AuthStatus(tokenResponse.token);
+                this.authSubject.next(authStatus);
                 this.startRefreshTokenTimer();
-                return user;
+                return authStatus;
             }));
     }
 
     logout() {
+        //revoke refresh token
         this.httpClient.post<any>(`${this.apiUrl}/revoke-token`, {}, { withCredentials: true }).subscribe();
-        this.userSubject.next(null);
+        //revoke access token
+        this.authSubject.next(null);
+        //stop refresh token request
         this.stopRefreshTokenTimer();
     }
 
-    refreshToken(): Observable<User> {
-        return this.httpClient.post<User>(`${this.apiUrl}/refresh-token`, {}, { withCredentials: true })
-            .pipe(map((user) => {
-                if (user) {
-                    this.userSubject.next(user);
+    refreshToken(): Observable<AuthStatus> {
+        return this.httpClient.post<TokenResponse>(`${this.apiUrl}/refresh-token`, {}, { withCredentials: true })
+            .pipe(map((tokenResponse) => {
+                if (tokenResponse && tokenResponse.token) {
+                    const authStatus = new AuthStatus(tokenResponse.token);
+                    this.authSubject.next(authStatus);
                     this.startRefreshTokenTimer();
+                    return authStatus
                 }
-                return user;
+                return null;
             }));
     }
 
@@ -58,12 +68,9 @@ export class AuthService extends BaseService {
     private refreshTokenTimeout;
 
     private startRefreshTokenTimer() {
-        if (this.userValue) {
-            // parse json object from base64 encoded jwt token
-            const jwtToken: TokenPayload = JSON.parse(atob(this.userValue.token.split('.')[1]));
-
+        if (this.authStatus) {
             // set a timeout to refresh the token a minute before it expires
-            const expires = new Date(jwtToken.exp * 1000);
+            const expires = this.authStatus.expiry;
             const timeout = expires.getTime() - Date.now() - (60 * 1000);
             this.refreshTokenTimeout = setTimeout(() => this.refreshToken().subscribe(), timeout);
         }

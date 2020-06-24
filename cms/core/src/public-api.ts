@@ -21,7 +21,7 @@ export { clone, generateUUID, sortTabByTitle } from './helpers/common';
 export * from './infrastructure/auth/auth.guard';
 export * from './infrastructure/auth/auth.service';
 export * from './infrastructure/auth/jwt.interceptor';
-export * from './infrastructure/auth/user.model';
+export * from './infrastructure/auth/auth.model';
 export * from './infrastructure/auth/login/login.component';
 export * from './infrastructure/auth/auth.module';
 
