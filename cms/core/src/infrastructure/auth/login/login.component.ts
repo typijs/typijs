@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { first } from 'rxjs/operators';
 
-import { AuthenticationService } from '../authentication.service';
+import { AuthService } from '../auth.service';
 
 @Component({
     templateUrl: './login.component.html',
@@ -20,9 +20,9 @@ export class CmsLoginComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private formBuilder: FormBuilder,
-        private authenticationService: AuthenticationService) {
+        private authService: AuthService) {
         // redirect to home if already logged in
-        if (this.authenticationService.userValue) {
+        if (this.authService.userValue) {
             this.router.navigate(['/']);
         }
     }
@@ -49,7 +49,7 @@ export class CmsLoginComponent implements OnInit {
         }
 
         this.loading = true;
-        this.authenticationService.login(this.f.username.value, this.f.password.value)
+        this.authService.login(this.f.username.value, this.f.password.value)
             .pipe(first())
             .subscribe({
                 next: () => {

@@ -4,10 +4,10 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { BaseService } from '../../services/base.service';
-import { User } from './user.model';
+import { TokenPayload, User } from './user.model';
 
 @Injectable({ providedIn: 'root' })
-export class AuthenticationService extends BaseService {
+export class AuthService extends BaseService {
     protected apiUrl: string = `${this.baseApiUrl}/auth`;
     private userSubject: BehaviorSubject<User>;
     public user: Observable<User>;
@@ -22,13 +22,13 @@ export class AuthenticationService extends BaseService {
         return this.userSubject.value;
     }
 
-    setBaseApiUrl = (baseApiUrl: string): AuthenticationService => {
+    setBaseApiUrl = (baseApiUrl: string): AuthService => {
         this.baseApiUrl = baseApiUrl;
         this.apiUrl = `${baseApiUrl}/auth`;
         return this;
     }
 
-    login(username: string, password: string) {
+    login(username: string, password: string): Observable<User> {
         return this.httpClient.post<User>(`${this.apiUrl}/login`, { username, password }, { withCredentials: true })
             .pipe(map(user => {
                 this.userSubject.next(user);
@@ -39,16 +39,17 @@ export class AuthenticationService extends BaseService {
 
     logout() {
         this.httpClient.post<any>(`${this.apiUrl}/revoke-token`, {}, { withCredentials: true }).subscribe();
-        this.stopRefreshTokenTimer();
         this.userSubject.next(null);
-        //this.router.navigate(['/login']);
+        this.stopRefreshTokenTimer();
     }
 
-    refreshToken() {
+    refreshToken(): Observable<User> {
         return this.httpClient.post<User>(`${this.apiUrl}/refresh-token`, {}, { withCredentials: true })
             .pipe(map((user) => {
-                this.userSubject.next(user);
-                this.startRefreshTokenTimer();
+                if (user) {
+                    this.userSubject.next(user);
+                    this.startRefreshTokenTimer();
+                }
                 return user;
             }));
     }
@@ -57,16 +58,18 @@ export class AuthenticationService extends BaseService {
     private refreshTokenTimeout;
 
     private startRefreshTokenTimer() {
-        // parse json object from base64 encoded jwt token
-        const jwtToken = JSON.parse(atob(this.userValue.token.split('.')[1]));
+        if (this.userValue) {
+            // parse json object from base64 encoded jwt token
+            const jwtToken: TokenPayload = JSON.parse(atob(this.userValue.token.split('.')[1]));
 
-        // set a timeout to refresh the token a minute before it expires
-        const expires = new Date(jwtToken.exp * 1000);
-        const timeout = expires.getTime() - Date.now() - (60 * 1000);
-        this.refreshTokenTimeout = setTimeout(() => this.refreshToken().subscribe(), timeout);
+            // set a timeout to refresh the token a minute before it expires
+            const expires = new Date(jwtToken.exp * 1000);
+            const timeout = expires.getTime() - Date.now() - (60 * 1000);
+            this.refreshTokenTimeout = setTimeout(() => this.refreshToken().subscribe(), timeout);
+        }
     }
 
     private stopRefreshTokenTimer() {
-        clearTimeout(this.refreshTokenTimeout);
+        if (this.refreshTokenTimeout) clearTimeout(this.refreshTokenTimeout);
     }
 }
