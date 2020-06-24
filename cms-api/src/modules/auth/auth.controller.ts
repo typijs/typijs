@@ -17,7 +17,7 @@ export class AuthController {
         const user = await this.userService.create(req.body);
         const tokens = await this.tokenService.generateAuthTokens(user);
         this.setRefreshTokenCookie(res, tokens.refresh);
-        res.status(httpStatus.CREATED).send({ ...user.toJSON(), ...tokens.access });
+        res.status(httpStatus.CREATED).send({ ...tokens.access });
     };
 
     public login = async (req: express.Request, res: express.Response) => {
@@ -25,7 +25,7 @@ export class AuthController {
         const user = await this.authService.loginUserWithUsernameAndPassword(username, password);
         const tokens = await this.tokenService.generateAuthTokens(user);
         this.setRefreshTokenCookie(res, tokens.refresh);
-        res.status(httpStatus.OK).json({ ...user.toJSON(), ...tokens.access });
+        res.status(httpStatus.OK).json({ ...tokens.access });
     };
 
     public revokeToken = async (req: express.Request, res: express.Response) => {

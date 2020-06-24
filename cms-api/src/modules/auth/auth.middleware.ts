@@ -67,8 +67,8 @@ class AuthGuard {
 
         try {
             const tokenPayload = jwt.verify(token, config.jwt.secret) as TokenPayload
-            const { userId, roles } = tokenPayload
-            req['user'] = { id: userId, roles };
+            const { sub, roles } = tokenPayload
+            req['user'] = { id: sub, roles };
             return true;
         } catch (err) {
             throw new UnauthorizedException(err.message)

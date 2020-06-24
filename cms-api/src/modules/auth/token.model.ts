@@ -16,7 +16,6 @@ export type TokenType = 'refresh' | 'resetPassword';
  */
 export type TokenPayload = {
     roles?: string[]
-    userId: string
     sub: string
     iat: number
     exp: number
