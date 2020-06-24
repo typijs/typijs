@@ -37,7 +37,6 @@ class AuthGuard {
     public checkRoles = (requiredRoles?: string[][] | string[]) => async (req: Request, res: Response, next: NextFunction) => {
         try {
             const isAuthenticated = this.verifyAuthenticated(req);
-            if (!isAuthenticated) throw new UnauthorizedException('Unauthenticated!')
 
             const { roles } = req['user']
             const checkResult = this.checkHasRoles(roles, requiredRoles);
@@ -63,18 +62,17 @@ class AuthGuard {
     private verifyAuthenticated = (req: Request): boolean => {
         const token = this.getToken(req);
         if (!token) {
-            throw new UnauthorizedException('No token provided')
+            throw new UnauthorizedException('No token was provided')
         }
 
-        const tokenPayload = jwt.verify(token, config.jwt.secret) as TokenPayload
-        if (!tokenPayload) {
-            throw new UnauthorizedException('Invalid token')
+        try {
+            const tokenPayload = jwt.verify(token, config.jwt.secret) as TokenPayload
+            const { userId, roles } = tokenPayload
+            req['user'] = { id: userId, roles };
+            return true;
+        } catch (err) {
+            throw new UnauthorizedException(err.message)
         }
-
-        const { userId, roles } = tokenPayload
-        req['user'] = { id: userId, roles };
-
-        return true;
     }
 
     private checkHasRoles = (userRoles: string[], requiredRoles?: string[][] | string[]): boolean => {
