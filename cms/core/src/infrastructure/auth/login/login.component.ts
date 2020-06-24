@@ -5,8 +5,11 @@ import { first } from 'rxjs/operators';
 
 import { AuthenticationService } from '../authentication.service';
 
-@Component({ templateUrl: './login.component.html' })
-export class LoginComponent implements OnInit {
+@Component({
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.scss'],
+})
+export class CmsLoginComponent implements OnInit {
     loginForm: FormGroup;
     loading = false;
     submitted = false;
