@@ -39,6 +39,11 @@ export class AuthService {
         return this.tokenService.generateAuthTokens(user);
     };
 
+    public revokeRefreshToken = async (refreshToken: string): Promise<void> => {
+        const refreshTokenDoc = await this.tokenService.verifyToken(refreshToken, 'refresh');
+        await refreshTokenDoc.remove();
+    };
+
     /**
      * Reset password
      * @param {string} resetPasswordToken
