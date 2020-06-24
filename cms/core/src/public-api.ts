@@ -19,7 +19,7 @@ export * from './decorators/validate.decorator';
 export { clone, generateUUID, sortTabByTitle } from './helpers/common';
 
 export * from './infrastructure/auth/auth.guard';
-export * from './infrastructure/auth/authentication.service';
+export * from './infrastructure/auth/auth.service';
 export * from './infrastructure/auth/jwt.interceptor';
 export * from './infrastructure/auth/user.model';
 export * from './infrastructure/auth/login/login.component';

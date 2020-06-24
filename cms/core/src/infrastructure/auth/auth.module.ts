@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { LoginComponent } from './login/login.component';
+import { CmsLoginComponent } from './login/login.component';
 
 @NgModule({
     imports: [
@@ -11,7 +11,7 @@ import { LoginComponent } from './login/login.component';
         ReactiveFormsModule,
         HttpClientModule
     ],
-    exports: [LoginComponent],
-    declarations: [LoginComponent],
+    exports: [CmsLoginComponent],
+    declarations: [CmsLoginComponent],
 })
 export class AuthModule { }
