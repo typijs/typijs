@@ -9,7 +9,7 @@ import { cmsInitializer, ConfigDeps } from './cms.initializer';
 import { CoreModule } from "./core.module";
 import { BLOCK_TYPE_INDICATOR, MEDIA_TYPE_INDICATOR, PAGE_TYPE_INDICATOR } from './decorators/metadata-key';
 import { authCheckFactory } from './infrastructure/auth/auth.factory';
-import { AuthenticationService } from './infrastructure/auth/authentication.service';
+import { AuthService } from './infrastructure/auth/auth.service';
 import { JwtInterceptor } from './infrastructure/auth/jwt.interceptor';
 import { localStorageFactory, LOCAL_STORAGE } from './infrastructure/browser/browser-storage.service';
 import { ConfigService } from './infrastructure/config/config.service';
@@ -26,19 +26,18 @@ import { CustomRouteReuseStrategy } from './utils/route-reuse-strategy';
 import { UndetectedEventPlugin } from './utils/undetected.event';
 
 export const CMS_PROVIDERS = [
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     {
         provide: APP_INITIALIZER,
         useFactory: cmsInitializer,
         deps: [ConfigService, ConfigDeps],
         multi: true
     },
-    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
     {
         provide: ConfigDeps,
-        // Use a factory that return an array of dependant functions to be executed
-        useFactory: (authenticationService: AuthenticationService, configService: ConfigService) => [authCheckFactory(authenticationService, configService)],
-        deps: [AuthenticationService, ConfigService]
+        useFactory: (authService: AuthService, configService: ConfigService) => [authCheckFactory(authService, configService)],
+        deps: [AuthService, ConfigService]
     },
     {
         provide: EVENT_MANAGER_PLUGINS,
@@ -189,9 +188,9 @@ export class AngularCms {
      */
     public static registerModule(moduleConfig: CmsModuleConfig) {
         if (moduleConfig && moduleConfig.module && moduleConfig.roots) {
-            let moduleName = moduleConfig.module['name'];
+            const moduleName = moduleConfig.module['name'];
 
-            var existingModule = CMS.MODULES.find(m => m.module['name'] === moduleName);
+            const existingModule = CMS.MODULES.find(m => m.module['name'] === moduleName);
             if (existingModule) {
                 console.warn(`The module ${moduleName} has already registered`);
             } else {

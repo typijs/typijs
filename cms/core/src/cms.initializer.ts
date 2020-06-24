@@ -3,6 +3,7 @@ import { InjectionToken } from '@angular/core';
 import { configLoadFactory } from './infrastructure/config/config.factory';
 import { ConfigService } from './infrastructure/config/config.service';
 
+// Use a factory that return an array of dependant functions to be executed
 export const ConfigDeps = new InjectionToken<(() => Function)[]>('CONFIG_DEPENDENCIES');
 
 //https://medium.com/@gmurop/managing-dependencies-among-app-initializers-in-angular-652be4afce6f
