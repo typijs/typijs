@@ -1,13 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AngularCms, CmsContentRender, AuthGuard, CmsLoginComponent } from '@angular-cms/core';
+import { AngularCms, CmsContentRender, CmsLoginComponent } from '@angular-cms/core';
 import { LayoutComponent } from './shared/layout/layout.component';
 
 const routes: Routes = [
   {
     path: 'cms',
-    loadChildren: () => import('./portal/portal.module').then(m => m.PortalModule),
-    canActivate: [AuthGuard]
+    loadChildren: () => import('./portal/portal.module').then(m => m.PortalModule)
   },
   { path: 'login', component: CmsLoginComponent },
   {

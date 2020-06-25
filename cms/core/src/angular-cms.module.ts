@@ -10,10 +10,9 @@ import { CoreModule } from "./core.module";
 import { BLOCK_TYPE_INDICATOR, MEDIA_TYPE_INDICATOR, PAGE_TYPE_INDICATOR } from './decorators/metadata-key';
 import { authCheckFactory } from './infrastructure/auth/auth.factory';
 import { AuthService } from './infrastructure/auth/auth.service';
-import { JwtInterceptor } from './infrastructure/auth/jwt.interceptor';
+import { AuthInterceptor } from './infrastructure/auth/auth.interceptor';
 import { localStorageFactory, LOCAL_STORAGE } from './infrastructure/browser/browser-storage.service';
 import { ConfigService } from './infrastructure/config/config.service';
-import { ErrorInterceptor } from './infrastructure/error/error.interceptor';
 import { CmsContentRender } from './infrastructure/rendering/cms-content';
 import { ContentAreaRender } from './infrastructure/rendering/content-area/content-area';
 import { CmsPropertyRender, ImageRender, ObjectListRender, TextRender, UrlListRender, UrlRender, XHtmlRender } from './infrastructure/rendering/property/property-render';
@@ -26,8 +25,7 @@ import { CustomRouteReuseStrategy } from './utils/route-reuse-strategy';
 import { UndetectedEventPlugin } from './utils/undetected.event';
 
 export const CMS_PROVIDERS = [
-    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     {
         provide: APP_INITIALIZER,
         useFactory: cmsInitializer,
