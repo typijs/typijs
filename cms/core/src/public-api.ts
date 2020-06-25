@@ -25,6 +25,7 @@ export * from './infrastructure/auth/auth.model';
 export * from './infrastructure/auth/auth.module';
 export * from './infrastructure/auth/auth.enum';
 export * from './infrastructure/auth/login/login.component';
+export * from './infrastructure/auth/logout/logout.component';
 
 export * from './infrastructure/browser/browser-location.service';
 export * from './infrastructure/browser/browser-storage.service';

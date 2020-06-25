@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AngularCms, CmsContentRender, CmsLoginComponent } from '@angular-cms/core';
+import { AngularCms, CmsContentRender, CmsLoginComponent, CmsLogoutComponent } from '@angular-cms/core';
 import { LayoutComponent } from './shared/layout/layout.component';
 
 const routes: Routes = [
@@ -9,6 +9,7 @@ const routes: Routes = [
     loadChildren: () => import('./portal/portal.module').then(m => m.PortalModule)
   },
   { path: 'login', component: CmsLoginComponent },
+  { path: 'logout', component: CmsLogoutComponent },
   {
     path: '',
     component: LayoutComponent,

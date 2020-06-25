@@ -3,6 +3,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CmsLoginComponent } from './login/login.component';
+import { CmsLogoutComponent } from './logout/logout.component';
 
 @NgModule({
     imports: [
@@ -11,7 +12,7 @@ import { CmsLoginComponent } from './login/login.component';
         ReactiveFormsModule,
         HttpClientModule
     ],
-    exports: [CmsLoginComponent],
-    declarations: [CmsLoginComponent],
+    exports: [CmsLoginComponent, CmsLogoutComponent],
+    declarations: [CmsLoginComponent, CmsLogoutComponent],
 })
 export class AuthModule { }
