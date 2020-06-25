@@ -91,6 +91,11 @@ The Editor UI can be accessed via router: http://localhost:4200/cms/editor
 
 The Admin UI can be accessed via router: http://localhost:4200/cms/admin
 
+**Using the account: **
+
+`admin/12345678` or `editor/1234qwer!`
+
+
 ![cms-demo-site](resources/images/cms-editor-ui.png)
 
 This Admin/Editor UI is build with plug-in architecture
