@@ -1,39 +1,55 @@
 import { Router } from 'express';
+import { ReflectiveInjector } from 'injection-js';
 
 import { requiredAdminOrEditor } from '../../config/roles';
 import { asyncRouterHandler } from '../../errorHandling';
-import { injector } from '../../injector';
 import { validate } from '../../validation/validate.middleware';
 import { authGuard } from '../auth/auth.middleware';
 import { cutOrCopyContent, requiredContentId } from '../content/content.validation';
 import { createFolder, requiredParentId, updateFolderName } from '../folder/folder.validation';
+import { BaseRouter } from '../shared/base.route';
 import { MediaController } from './media.controller';
 import { getMediaById } from './media.validation';
 
-const media: Router = asyncRouterHandler(Router());
-const mediaController = <MediaController>injector.get(MediaController);
+export class MediaRouter extends BaseRouter {
+    constructor(injector: ReflectiveInjector) {
+        super(injector);
+    }
 
-media.get('/folders/:parentId?', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredParentId), mediaController.getFoldersByParentId);
+    protected getRouter(): Router {
+        const media: Router = asyncRouterHandler(Router());
+        const mediaController = <MediaController>this.injector.get(MediaController);
 
-media.get('/children/:parentId?', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredParentId), mediaController.getContentsByFolder);
+        media.get('/folders/:parentId?', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredParentId), mediaController.getFoldersByParentId);
 
-media.post('/folder', authGuard.checkRoles(requiredAdminOrEditor), validate(createFolder), mediaController.createFolderContent);
+        media.get('/children/:parentId?', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredParentId), mediaController.getContentsByFolder);
 
-media.put('/folder/:id', authGuard.checkRoles(requiredAdminOrEditor), validate(updateFolderName), mediaController.updateFolderName);
+        media.post('/folder', authGuard.checkRoles(requiredAdminOrEditor), validate(createFolder), mediaController.createFolderContent);
 
-media.post('/upload/:parentId?', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredParentId), mediaController.storeMediaInDisk('file'), mediaController.processMedia)
+        media.put('/folder/:id', authGuard.checkRoles(requiredAdminOrEditor), validate(updateFolderName), mediaController.updateFolderName);
 
-media.post('/cut', authGuard.checkRoles(requiredAdminOrEditor), validate(cutOrCopyContent), mediaController.cut);
+        media.post('/upload/:parentId?', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredParentId), mediaController.storeMediaInDisk('file'), mediaController.processMedia)
 
-media.post('/copy', authGuard.checkRoles(requiredAdminOrEditor), validate(cutOrCopyContent), mediaController.copy);
+        media.post('/cut', authGuard.checkRoles(requiredAdminOrEditor), validate(cutOrCopyContent), mediaController.cut);
 
-media.get('/:id', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), mediaController.get);
+        media.post('/copy', authGuard.checkRoles(requiredAdminOrEditor), validate(cutOrCopyContent), mediaController.copy);
 
-media.delete('/:id', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), mediaController.delete);
+        media.get('/:id', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), mediaController.get);
 
-export { media };
-export { asset };
+        media.delete('/:id', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), mediaController.delete);
+        return media
+    }
+}
 
-const asset: Router = Router();
-asset.get('/:fileId/:fileName', validate(getMediaById), mediaController.getMediaById);
+export class AssetRouter extends BaseRouter {
+    constructor(injector: ReflectiveInjector) {
+        super(injector);
+    }
 
+    protected getRouter(): Router {
+        const asset: Router = Router();
+        const mediaController = <MediaController>this.injector.get(MediaController);
+        asset.get('/:fileId/:fileName', validate(getMediaById), mediaController.getMediaById);
+        return asset;
+    }
+}

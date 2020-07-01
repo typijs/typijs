@@ -7,14 +7,15 @@ import * as path from 'path';
 import { connectToTheDatabase } from './db/dbConnect';
 import { errorConverter, errorHandler } from './errorHandling';
 import { loggingMiddleware } from './logging';
-import { appRouter } from './routes';
+import { AppRouter } from './routes';
+import { injector } from './injector';
 
 export class App {
   public express: express.Application;
 
   constructor() {
     this.express = express();
-
+    this.express.set('injector', injector);
     this.setDatabaseConnection();
     this.setMiddlewares();
     this.setRoutes();

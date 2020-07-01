@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import * as express from 'express';
 import * as  httpStatus from 'http-status';
 import { Injectable } from 'injection-js';

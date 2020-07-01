@@ -1,23 +1,36 @@
-import { Router } from 'express';
+import { Application, Router } from 'express';
+import { ReflectiveInjector } from 'injection-js';
 
-import { asset, media } from './modules/media/media.route';
-import { block } from './modules/block/block.route';
-import { page } from './modules/page/page.route';
-import { user } from './modules/user/user.route';
-import { authRouter } from './modules/auth/auth.route';
-import { sideDefinition } from './modules/site-definition/site-definition.route';
+import { AuthRouter } from './modules/auth/auth.route';
+import { BlockRouter } from './modules/block/block.route';
+import { AssetRouter, MediaRouter } from './modules/media/media.route';
+import { PageRouter } from './modules/page/page.route';
+import { SideDefinitionRouter } from './modules/site-definition/site-definition.route';
+import { UserRouter } from './modules/user/user.route';
 
-const appRouter: Router = Router();
-// Page
-appRouter.use('/page', page);
-// Blocks
-appRouter.use('/block', block);
-// Media
-appRouter.use('/assets', asset);
-appRouter.use('/media', media);
-// Site Definition
-appRouter.use('/site-definition', sideDefinition);
-appRouter.use('/user', user)
-appRouter.use('/auth', authRouter)
+export class AppRouter {
+    private injector: ReflectiveInjector;
+    public router: Router;
+    constructor(app: Application) {
+        this.injector = app.get('injector');
+        this.router = this.getRouter();
+    }
 
-export { appRouter };
+    private getRouter(): Router {
+        const appRouter: Router = Router();
+        // Page
+        appRouter.use('/page', new PageRouter(this.injector).router);
+        // Blocks
+        appRouter.use('/block', new BlockRouter(this.injector).router);
+        // Media
+        appRouter.use('/assets', new AssetRouter(this.injector).router);
+        appRouter.use('/media', new MediaRouter(this.injector).router);
+        // Site Definition
+        appRouter.use('/site-definition', new SideDefinitionRouter(this.injector).router);
+        // User
+        appRouter.use('/user', new UserRouter(this.injector).router)
+        // Auth
+        appRouter.use('/auth', new AuthRouter(this.injector).router)
+        return appRouter;
+    }
+}
