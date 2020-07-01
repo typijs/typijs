@@ -44,11 +44,7 @@ export class App {
   }
 
   private setRoutes(): void {
-    this.express.use('/', express.static(path.join(__dirname, '../public')));
-    this.express.use('/api', appRouter);
-    this.express.get('/*', function (req: express.Request, res: express.Response) {
-      res.sendFile(path.join(__dirname, '../public/index.html'));
-    });
+    this.express.use('/api', new AppRouter(this.express).router);
   }
 
   private setErrorHandling(): void {

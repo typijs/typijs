@@ -35,8 +35,9 @@ export class AuthController {
             await this.authService.revokeRefreshToken(refreshToken);
             res.cookie(this.refreshTokenCookie, '', { maxAge: 0 });
             res.status(httpStatus.OK).json('Revoke successfully');
+        } else {
+            res.status(httpStatus.OK).json('Refresh token was not found');
         }
-        res.status(httpStatus.OK).json('Refresh token was not found');
     };
 
     public refreshTokens = async (req: express.Request, res: express.Response) => {
