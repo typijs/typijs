@@ -2,13 +2,13 @@ import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
 import * as express from 'express';
-import * as path from 'path';
 
+import { config } from './config/config';
 import { connectToTheDatabase } from './db/dbConnect';
 import { errorConverter, errorHandler } from './errorHandling';
+import { injector } from './injector';
 import { loggingMiddleware } from './logging';
 import { AppRouter } from './routes';
-import { injector } from './injector';
 
 export class App {
   public express: express.Application;
@@ -30,7 +30,7 @@ export class App {
     //enable CORS - Cross Origin Resource Sharing
     //https://expressjs.com/en/resources/middleware/cors.html
     this.express.use(cors({
-      origin: 'http://localhost:4200', credentials: true
+      origin: config.app.origin.split(','), credentials: true
     }));
     // request logging
     this.express.use(loggingMiddleware());

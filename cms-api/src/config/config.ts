@@ -9,6 +9,7 @@ export const config = {
         //predefined: 'development', 'test', 'production'
         env: process.env.NODE_ENV || NodeEnv.Development,
         port: process.env.PORT || '3000',
+        origin: process.env.ORIGIN || 'http://localhost:4200,http://localhost:4202'
     },
 
     mongoose: {
