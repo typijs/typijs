@@ -7,8 +7,8 @@ import { ApiError } from './ApiError';
 
 export function errorHandler(err: ApiError, req: Request, res: Response, next: NextFunction) {
   const { statusCode, message } = err;
-  Object.assign(err, { message: `${statusCode} - ${message} - ${req.originalUrl} - ${req.method} - ${req.ip}` });
-  logger.error(err);
+  const formattedMessage = `${statusCode} - ${message} - ${req.originalUrl} - ${req.method} - ${req.ip}`;
+  logger.error(formattedMessage, err);
 
   const response = {
     statusCode,
