@@ -10,7 +10,6 @@ import { injector } from './injector';
 import { loggingMiddleware } from './logging';
 import { AppRouter } from './routes';
 
-
 export class App {
   public express: express.Application;
 
@@ -50,8 +49,8 @@ export class App {
 
   private setErrorHandling(): void {
     //add middleware to convert all errors to AppError class
-    this.express.use(errorMiddleware.errorConverter);
+    this.express.use(errorMiddleware.errorConverter());
     //handler for all errors
-    this.express.use(errorMiddleware.errorHandler);
+    this.express.use(errorMiddleware.errorHandler());
   }
 }

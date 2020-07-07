@@ -14,7 +14,7 @@ export class ErrorMiddleware {
      * @param res 
      * @param next 
      */
-    public errorConverter = (error: any, req: Request, res: Response, next: NextFunction) => {
+    public errorConverter = () => (error: any, req: Request, res: Response, next: NextFunction) => {
         const statusCode = error.statusCode || httpStatus.INTERNAL_SERVER_ERROR;
         const message = error.message || httpStatus[statusCode];
         next(new ApiError(statusCode, message, error.stack));
@@ -23,7 +23,7 @@ export class ErrorMiddleware {
     /**
      * The middleware to handler error
      */
-    public errorHandler = (err: ApiError, req: Request, res: Response, next: NextFunction) => {
+    public errorHandler = () => (err: ApiError, req: Request, res: Response, next: NextFunction) => {
         const { statusCode, message } = err;
         const formattedMessage = `${statusCode} - ${message} - ${req.originalUrl} - ${req.method} - ${req.ip}`;
         logger.error(formattedMessage, err);
