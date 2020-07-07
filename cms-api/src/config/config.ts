@@ -12,12 +12,12 @@ export const config = {
         origin: process.env.ORIGIN || 'http://localhost:4200,http://localhost:4202'
     },
 
-    mongoose: {
+    mongdb: {
         host: process.env.MONGO_DB_HOST || 'localhost',
         port: process.env.MONGO_DB_PORT || '27017',
-        dbName: process.env.MONGO_DB_NAME || 'angularcms',
-        dbUser: process.env.MONGO_DB_USER,
-        dbPassword: process.env.MONGO_DB_PASSWORD,
+        name: process.env.MONGO_DB_NAME || 'angularcms',
+        user: process.env.MONGO_DB_USER,
+        password: process.env.MONGO_DB_PASSWORD,
     },
 
     jwt: {

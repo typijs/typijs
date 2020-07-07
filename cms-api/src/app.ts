@@ -4,11 +4,12 @@ import * as cors from 'cors';
 import * as express from 'express';
 
 import { config } from './config/config';
-import { connectToTheDatabase } from './db/dbConnect';
-import { errorConverter, errorHandler } from './errorHandling';
+import { Database } from './db/database';
+import { errorMiddleware } from './errorHandling';
 import { injector } from './injector';
 import { loggingMiddleware } from './logging';
 import { AppRouter } from './routes';
+
 
 export class App {
   public express: express.Application;
@@ -23,7 +24,7 @@ export class App {
   }
 
   private setDatabaseConnection() {
-    connectToTheDatabase();
+    (new Database()).connect();
   }
 
   private setMiddlewares(): void {
@@ -49,8 +50,8 @@ export class App {
 
   private setErrorHandling(): void {
     //add middleware to convert all errors to AppError class
-    this.express.use(errorConverter);
+    this.express.use(errorMiddleware.errorConverter);
     //handler for all errors
-    this.express.use(errorHandler);
+    this.express.use(errorMiddleware.errorHandler);
   }
 }
