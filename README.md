@@ -95,8 +95,7 @@ The Admin UI can be accessed via router: http://localhost:4200/cms/admin
 
 `admin/12345678` or `editor/1234qwer!`
 
-
-![cms-demo-site](resources/images/cms-editor-ui.png)
+![cms-demo-site](resources/images/angular-cms-demo.gif)
 
 This Admin/Editor UI is build with plug-in architecture
 
@@ -204,12 +203,10 @@ For example, in my local, I have the db path like as `D:/ProgramData/MongoDB/dat
 
 > If you install the MongoDB and run it as the service in Window, you can skip this step
 
-2.  After the MongDb instance running, you can use the example data under the resources/db. Each json file will be corresponding to one collection in Mongo
+2.  After the MongDb instance running, you can use the example data under the resources/db/dump/angularcms using the MongoDb command `mongorestore` to backup these collections
 
-> Using Mongo Compass to backup these collections
-   
+For example, under the `resources/db` folder, run command line `mongorestore  dump/` to restore from a dump directory to a local mongod instance running on port 27017:
 
-![cms-demo-site](resources/images/db.jpg)
 
 
 3. Final step, under `cms` folder, run the command sequentially
