@@ -95,6 +95,8 @@ The Admin UI can be accessed via router: http://localhost:4200/cms/admin
 
 `admin/12345678` or `editor/1234qwer!`
 
+> See demo on below (waiting for gif loading :)
+
 ![cms-demo-site](resources/images/angular-cms-demo.gif)
 
 This Admin/Editor UI is build with plug-in architecture
