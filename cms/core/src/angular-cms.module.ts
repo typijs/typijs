@@ -5,10 +5,9 @@ import { RouteReuseStrategy, Routes } from '@angular/router';
 import { CmsProperty } from './bases/cms-property';
 import { CmsPropertyFactory, getCmsPropertyFactory, PROPERTY_PROVIDERS_TOKEN } from './bases/cms-property.factory';
 import { CMS } from './cms';
-import { cmsInitializer, ConfigDeps } from './cms.initializer';
+import { cmsInitializer, ConfigDeps, configDepsFactory } from './cms.initializer';
 import { CoreModule } from "./core.module";
 import { BLOCK_TYPE_INDICATOR, MEDIA_TYPE_INDICATOR, PAGE_TYPE_INDICATOR } from './decorators/metadata-key';
-import { authCheckFactory } from './infrastructure/auth/auth.factory';
 import { AuthService } from './infrastructure/auth/auth.service';
 import { AuthInterceptor } from './infrastructure/auth/auth.interceptor';
 import { localStorageFactory, LOCAL_STORAGE } from './infrastructure/browser/browser-storage.service';
@@ -34,7 +33,7 @@ export const CMS_PROVIDERS = [
     },
     {
         provide: ConfigDeps,
-        useFactory: (authService: AuthService, configService: ConfigService) => [authCheckFactory(authService, configService)],
+        useFactory: configDepsFactory,
         deps: [AuthService, ConfigService]
     },
     {
@@ -63,7 +62,6 @@ export class AngularCms {
     }
 
     public static forRoot(): ModuleWithProviders<AngularCms> {
-        this.registerPropertyRenders();
         return {
             ngModule: AngularCms,
             providers: [...CMS_PROVIDERS, ...CMS.PROPERTY_PROVIDERS]
@@ -108,6 +106,7 @@ export class AngularCms {
                 CMS.MEDIA_TYPES[prop] = theEntryScope[prop];
             }
         }
+        this.registerPropertyRenders();
     }
 
     /**
