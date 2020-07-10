@@ -6,8 +6,8 @@ import { config } from '../config/config';
 export type MongoDbOptions = {
     user?: string
     password?: string
+    protocol: string
     host: string
-    port: string
     name: string
 }
 
@@ -31,11 +31,11 @@ export class Database {
     }
 
     private getMongoConnection = (): string => {
-        const { user, password, host, port, name } = this.mongoDbOptions;
+        const { user, password, protocol, host, name } = this.mongoDbOptions;
         let authentication = '';
         if (user && password) {
             authentication = `${user}:${password}@`;
         }
-        return `mongodb://${authentication}${host}:${port}/${name}`;
+        return `${protocol}://${authentication}${host}/${name}`;
     }
 }
