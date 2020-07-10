@@ -207,8 +207,13 @@ For example, in my local, I have the db path like as `D:/ProgramData/MongoDB/dat
 
 2.  After the MongDb instance running, you can use the example data under the resources/db/dump/angularcms using the MongoDb command `mongorestore` to backup these collections
 
-For example, under the `resources/db` folder, run command line `mongorestore  dump/` to restore from a dump directory to a local mongod instance running on port 27017:
+For example, under the `resources/db` folder, run command line 
 
+```
+mongorestore  dump/
+
+``` 
+to restore from a dump directory to a local mongod instance running on port 27017:
 
 
 3. Final step, under `cms` folder, run the command sequentially
@@ -220,6 +225,30 @@ For example, under the `resources/db` folder, run command line `mongorestore  du
     npm run dev
 ```
 > Make sure you installed Angular CLI with `--global`
+
+### Run Angular Universal (SSR) in Dev mode
+
+```
+    npm install
+    ng build core
+    ng build modules
+    ng build portal
+    ng build
+    ng run cms-demo:server
+```
+Copy three folders `dist\core`, `dist\modules` and `dist\portal` into `cms\node_modules\@angular-cms` folder then run this script to start Server Site Render
+
+```
+    npm run start:ssr
+```
+
+If there is any change these libs `core` or `modules` or `portal` need to run build for each lib again then run 
+
+```
+ng run cms-demo:server
+```
+
+and start server site again
 
 ## Versioning
 
