@@ -15,10 +15,24 @@ export function app() {
     const { AppServerModuleNgFactory, LAZY_MODULE_MAP } = require('../dist/cms-demo-server/main');
     const distFolder = join(process.cwd(), 'dist/cms-demo');
 
-    server.engine('html', ngExpressEngine({
-        bootstrap: AppServerModuleNgFactory,
-        providers: [provideModuleMap(LAZY_MODULE_MAP)]
-    }));
+    server.engine('html', (_, options: RenderOptions, callback) => {
+        const protocol = options.req.protocol;
+        const host = options.req.get('host');
+
+        const engine = ngExpressEngine({
+            bootstrap: AppServerModuleNgFactory,
+            providers: [
+                provideModuleMap(LAZY_MODULE_MAP),
+                { provide: 'APP_BASE_URL', useFactory: () => `${protocol}://${host}`, deps: [] },
+            ]
+        });
+        engine(_, options, callback);
+    });
+
+    // server.engine('html', ngExpressEngine({
+    //     bootstrap: AppServerModuleNgFactory,
+    //     providers: [provideModuleMap(LAZY_MODULE_MAP)]
+    // }));
 
     // register the template engine
     server.set('view engine', 'html');

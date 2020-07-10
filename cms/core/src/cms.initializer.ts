@@ -5,7 +5,7 @@ import { ConfigService } from './infrastructure/config/config.service';
 import { AuthService } from './infrastructure/auth/auth.service';
 import { authCheckFactory } from './infrastructure/auth/auth.factory';
 
-export const ConfigDeps = new InjectionToken<(() => Function)[]>('CONFIG_DEPENDENCIES');
+export const CONFIG_DEPS = new InjectionToken<(() => Function)[]>('CONFIG_DEPENDENCIES');
 
 // Use a factory that return an array of dependant functions to be executed
 export function configDepsFactory(authService: AuthService, configService: ConfigService) {

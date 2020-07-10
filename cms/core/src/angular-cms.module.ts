@@ -5,7 +5,7 @@ import { RouteReuseStrategy, Routes } from '@angular/router';
 import { CmsProperty } from './bases/cms-property';
 import { CmsPropertyFactory, getCmsPropertyFactory, PROPERTY_PROVIDERS_TOKEN } from './bases/cms-property.factory';
 import { CMS } from './cms';
-import { cmsInitializer, ConfigDeps, configDepsFactory } from './cms.initializer';
+import { cmsInitializer, CONFIG_DEPS, configDepsFactory } from './cms.initializer';
 import { CoreModule } from "./core.module";
 import { BLOCK_TYPE_INDICATOR, MEDIA_TYPE_INDICATOR, PAGE_TYPE_INDICATOR } from './decorators/metadata-key';
 import { AuthService } from './infrastructure/auth/auth.service';
@@ -15,7 +15,7 @@ import { ConfigService } from './infrastructure/config/config.service';
 import { CmsContentRender } from './infrastructure/rendering/cms-content';
 import { ContentAreaRender } from './infrastructure/rendering/content-area/content-area';
 import { CmsPropertyRender, ImageRender, ObjectListRender, TextRender, UrlListRender, UrlRender, XHtmlRender } from './infrastructure/rendering/property/property-render';
-import { CmsPropertyRenderFactory, getCmsPropertyRenderFactory, PROPERTY_PROVIDERS_RENDER_TOKEN } from './infrastructure/rendering/property/property-render.factory';
+import { CmsPropertyRenderFactory, getCmsPropertyRenderFactory, PROPERTY_PROVIDERS_RENDER_TOKEN, contentAreaRenderFactory, textRenderFactory, textareaRenderFactory, xhtmlRenderFactory, imageRenderFactory, urlRenderFactory, urlListRenderFactory, objectListRenderFactory } from './infrastructure/rendering/property/property-render.factory';
 import { ClassOf } from './types';
 import { CmsModuleConfig } from './types/module-config';
 import { UIHint } from './types/ui-hint';
@@ -28,11 +28,11 @@ export const CMS_PROVIDERS = [
     {
         provide: APP_INITIALIZER,
         useFactory: cmsInitializer,
-        deps: [ConfigService, ConfigDeps],
+        deps: [ConfigService, CONFIG_DEPS],
         multi: true
     },
     {
-        provide: ConfigDeps,
+        provide: CONFIG_DEPS,
         useFactory: configDepsFactory,
         deps: [AuthService, ConfigService]
     },
@@ -64,7 +64,22 @@ export class AngularCms {
     public static forRoot(): ModuleWithProviders<AngularCms> {
         return {
             ngModule: AngularCms,
-            providers: [...CMS_PROVIDERS, ...CMS.PROPERTY_PROVIDERS]
+            providers: [
+                { provide: APP_INITIALIZER, useFactory: cmsInitializer, deps: [ConfigService, CONFIG_DEPS], multi: true },
+                { provide: CONFIG_DEPS, useFactory: configDepsFactory, deps: [AuthService, ConfigService] },
+                { provide: LOCAL_STORAGE, useFactory: localStorageFactory, deps: [PLATFORM_ID] },
+                { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+                { provide: EVENT_MANAGER_PLUGINS, useClass: UndetectedEventPlugin, multi: true },
+                { provide: RouteReuseStrategy, useClass: CustomRouteReuseStrategy },
+                { provide: PROPERTY_PROVIDERS_RENDER_TOKEN, useFactory: contentAreaRenderFactory, deps: [Injector], multi: true },
+                { provide: PROPERTY_PROVIDERS_RENDER_TOKEN, useFactory: textRenderFactory, deps: [Injector], multi: true },
+                { provide: PROPERTY_PROVIDERS_RENDER_TOKEN, useFactory: textareaRenderFactory, deps: [Injector], multi: true },
+                { provide: PROPERTY_PROVIDERS_RENDER_TOKEN, useFactory: xhtmlRenderFactory, deps: [Injector], multi: true },
+                { provide: PROPERTY_PROVIDERS_RENDER_TOKEN, useFactory: imageRenderFactory, deps: [Injector], multi: true },
+                { provide: PROPERTY_PROVIDERS_RENDER_TOKEN, useFactory: urlRenderFactory, deps: [Injector], multi: true },
+                { provide: PROPERTY_PROVIDERS_RENDER_TOKEN, useFactory: urlListRenderFactory, deps: [Injector], multi: true },
+                { provide: PROPERTY_PROVIDERS_RENDER_TOKEN, useFactory: objectListRenderFactory, deps: [Injector], multi: true }
+            ]
         };
     }
 
@@ -106,7 +121,6 @@ export class AngularCms {
                 CMS.MEDIA_TYPES[prop] = theEntryScope[prop];
             }
         }
-        this.registerPropertyRenders();
     }
 
     /**
