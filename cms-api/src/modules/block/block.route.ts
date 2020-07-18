@@ -1,5 +1,6 @@
+import 'reflect-metadata';
 import { Router } from 'express';
-import { ReflectiveInjector } from 'injection-js';
+import { Injectable } from 'injection-js';
 
 import { requiredAdminOrEditor } from '../../config/roles';
 import { asyncRouterHandler } from '../../errorHandling';
@@ -7,38 +8,34 @@ import { validate } from '../../validation/validate.middleware';
 import { authGuard } from '../auth/auth.middleware';
 import { cutOrCopyContent, insertContent, requiredContentId } from '../content/content.validation';
 import { createFolder, requiredParentId, updateFolderName } from '../folder/folder.validation';
-import { BaseRouter } from '../shared/base.route';
 import { BlockController } from './block.controller';
 
+@Injectable()
+export class BlockRouter {
+    constructor(private blockController: BlockController) { }
 
-export class BlockRouter extends BaseRouter {
-    constructor(injector: ReflectiveInjector) {
-        super(injector);
-    }
-
-    protected getRouter(): Router {
+    get router(): Router {
         const block: Router = asyncRouterHandler(Router());
-        const blockController = <BlockController>this.injector.get(BlockController);
 
-        block.get('/folders/:parentId?', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredParentId), blockController.getFoldersByParentId);
+        block.get('/folders/:parentId?', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredParentId), this.blockController.getFoldersByParentId);
 
-        block.get('/children/:parentId?', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredParentId), blockController.getContentsByFolder);
+        block.get('/children/:parentId?', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredParentId), this.blockController.getContentsByFolder);
 
-        block.post('/folder', authGuard.checkRoles(requiredAdminOrEditor), validate(createFolder), blockController.createFolderContent);
+        block.post('/folder', authGuard.checkRoles(requiredAdminOrEditor), validate(createFolder), this.blockController.createFolderContent);
 
-        block.put('/folder/:id', authGuard.checkRoles(requiredAdminOrEditor), validate(updateFolderName), blockController.updateFolderName);
+        block.put('/folder/:id', authGuard.checkRoles(requiredAdminOrEditor), validate(updateFolderName), this.blockController.updateFolderName);
 
-        block.get('/:id', validate(requiredContentId), blockController.get);
+        block.get('/:id', validate(requiredContentId), this.blockController.get);
 
-        block.post('/cut', authGuard.checkRoles(requiredAdminOrEditor), validate(cutOrCopyContent), blockController.cut);
+        block.post('/cut', authGuard.checkRoles(requiredAdminOrEditor), validate(cutOrCopyContent), this.blockController.cut);
 
-        block.post('/copy', authGuard.checkRoles(requiredAdminOrEditor), validate(cutOrCopyContent), blockController.copy);
+        block.post('/copy', authGuard.checkRoles(requiredAdminOrEditor), validate(cutOrCopyContent), this.blockController.copy);
 
-        block.post('/', authGuard.checkRoles(requiredAdminOrEditor), validate(insertContent), blockController.create);
+        block.post('/', authGuard.checkRoles(requiredAdminOrEditor), validate(insertContent), this.blockController.create);
 
-        block.put('/:id', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), blockController.update);
+        block.put('/:id', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.blockController.update);
 
-        block.delete('/:id', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), blockController.delete);
+        block.delete('/:id', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.blockController.delete);
         return block
     }
 }

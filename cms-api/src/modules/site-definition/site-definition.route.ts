@@ -1,25 +1,23 @@
 import { Router } from 'express';
-import { ReflectiveInjector } from 'injection-js';
+import { Injectable } from 'injection-js';
+import 'reflect-metadata';
 
 import { Roles } from '../../config/roles';
 import { asyncRouterHandler } from '../../errorHandling';
 import { authGuard } from '../auth/auth.middleware';
-import { BaseRouter } from '../shared/base.route';
 import { SiteDefinitionController } from './site-definition.controller';
 
-export class SideDefinitionRouter extends BaseRouter {
-    constructor(injector: ReflectiveInjector) {
-        super(injector);
-    }
+@Injectable()
+export class SideDefinitionRouter {
+    constructor(private siteController: SiteDefinitionController) {}
 
-    protected getRouter(): Router {
+    get router(): Router {
         const sideDefinition: Router = asyncRouterHandler(Router());
-        const controller = new SiteDefinitionController();
 
-        sideDefinition.get('/getAll', authGuard.checkRoles([Roles.Admin]), controller.getAll);
-        sideDefinition.get('/paginate', authGuard.checkRoles([Roles.Admin]), controller.paginate);
-        sideDefinition.get('/:id', authGuard.checkRoles([Roles.Admin]), controller.get);
-        sideDefinition.post('/', authGuard.checkRoles([Roles.Admin]), controller.create);
+        sideDefinition.get('/getAll', authGuard.checkRoles([Roles.Admin]), this.siteController.getAll);
+        sideDefinition.get('/paginate', authGuard.checkRoles([Roles.Admin]), this.siteController.paginate);
+        sideDefinition.get('/:id', authGuard.checkRoles([Roles.Admin]), this.siteController.get);
+        sideDefinition.post('/', authGuard.checkRoles([Roles.Admin]), this.siteController.create);
 
         return sideDefinition;
     }

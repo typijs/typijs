@@ -44,7 +44,9 @@ export class App {
   }
 
   private setRoutes(): void {
-    this.express.use('/api', new AppRouter(this.express).router);
+    const appInjector = this.express.get('injector');
+    const appRouter = <AppRouter>appInjector.get(AppRouter);
+    this.express.use('/api', appRouter.router);
   }
 
   private setErrorHandling(): void {
