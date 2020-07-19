@@ -3,7 +3,7 @@ import { Router } from 'express';
 import { Injectable } from 'injection-js';
 
 import { requiredAdminOrEditor } from '../../config/roles';
-import { asyncRouterHandler } from '../../error';
+import { asyncRouterErrorHandler } from '../../error';
 import { validate } from '../../validation/validate.middleware';
 import { authGuard } from '../auth/auth.middleware';
 import { cutOrCopyContent, insertContent, requiredContentId } from '../content/content.validation';
@@ -16,7 +16,7 @@ export class PageRouter {
     constructor(private pageController: PageController) { }
 
     get router(): Router {
-        const page: Router = asyncRouterHandler(Router());
+        const page: Router = asyncRouterErrorHandler(Router());
 
         //get published children of page
         page.get('/published/children/:parentId', validate(requiredParentId), this.pageController.getPublishedPageChildren);

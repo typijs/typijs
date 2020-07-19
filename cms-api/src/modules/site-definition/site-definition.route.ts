@@ -3,7 +3,7 @@ import { Injectable } from 'injection-js';
 import 'reflect-metadata';
 
 import { Roles } from '../../config/roles';
-import { asyncRouterHandler } from '../../error';
+import { asyncRouterErrorHandler } from '../../error';
 import { authGuard } from '../auth/auth.middleware';
 import { SiteDefinitionController } from './site-definition.controller';
 
@@ -12,7 +12,7 @@ export class SideDefinitionRouter {
     constructor(private siteController: SiteDefinitionController) { }
 
     get router(): Router {
-        const sideDefinition: Router = asyncRouterHandler(Router());
+        const sideDefinition: Router = asyncRouterErrorHandler(Router());
 
         sideDefinition.get('/getAll', authGuard.checkRoles([Roles.Admin]), this.siteController.getAll);
         sideDefinition.get('/paginate', authGuard.checkRoles([Roles.Admin]), this.siteController.paginate);

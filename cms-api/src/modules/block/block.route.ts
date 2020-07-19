@@ -3,7 +3,7 @@ import { Router } from 'express';
 import { Injectable } from 'injection-js';
 
 import { requiredAdminOrEditor } from '../../config/roles';
-import { asyncRouterHandler } from '../../error';
+import { asyncRouterErrorHandler } from '../../error';
 import { validate } from '../../validation/validate.middleware';
 import { authGuard } from '../auth/auth.middleware';
 import { cutOrCopyContent, insertContent, requiredContentId } from '../content/content.validation';
@@ -15,7 +15,7 @@ export class BlockRouter {
     constructor(private blockController: BlockController) { }
 
     get router(): Router {
-        const block: Router = asyncRouterHandler(Router());
+        const block: Router = asyncRouterErrorHandler(Router());
 
         block.get('/folders/:parentId?', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredParentId), this.blockController.getFoldersByParentId);
 

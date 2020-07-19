@@ -25,7 +25,7 @@ const methods: string[] = [
  * 
  * @param func 
  */
-export const asyncHandler = (func: RequestHandler) => (req: Request, res: Response, next: NextFunction) => Promise.resolve(func(req, res, next)).catch(next)
+export const asyncErrorHandler = (func: RequestHandler) => (req: Request, res: Response, next: NextFunction) => Promise.resolve(func(req, res, next)).catch(next)
 
 /**
  * Wrapper in every route to catch error in async request
@@ -42,11 +42,11 @@ export const asyncHandler = (func: RequestHandler) => (req: Request, res: Respon
  * 
  * @param router 
  */
-export const asyncRouterHandler = (router: Router): Router => {
+export const asyncRouterErrorHandler = (router: Router): Router => {
     for (let key in router) {
         if (methods.includes(key)) {
             const method = router[key]
-            router[key] = (path, ...callbacks) => method.call(router, path, ...callbacks.map(cb => asyncHandler(cb)))
+            router[key] = (path, ...callbacks) => method.call(router, path, ...callbacks.map(cb => asyncErrorHandler(cb)))
         }
     }
     return router

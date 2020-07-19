@@ -3,7 +3,7 @@ import { Router } from 'express';
 import { Injectable } from 'injection-js';
 
 import { Roles } from '../../config/roles';
-import { asyncRouterHandler } from '../../error';
+import { asyncRouterErrorHandler } from '../../error';
 import { validate } from '../../validation/validate.middleware';
 import { authGuard } from '../auth/auth.middleware';
 import { requiredId } from '../shared/base.validation';
@@ -15,7 +15,7 @@ export class UserRouter {
     constructor(private userController: UserController) { }
 
     get router(): Router {
-        const user: Router = asyncRouterHandler(Router());
+        const user: Router = asyncRouterErrorHandler(Router());
 
         user.get('/paginate', authGuard.checkRoles([Roles.Admin]), this.userController.getUsers);
         //get user by Id

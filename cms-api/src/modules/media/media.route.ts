@@ -16,7 +16,7 @@ export class MediaRouter{
     constructor(private mediaController: MediaController) {}
 
     get router(): Router {
-        const media: Router = asyncRouterHandler(Router());
+        const media: Router = asyncRouterErrorHandler(Router());
 
         media.get('/folders/:parentId?', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredParentId), this.mediaController.getFoldersByParentId);
 
@@ -43,8 +43,8 @@ export class MediaRouter{
 export class AssetRouter {
     constructor(private mediaController: MediaController) {}
 
-    get router(): Router {
-        const asset: Router = asyncRouterHandler(Router());
+    get assetRouter(): Router {
+        const asset: Router = asyncRouterErrorHandler(Router());
         asset.get('/:fileId/:fileName', validate(getMediaById), this.mediaController.getMediaById);
         return asset;
     }
