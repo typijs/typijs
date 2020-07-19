@@ -23,35 +23,6 @@ import { setAppInjector } from './utils/appInjector';
 import { CustomRouteReuseStrategy } from './utils/route-reuse-strategy';
 import { UndetectedEventPlugin } from './utils/undetected.event';
 
-export const CMS_PROVIDERS = [
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-    {
-        provide: APP_INITIALIZER,
-        useFactory: cmsInitializer,
-        deps: [ConfigService, CONFIG_DEPS],
-        multi: true
-    },
-    {
-        provide: CONFIG_DEPS,
-        useFactory: configDepsFactory,
-        deps: [AuthService, ConfigService]
-    },
-    {
-        provide: EVENT_MANAGER_PLUGINS,
-        useClass: UndetectedEventPlugin,
-        multi: true
-    },
-    {
-        provide: RouteReuseStrategy,
-        useClass: CustomRouteReuseStrategy
-    },
-    {
-        provide: LOCAL_STORAGE,
-        useFactory: localStorageFactory,
-        deps: [PLATFORM_ID]
-    }
-]
-
 /**
  * Re-export Core Module to used on client
  */
@@ -78,7 +49,10 @@ export class AngularCms {
                 { provide: PROPERTY_PROVIDERS_RENDER_TOKEN, useFactory: imageRenderFactory, deps: [Injector], multi: true },
                 { provide: PROPERTY_PROVIDERS_RENDER_TOKEN, useFactory: urlRenderFactory, deps: [Injector], multi: true },
                 { provide: PROPERTY_PROVIDERS_RENDER_TOKEN, useFactory: urlListRenderFactory, deps: [Injector], multi: true },
-                { provide: PROPERTY_PROVIDERS_RENDER_TOKEN, useFactory: objectListRenderFactory, deps: [Injector], multi: true }
+                { provide: PROPERTY_PROVIDERS_RENDER_TOKEN, useFactory: objectListRenderFactory, deps: [Injector], multi: true },
+                //Not working on SSR mode and AOT
+                //https://www.bennadel.com/blog/3565-providing-module-configuration-using-forroot-and-ahead-of-time-compiling-in-angular-7-2-0.htm
+                ...CMS.PROPERTY_PROVIDERS
             ]
         };
     }
