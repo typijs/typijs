@@ -1,19 +1,19 @@
-import * as mongoose from 'mongoose';
+import 'reflect-metadata';
+import { Injectable } from 'injection-js';
 
 import { DocumentNotFoundException } from '../../error';
 import { slugify } from '../../utils/slugify';
 import { ContentService } from '../content/content.service';
-import { ISiteDefinitionDocument, SiteDefinitionModel } from '../site-definition/site-definition.model';
+import { SiteDefinitionService } from '../site-definition/site-definition.service';
 import { IPageVersionDocument, PageVersionModel } from "./models/page-version.model";
 import { IPage, IPageDocument, PageModel } from "./models/page.model";
 import { IPublishedPage, IPublishedPageDocument, PublishedPageModel } from './models/published-page.model';
 
+@Injectable()
 export class PageService extends ContentService<IPageDocument, IPageVersionDocument, IPublishedPageDocument> {
 
-    private siteDefinitionModel: mongoose.Model<ISiteDefinitionDocument>
-    constructor() {
+    constructor(private siteDefinitionService: SiteDefinitionService) {
         super(PageModel, PageVersionModel, PublishedPageModel);
-        this.siteDefinitionModel = SiteDefinitionModel;
     }
 
     public getPopulatedContentById = async (id: string): Promise<IPageDocument> => {
@@ -148,14 +148,8 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
     }
 
     private getStartPageFromHostname = async (hostname: string): Promise<IPublishedPageDocument> => {
-        const siteDefinition = await this.getSiteDefinitionBySiteUrl(hostname);
+        const siteDefinition = await this.siteDefinitionService.getSiteDefinitionBySiteUrl(hostname);
         return siteDefinition != null ? siteDefinition.startPage : null;
-    }
-
-    private getSiteDefinitionBySiteUrl = async (siteUrl: string): Promise<ISiteDefinitionDocument> => {
-        return this.siteDefinitionModel.findOne(siteUrl ? { siteUrl: siteUrl } : {})
-            .populate('startPage') //TODO check if page is deleted or not
-            .exec()
     }
 
     //Override the `createCopiedContent` method in base class
