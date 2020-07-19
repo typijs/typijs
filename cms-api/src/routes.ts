@@ -3,7 +3,7 @@ import { Injectable } from 'injection-js';
 
 import { AuthRouter } from './modules/auth/auth.route';
 import { BlockRouter } from './modules/block/block.route';
-import { AssetRouter, MediaRouter } from './modules/media/media.route';
+import { MediaRouter } from './modules/media/media.route';
 import { PageRouter } from './modules/page/page.route';
 import { SideDefinitionRouter } from './modules/site-definition/site-definition.route';
 import { UserRouter } from './modules/user/user.route';
@@ -13,7 +13,6 @@ export class AppRouter {
     constructor(
         private pageRouter: PageRouter,
         private blockRouter: BlockRouter,
-        private assetRouter: AssetRouter,
         private mediaRouter: MediaRouter,
         private userRouter: UserRouter,
         private authRouter: AuthRouter,
@@ -26,7 +25,7 @@ export class AppRouter {
         // Blocks
         appRouter.use('/block', this.blockRouter.router);
         // Media
-        appRouter.use('/assets', this.assetRouter.router);
+        appRouter.use('/assets', this.mediaRouter.assetRouter);
         appRouter.use('/media', this.mediaRouter.router);
         // Site Definition
         appRouter.use('/site-definition', this.siteRouter.router);

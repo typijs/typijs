@@ -3,7 +3,7 @@ import { Router } from 'express';
 import { Injectable } from 'injection-js';
 
 import { requiredAdminOrEditor } from '../../config/roles';
-import { asyncRouterHandler } from '../../error';
+import { asyncRouterErrorHandler } from '../../error';
 import { validate } from '../../validation/validate.middleware';
 import { authGuard } from '../auth/auth.middleware';
 import { cutOrCopyContent, requiredContentId } from '../content/content.validation';
@@ -12,8 +12,8 @@ import { MediaController } from './media.controller';
 import { getMediaById } from './media.validation';
 
 @Injectable()
-export class MediaRouter{
-    constructor(private mediaController: MediaController) {}
+export class MediaRouter {
+    constructor(private mediaController: MediaController) { }
 
     get router(): Router {
         const media: Router = asyncRouterErrorHandler(Router());
@@ -37,11 +37,6 @@ export class MediaRouter{
         media.delete('/:id', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.mediaController.delete);
         return media
     }
-}
-
-@Injectable()
-export class AssetRouter {
-    constructor(private mediaController: MediaController) {}
 
     get assetRouter(): Router {
         const asset: Router = asyncRouterErrorHandler(Router());
