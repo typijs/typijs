@@ -3,13 +3,13 @@ import { Injectable } from 'injection-js';
 import 'reflect-metadata';
 
 import { Roles } from '../../config/roles';
-import { asyncRouterHandler } from '../../errorHandling';
+import { asyncRouterHandler } from '../../error';
 import { authGuard } from '../auth/auth.middleware';
 import { SiteDefinitionController } from './site-definition.controller';
 
 @Injectable()
 export class SideDefinitionRouter {
-    constructor(private siteController: SiteDefinitionController) {}
+    constructor(private siteController: SiteDefinitionController) { }
 
     get router(): Router {
         const sideDefinition: Router = asyncRouterHandler(Router());

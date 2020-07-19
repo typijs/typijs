@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 
-import { DocumentNotFoundException } from '../../errorHandling';
+import { DocumentNotFoundException } from '../../error';
 import { cmsBlock } from '../block/models/block.model';
 import { cmsPublishedBlock } from '../block/models/published-block.model';
 import { cmsMedia } from '../media/models/media.model';

@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import * as jwt from 'jsonwebtoken';
 
 import { config } from '../../config/config';
-import { ForbiddenException, UnauthorizedException } from "../../errorHandling";
+import { ForbiddenException, UnauthorizedException } from "../../error";
 import { TokenPayload } from './token.model';
 
 class AuthGuard {

@@ -1,6 +1,6 @@
 import { Injectable } from "injection-js";
 
-import { UnauthorizedException } from "../../errorHandling";
+import { UnauthorizedException } from "../../error";
 import { IUserDocument } from "../user/user.model";
 import { UserService } from "../user/user.service";
 import { AuthTokens } from "./token.model";

@@ -3,7 +3,7 @@ import { Router } from 'express';
 import { Injectable } from 'injection-js';
 
 import { Roles } from '../../config/roles';
-import { asyncRouterHandler } from '../../errorHandling';
+import { asyncRouterHandler } from '../../error';
 import { validate } from '../../validation/validate.middleware';
 import { authGuard } from '../auth/auth.middleware';
 import { requiredId } from '../shared/base.validation';
@@ -12,7 +12,7 @@ import { createAdminUser, createUser, updateUser } from './user.validation';
 
 @Injectable()
 export class UserRouter {
-    constructor(private userController: UserController) {}
+    constructor(private userController: UserController) { }
 
     get router(): Router {
         const user: Router = asyncRouterHandler(Router());

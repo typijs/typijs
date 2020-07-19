@@ -1,7 +1,7 @@
 import { FilterQuery, Document, Types, UpdateQuery, Query } from 'mongoose';
 
 import { PaginateOptions, PaginateResult } from '../../db/plugins/paginate';
-import { DocumentNotFoundException } from '../../errorHandling';
+import { DocumentNotFoundException } from '../../error';
 import { IBaseDocument, IBaseModel, QueryItem, QueryList, QueryOptions } from './base.model';
 
 export class BaseService<T extends IBaseDocument> {

@@ -1,6 +1,6 @@
 import { IContentDocument, IFolderDocument, IContentModel } from "../content/content.model";
 import { BaseService } from '../shared/base.service';
-import { DocumentNotFoundException } from '../../errorHandling';
+import { DocumentNotFoundException } from '../../error';
 
 export abstract class FolderService<T extends IContentDocument> extends BaseService<T>{
 

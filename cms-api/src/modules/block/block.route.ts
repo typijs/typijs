@@ -3,7 +3,7 @@ import { Router } from 'express';
 import { Injectable } from 'injection-js';
 
 import { requiredAdminOrEditor } from '../../config/roles';
-import { asyncRouterHandler } from '../../errorHandling';
+import { asyncRouterHandler } from '../../error';
 import { validate } from '../../validation/validate.middleware';
 import { authGuard } from '../auth/auth.middleware';
 import { cutOrCopyContent, insertContent, requiredContentId } from '../content/content.validation';

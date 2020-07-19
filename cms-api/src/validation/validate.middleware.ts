@@ -2,7 +2,7 @@ import * as Joi from '@hapi/joi';
 import * as httpStatus from 'http-status';
 import { NextFunction, Request, Response } from 'express';
 
-import { ApiError } from '../errorHandling/ApiError';
+import { ApiError } from '../error/ApiError';
 import { pick } from '../utils/pick';
 import { RequestSchema } from './requestSchema';
 

@@ -3,7 +3,7 @@ import * as jwt from 'jsonwebtoken';
 import * as moment from 'moment';
 
 import { config } from '../../config/config';
-import { DocumentNotFoundException } from '../../errorHandling';
+import { DocumentNotFoundException } from '../../error';
 import { BaseService } from '../shared/base.service';
 import { IUserDocument } from '../user/user.model';
 import { UserService } from '../user/user.service';

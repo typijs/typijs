@@ -5,7 +5,7 @@ import * as express from 'express';
 
 import { config } from './config/config';
 import { Database } from './db/database';
-import { errorMiddleware } from './errorHandling';
+import { errorMiddleware } from './error';
 import { injector } from './injector';
 import { loggingMiddleware } from './logging';
 import { AppRouter } from './routes';

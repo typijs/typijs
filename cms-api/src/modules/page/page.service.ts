@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 
-import { DocumentNotFoundException } from '../../errorHandling';
+import { DocumentNotFoundException } from '../../error';
 import { slugify } from '../../utils/slugify';
 import { ContentService } from '../content/content.service';
 import { ISiteDefinitionDocument, SiteDefinitionModel } from '../site-definition/site-definition.model';

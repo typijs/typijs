@@ -1,6 +1,6 @@
 import * as httpStatus from 'http-status';
 import { Roles } from '../../config/roles';
-import { DocumentNotFoundException, EmailDuplicateException, Exception } from '../../errorHandling/exceptions';
+import { DocumentNotFoundException, EmailDuplicateException, Exception } from '../../error/exceptions';
 import { BaseService } from "../shared/base.service";
 import { IUserDocument, UserModel } from "./user.model";
 
