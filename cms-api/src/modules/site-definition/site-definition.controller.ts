@@ -1,9 +1,12 @@
+import { Injectable } from 'injection-js';
+import 'reflect-metadata';
 import { BaseController } from '../shared/base.controller';
-import { SiteDefinitionModel, ISiteDefinitionDocument } from './site-definition.model';
-import { BaseService } from '../shared/base.service';
+import { ISiteDefinitionDocument } from './site-definition.model';
+import { SiteDefinitionService } from './site-definition.service';
 
+@Injectable()
 export class SiteDefinitionController extends BaseController<ISiteDefinitionDocument> {
-    constructor() {
-        super(new BaseService<ISiteDefinitionDocument>(SiteDefinitionModel))
+    constructor(siteDefinitionService: SiteDefinitionService) {
+        super(siteDefinitionService)
     }
 }

@@ -1,5 +1,6 @@
+import 'reflect-metadata';
 import { Router } from 'express';
-import { ReflectiveInjector } from 'injection-js';
+import { Injectable } from 'injection-js';
 
 import { requiredAdminOrEditor } from '../../config/roles';
 import { asyncRouterHandler } from '../../errorHandling';
@@ -7,37 +8,34 @@ import { validate } from '../../validation/validate.middleware';
 import { authGuard } from '../auth/auth.middleware';
 import { cutOrCopyContent, insertContent, requiredContentId } from '../content/content.validation';
 import { requiredParentId } from '../folder/folder.validation';
-import { BaseRouter } from '../shared/base.route';
 import { PageController } from './page.controller';
 import { requiredUrl } from './page.validation';
 
-export class PageRouter extends BaseRouter {
-    constructor(injector: ReflectiveInjector) {
-        super(injector);
-    }
+@Injectable()
+export class PageRouter {
+    constructor(private pageController: PageController) {}
 
-    protected getRouter(): Router {
+    get router(): Router {
         const page: Router = asyncRouterHandler(Router());
-        const pageController = <PageController>this.injector.get(PageController);
 
         //get published children of page
-        page.get('/published/children/:parentId', validate(requiredParentId), pageController.getPublishedPageChildren);
+        page.get('/published/children/:parentId', validate(requiredParentId), this.pageController.getPublishedPageChildren);
         //get published page by url
-        page.get('/published/:url', validate(requiredUrl), pageController.getByUrl);
+        page.get('/published/:url', validate(requiredUrl), this.pageController.getByUrl);
         //get children of page
-        page.get('/children/:parentId', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredParentId), pageController.getPageChildren);
+        page.get('/children/:parentId', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredParentId), this.pageController.getPageChildren);
         //get page details
-        page.get('/:id', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), pageController.get);
+        page.get('/:id', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.pageController.get);
         //move page from parent to another one
-        page.post('/cut', authGuard.checkRoles(requiredAdminOrEditor), validate(cutOrCopyContent), pageController.cut);
+        page.post('/cut', authGuard.checkRoles(requiredAdminOrEditor), validate(cutOrCopyContent), this.pageController.cut);
         //copy page from parent to another one
-        page.post('/copy', authGuard.checkRoles(requiredAdminOrEditor), validate(cutOrCopyContent), pageController.copy);
+        page.post('/copy', authGuard.checkRoles(requiredAdminOrEditor), validate(cutOrCopyContent), this.pageController.copy);
         //create the page
-        page.post('/', authGuard.checkRoles(requiredAdminOrEditor), validate(insertContent), pageController.create);
+        page.post('/', authGuard.checkRoles(requiredAdminOrEditor), validate(insertContent), this.pageController.create);
         //update pate
-        page.put('/:id', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), pageController.update);
+        page.put('/:id', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.pageController.update);
         //soft delete page
-        page.delete('/:id', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), pageController.delete)
+        page.delete('/:id', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.pageController.delete)
         return page;
     }
 }

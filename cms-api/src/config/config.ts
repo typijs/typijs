@@ -16,8 +16,8 @@ export const config = {
         protocol: process.env.MONGO_DB_PROTOCOL || 'mongodb',
         host: process.env.MONGO_DB_HOST || 'localhost:27017',
         name: process.env.MONGO_DB_NAME || 'angularcms',
-        user: process.env.MONGO_DB_USER || 'dbAdmin',
-        password: process.env.MONGO_DB_PASSWORD || '02091945m@'
+        user: process.env.MONGO_DB_USER || '',
+        password: process.env.MONGO_DB_PASSWORD || ''
     },
 
     jwt: {
