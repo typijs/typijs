@@ -7,22 +7,39 @@ export class CacheService {
     constructor(private readonly cache: CacheManager) { }
 
     /**
-     * Get value from cache
+     * Get value from cache return the promise
      * @param cacheKey 
-     * @param callback the function will be called to fill the cache in case cache missing
+     * @param cacheMissCallback the function will be called to fill the cache in case cache missing
      * @param ttl Time to live in second
      */
-    public get = async <T = unknown>(cacheKey: string, callback?: () => Promise<T>, ttl?: number): Promise<T> => {
+    public get = async <T = unknown>(cacheKey: string, cacheMissCallback?: () => Promise<T>, ttl?: number): Promise<T> => {
         let value = this.cache.get(cacheKey)
         if (value) return value;
 
-        if (callback) {
+        if (cacheMissCallback) {
             console.log('cache miss ' + cacheKey);
-            value = await callback();
-            this.cache.set(cacheKey, value, ttl);
+            value = await cacheMissCallback();
+            this.set(cacheKey, value, ttl);
         }
 
         return value;
+    }
+
+    public getSync = <T = unknown>(cacheKey: string, cacheMissCallback?: () => T, ttl?: number): T => {
+        let value = this.cache.get(cacheKey)
+        if (value) return value;
+
+        if (cacheMissCallback) {
+            console.log('cache miss ' + cacheKey);
+            value = cacheMissCallback();
+            this.set(cacheKey, value, ttl);
+        }
+
+        return value;
+    }
+
+    public set = (cacheKey: string, value: any, ttl?: number) => {
+        this.cache.set(cacheKey, value, ttl);
     }
 
     public del = (cacheKeys: string | string[]) => {
