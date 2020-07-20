@@ -1,6 +1,6 @@
 import { ReflectiveInjector } from "injection-js";
 
-import { ResolveCacheProviders } from "./caching/cache.provider";
+import { ResolveCacheProviders } from "./caching";
 import { ResolveAuthProviders } from "./modules/auth/auth.provider";
 import { ResolveBlockProviders } from './modules/block/block.providers';
 import { ResolveMediaProviders } from './modules/media/media.providers';

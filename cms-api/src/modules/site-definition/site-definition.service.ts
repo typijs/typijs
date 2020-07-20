@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { Injectable } from "injection-js";
-import { CacheService } from "../../caching/cache.service";
+import { CacheService } from "../../caching";
 import { BaseService } from "../shared/base.service";
 import { ISiteDefinitionDocument, SiteDefinitionModel } from "./site-definition.model";
 

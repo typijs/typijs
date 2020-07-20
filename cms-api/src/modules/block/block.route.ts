@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { Router } from 'express';
 import { Injectable } from 'injection-js';
 
-import { requiredAdminOrEditor } from '../../config/roles';
+import { requiredAdminOrEditor } from '../../constants/roles';
 import { asyncRouterErrorHandler } from '../../error';
 import { validate } from '../../validation/validate.middleware';
 import { authGuard } from '../auth/auth.middleware';
