@@ -28,8 +28,8 @@ export class MediaController extends ContentController<IMediaDocument, IMediaVer
     getMediaById = async (req: express.Request, res: express.Response) => {
         const widthStr = req.query.w ? req.query.w : req.query.width;
         const heightStr = req.query.h ? req.query.h : req.query.height;
-        const width = widthStr ? parseInt(widthStr, 10) : undefined;
-        const height = heightStr ? parseInt(heightStr, 10) : undefined;
+        const width = widthStr ? parseInt(widthStr as string, 10) : undefined;
+        const height = heightStr ? parseInt(heightStr as string, 10) : undefined;
 
         const fileId = req.params.fileId;
         const fileName = req.params.fileName;
