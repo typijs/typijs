@@ -1,19 +1,38 @@
 import { Router } from 'express';
+import { Injectable } from 'injection-js';
 
-import { asset, media } from './modules/media/media.route';
-import { block } from './modules/block/block.route';
-import { page } from './modules/page/page.route';
-import { sideDefinition } from './modules/site-definition/site-definition.route';
+import { AuthRouter } from './modules/auth/auth.route';
+import { BlockRouter } from './modules/block/block.route';
+import { MediaRouter } from './modules/media/media.route';
+import { PageRouter } from './modules/page/page.route';
+import { SideDefinitionRouter } from './modules/site-definition/site-definition.route';
+import { UserRouter } from './modules/user/user.route';
 
-const appRouter: Router = Router();
-// Page
-appRouter.use('/page', page);
-// Blocks
-appRouter.use('/block', block);
-// Media
-appRouter.use('/assets', asset);
-appRouter.use('/media', media);
-// Site Definition
-appRouter.use(sideDefinition);
+@Injectable()
+export class AppRouter {
+    constructor(
+        private pageRouter: PageRouter,
+        private blockRouter: BlockRouter,
+        private mediaRouter: MediaRouter,
+        private userRouter: UserRouter,
+        private authRouter: AuthRouter,
+        private siteRouter: SideDefinitionRouter) { }
 
-export { appRouter };
+    get router(): Router {
+        const appRouter: Router = Router();
+        // Page
+        appRouter.use('/page', this.pageRouter.router);
+        // Blocks
+        appRouter.use('/block', this.blockRouter.router);
+        // Media
+        appRouter.use('/assets', this.mediaRouter.assetRouter);
+        appRouter.use('/media', this.mediaRouter.router);
+        // Site Definition
+        appRouter.use('/site-definition', this.siteRouter.router);
+        // User
+        appRouter.use('/user', this.userRouter.router)
+        // Auth
+        appRouter.use('/auth', this.authRouter.router)
+        return appRouter;
+    }
+}

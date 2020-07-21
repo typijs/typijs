@@ -2,7 +2,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { CMS } from '@angular-cms/core';
+import { CMS, Roles, AuthGuard } from '@angular-cms/core';
 
 import './cms-module-register';
 import { PortalComponent } from './portal.component';
@@ -16,20 +16,36 @@ const cmsRoutes: Routes = [
         children: [
             {
                 path: '',
-                component: DashboardComponent
+                component: DashboardComponent,
+                canActivate: [AuthGuard],
+                data: {
+                    role: Roles.Editor
+                }
             },
             {
                 path: 'dashboard',
-                component: DashboardComponent
+                component: DashboardComponent,
+                canActivate: [AuthGuard],
+                data: {
+                    role: Roles.Editor
+                }
             },
             {
                 path: 'editor',
                 component: EditorComponent,
+                canActivate: [AuthGuard],
+                data: {
+                    role: Roles.Editor
+                },
                 children: CMS.EDITOR_ROUTES()
             },
             {
                 path: 'admin',
                 component: AdminComponent,
+                canActivate: [AuthGuard],
+                data: {
+                    role: Roles.Admin
+                },
                 children: CMS.ADMIN_ROUTES()
             }
         ]

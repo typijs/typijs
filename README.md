@@ -91,7 +91,13 @@ The Editor UI can be accessed via router: http://localhost:4200/cms/editor
 
 The Admin UI can be accessed via router: http://localhost:4200/cms/admin
 
-![cms-demo-site](resources/images/cms-editor-ui.png)
+**Using the account: **
+
+`admin/12345678` or `editor/1234qwer!`
+
+> See demo on below (waiting for gif loading :)
+
+![cms-demo-site](resources/images/angular-cms-demo.gif)
 
 This Admin/Editor UI is build with plug-in architecture
 
@@ -199,12 +205,15 @@ For example, in my local, I have the db path like as `D:/ProgramData/MongoDB/dat
 
 > If you install the MongoDB and run it as the service in Window, you can skip this step
 
-2.  After the MongDb instance running, you can use the example data under the resources/db. Each json file will be corresponding to one collection in Mongo
+2.  After the MongDb instance running, you can use the example data under the resources/db/dump/angularcms using the MongoDb command `mongorestore` to backup these collections
 
-> Using Mongo Compass to backup these collections
-   
+For example, under the `resources/db` folder, run command line 
 
-![cms-demo-site](resources/images/db.jpg)
+```
+mongorestore  dump/
+
+``` 
+to restore from a dump directory to a local mongod instance running on port 27017:
 
 
 3. Final step, under `cms` folder, run the command sequentially
@@ -217,24 +226,80 @@ For example, in my local, I have the db path like as `D:/ProgramData/MongoDB/dat
 ```
 > Make sure you installed Angular CLI with `--global`
 
+### Run Angular Universal (SSR) in Dev mode
+
+```
+    npm install
+    ng build core
+    ng build modules
+    ng build portal
+    ng build
+    ng run cms-demo:server
+```
+Copy three folders `dist\core`, `dist\modules` and `dist\portal` into `cms\node_modules\@angular-cms` folder then run this script to start Server Site Render
+
+```
+    npm run start:ssr
+```
+
+If there is any change these libs `core` or `modules` or `portal` need to run build for each lib again then run 
+
+```
+ng run cms-demo:server
+```
+
+and start server site again
+
+## ⭐️ Show Your Support
+Please give a ⭐️ if this project helped you!
+
+## 👏 Contributing
+
+If you have any questions or requests or want to contribute to `angular-cms`, please write the [issue](https://github.com/angular-cms/angular-cms/issues) or give me a Pull Request freely.
+
+## 🐞 Bug Report
+
+If you find a bug, please report to us opening a new [Issue](https://github.com/angular-cms/angular-cms/issues) on GitHub.
+
 ## Versioning
 
-We are current on Alpha
+We are current on Alpha version
 
 ## Authors
 
 * **Hung Dang Viet** - *Initial work and maintain* - [danghung1202](https://github.com/danghung1202)
 
-
-## License
-
-This project is licensed under the GNU License - see the [LICENSE](LICENSE) file for details
-
 ## Acknowledgments
 
-* Inspiration from Episerver
+* Inspiration from [Episerver CMS](https://www.episerver.com/)
 
-## Notes
+## 📝 License
+
+This project is [MIT](https://github.com/angular-cms/angular-cms/blob/dev/LICENSE) licensed.
+
+```
+MIT License
+
+Copyright (c) 2019 Daybrush
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
 
 
 

@@ -9,20 +9,21 @@ export const config = {
         //predefined: 'development', 'test', 'production'
         env: process.env.NODE_ENV || NodeEnv.Development,
         port: process.env.PORT || '3000',
+        origin: process.env.ORIGIN || 'http://localhost:4200,http://localhost:4202'
     },
 
-    mongoose: {
-        host: process.env.MONGO_DB_HOST || 'localhost',
-        port: process.env.MONGO_DB_PORT || '27017',
-        dbName: process.env.MONGO_DB_NAME || 'angularcms',
-        dbUser: process.env.MONGO_DB_USER,
-        dbPassword: process.env.MONGO_DB_PASSWORD,
+    mongdb: {
+        protocol: process.env.MONGO_DB_PROTOCOL || 'mongodb',
+        host: process.env.MONGO_DB_HOST || 'localhost:27017',
+        name: process.env.MONGO_DB_NAME || 'angularcms',
+        user: process.env.MONGO_DB_USER || '',
+        password: process.env.MONGO_DB_PASSWORD || ''
     },
 
     jwt: {
-        secret: process.env.JWT_SECRET,
-        accessExpirationMinutes: process.env.JWT_ACCESS_EXPIRATION_MINUTES,
-        refreshExpirationDays: process.env.JWT_REFRESH_EXPIRATION_DAYS,
+        secret: process.env.JWT_SECRET || '1878B83DE0384DE08D3F69FE1C308D55',
+        accessExpirationMinutes: process.env.JWT_ACCESS_EXPIRATION_MINUTES || '15',
+        refreshExpirationDays: process.env.JWT_REFRESH_EXPIRATION_DAYS || '30',
         resetPasswordExpirationMinutes: 10,
     },
 

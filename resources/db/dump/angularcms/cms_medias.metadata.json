@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"angularcms.cms_medias"},{"v":{"$numberInt":"2"},"key":{"parentPath":{"$numberInt":"1"}},"name":"parentPath_1","ns":"angularcms.cms_medias","background":true}],"uuid":"3ee82a0b86284f62bcba29281dbd5b12"}

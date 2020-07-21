@@ -1,36 +1,46 @@
+import 'reflect-metadata';
 import { Router } from 'express';
-import { asyncRouterHandler } from '../../errorHandling';
-import { injector } from '../../injector';
-import { validate } from '../../validation/validateMiddleware';
-import { requiredParentId, updateFolderName, createFolder } from '../folder/folder.validation';
-import { requiredContentId, cutOrCopyContent } from '../content/content.validation';
+import { Injectable } from 'injection-js';
+
+import { requiredAdminOrEditor } from '../../constants/roles';
+import { asyncRouterErrorHandler } from '../../error';
+import { validate } from '../../validation/validate.middleware';
+import { authGuard } from '../auth/auth.middleware';
+import { cutOrCopyContent, requiredContentId } from '../content/content.validation';
+import { createFolder, requiredParentId, updateFolderName } from '../folder/folder.validation';
 import { MediaController } from './media.controller';
 import { getMediaById } from './media.validation';
 
-const media: Router = asyncRouterHandler(Router());
-const mediaController = <MediaController>injector.get(MediaController);
+@Injectable()
+export class MediaRouter {
+    constructor(private mediaController: MediaController) { }
 
-media.get('/folders/:parentId?', validate(requiredParentId), mediaController.getFoldersByParentId);
+    get router(): Router {
+        const media: Router = asyncRouterErrorHandler(Router());
 
-media.get('/children/:parentId?', validate(requiredParentId), mediaController.getContentsByFolder);
+        media.get('/folders/:parentId?', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredParentId), this.mediaController.getFoldersByParentId);
 
-media.post('/folder', validate(createFolder), mediaController.createFolderContent);
+        media.get('/children/:parentId?', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredParentId), this.mediaController.getContentsByFolder);
 
-media.put('/folder/:id', validate(updateFolderName), mediaController.updateFolderName);
+        media.post('/folder', authGuard.checkRoles(requiredAdminOrEditor), validate(createFolder), this.mediaController.createFolderContent);
 
-media.post('/upload/:parentId?', validate(requiredParentId), mediaController.storeMediaInDisk('file'), mediaController.processMedia)
+        media.put('/folder/:id', authGuard.checkRoles(requiredAdminOrEditor), validate(updateFolderName), this.mediaController.updateFolderName);
 
-media.post('/cut', validate(cutOrCopyContent), mediaController.cut);
+        media.post('/upload/:parentId?', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredParentId), this.mediaController.storeMediaInDisk('file'), this.mediaController.processMedia)
 
-media.post('/copy', validate(cutOrCopyContent), mediaController.copy);
+        media.post('/cut', authGuard.checkRoles(requiredAdminOrEditor), validate(cutOrCopyContent), this.mediaController.cut);
 
-media.get('/:id', validate(requiredContentId), mediaController.get);
+        media.post('/copy', authGuard.checkRoles(requiredAdminOrEditor), validate(cutOrCopyContent), this.mediaController.copy);
 
-media.delete('/:id', validate(requiredContentId), mediaController.delete);
+        media.get('/:id', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.mediaController.get);
 
-export { media };
+        media.delete('/:id', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.mediaController.delete);
+        return media
+    }
 
-const asset: Router = Router();
-asset.get('/:fileId/:fileName', validate(getMediaById), mediaController.getMediaById);
-
-export { asset };
+    get assetRouter(): Router {
+        const asset: Router = asyncRouterErrorHandler(Router());
+        asset.get('/:fileId/:fileName', validate(getMediaById), this.mediaController.getMediaById);
+        return asset;
+    }
+}

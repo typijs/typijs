@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"angularcms.cms_blockversions"},{"v":{"$numberInt":"2"},"key":{"parentPath":{"$numberInt":"1"}},"name":"parentPath_1","ns":"angularcms.cms_blockversions","background":true}],"uuid":"b772a36aef074fe980d1d1c49bf1484d"}

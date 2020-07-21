@@ -35,14 +35,13 @@ export class PageController extends ContentController<IPageDocument, IPageVersio
   }
 
   //Override insert base
-  insert = async (req: express.Request, res: express.Response) => {
-    const pageDocument = this.pageService.createModelInstance(req.body);
-    const item = await this.pageService.executeCreatePageFlow(pageDocument)
+  create = async (req: express.Request, res: express.Response) => {
+    const item = await this.pageService.executeCreatePageFlow(req.body)
     res.status(httpStatus.OK).json(item)
   }
 
   update = async (req: express.Request, res: express.Response) => {
-    const pageDocument = this.pageService.createModelInstance(req.body);
+    const pageDocument = this.pageService.createModel(req.body);
     const savedPage = await this.pageService.updateAndPublishContent(req.params.id, pageDocument)
     res.status(httpStatus.OK).json(savedPage)
   }

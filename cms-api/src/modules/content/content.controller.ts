@@ -9,7 +9,7 @@ export abstract class ContentController<T extends IContentDocument, V extends IC
   private contentService: ContentService<T, V, P>;
 
   constructor(contentService: ContentService<T, V, P>) {
-    super(contentService.getContentModel());
+    super(contentService);
     this.contentService = contentService;
   }
 
@@ -18,9 +18,8 @@ export abstract class ContentController<T extends IContentDocument, V extends IC
     res.status(httpStatus.OK).json(item)
   }
 
-  insert = async (req: express.Request, res: express.Response) => {
-    const contentDocument = this.contentService.createModelInstance(req.body);
-    const item = await this.contentService.executeCreateContentFlow(contentDocument)
+  create = async (req: express.Request, res: express.Response) => {
+    const item = await this.contentService.executeCreateContentFlow(req.body)
     res.status(httpStatus.OK).json(item)
   }
 

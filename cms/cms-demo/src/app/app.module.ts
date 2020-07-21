@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { TransferHttpCacheModule } from '@nguniversal/common';
 
-import { AngularCms } from '@angular-cms/core';
+import { AngularCms, AuthModule } from '@angular-cms/core';
 
 import * as contentTypes from './registerContentTypes';
 import { AppRoutingModule } from './app-routing.module';
@@ -16,12 +16,13 @@ AngularCms.registerContentTypes(contentTypes);
 @NgModule({
   declarations: [
     AppComponent,
-    LayoutComponent
+    LayoutComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
     TransferHttpCacheModule,
     AngularCms.forRoot(),
+    AuthModule,
     AppRoutingModule,
     PagesModule,
     BlocksModule

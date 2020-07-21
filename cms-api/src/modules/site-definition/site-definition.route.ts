@@ -1,12 +1,24 @@
 import { Router } from 'express';
-import { asyncRouterHandler } from '../../errorHandling';
-import { SiteDefinitionCtrl } from './site-definition.controller';
+import { Injectable } from 'injection-js';
+import 'reflect-metadata';
 
-const sideDefinition: Router = asyncRouterHandler(Router());
-const controller = new SiteDefinitionCtrl();
+import { Roles } from '../../constants/roles';
+import { asyncRouterErrorHandler } from '../../error';
+import { authGuard } from '../auth/auth.middleware';
+import { SiteDefinitionController } from './site-definition.controller';
 
-sideDefinition.get('/site-definition', controller.getAll);
+@Injectable()
+export class SideDefinitionRouter {
+    constructor(private siteController: SiteDefinitionController) { }
 
-sideDefinition.post('/site-definition', controller.insert);
+    get router(): Router {
+        const sideDefinition: Router = asyncRouterErrorHandler(Router());
 
-export { sideDefinition };
+        sideDefinition.get('/getAll', authGuard.checkRoles([Roles.Admin]), this.siteController.getAll);
+        sideDefinition.get('/paginate', authGuard.checkRoles([Roles.Admin]), this.siteController.paginate);
+        sideDefinition.get('/:id', authGuard.checkRoles([Roles.Admin]), this.siteController.get);
+        sideDefinition.post('/', authGuard.checkRoles([Roles.Admin]), this.siteController.create);
+
+        return sideDefinition;
+    }
+}

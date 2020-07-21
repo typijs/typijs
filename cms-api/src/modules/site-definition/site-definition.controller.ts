@@ -1,16 +1,12 @@
-import * as mongoose from 'mongoose';
-
+import { Injectable } from 'injection-js';
+import 'reflect-metadata';
 import { BaseController } from '../shared/base.controller';
-import { ISiteDefinitionDocument, SiteDefinitionModel } from './site-definition.model';
+import { ISiteDefinitionDocument } from './site-definition.model';
+import { SiteDefinitionService } from './site-definition.service';
 
-export class SiteDefinitionCtrl extends BaseController<mongoose.Model<ISiteDefinitionDocument>> {
-    constructor() { super(SiteDefinitionModel); }
-
-    insertMany = (req, res, next) => {
-        //Validate data
-
-        //Delete all records
-
-        //Insert many records
+@Injectable()
+export class SiteDefinitionController extends BaseController<ISiteDefinitionDocument> {
+    constructor(siteDefinitionService: SiteDefinitionService) {
+        super(siteDefinitionService)
     }
 }

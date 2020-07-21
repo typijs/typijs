@@ -1,15 +1,15 @@
 import * as mongoose from 'mongoose';
 import { cmsPage, IPage, PageSchema, IPageDocument } from './page.model';
-import { IContentVersionDocument, IContentVersion } from '../../content/content.model';
+import { IContentVersionDocument, IContentVersion, IContentVersionModel } from '../../content/content.model';
 
 export interface IPageVersion extends IPage, IContentVersion { }
-
 export interface IPageVersionDocument extends IPageVersion, IPageDocument, IContentVersionDocument { }
-export const cmsPageVersion = 'cms_PageVersion'
+export interface IPageVersionModel extends IContentVersionModel<IPageVersionDocument> { }
 
+export const cmsPageVersion = 'cms_PageVersion'
 export const PageVersionSchema = new mongoose.Schema({
     ...PageSchema.obj,
     contentId: { type: mongoose.Schema.Types.ObjectId, ref: cmsPage, required: true },
 }, { timestamps: true });
 
-export const PageVersionModel: mongoose.Model<IPageVersionDocument> = mongoose.model<IPageVersionDocument>(cmsPageVersion, PageVersionSchema);
+export const PageVersionModel: IPageVersionModel = mongoose.model<IPageVersionDocument, IPageVersionModel>(cmsPageVersion, PageVersionSchema);

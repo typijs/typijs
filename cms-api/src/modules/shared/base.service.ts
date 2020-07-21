@@ -1,21 +1,109 @@
-import * as mongoose from 'mongoose';
+import { FilterQuery, Document, Types, UpdateQuery, Query } from 'mongoose';
 
-export class BaseService<T extends mongoose.Document> {
+import { PaginateOptions, PaginateResult } from '../../db/plugins/paginate';
+import { DocumentNotFoundException } from '../../error';
+import { IBaseDocument, IBaseModel, QueryItem, QueryList, QueryOptions } from './base.model';
 
-    private mongooseModel: mongoose.Model<T>;
+export class BaseService<T extends IBaseDocument> {
 
-    constructor(mongooseModel: mongoose.Model<T>) {
+    protected mongooseModel: IBaseModel<T>;
+
+    constructor(mongooseModel: IBaseModel<T>) {
         this.mongooseModel = mongooseModel;
     }
 
-    public createModelInstance = (doc: any): T => {
+    private static get defaultOptions(): QueryOptions {
+        return { lean: false };
+    }
+
+    private static get defaultPaginateOptions(): PaginateOptions {
+        return { limit: 10, page: 1 }
+    }
+
+    protected getQueryOptions(options?: QueryOptions) {
+        const mergedOptions = { ...BaseService.defaultOptions, ...(options || {}), };
+        return mergedOptions;
+    }
+
+    public createModel = (doc: Partial<T>): T => {
         const modelInstance = new this.mongooseModel(doc);
         return Object.assign(modelInstance, doc);
     }
 
-    public getDocumentById = async (id: string): Promise<T> => {
+    /**
+     * Find by id of base service
+     */
+    public findById = (id: string, options?: QueryOptions): QueryItem<T> => {
         if (!id) id = null;
-        const content = await this.mongooseModel.findOne({ _id: id }).exec();
-        return content ? content : null;
+        return this.mongooseModel.findById(id).setOptions(this.getQueryOptions(options));
+    }
+
+    public findOne = (filter: FilterQuery<T>, options?: QueryOptions): QueryItem<T> => {
+        return this.mongooseModel.findOne(filter).setOptions(this.getQueryOptions(options));
+    }
+
+    public find = (filter: FilterQuery<T>, options?: QueryOptions): QueryList<T> => {
+        return this.mongooseModel.find(filter).setOptions(this.getQueryOptions(options));
+    }
+
+    public getAll = (options?: QueryOptions): QueryList<T> => {
+        return this.find({}, options);
+    }
+
+    public count = (filter: FilterQuery<T>): Promise<number> => {
+        return this.mongooseModel.count(filter).exec()
+    }
+
+    public exists = (filter: FilterQuery<T>): Promise<boolean> => {
+        return this.mongooseModel.exists(filter)
+    }
+
+    /**
+     * Query for document support paging
+     * @param {Object} filter - Mongo Query - https://docs.mongodb.com/manual/tutorial/query-documents/
+     * @param {Object} paginateOptions - Paginate options
+     * @param {Object} queryOptions - Query options
+     * @returns {Promise<PaginateResult>}
+     */
+    public paginate = (filter: FilterQuery<T>, paginateOptions?: PaginateOptions, queryOptions?: QueryOptions): Promise<PaginateResult> => {
+        const mergedPaginateOptions = { ...BaseService.defaultPaginateOptions, ... (paginateOptions || {}) }
+        return this.mongooseModel.paginate(filter, mergedPaginateOptions, this.getQueryOptions(queryOptions));
+    };
+
+    public create = (doc: Partial<T>): Promise<T> => {
+        const mongooseDoc = this.createModel(doc);
+        return mongooseDoc.save()
+    }
+
+    public insertMany = (docs: Partial<T>[]): Promise<T[]> => {
+        return this.mongooseModel.insertMany(docs)
+    }
+
+    public updateById = async (id: string, doc: Partial<T>): Promise<T> => {
+        const document = await this.findById(id).exec();
+        if (!document) throw new DocumentNotFoundException(id);
+
+        Object.assign(document, doc);
+        return await document.save();
+    }
+
+    public updateMany = (filter: FilterQuery<T>, updateQuery: UpdateQuery<T>): Query<any> => {
+        return this.mongooseModel.updateMany(filter, updateQuery)
+    }
+
+    /**
+     * Delete document by id
+     * @param {ObjectId} userId
+     * @returns {Promise<User>}
+     */
+    public deleteById = async (id: string): Promise<T> => {
+        const document = await this.findById(id).exec();
+        if (!document) throw new DocumentNotFoundException(id);
+
+        return await document.remove();
+    }
+
+    public deleteMany = (filter: FilterQuery<T>): Query<any> => {
+        return this.mongooseModel.deleteMany(filter)
     }
 }

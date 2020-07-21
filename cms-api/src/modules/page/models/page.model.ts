@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 
-import { IContentDocument, ContentSchema, ContentHasChildItemsSchema, IContentHasChildItems, IContent } from '../../content/content.model';
+import { IContentDocument, ContentSchema, ContentHasChildItemsSchema, IContent, IContentModel } from '../../content/content.model';
 
 export interface IPage extends IContent {
   urlSegment: string;
@@ -12,10 +12,10 @@ export interface IPage extends IContent {
   sortIndex: number;
   childrenSortCriteria: string;
 }
+export interface IPageDocument extends IPage, IContentDocument { }
+export interface IPageModel extends IContentModel<IPageDocument> { }
 
 export const cmsPage = 'cms_Page';
-export interface IPageDocument extends IPage, IContentDocument { }
-
 export const PageSchema = new mongoose.Schema({
   ...ContentSchema.obj,
   ...ContentHasChildItemsSchema.obj,
@@ -29,4 +29,4 @@ export const PageSchema = new mongoose.Schema({
   childrenSortCriteria: { type: String, enum: ['Asc', 'Desc'] },
 }, { timestamps: true });
 
-export const PageModel: mongoose.Model<IPageDocument> = mongoose.model<IPageDocument>(cmsPage, PageSchema);
+export const PageModel: IPageModel = mongoose.model<IPageDocument, IPageModel>(cmsPage, PageSchema);

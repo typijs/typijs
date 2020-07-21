@@ -1,16 +1,15 @@
-import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { ModuleWithProviders, NgModule } from '@angular/core';
 
-import { CMS } from './cms';
-import { InsertPointDirective } from './directives/insert-point.directive';
 import { CmsPropertyFactoryResolver } from './bases/cms-property.factory';
-
-import { CmsPropertyDirective } from './render/property/cms-property.directive';
-import { CmsContentRender } from './render/cms-content';
-import { ContentAreaRender } from './render/content-area/content-area';
-import { ContentAreaDirective } from './render/content-area/content-area.directive';
-import { TextRender, XHtmlRender, ImageRender, UrlRender, UrlListRender, ObjectListRender } from './render/property/property-render';
+import { CMS } from './cms';
+import { CmsContentRender } from './infrastructure/rendering/cms-content';
+import { ContentAreaRender } from './infrastructure/rendering/content-area/content-area';
+import { ContentAreaDirective } from './infrastructure/rendering/content-area/content-area.directive';
+import { InsertPointDirective } from './infrastructure/rendering/insert-point.directive';
+import { CmsPropertyDirective } from './infrastructure/rendering/property/cms-property.directive';
+import { ImageRender, ObjectListRender, TextRender, UrlListRender, UrlRender, XHtmlRender } from './infrastructure/rendering/property/property-render';
 import { SafePipe } from './pipes/safe.pipe';
 
 @NgModule({

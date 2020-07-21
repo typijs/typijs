@@ -2,19 +2,20 @@ import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
 import * as express from 'express';
-import * as path from 'path';
 
-import { connectToTheDatabase } from './db/dbConnect';
-import { errorConverter, errorHandler } from './errorHandling';
+import { config } from './config/config';
+import { Database } from './db/database';
+import { errorMiddleware } from './error';
+import { injector } from './injector';
 import { loggingMiddleware } from './logging';
-import { appRouter } from './routes';
+import { AppRouter } from './routes';
 
 export class App {
   public express: express.Application;
 
   constructor() {
     this.express = express();
-
+    this.express.set('injector', injector);
     this.setDatabaseConnection();
     this.setMiddlewares();
     this.setRoutes();
@@ -22,13 +23,14 @@ export class App {
   }
 
   private setDatabaseConnection() {
-    connectToTheDatabase();
+    (new Database()).connect();
   }
 
   private setMiddlewares(): void {
-    // enable CORS - Cross Origin Resource Sharing
+    //enable CORS - Cross Origin Resource Sharing
+    //https://expressjs.com/en/resources/middleware/cors.html
     this.express.use(cors({
-      origin: 'http://localhost:4200'
+      origin: config.app.origin.split(','), credentials: true
     }));
     // request logging
     this.express.use(loggingMiddleware());
@@ -36,23 +38,21 @@ export class App {
     this.express.use(bodyParser.json());
     this.express.use(bodyParser.urlencoded({ extended: false }));
     this.express.use(cookieParser());
-    // gzip compression
+    //gzip compression
     //this.express.use(compress());
     //this.express.use(helmet());
   }
 
   private setRoutes(): void {
-    this.express.use('/', express.static(path.join(__dirname, '../public')));
-    this.express.use('/api', appRouter);
-    this.express.get('/*', function (req: express.Request, res: express.Response) {
-      res.sendFile(path.join(__dirname, '../public/index.html'));
-    });
+    const appInjector = this.express.get('injector');
+    const appRouter = <AppRouter>appInjector.get(AppRouter);
+    this.express.use('/api', appRouter.router);
   }
 
   private setErrorHandling(): void {
     //add middleware to convert all errors to AppError class
-    this.express.use(errorConverter);
+    this.express.use(errorMiddleware.errorConverter());
     //handler for all errors
-    this.express.use(errorHandler);
+    this.express.use(errorMiddleware.errorHandler());
   }
 }

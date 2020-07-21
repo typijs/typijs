@@ -1,42 +1,31 @@
-import * as dotenv from 'dotenv';
-import * as jwt from 'jsonwebtoken';
-import * as mongoose from 'mongoose';
-import * as httpStatus from 'http-status';
+import 'reflect-metadata';
+import * as express from 'express';
+import * as  httpStatus from 'http-status';
 
-import { User, IUserModel } from './user.model';
+import { Injectable } from 'injection-js';
+
+import { pick } from '../../utils/pick';
 import { BaseController } from '../shared/base.controller';
+import { IUserDocument } from './user.model';
+import { UserService } from './user.service';
 
-export default class UserCtrl extends BaseController<mongoose.Model<IUserModel>> {
-    constructor() { super(User); }
+@Injectable()
+export class UserController extends BaseController<IUserDocument> {
 
-    login = (req, res) => {
-        this.model.findOne({ email: req.body.email }, (err, user) => {
-            if (!user) { return res.sendStatus(403); }
-            user.comparePassword(req.body.password, (error, isMatch) => {
-                if (!isMatch) { return res.sendStatus(403); }
-                const token = jwt.sign({ user: user }, process.env.SECRET_TOKEN); // , { expiresIn: 10 } seconds
-                res.status(httpStatus.OK).json({ token: token });
-            });
-        });
+    constructor(private userService: UserService) {
+        super(userService);
     }
 
-    setup = () => {
-        var admin = new this.model({
-            username: "admin",
-            email: "admin@angularcms.com",
-            password: "admin",
-            role: ["admin"]
-        })
+    public getUsers = async (req: express.Request, res: express.Response) => {
+        const filter = pick(req.query, ['name', 'role']);
+        const options = pick(req.query, ['sortBy', 'limit', 'page']);
+        const result = await this.userService.paginate(filter, options);
+        res.status(httpStatus.OK).json(result);
+    };
 
-        this.model.findOne({ username: admin.username }, (err, user) => {
-            if (!user) {
-                admin.save((err, item) => {
-                    if (err) {
-                        return console.error(err);
-                    }
-                    console.log('User saved successfully');
-                })
-            }
-        })
-    }
+    public createAdminUser = async (req: express.Request, res: express.Response) => {
+        const admin = await this.userService.createAdminUser(req.body);
+        res.status(httpStatus.OK).json(admin);
+    };
+
 }
