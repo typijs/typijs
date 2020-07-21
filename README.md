@@ -215,6 +215,12 @@ mongorestore  dump/
 ``` 
 to restore from a dump directory to a local mongod instance running on port 27017:
 
+2.5. If you get an error regarding the @angular-cms/api on the resource/backup folder go to the `resources/` folder and run:
+
+```
+npm link @angular-cms/api
+
+```
 
 3. Final step, under `cms` folder, run the command sequentially
 ```
