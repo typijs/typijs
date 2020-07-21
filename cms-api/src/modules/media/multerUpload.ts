@@ -35,7 +35,14 @@ const storage = multer.diskStorage({
     }
 });
 
-export const uploadFile = multer({ storage: storage, fileFilter: filter.ignoreDangerousFileFilter });
-export const uploadImage = multer({ storage: storage, fileFilter: filter.imageFilter });
-export const uploadVideo = multer({ storage: storage, fileFilter: filter.videoFilter });
-export const uploadDoc = multer({ storage: storage, fileFilter: filter.docFilter });
+const uploadFile = multer({ storage: storage, fileFilter: filter.ignoreDangerousFileFilter });
+const uploadImage = multer({ storage: storage, fileFilter: filter.imageFilter });
+const uploadVideo = multer({ storage: storage, fileFilter: filter.videoFilter });
+const uploadDoc = multer({ storage: storage, fileFilter: filter.docFilter });
+
+module.exports = {
+    uploadFile: uploadFile,
+    uploadImage: uploadImage,
+    uploadVideo: uploadVideo,
+    uploadDoc: uploadDoc
+}
