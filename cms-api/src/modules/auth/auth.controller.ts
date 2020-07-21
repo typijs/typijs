@@ -67,7 +67,7 @@ export class AuthController {
     };
 
     public resetPassword = async (req: express.Request, res: express.Response) => {
-        await this.authService.resetPassword(req.query.token, req.body.password);
+        await this.authService.resetPassword(req.query.token as string, req.body.password);
         res.status(httpStatus.NO_CONTENT).send();
     };
 }

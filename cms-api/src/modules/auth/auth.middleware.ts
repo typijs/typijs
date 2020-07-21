@@ -100,7 +100,7 @@ class AuthGuard {
             return req.headers.authorization.split(' ')[1];
         }
         if (req.query && req.query.token) {
-            return req.query.token;
+            return req.query.token as string;
         }
         return null;
     }
