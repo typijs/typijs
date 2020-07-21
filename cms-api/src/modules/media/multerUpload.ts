@@ -5,6 +5,7 @@ import * as filter from './filter';
 import * as mongoose from 'mongoose';
 import * as path from 'path';
 import * as fs from 'fs';
+import { ImgurMulterStorageEngine } from './ImgurStorageEngine';
 
 export const UPLOAD_PATH = 'uploads';
 
@@ -35,7 +36,9 @@ const storage = multer.diskStorage({
     }
 });
 
-export const uploadFile = multer({ storage: storage, fileFilter: filter.ignoreDangerousFileFilter });
+const imgurStorageEngine = new ImgurMulterStorageEngine();
+
+export const uploadFile = multer({ storage: imgurStorageEngine, fileFilter: filter.ignoreDangerousFileFilter });
 export const uploadImage = multer({ storage: storage, fileFilter: filter.imageFilter });
 export const uploadVideo = multer({ storage: storage, fileFilter: filter.videoFilter });
 export const uploadDoc = multer({ storage: storage, fileFilter: filter.docFilter });

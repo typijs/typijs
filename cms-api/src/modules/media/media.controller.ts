@@ -58,6 +58,9 @@ export class MediaController extends ContentController<IMediaDocument, IMediaVer
             size: file.size,
             contentType: this.getMediaContentType(req.params.fileOriginalName)
         }
+        mediaObj['cloudId'] = file['id'];
+        mediaObj['deleteHash'] = file['deleteHash'];
+        mediaObj['link'] = file['link'];
         const savedMedia = await this.mediaService.executeCreateContentFlow(mediaObj);
         const publishedMedia = await this.mediaService.executePublishContentFlow(savedMedia);
         res.status(httpStatus.OK).json(publishedMedia)
