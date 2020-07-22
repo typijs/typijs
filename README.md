@@ -180,6 +180,7 @@ For running examples, we need set up the [symlinks](https://docs.npmjs.com/cli/l
 ```
     npm install
     npm link
+    npm run build
 ``` 
 
 2. Go to `cms-server` folder and run commands
