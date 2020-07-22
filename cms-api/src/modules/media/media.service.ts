@@ -6,8 +6,7 @@ import { ContentService } from "../content/content.service";
 import { IMediaVersionDocument, MediaVersionModel } from "./models/media-version.model";
 import { ImageContent, IMediaDocument, MediaModel } from "./models/media.model";
 import { IPublishedMediaDocument, PublishedMediaModel } from "./models/published-media.model";
-import { UPLOAD_PATH } from './multerUpload';
-
+import { UPLOAD_PATH } from './storage';
 
 export class MediaService extends ContentService<IMediaDocument, IMediaVersionDocument, IPublishedMediaDocument> {
 

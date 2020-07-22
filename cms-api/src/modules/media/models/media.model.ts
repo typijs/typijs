@@ -5,6 +5,7 @@ export interface IMedia extends IContent {
     mimeType: string;
     size: number;
     thumbnail: string;
+    [key: string]: any;
 }
 
 export interface IMediaDocument extends IMedia, IContentDocument { }

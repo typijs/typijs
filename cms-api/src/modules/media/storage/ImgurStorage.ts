@@ -1,11 +1,10 @@
-
-import { Stream } from "stream";
-import { Request } from "express";
 import * as concat from "concat-stream";
+import { Request } from "express";
+import * as mongoose from 'mongoose';
 import { StorageEngine } from "multer";
+import { Stream } from "stream";
 
-import { imgurClient } from '../../http/ImgurClient';
-
+import { imgurClient } from '../../../http/ImgurClient';
 
 export interface MulterInFile extends Express.Multer.File {
     stream: Stream;
@@ -28,11 +27,13 @@ export class ImgurMulterStorageEngine implements StorageEngine {
             const encoded = buffer.toString('base64')
             imgurClient.uploadImage(encoded)
                 .then(function (response) {
-                    console.log(JSON.stringify(response.data));
                     const { id, title, description, type, deletehash, name, link } = response.data;
+                    req.params.fileId = mongoose.Types.ObjectId().toHexString();
+                    req.params.fileOriginalName = file.originalname;
                     cb(null, { id, title, description, type, deleteHash: deletehash, name, link })
                 })
                 .catch(function (error) {
+                    console.log('ImgurMulterStorageEngine Error')
                     console.log(error);
                     cb(error);
                 });
@@ -43,3 +44,5 @@ export class ImgurMulterStorageEngine implements StorageEngine {
         //Remove file from imgur if existing
     }
 }
+
+export const imgurStorage = new ImgurMulterStorageEngine();

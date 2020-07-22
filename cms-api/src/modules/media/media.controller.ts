@@ -14,7 +14,7 @@ import {
     VideoContent
 } from './models/media.model';
 import { IPublishedMediaDocument } from './models/published-media.model';
-import { uploadFile } from './multerUpload';
+import { uploadFile } from './multer';
 
 @Injectable()
 export class MediaController extends ContentController<IMediaDocument, IMediaVersionDocument, IPublishedMediaDocument> {
@@ -56,11 +56,12 @@ export class MediaController extends ContentController<IMediaDocument, IMediaVer
             parentId: req.params.parentId,
             mimeType: file.mimetype,
             size: file.size,
-            contentType: this.getMediaContentType(req.params.fileOriginalName)
+            contentType: this.getMediaContentType(req.params.fileOriginalName),
+            cloudId: file['id'],
+            deleteHash: file['deleteHash'],
+            link: file['link']
         }
-        mediaObj['cloudId'] = file['id'];
-        mediaObj['deleteHash'] = file['deleteHash'];
-        mediaObj['link'] = file['link'];
+
         const savedMedia = await this.mediaService.executeCreateContentFlow(mediaObj);
         const publishedMedia = await this.mediaService.executePublishContentFlow(savedMedia);
         res.status(httpStatus.OK).json(publishedMedia)

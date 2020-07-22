@@ -1,3 +1,7 @@
+
+import * as multer from 'multer';
+import { imgurStorage, diskStorage } from './storage';
+
 export const imageFilter = function (req, file, cb) {
     // accept image only
     if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
@@ -31,3 +35,7 @@ export const ignoreDangerousFileFilter = function (req, file, cb) {
     cb(null, true);
 };
 
+export const uploadFile = multer({ storage: imgurStorage, fileFilter: ignoreDangerousFileFilter });
+export const uploadImage = multer({ storage: diskStorage, fileFilter: imageFilter });
+export const uploadVideo = multer({ storage: diskStorage, fileFilter: videoFilter });
+export const uploadDoc = multer({ storage: diskStorage, fileFilter: docFilter });

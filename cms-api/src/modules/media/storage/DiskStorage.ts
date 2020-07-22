@@ -1,11 +1,8 @@
-
 import * as express from 'express';
 import * as multer from 'multer';
-import * as filter from './filter';
 import * as mongoose from 'mongoose';
 import * as path from 'path';
 import * as fs from 'fs';
-import { ImgurMulterStorageEngine } from './ImgurStorageEngine';
 
 export const UPLOAD_PATH = 'uploads';
 
@@ -20,14 +17,13 @@ const generateFolder = (request: express.Request): string => {
 }
 
 const generateFileName = (request: express.Request, file: Express.Multer.File): string => {
-    //const fileName = mongoose.Types.ObjectId();
     const fileName = request.params.fileId;
     const fileExt = path.extname(file.originalname);
     request.params.fileOriginalName = file.originalname;
     return `${fileName}${fileExt}`;
 }
 
-const storage = multer.diskStorage({
+export const diskStorage = multer.diskStorage({
     destination: function (req: express.Request, file: Express.Multer.File, callback) {
         callback(null, generateFolder(req));
     },
@@ -35,10 +31,3 @@ const storage = multer.diskStorage({
         callback(null, generateFileName(req, file));
     }
 });
-
-const imgurStorageEngine = new ImgurMulterStorageEngine();
-
-export const uploadFile = multer({ storage: imgurStorageEngine, fileFilter: filter.ignoreDangerousFileFilter });
-export const uploadImage = multer({ storage: storage, fileFilter: filter.imageFilter });
-export const uploadVideo = multer({ storage: storage, fileFilter: filter.videoFilter });
-export const uploadDoc = multer({ storage: storage, fileFilter: filter.docFilter });
