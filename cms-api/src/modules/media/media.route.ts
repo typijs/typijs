@@ -26,7 +26,7 @@ export class MediaRouter {
 
         media.put('/folder/:id', authGuard.checkRoles(requiredAdminOrEditor), validate(updateFolderName), this.mediaController.updateFolderName);
 
-        media.post('/upload/:parentId?', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredParentId), this.mediaController.storeMediaInDisk('file'), this.mediaController.processMedia)
+        media.post('/upload/:parentId?', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredParentId), this.mediaController.handleFormData('file'), this.mediaController.processMedia)
 
         media.post('/cut', authGuard.checkRoles(requiredAdminOrEditor), validate(cutOrCopyContent), this.mediaController.cut);
 

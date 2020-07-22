@@ -43,7 +43,7 @@ export class MediaController extends ContentController<IMediaDocument, IMediaVer
         }
     }
 
-    storeMediaInDisk = (fieldName: string): any => {
+    handleFormData = (fieldName: string): any => {
         if (!fieldName) fieldName = 'file';
         return uploadFile.single(fieldName);
     }
