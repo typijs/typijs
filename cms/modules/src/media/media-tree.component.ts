@@ -56,7 +56,7 @@ const MediaMenuItemAction = {
                             class="list-group-item list-group-item-action flex-column align-items-start p-1" 
                             [routerLink]="['content/media', media._id]">
                             <div class="d-flex align-items-center">
-                                <img class="mr-1" [src]='media.path'/>
+                                <img width='50' class="mr-1" [src]='media.thumbnail'/>
                                 <div class="w-100 mr-2 text-truncate">{{media.name}}</div>
                                 <fa-icon class="ml-auto" [icon]="['fas', 'bars']"></fa-icon>
                             </div>
@@ -122,9 +122,9 @@ export class MediaTreeComponent extends SubscriptionDestroy {
                 isPublished: media.isPublished
             }));
             this.medias = childMedias;
-            this.medias.forEach(file => {
-                file.path = `${this.mediaService.getImageUrl(file._id, file.name)}?w=50&h=50`;
-            })
+            // this.medias.forEach(file => {
+            //     file.path = `${this.mediaService.getImageUrl(file._id, file.name)}?w=50&h=50`;
+            // })
         })
     }
 

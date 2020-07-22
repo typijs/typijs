@@ -17,7 +17,16 @@ export interface MulterOutFile extends Express.Multer.File {
     type: string;
     deleteHash: string;
     name: string;
-    link: string
+    link: string;
+    fileId: string;
+    thumbnail: string;
+}
+
+const getImgurThumbnail = (link: string): string => {
+    const lastIndex = link.lastIndexOf('.');
+    const extension = link.substring(lastIndex + 1);
+    const path = link.substring(0, lastIndex);
+    return `${path}b.${extension}`
 }
 
 export class ImgurMulterStorageEngine implements StorageEngine {
@@ -28,9 +37,9 @@ export class ImgurMulterStorageEngine implements StorageEngine {
             imgurClient.uploadImage(encoded)
                 .then(function (response) {
                     const { id, title, description, type, deletehash, name, link } = response.data;
-                    req.params.fileId = mongoose.Types.ObjectId().toHexString();
-                    req.params.fileOriginalName = file.originalname;
-                    cb(null, { id, title, description, type, deleteHash: deletehash, name, link })
+                    const fileId = mongoose.Types.ObjectId().toHexString();
+                    const thumbnail = getImgurThumbnail(link);
+                    cb(null, { id, title, description, type, deleteHash: deletehash, name, link, fileId, thumbnail })
                 })
                 .catch(function (error) {
                     console.log('ImgurMulterStorageEngine Error')

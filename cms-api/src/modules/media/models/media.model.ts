@@ -5,6 +5,9 @@ export interface IMedia extends IContent {
     mimeType: string;
     size: number;
     thumbnail: string;
+    cloudId: string;
+    deleteHash: string;
+    link: string;
     [key: string]: any;
 }
 
@@ -22,6 +25,9 @@ export const MediaSchema = new mongoose.Schema({
     mimeType: { type: String, required: false },
     size: { type: Number, required: false },
     thumbnail: { type: String, required: false },
+    cloudId: { type: String, required: false },
+    deleteHash: { type: String, required: false },
+    link: { type: String, required: false },
 
     parentId: { type: mongoose.Schema.Types.ObjectId, ref: cmsMedia }
 }, { timestamps: true });

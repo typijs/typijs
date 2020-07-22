@@ -14,7 +14,8 @@ export type CmsTab = {
 
 export type CmsImage = {
     src: string,
-    alt: string
+    alt: string,
+    thumbnail: string
 }
 
 export type CmsLink = {
