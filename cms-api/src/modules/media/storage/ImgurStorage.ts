@@ -30,7 +30,7 @@ const getImgurThumbnail = (link: string): string => {
 }
 
 export class ImgurMulterStorageEngine implements StorageEngine {
-    async _handleFile(req: Request, file: MulterInFile, cb: (error?: any, info?: Partial<MulterOutFile>) => void) {
+    async _handleFile(req: Request, file: MulterInFile, callback: (error?: any, info?: Partial<MulterOutFile>) => void) {
         //collect all the data from a stream into a single buffer.
         file.stream.pipe(concat({ encoding: 'buffer' }, function (buffer) {
             const encoded = buffer.toString('base64')
@@ -39,17 +39,15 @@ export class ImgurMulterStorageEngine implements StorageEngine {
                     const { id, title, description, type, deletehash, name, link } = response.data;
                     const fileId = mongoose.Types.ObjectId().toHexString();
                     const thumbnail = getImgurThumbnail(link);
-                    cb(null, { id, title, description, type, deleteHash: deletehash, name, link, fileId, thumbnail })
+                    callback(null, { id, title, description, type, deleteHash: deletehash, name, link, fileId, thumbnail })
                 })
                 .catch(function (error) {
-                    console.log('ImgurMulterStorageEngine Error')
-                    console.log(error);
-                    cb(error);
+                    callback(error);
                 });
         }))
     }
 
-    async _removeFile(req: Request, file: MulterOutFile, cb: (error: Error) => void) {
+    async _removeFile(req: Request, file: MulterOutFile, callback: (error: Error) => void) {
         //Remove file from imgur if existing
     }
 }

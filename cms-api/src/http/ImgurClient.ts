@@ -1,5 +1,6 @@
 import { AxiosRequestConfig } from 'axios';
 import * as FormData from 'form-data';
+import { config } from '../config';
 import { HttpClient } from './HttpClient';
 
 export type ImgurApiResponse = {
@@ -62,16 +63,16 @@ export type ImgurConfig = {
 }
 
 export class ImgurClient extends HttpClient {
-    public constructor(private readonly config: ImgurConfig) {
-        super(config.baseUrl);
+    public constructor(private readonly imgurConfig: ImgurConfig) {
+        super(imgurConfig.baseUrl);
         this.initAuthorizationRequestInterceptor();
     }
 
     public getAccessToken = (): Promise<RefreshTokenResponse> => {
         const data = new FormData();
-        data.append('refresh_token', this.config.refreshToken);
-        data.append('client_id', this.config.clientId);
-        data.append('client_secret', this.config.clientSecret);
+        data.append('refresh_token', this.imgurConfig.refreshToken);
+        data.append('client_id', this.imgurConfig.clientId);
+        data.append('client_secret', this.imgurConfig.clientSecret);
         data.append('grant_type', 'refresh_token');
         return this.instance.post(`/oauth2/token`, data)
     };
@@ -93,7 +94,7 @@ export class ImgurClient extends HttpClient {
     private initAuthorizationRequestInterceptor = () => {
         this.instance.interceptors.request.use(
             (config: AxiosRequestConfig) => {
-                config.headers['Authorization'] = `Bearer ${this.config.accessToken}`;
+                config.headers['Authorization'] = `Bearer ${this.imgurConfig.accessToken}`;
                 return config;
             },
             undefined
@@ -101,10 +102,11 @@ export class ImgurClient extends HttpClient {
     };
 }
 
+
 export const imgurClient = new ImgurClient({
-    baseUrl: 'https://api.imgur.com',
-    clientId: 'e9e87987fffa558',
-    clientSecret: '2ad7eda7e3e0134f69e9a0ea44e456c3ba3fe563',
-    refreshToken: '8cab8bd0b815cef6f224e031dcfaff4c49722c00',
-    accessToken: '7e9f1e55c1c62af4bfc0a0933932cdb80391f4aa'
+    baseUrl: config.imgur.baseUrl,
+    clientId: config.imgur.clientId,
+    clientSecret: config.imgur.clientSecret,
+    refreshToken: config.imgur.refreshToken,
+    accessToken: config.imgur.accessToken
 })
