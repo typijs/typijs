@@ -14,15 +14,13 @@ import {
     VideoContent
 } from './models/media.model';
 import { IPublishedMediaDocument } from './models/published-media.model';
-import { uploadFile } from './multer';
+import { uploadFile, Multer } from './multer';
 
 @Injectable()
 export class MediaController extends ContentController<IMediaDocument, IMediaVersionDocument, IPublishedMediaDocument> {
 
-    private mediaService: MediaService;
-    constructor(mediaService: MediaService) {
+    constructor(private mediaService: MediaService, private multer: Multer) {
         super(mediaService);
-        this.mediaService = mediaService;
     }
 
     getMediaById = async (req: express.Request, res: express.Response) => {
@@ -45,7 +43,7 @@ export class MediaController extends ContentController<IMediaDocument, IMediaVer
 
     handleFormData = (fieldName: string): any => {
         if (!fieldName) fieldName = 'file';
-        return uploadFile.single(fieldName);
+        return this.multer.uploadFile.single(fieldName);
     }
 
     processMedia = async (req: express.Request, res: express.Response) => {

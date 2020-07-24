@@ -2,20 +2,23 @@ import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
 import * as express from 'express';
-
+import { Provider } from 'injection-js';
 import { config } from './config/config';
 import { Database } from './db/database';
 import { errorMiddleware } from './error';
-import { injector } from './injector';
+import { injector, AppProviders, AppInjector } from './injector';
 import { loggingMiddleware } from './logging';
 import { AppRouter } from './routes';
 
+export type AppOptions = {
+  provides?: Provider[]
+}
 export class App {
   public express: express.Application;
 
-  constructor() {
+  constructor(appOptions: AppOptions = {}) {
     this.express = express();
-    this.express.set('injector', injector);
+    this.express.set('injector', new AppInjector(appOptions.provides).instance);
     this.setDatabaseConnection();
     this.setMiddlewares();
     this.setRoutes();
