@@ -1,10 +1,10 @@
 import * as concat from "concat-stream";
 import { Request } from "express";
 import * as mongoose from 'mongoose';
-import { StorageEngine } from "multer";
 import { Stream } from "stream";
 
 import { imgurClient } from '../../../http/ImgurClient';
+import { CmsStorageEngine } from "./BaseStorage";
 
 export interface MulterInFile extends Express.Multer.File {
     stream: Stream;
@@ -29,7 +29,7 @@ const getImgurThumbnail = (link: string): string => {
     return `${path}b.${extension}`
 }
 
-export class ImgurMulterStorageEngine implements StorageEngine {
+export class ImgurStorageEngine extends CmsStorageEngine {
     async _handleFile(req: Request, file: MulterInFile, callback: (error?: any, info?: Partial<MulterOutFile>) => void) {
         //collect all the data from a stream into a single buffer.
         file.stream.pipe(concat({ encoding: 'buffer' }, function (buffer) {
@@ -52,5 +52,3 @@ export class ImgurMulterStorageEngine implements StorageEngine {
         //Remove file from imgur if existing
     }
 }
-
-export const imgurStorage = new ImgurMulterStorageEngine();

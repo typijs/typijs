@@ -1,8 +1,8 @@
-import { App, config, STORAGE_ENGINE, ImgurMulterStorageEngine } from '@angular-cms/api';
+import { CmsApp, config, CmsStorageEngine, ImgurStorageEngine } from '@angular-cms/api';
 
-let app = new App({
+let app = new CmsApp({
     provides: [
-        //{ provide: STORAGE_ENGINE, useClass: ImgurMulterStorageEngine }
+        { provide: CmsStorageEngine, useClass: ImgurStorageEngine }
     ]
 }).express;
 
