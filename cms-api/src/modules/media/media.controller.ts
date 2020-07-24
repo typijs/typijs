@@ -51,9 +51,9 @@ export class MediaController extends ContentController<IMediaDocument, IMediaVer
     processMedia = async (req: express.Request, res: express.Response) => {
         const file: Express.Multer.File = req.file;
         const contentType: string = this.getMediaContentType(file.originalname);
-        const parentId: string = req.params.parentId;
+        const { parentId, fileId, link, thumbnail } = req.params;
         const mediaObj: Partial<IMediaDocument> = {
-            _id: file['fileId'],
+            _id: fileId,
             name: file.originalname,
             parentId,
             mimeType: file.mimetype,
@@ -61,8 +61,8 @@ export class MediaController extends ContentController<IMediaDocument, IMediaVer
             contentType,
             cloudId: file['id'],
             deleteHash: file['deleteHash'],
-            link: file['link'],
-            thumbnail: file['thumbnail']
+            link: link,
+            thumbnail: thumbnail
         }
 
         const savedMedia = await this.mediaService.executeCreateContentFlow(mediaObj);

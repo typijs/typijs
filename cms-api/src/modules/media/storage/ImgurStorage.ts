@@ -39,6 +39,7 @@ export class ImgurMulterStorageEngine implements StorageEngine {
                     const { id, title, description, type, deletehash, name, link } = response.data;
                     const fileId = mongoose.Types.ObjectId().toHexString();
                     const thumbnail = getImgurThumbnail(link);
+                    Object.assign(req.params, { fileId, thumbnail, link })
                     callback(null, { id, title, description, type, deleteHash: deletehash, name, link, fileId, thumbnail })
                 })
                 .catch(function (error) {
