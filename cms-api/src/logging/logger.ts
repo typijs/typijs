@@ -38,7 +38,7 @@ const formatter = winston.format.combine(
     })
 )
 
-class Logger {
+export class Logger {
     private logger: winston.Logger;
     constructor() {
         const winstonTransports: Transport[] = [dailyRotateFileTransport];
