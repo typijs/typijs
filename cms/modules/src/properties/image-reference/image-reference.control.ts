@@ -16,7 +16,7 @@ const IMAGE_REFERENCE_VALUE_ACCESSOR = {
         <div class="image-reference border">
             <div class="p-1 drop-area" droppable [dropScope]="isDropAllowed" (onDrop)="onDropImage($event)">
                 <div class="d-flex align-items-center p-1 bg-light rounded" *ngIf="model">
-                    <img class="mr-2 rounded" [src]="model.thumbnail" />
+                    <img class="mr-2 rounded" [src]="model.thumbnail | absolute" />
                     <div class="w-100 mr-2 text-truncate">{{model.alt}}</div>
                     <fa-icon class="ml-auto mr-1" [icon]="['fas', 'times']" (click)="removeImage()"></fa-icon>
                 </div>
@@ -46,7 +46,6 @@ export class ImageReferenceControl extends CmsControl {
         const { _id, name, link, thumbnail } = e.dragData;
         this.model = <CmsImage>{
             alt: name,
-            //src: this.mediaService.getImageUrl(_id, name)
             src: link,
             thumbnail
         }

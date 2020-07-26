@@ -1,6 +1,6 @@
 import { CmsTab } from "../types";
 
-export function sortTabByTitle(tabOne: CmsTab, tabTwo: CmsTab) {
+export function sortTabByTitle(tabOne: CmsTab, tabTwo: CmsTab): number {
   const titleOne = tabOne.title ? tabOne.title.toUpperCase() : ''; // ignore upper and lowercase
   const titleTwo = tabTwo.title ? tabTwo.title.toUpperCase() : ''; // ignore upper and lowercase
   if (titleOne < titleTwo) {
@@ -12,7 +12,7 @@ export function sortTabByTitle(tabOne: CmsTab, tabTwo: CmsTab) {
   return 0;
 }
 
-export function generateUUID() {
+export function generateUUID(): string {
   let d = new Date().getTime();//Timestamp
   let d2 = (performance && performance.now && (performance.now() * 1000)) || 0;//Time in microseconds since page-load or 0 if unsupported
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -56,4 +56,15 @@ export function clone(obj: any) {
   }
 
   throw new Error("Unable to copy obj! Its type isn't supported.");
+}
+
+export function isUrlAbsolute(url: string): boolean {
+  if(!url) return false;
+  if (url.indexOf('//') === 0) { return true; } // URL is protocol-relative (= absolute)
+  if (url.indexOf('://') === -1) { return false; } // URL has no protocol (= relative)
+  if (url.indexOf('.') === -1) { return false; } // URL does not contain a dot, i.e. no TLD (= relative, possibly REST)
+  if (url.indexOf('/') === -1) { return false; } // URL does not contain a single slash (= relative)
+  if (url.indexOf(':') > url.indexOf('/')) { return false; } // The first colon comes after the first slash (= relative)
+  if (url.indexOf('://') < url.indexOf('.')) { return true; } // Protocol is defined before first dot (= absolute)
+  return false; // Anything else must be relative
 }
