@@ -37,7 +37,7 @@ export class TextRender extends CmsPropertyRender { }
 export class XHtmlRender extends CmsPropertyRender {
     @HostBinding('innerHTML') innerHtml: SafeHtml;
 
-    constructor(protected sanitizer: DomSanitizer) { super(); }
+    constructor(private sanitizer: DomSanitizer) { super(); }
 
     protected onValueChange(value: string) {
         if (value) this.innerHtml = this.sanitizer.bypassSecurityTrustHtml(value);
@@ -52,7 +52,7 @@ export class UrlRender extends CmsPropertyRender {
     @HostBinding('attr.href') href: SafeUrl;
     @HostBinding('attr.target') target;
 
-    constructor(protected sanitizer: DomSanitizer) { super(); }
+    constructor(private sanitizer: DomSanitizer) { super(); }
     protected onValueChange(value: CmsLink) {
         if (value) {
             this.href = this.sanitizer.bypassSecurityTrustUrl(value.url);
@@ -69,7 +69,7 @@ export class ImageRender extends CmsPropertyRender {
     @HostBinding('attr.src') src: SafeUrl;
     @HostBinding('attr.alt') alt;
 
-    constructor(private configService: ConfigService, protected sanitizer: DomSanitizer) { super(); }
+    constructor(private configService: ConfigService, private sanitizer: DomSanitizer) { super(); }
     protected onValueChange(value: CmsImage) {
         if (value) {
             const imgSrc = isUrlAbsolute(value.src) ? value.src : `${this.configService.baseApiUrl}${value.src}`
