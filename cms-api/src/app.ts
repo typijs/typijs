@@ -2,20 +2,25 @@ import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
 import * as express from 'express';
-
+import { Provider } from 'injection-js';
 import { config } from './config/config';
+import { GlobalInjector } from './constants';
 import { Database } from './db/database';
 import { errorMiddleware } from './error';
-import { injector } from './injector';
+import { CmsInjector } from './injector';
 import { loggingMiddleware } from './logging';
-import { AppRouter } from './routes';
+import { CmsApiRouter } from './routes';
 
-export class App {
+export type CmsAppOptions = {
+  provides?: Provider[]
+}
+
+export class CmsApp {
   public express: express.Application;
 
-  constructor() {
+  constructor(appOptions: CmsAppOptions = {}) {
     this.express = express();
-    this.express.set('injector', injector);
+    this.express.set(GlobalInjector, new CmsInjector(appOptions.provides).instance);
     this.setDatabaseConnection();
     this.setMiddlewares();
     this.setRoutes();
@@ -44,9 +49,9 @@ export class App {
   }
 
   private setRoutes(): void {
-    const appInjector = this.express.get('injector');
-    const appRouter = <AppRouter>appInjector.get(AppRouter);
-    this.express.use('/api', appRouter.router);
+    const cmsInjector = this.express.get(GlobalInjector);
+    const apiRouter = <CmsApiRouter>cmsInjector.get(CmsApiRouter);
+    this.express.use('/api', apiRouter.router);
   }
 
   private setErrorHandling(): void {

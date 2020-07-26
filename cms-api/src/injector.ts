@@ -1,23 +1,32 @@
-import { ReflectiveInjector } from "injection-js";
+import { ReflectiveInjector, Provider } from "injection-js";
 
-import { ResolveCacheProviders } from "./caching";
-import { ResolveAuthProviders } from "./modules/auth/auth.provider";
-import { ResolveBlockProviders } from './modules/block/block.providers';
-import { ResolveMediaProviders } from './modules/media/media.providers';
-import { ResolvePageProviders } from './modules/page/page.providers';
-import { ResolveSiteDefinitionProviders } from "./modules/site-definition/site-definition.provider";
-import { ResolveUserProviders } from "./modules/user/user.provider";
-import { AppRouter } from "./routes";
+import { CacheProviders } from "./caching";
+import { AuthProviders } from "./modules/auth";
+import { BlockProviders } from './modules/block';
+import { MediaProviders, StorageProviders } from './modules/media';
+import { PageProviders } from './modules/page';
+import { SiteDefinitionProviders } from "./modules/site-definition";
+import { UserProviders } from "./modules/user";
+import { CmsApiRouter } from "./routes";
 
+export class CmsInjector {
+    constructor(private providers?: Provider[]) { }
 
-//TODO: should has the setting providers in app express to allow override
-export const injector = ReflectiveInjector.fromResolvedProviders([
-    ...ReflectiveInjector.resolve([AppRouter]),
-    ...ResolveCacheProviders,
-    ...ResolvePageProviders,
-    ...ResolveBlockProviders,
-    ...ResolveMediaProviders,
-    ...ResolveSiteDefinitionProviders,
-    ...ResolveUserProviders,
-    ...ResolveAuthProviders
-]);
+    get instance(): ReflectiveInjector {
+        let appProviders = [
+            ...CacheProviders,
+            ...AuthProviders,
+            ...BlockProviders,
+            ...MediaProviders,
+            ...StorageProviders,
+            ...PageProviders,
+            ...SiteDefinitionProviders,
+            ...UserProviders,
+            CmsApiRouter
+        ];
+        if (this.providers) {
+            appProviders = [...appProviders, ...this.providers];
+        }
+        return ReflectiveInjector.fromResolvedProviders([...ReflectiveInjector.resolve(appProviders)]);
+    }
+}

@@ -14,15 +14,13 @@ import {
     VideoContent
 } from './models/media.model';
 import { IPublishedMediaDocument } from './models/published-media.model';
-import { uploadFile } from './multerUpload';
+import { Multer } from './multer';
 
 @Injectable()
 export class MediaController extends ContentController<IMediaDocument, IMediaVersionDocument, IPublishedMediaDocument> {
 
-    private mediaService: MediaService;
-    constructor(mediaService: MediaService) {
+    constructor(private mediaService: MediaService, private multer: Multer) {
         super(mediaService);
-        this.mediaService = mediaService;
     }
 
     getMediaById = async (req: express.Request, res: express.Response) => {
@@ -43,21 +41,28 @@ export class MediaController extends ContentController<IMediaDocument, IMediaVer
         }
     }
 
-    storeMediaInDisk = (fieldName: string): any => {
+    handleFormData = (fieldName: string): any => {
         if (!fieldName) fieldName = 'file';
-        return uploadFile.single(fieldName);
+        return this.multer.uploadFile.single(fieldName);
     }
 
     processMedia = async (req: express.Request, res: express.Response) => {
         const file: Express.Multer.File = req.file;
+        const contentType: string = this.getMediaContentType(file.originalname);
+        const { parentId, fileId, link, thumbnail } = req.params;
         const mediaObj: Partial<IMediaDocument> = {
-            _id: req.params.fileId,
-            name: req.params.fileOriginalName,
-            parentId: req.params.parentId,
+            _id: fileId,
+            name: file.originalname,
+            parentId,
             mimeType: file.mimetype,
             size: file.size,
-            contentType: this.getMediaContentType(req.params.fileOriginalName)
+            contentType,
+            cloudId: file['id'],
+            deleteHash: file['deleteHash'],
+            link: link,
+            thumbnail: thumbnail
         }
+
         const savedMedia = await this.mediaService.executeCreateContentFlow(mediaObj);
         const publishedMedia = await this.mediaService.executePublishContentFlow(savedMedia);
         res.status(httpStatus.OK).json(publishedMedia)

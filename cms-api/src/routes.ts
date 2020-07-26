@@ -9,7 +9,7 @@ import { SideDefinitionRouter } from './modules/site-definition/site-definition.
 import { UserRouter } from './modules/user/user.route';
 
 @Injectable()
-export class AppRouter {
+export class CmsApiRouter {
     constructor(
         private pageRouter: PageRouter,
         private blockRouter: BlockRouter,

@@ -1,7 +1,11 @@
-import { Input, Component, HostBinding } from '@angular/core';
-import { ContentTypeProperty } from '../../../types/content-type';
-import { CmsImage, CmsLink } from '../../../types';
+import { Component, HostBinding, Input } from '@angular/core';
 import { DomSanitizer, SafeHtml, SafeUrl } from '@angular/platform-browser';
+
+import { isUrlAbsolute } from '../../../helpers/common';
+import { CmsImage, CmsLink } from '../../../types';
+import { ContentTypeProperty } from '../../../types/content-type';
+import { ConfigService } from '../../config/config.service';
+
 
 export abstract class CmsPropertyRender {
     @Input()
@@ -33,7 +37,7 @@ export class TextRender extends CmsPropertyRender { }
 export class XHtmlRender extends CmsPropertyRender {
     @HostBinding('innerHTML') innerHtml: SafeHtml;
 
-    constructor(protected sanitizer: DomSanitizer) { super(); }
+    constructor(private sanitizer: DomSanitizer) { super(); }
 
     protected onValueChange(value: string) {
         if (value) this.innerHtml = this.sanitizer.bypassSecurityTrustHtml(value);
@@ -48,7 +52,7 @@ export class UrlRender extends CmsPropertyRender {
     @HostBinding('attr.href') href: SafeUrl;
     @HostBinding('attr.target') target;
 
-    constructor(protected sanitizer: DomSanitizer) { super(); }
+    constructor(private sanitizer: DomSanitizer) { super(); }
     protected onValueChange(value: CmsLink) {
         if (value) {
             this.href = this.sanitizer.bypassSecurityTrustUrl(value.url);
@@ -65,10 +69,11 @@ export class ImageRender extends CmsPropertyRender {
     @HostBinding('attr.src') src: SafeUrl;
     @HostBinding('attr.alt') alt;
 
-    constructor(protected sanitizer: DomSanitizer) { super(); }
+    constructor(private configService: ConfigService, private sanitizer: DomSanitizer) { super(); }
     protected onValueChange(value: CmsImage) {
         if (value) {
-            this.src = this.sanitizer.bypassSecurityTrustUrl(value.src);
+            const imgSrc = isUrlAbsolute(value.src) ? value.src : `${this.configService.baseApiUrl}${value.src}`
+            this.src = this.sanitizer.bypassSecurityTrustUrl(imgSrc);
             this.alt = value.alt;
         }
     }

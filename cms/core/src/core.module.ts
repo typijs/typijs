@@ -11,6 +11,7 @@ import { InsertPointDirective } from './infrastructure/rendering/insert-point.di
 import { CmsPropertyDirective } from './infrastructure/rendering/property/cms-property.directive';
 import { ImageRender, ObjectListRender, TextRender, UrlListRender, UrlRender, XHtmlRender } from './infrastructure/rendering/property/property-render';
 import { SafePipe } from './pipes/safe.pipe';
+import { AbsolutePipe } from './pipes/absolute.pipe';
 
 @NgModule({
   imports: [
@@ -19,6 +20,7 @@ import { SafePipe } from './pipes/safe.pipe';
   ],
   declarations: [
     SafePipe,
+    AbsolutePipe,
 
     InsertPointDirective,
     CmsContentRender,
@@ -35,6 +37,8 @@ import { SafePipe } from './pipes/safe.pipe';
   ],
   exports: [
     SafePipe,
+    AbsolutePipe,
+    
     CmsContentRender,
     InsertPointDirective,
     CmsPropertyDirective,
