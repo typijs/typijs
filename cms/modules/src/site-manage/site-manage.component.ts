@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormGroup, FormArray, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormArray, FormBuilder } from '@angular/forms';
 
 @Component({
     template: `

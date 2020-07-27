@@ -59,7 +59,7 @@ export function clone(obj: any) {
 }
 
 export function isUrlAbsolute(url: string): boolean {
-  if(!url) return false;
+  if (!url) return true;
   if (url.indexOf('//') === 0) { return true; } // URL is protocol-relative (= absolute)
   if (url.indexOf('://') === -1) { return false; } // URL has no protocol (= relative)
   if (url.indexOf('.') === -1) { return false; } // URL does not contain a dot, i.e. no TLD (= relative, possibly REST)

@@ -1,5 +1,5 @@
-import { SubscriptionDestroy } from '../shared/subscription-destroy';
 import { ControlValueAccessor } from '@angular/forms';
+import { SubscriptionDestroy } from '../shared/subscription-destroy';
 
 export abstract class CmsControl extends SubscriptionDestroy implements ControlValueAccessor {
     protected onChange: (m: any) => void;

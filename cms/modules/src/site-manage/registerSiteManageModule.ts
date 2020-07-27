@@ -3,7 +3,6 @@ import { SiteManageModule } from './site-manage.module';
 import { SiteManageEntryComponent } from './site-manage-entry.component';
 import { SiteManageComponent } from './site-manage.component';
 
-
 export function registerSiteManageModule() {
     AngularCms.registerModule({
         module: SiteManageModule,
