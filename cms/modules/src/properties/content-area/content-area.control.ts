@@ -80,8 +80,7 @@ export class ContentAreaControl extends CmsControl {
                 }
             });
     }
-    //Writes a new value to the element.
-    //This method is called by the forms API to write to the view when programmatic changes from model to view are requested.
+
     writeValue(value: any): void {
         this._model = value;
     }
