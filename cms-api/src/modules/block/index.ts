@@ -4,4 +4,4 @@ import { BlockController } from './block.controller';
 import { BlockRouter } from './block.route';
 
 const BlockProviders: Provider[] = [BlockService, BlockController, BlockRouter]
-export const ResolveBlockProviders: ResolvedReflectiveProvider[] = ReflectiveInjector.resolve(BlockProviders);
+export { BlockService, BlockController, BlockRouter, BlockProviders }

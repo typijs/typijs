@@ -1,8 +1,11 @@
-import { App, config, STORAGE_ENGINE, ImgurMulterStorageEngine } from '@angular-cms/api';
+import { CmsApp, config, CmsStorageEngine, ImgurStorageEngine } from '@angular-cms/api';
 
-let app = new App({
+let app = new CmsApp({
     provides: [
-        //{ provide: STORAGE_ENGINE, useClass: ImgurMulterStorageEngine }
+        //Default Angular Cms using disk storage to store the uploaded images.
+        //It also support cloud storage such as Imgur
+        //If you want to use Imgur as image storage, using this config as below
+        //{ provide: CmsStorageEngine, useClass: ImgurStorageEngine }
     ]
 }).express;
 

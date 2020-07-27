@@ -14,7 +14,7 @@ import {
     VideoContent
 } from './models/media.model';
 import { IPublishedMediaDocument } from './models/published-media.model';
-import { uploadFile, Multer } from './multer';
+import { Multer } from './multer';
 
 @Injectable()
 export class MediaController extends ContentController<IMediaDocument, IMediaVersionDocument, IPublishedMediaDocument> {
