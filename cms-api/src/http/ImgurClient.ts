@@ -94,7 +94,7 @@ export class ImgurClient extends HttpClient {
     private initAuthorizationRequestInterceptor = () => {
         this.instance.interceptors.request.use(
             (config: AxiosRequestConfig) => {
-                config.headers['Authorization'] = `Bearer ${this.imgurConfig.accessToken}`;
+                if (this.imgurConfig.accessToken) config.headers['Authorization'] = `Bearer ${this.imgurConfig.accessToken}`;
                 return config;
             },
             undefined
