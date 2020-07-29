@@ -9,8 +9,8 @@
     "preserve": "tsc -p ../cms-api",
     "serve": "node dist/server.js",
     "predev": "tsc -p ../cms-api && tsc",
-    "dev": "concurrently \"tsc -w -p ../cms-api\" \"nodemon --inspect --watch ../cms-api/dist dist/server.js\"",
-    "prod": "concurrently \"tsc -p server && node dist/server.js\""
+    "dev": "concurrently \"tsc -w -p ../cms-api\" \"set NODE_ENV=development && nodemon --inspect --watch ../cms-api/dist dist/server.js\"",
+    "prod": "concurrently \"tsc -p server && set NODE_ENV=production && node dist/server.js\""
   },
   "author": "danghung1202@gmail.com",
   "dependencies": {

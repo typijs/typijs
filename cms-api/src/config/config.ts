@@ -1,12 +1,15 @@
 import * as dotenv from 'dotenv';
+import * as path from 'path';
 import { LogLevel, NodeEnv } from '../constants/enums';
 
 // Load environment variables from .env file, where API keys and passwords are configured
-dotenv.config();
+// predefined: 'development', 'test', 'production'
+dotenv.config({
+    path: path.resolve(__dirname, `${process.env.NODE_ENV || NodeEnv.Development}.env`)
+});
 
 export const config = {
     app: {
-        //predefined: 'development', 'test', 'production'
         env: process.env.NODE_ENV || NodeEnv.Development,
         port: process.env.PORT || '3000',
         origin: process.env.ORIGIN || 'http://localhost:4200,http://localhost:4202'
