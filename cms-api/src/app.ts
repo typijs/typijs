@@ -8,7 +8,7 @@ import { GlobalInjector } from './constants';
 import { Database } from './db/database';
 import { errorMiddleware } from './error';
 import { CmsInjector } from './injector';
-import { loggingMiddleware } from './logging';
+import { loggingMiddleware, logger } from './logging';
 import { CmsApiRouter } from './routes';
 
 export type CmsAppOptions = {
@@ -25,6 +25,18 @@ export class CmsApp {
     this.setMiddlewares();
     this.setRoutes();
     this.setErrorHandling();
+  }
+
+  public start(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.express.listen(config.app.port, () => {
+        console.log(`Angular CMS listening on port ${config.app.port}`);
+        resolve();
+      }).on('error', (err: any) => {
+        logger.error('Server can not start', err);
+        reject(err);
+      });
+    });
   }
 
   private setDatabaseConnection() {
