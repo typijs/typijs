@@ -27,7 +27,7 @@ export class AuthInterceptor implements HttpInterceptor {
 
     private handleAuthError(error: HttpErrorResponse): Observable<any> {
         //handle your auth error or rethrow
-        if (error.status === 401 && this.authService.isLoggedIn) {
+        if (error.status === 401) {
             // auto logout if 401 or 403 response returned from api
             this.authService.logout();
             this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.routerState.snapshot.url } });

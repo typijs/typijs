@@ -17,8 +17,8 @@ export class AuthRouter {
 
         authRouter.post('/register', validate(createUser), this.authController.register);
         authRouter.post('/login', validate(authValidation.login), this.authController.login);
+        authRouter.post('/logout', this.authController.logout);
         authRouter.post('/refresh-token', this.authController.refreshTokens);
-        authRouter.post('/revoke-token', this.authController.revokeToken);
         authRouter.post('/forgot-password', validate(authValidation.forgotPassword), this.authController.forgotPassword);
         authRouter.post('/reset-password', validate(authValidation.resetPassword), this.authController.resetPassword);
         return authRouter

@@ -29,12 +29,12 @@ export class AuthController {
         res.status(httpStatus.OK).json({ ...tokens.access });
     };
 
-    public revokeToken = async (req: express.Request, res: express.Response) => {
+    public logout = async (req: express.Request, res: express.Response) => {
         const refreshToken = req.cookies[this.refreshTokenCookie];
         if (refreshToken) {
             await this.authService.revokeRefreshToken(refreshToken);
             res.cookie(this.refreshTokenCookie, '', { maxAge: 0 });
-            res.status(httpStatus.OK).json('Revoke successfully');
+            res.status(httpStatus.OK).json('Logout successfully');
         } else {
             res.status(httpStatus.OK).json('Refresh token was not found');
         }

@@ -10,7 +10,11 @@ export class CmsLogoutComponent implements OnInit {
     constructor(private router: Router, private authService: AuthService) { }
 
     ngOnInit() {
-        this.authService.logout();
-        this.router.navigate(['/'])
+        if (this.authService.isLoggedIn) {
+            this.authService.logout();
+            this.router.navigate(['/login'])
+        } else {
+            this.router.navigate(['/'])
+        }
     }
 }
