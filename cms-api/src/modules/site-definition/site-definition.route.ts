@@ -14,7 +14,7 @@ export class SideDefinitionRouter {
     get router(): Router {
         const sideDefinition: Router = asyncRouterErrorHandler(Router());
 
-        sideDefinition.get('/getAll', authGuard.checkRoles([Roles.Admin]), this.siteController.getAll);
+        sideDefinition.get('/', authGuard.checkRoles([Roles.Admin]), this.siteController.getAll);
         sideDefinition.get('/paginate', authGuard.checkRoles([Roles.Admin]), this.siteController.paginate);
         sideDefinition.get('/:id', authGuard.checkRoles([Roles.Admin]), this.siteController.get);
         sideDefinition.post('/', authGuard.checkRoles([Roles.Admin]), this.siteController.create);

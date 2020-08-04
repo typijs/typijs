@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
-
-import { SiteManageEntryComponent } from './site-manage-entry.component';
-import { SiteManageComponent } from './site-manage.component';
+import { SiteManageComponent, SiteManageEntryComponent } from './site-manage.component';
 import { SiteManageService } from './site-manage.service';
+import { CrudModule } from '../shared/crud/crud.module';
+import { CrudBaseService } from '../shared/crud/crud.service';
 
 @NgModule({
     imports: [
@@ -15,6 +15,7 @@ import { SiteManageService } from './site-manage.service';
         ReactiveFormsModule,
         RouterModule,
 
+        CrudModule
     ],
     declarations: [
         SiteManageComponent,
@@ -28,6 +29,6 @@ import { SiteManageService } from './site-manage.service';
         SiteManageComponent,
         SiteManageEntryComponent
     ],
-    providers: [SiteManageService]
+    providers: [SiteManageService, { provide: CrudBaseService, useExisting: SiteManageService }]
 })
 export class SiteManageModule { }

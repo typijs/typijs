@@ -13,10 +13,10 @@ export class SiteManage {
     })
     startPage: string;
     @Column({
-        displayName: "Host Name",
+        displayName: "Site Hostname",
         displayType: UIHint.Text
     })
-    host: string;
+    siteUrl: string;
     @Column({
         displayName: "Default Language",
         displayType: UIHint.Text
