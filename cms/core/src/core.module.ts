@@ -1,5 +1,4 @@
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 
 import { CmsPropertyFactoryResolver } from './bases/cms-property.factory';
@@ -15,8 +14,7 @@ import { AbsolutePipe } from './pipes/absolute.pipe';
 
 @NgModule({
   imports: [
-    CommonModule,
-    HttpClientModule
+    CommonModule
   ],
   declarations: [
     SafePipe,
@@ -38,7 +36,7 @@ import { AbsolutePipe } from './pipes/absolute.pipe';
   exports: [
     SafePipe,
     AbsolutePipe,
-    
+
     CmsContentRender,
     InsertPointDirective,
     CmsPropertyDirective,

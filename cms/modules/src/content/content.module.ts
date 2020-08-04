@@ -1,7 +1,6 @@
 import "reflect-metadata";
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { CoreModule } from '@angular-cms/core';
@@ -19,15 +18,16 @@ import { ContentFormEditComponent } from './content-form-edit/content-form-edit.
 @NgModule({
     imports: [
         CommonModule,
-        HttpClientModule,
         FormsModule,
         ReactiveFormsModule,
         RouterModule,
         FontAwesomeModule,
-        CoreModule,
+
         CmsAngularSplitModule,
         CmsButtonsModule,
         CmsTabsModule,
+
+        CoreModule,
         PropertiesModule,
     ],
     declarations: [

@@ -10,6 +10,7 @@ import { AppComponent } from './app.component';
 import { LayoutComponent } from './shared/layout/layout.component';
 import { PagesModule } from './pages/pages.module';
 import { BlocksModule } from './blocks/block.module';
+import { HttpClientModule } from '@angular/common/http';
 
 AngularCms.registerContentTypes(contentTypes);
 
@@ -21,6 +22,7 @@ AngularCms.registerContentTypes(contentTypes);
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
     TransferHttpCacheModule,
+    HttpClientModule,
     AngularCms.forRoot(),
     AuthModule,
     AppRoutingModule,

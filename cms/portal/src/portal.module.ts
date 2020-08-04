@@ -1,6 +1,5 @@
 import "reflect-metadata";
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -32,7 +31,6 @@ import { QuillModule } from 'ngx-quill';
 @NgModule({
   imports: [
     CommonModule,
-    HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
 
@@ -46,9 +44,8 @@ import { QuillModule } from 'ngx-quill';
     QuillModule.forRoot(),
 
     DndModule.forRoot(),
-
-    ...CMS.NG_MODULES,
     CoreModule.forChild(),
+    ...CMS.NG_MODULES,
     PortalRoutingModule
   ],
   declarations: [

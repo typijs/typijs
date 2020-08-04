@@ -1,5 +1,4 @@
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -27,7 +26,6 @@ import { FileSelectDirective } from './upload/file-select.directive';
 @NgModule({
     imports: [
         CommonModule,
-        HttpClientModule,
         FormsModule,
         ReactiveFormsModule,
         RouterModule,
