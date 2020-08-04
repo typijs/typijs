@@ -12,6 +12,7 @@ import { NodeMenuItemAction, TreeMenuActionEvent } from '../shared/tree/interfac
 import { BlockTreeService } from './block-tree.service';
 import { SubscriptionDestroy } from '../shared/subscription-destroy';
 import { SubjectService } from '../shared/services/subject.service';
+import { TreeService } from '../shared/tree/interfaces/tree-service';
 
 const BlockMenuItemAction = {
     DeleteFolder: 'DeleteFolder',
@@ -73,7 +74,7 @@ const BlockMenuItemAction = {
     </as-split>
         `,
     styleUrls: ['./block-tree.scss'],
-    providers: [BlockTreeService]
+    providers: [BlockTreeService, { provide: TreeService, useExisting: BlockTreeService }]
 })
 export class BlockTreeComponent extends SubscriptionDestroy {
     @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
@@ -83,7 +84,6 @@ export class BlockTreeComponent extends SubscriptionDestroy {
     treeConfig: TreeConfig;
 
     constructor(
-        private blockTreeService: BlockTreeService,
         private router: Router,
         private route: ActivatedRoute,
         private blockService: BlockService,
@@ -164,7 +164,6 @@ export class BlockTreeComponent extends SubscriptionDestroy {
 
     private initTreeConfiguration(): TreeConfig {
         return {
-            service: this.blockTreeService,
             menuItems: [
                 {
                     action: BlockMenuItemAction.NewBlock,

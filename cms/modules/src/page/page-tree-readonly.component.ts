@@ -1,10 +1,10 @@
 import { Component, ViewChild } from '@angular/core';
 
 import { TreeNode } from '../shared/tree/interfaces/tree-node';
-import { TreeConfig } from '../shared/tree/interfaces/tree-config';
 
 import { TreeComponent } from '../shared/tree/components/tree.component';
 import { PageTreeService } from './page-tree.service';
+import { TreeService } from '../shared/tree/interfaces/tree-service';
 
 @Component({
     template: `
@@ -13,8 +13,7 @@ import { PageTreeService } from './page-tree.service';
                 <li class="nav-item">
                     <cms-tree 
                         class="tree-root" 
-                        [root]="root"
-                        [config]="treeConfig">
+                        [root]="root">
                         <ng-template #treeNodeTemplate let-node>
                             <i class="fa fa-folder-o"></i>
                             <span>{{node.name}}</span>
@@ -30,16 +29,14 @@ import { PageTreeService } from './page-tree.service';
             display:block;
         }
         `],
-    providers: [PageTreeService]
+    providers: [PageTreeService, { provide: TreeService, useExisting: PageTreeService }]
 })
 export class PageTreeReadonlyComponent {
     @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
 
     root: TreeNode;
-    treeConfig: TreeConfig;
 
-    constructor(private pageTreeService: PageTreeService) {
+    constructor() {
         this.root = new TreeNode({ id: '0' });
-        this.treeConfig = { service: this.pageTreeService }
     }
 }

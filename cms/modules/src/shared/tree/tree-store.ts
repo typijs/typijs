@@ -16,13 +16,15 @@ export class TreeStore {
     nodePasted$: Subject<TreeNode> = new Subject<TreeNode>();
     scrollToSelectedNode$: BehaviorSubject<TreeNode> = new BehaviorSubject<TreeNode>(new TreeNode());
 
-    treeService: TreeService;
-
     //The tree-children component will subscribe the treeNodesRxSubject to reload sub tree
-    private treeNodesRxSubject$: { [key: string]: Subject<TreeNode[]> } = {}; //store Subject of node's children with key = nodeId to load sub tree
-    private treeNodes: { [key: string]: TreeNode[] } = {}; //store node's children with key = nodeId, ex nodes[parentId] = array of node's children
+    //store Subject of node's children with key = nodeId to load sub tree
+    private treeNodesRxSubject$: { [key: string]: Subject<TreeNode[]> } = {};
+    //store node's children with key = nodeId, ex nodes[parentId] = array of node's children
+    private treeNodes: { [key: string]: TreeNode[] } = {};
     private selectedNode: Partial<TreeNode>;
     private editingNode: Partial<TreeNode>;
+
+    constructor(private treeService: TreeService) { }
 
     getSelectedNode(): Partial<TreeNode> {
         return this.selectedNode;

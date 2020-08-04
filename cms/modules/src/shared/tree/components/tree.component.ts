@@ -65,12 +65,7 @@ export class TreeComponent extends SubscriptionDestroy implements OnInit {
             loadingTemplate: this.loadingTemplate,
             treeNodeTemplate: this.treeNodeTemplate
         }
-        if (this.config) {
-            if (!this.config.service) throw new Error("The TreeService is undefined");
-            this.treeStore.treeService = this.config.service;
-
-            this.subscribeAndEmitNodeMenuItemSelectedEvent();
-        }
+        this.subscribeAndEmitNodeMenuItemSelectedEvent();
     }
 
     //Set node.isSelected = true when node is clicked and fire node selected event
