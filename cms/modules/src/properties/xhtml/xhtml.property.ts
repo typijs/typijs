@@ -5,7 +5,9 @@ import { CmsProperty, PAGE_TYPE, MEDIA_TYPE, MediaService } from '@angular-cms/c
 import { DropEvent } from '../../shared/drag-drop/drop-event.model';
 
 import './quill-inline-style';
-import './quill-modules';
+//Temp comment since this import is not working with --prod in runtime
+//quill Cannot import modules/imageResize. Are you sure it was registered?
+// import './quill-modules';
 import './ngx-quill.extension';
 
 @Component({
@@ -32,10 +34,12 @@ export class XHtmlProperty extends CmsProperty {
     modules: { [key: string]: any } = {}
     constructor(private mediaService: MediaService) {
         super();
-        this.modules = {
-            imageResize: {},
-            clickMeButton: { handler: this.handleClickMe }
-        }
+        //Temp comment since this import is not working with --prod in runtime
+        //quill Cannot import modules/imageResize. Are you sure it was registered?
+        // this.modules = {
+        //     imageResize: {},
+        //     //clickMeButton: { handler: this.handleClickMe }
+        // }
     }
 
     handleClickMe(event) {

@@ -37,6 +37,10 @@ import { ContentFormEditComponent } from './content-form-edit/content-form-edit.
     exports: [
         ContentFormEditComponent,
         ContentTypeListComponent
+    ],
+    entryComponents: [
+        ContentTypeListComponent,
+        ContentFormEditComponent
     ]
 })
 export class ContentModule {
