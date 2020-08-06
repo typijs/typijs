@@ -1,7 +1,7 @@
-import { AngularCms, CmsModuleRoot, CmsRootConfig, CmsWidgetPosition, CoreModule } from '@angular-cms/core';
+import { AngularCms, CmsModuleRoot, CmsRootConfig, CmsWidgetPosition, CoreModule, EDITOR_ROUTES_TOKEN } from '@angular-cms/core';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faFile, faFolder, faPlus, faSitemap } from '@fortawesome/free-solid-svg-icons';
@@ -37,6 +37,25 @@ import { PageTreeComponent } from './page-tree.component';
     exports: [
         PageTreeComponent,
         PageTreeReadonlyComponent
+    ],
+    providers: [
+        {
+            provide: EDITOR_ROUTES_TOKEN, useValue: [
+                {
+                    path: 'new/page',
+                    component: ContentTypeListComponent
+                },
+                {
+                    path: 'new/page/:parentId',
+                    component: ContentTypeListComponent
+                },
+                {
+                    path: 'content/page/:id',
+                    component: ContentFormEditComponent
+                }
+            ],
+            multi: true
+        }
     ]
 })
 export class PageModule {

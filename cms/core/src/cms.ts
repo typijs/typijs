@@ -4,7 +4,10 @@ import { CmsProperty } from './bases/cms-property';
 import { CmsPropertyRender } from './infrastructure/rendering/property/property-render';
 import { ClassOf, CmsObject } from './types';
 import { CmsComponentConfig, CmsModuleConfig, CmsModuleRoot } from './types/module-config';
+import { InjectionToken } from '@angular/core';
 
+export const EDITOR_ROUTES_TOKEN: InjectionToken<Routes[]> = new InjectionToken<Routes[]>('EDITOR_ROUTES_TOKEN');
+export const ADMIN_ROUTES_TOKEN: InjectionToken<Routes[]> = new InjectionToken<Routes[]>('ADMIN_ROUTES_TOKEN');
 /**
  * The type of global CMS model. It keeps all cms configurations
  */

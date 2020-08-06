@@ -10,52 +10,6 @@ import { CmsPropertyRender, ImageRender, ObjectListRender, TextRender, UrlListRe
 // https://stackoverflow.com/questions/51824125/injection-of-multiple-instances-in-angular
 export const PROPERTY_PROVIDERS_RENDER_TOKEN: InjectionToken<CmsPropertyRenderFactory[]> = new InjectionToken<CmsPropertyRenderFactory[]>('PROPERTY_PROVIDERS_RENDER_TOKEN');
 
-export function getCmsPropertyRenderFactory(propertyUIHint: string) {
-    return function cmsPropertyRenderFactory(injector: Injector): CmsPropertyRenderFactory {
-        return new CmsPropertyRenderFactory(propertyUIHint, injector)
-    };
-};
-
-export function contentAreaRenderFactory(injector: Injector): CmsPropertyRenderFactory {
-    CMS.PROPERTY_RENDERS[UIHint.ContentArea] = ContentAreaRender;
-    return new CmsPropertyRenderFactory(UIHint.ContentArea, injector)
-};
-
-export function textRenderFactory(injector: Injector): CmsPropertyRenderFactory {
-    CMS.PROPERTY_RENDERS[UIHint.Text] = TextRender;
-    return new CmsPropertyRenderFactory(UIHint.Text, injector)
-};
-
-export function textareaRenderFactory(injector: Injector): CmsPropertyRenderFactory {
-    CMS.PROPERTY_RENDERS[UIHint.Textarea] = TextRender;
-    return new CmsPropertyRenderFactory(UIHint.Textarea, injector)
-};
-
-export function xhtmlRenderFactory(injector: Injector): CmsPropertyRenderFactory {
-    CMS.PROPERTY_RENDERS[UIHint.XHtml] = XHtmlRender;
-    return new CmsPropertyRenderFactory(UIHint.XHtml, injector)
-};
-
-export function imageRenderFactory(injector: Injector): CmsPropertyRenderFactory {
-    CMS.PROPERTY_RENDERS[UIHint.Image] = ImageRender;
-    return new CmsPropertyRenderFactory(UIHint.Image, injector)
-};
-
-export function urlRenderFactory(injector: Injector): CmsPropertyRenderFactory {
-    CMS.PROPERTY_RENDERS[UIHint.Url] = UrlRender;
-    return new CmsPropertyRenderFactory(UIHint.Url, injector)
-};
-
-export function urlListRenderFactory(injector: Injector): CmsPropertyRenderFactory {
-    CMS.PROPERTY_RENDERS[UIHint.UrlList] = UrlListRender;
-    return new CmsPropertyRenderFactory(UIHint.UrlList, injector)
-};
-
-export function objectListRenderFactory(injector: Injector): CmsPropertyRenderFactory {
-    CMS.PROPERTY_RENDERS[UIHint.ObjectList] = ObjectListRender;
-    return new CmsPropertyRenderFactory(UIHint.ObjectList, injector)
-};
-
 export class CmsPropertyRenderFactory {
     protected propertyUIHint: string;
     protected componentFactoryResolver: ComponentFactoryResolver;
@@ -110,3 +64,49 @@ export class CmsPropertyRenderFactoryResolver {
         return propertyRenderFactory;
     }
 }
+
+export function getCmsPropertyRenderFactory(propertyUIHint: string) {
+    return function cmsPropertyRenderFactory(injector: Injector): CmsPropertyRenderFactory {
+        return new CmsPropertyRenderFactory(propertyUIHint, injector)
+    };
+};
+
+export function contentAreaRenderFactory(injector: Injector): CmsPropertyRenderFactory {
+    CMS.PROPERTY_RENDERS[UIHint.ContentArea] = ContentAreaRender;
+    return new CmsPropertyRenderFactory(UIHint.ContentArea, injector)
+};
+
+export function textRenderFactory(injector: Injector): CmsPropertyRenderFactory {
+    CMS.PROPERTY_RENDERS[UIHint.Text] = TextRender;
+    return new CmsPropertyRenderFactory(UIHint.Text, injector)
+};
+
+export function textareaRenderFactory(injector: Injector): CmsPropertyRenderFactory {
+    CMS.PROPERTY_RENDERS[UIHint.Textarea] = TextRender;
+    return new CmsPropertyRenderFactory(UIHint.Textarea, injector)
+};
+
+export function xhtmlRenderFactory(injector: Injector): CmsPropertyRenderFactory {
+    CMS.PROPERTY_RENDERS[UIHint.XHtml] = XHtmlRender;
+    return new CmsPropertyRenderFactory(UIHint.XHtml, injector)
+};
+
+export function imageRenderFactory(injector: Injector): CmsPropertyRenderFactory {
+    CMS.PROPERTY_RENDERS[UIHint.Image] = ImageRender;
+    return new CmsPropertyRenderFactory(UIHint.Image, injector)
+};
+
+export function urlRenderFactory(injector: Injector): CmsPropertyRenderFactory {
+    CMS.PROPERTY_RENDERS[UIHint.Url] = UrlRender;
+    return new CmsPropertyRenderFactory(UIHint.Url, injector)
+};
+
+export function urlListRenderFactory(injector: Injector): CmsPropertyRenderFactory {
+    CMS.PROPERTY_RENDERS[UIHint.UrlList] = UrlListRender;
+    return new CmsPropertyRenderFactory(UIHint.UrlList, injector)
+};
+
+export function objectListRenderFactory(injector: Injector): CmsPropertyRenderFactory {
+    CMS.PROPERTY_RENDERS[UIHint.ObjectList] = ObjectListRender;
+    return new CmsPropertyRenderFactory(UIHint.ObjectList, injector)
+};

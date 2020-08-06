@@ -2,7 +2,7 @@
 import { NgModule, ANALYZE_FOR_ENTRY_COMPONENTS } from '@angular/core';
 import { RouterModule, Routes, Route, ROUTES } from '@angular/router';
 
-import { CMS, Roles, AuthGuard, CmsModuleRoot } from '@angular-cms/core';
+import { EDITOR_ROUTES_TOKEN, Roles, AuthGuard, CmsModuleRoot } from '@angular-cms/core';
 
 import './cms-module-register';
 import { PortalComponent } from './portal.component';
@@ -19,8 +19,9 @@ export function getChildRoutes(childModuleName: CmsModuleRoot): Route[] {
     return result;
 }
 
-export function getPortalRoutes(): Route[] {
-    const editorRoutes = getChildRoutes(CmsModuleRoot.Editor)
+export function getPortalRoutes(editorRoutes: Routes[]): Route[] {
+    //const editorRoutes = getChildRoutes(CmsModuleRoot.Editor)
+    const childRoute: Route[] = editorRoutes.reduce((a, b) => a.concat(b));
     const adminRoutes = getChildRoutes(CmsModuleRoot.Admin)
     return [{
         path: '', component: PortalComponent,
@@ -48,7 +49,7 @@ export function getPortalRoutes(): Route[] {
                 data: {
                     role: Roles.Editor
                 },
-                children: editorRoutes
+                children: childRoute
             },
             {
                 path: 'admin',
@@ -75,6 +76,7 @@ export function getPortalRoutes(): Route[] {
         {
             provide: ROUTES,
             useFactory: getPortalRoutes,
+            deps: [EDITOR_ROUTES_TOKEN],
             useValue: {},
             multi: true
         },
