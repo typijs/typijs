@@ -15,6 +15,7 @@ import {
   CmsProgressbarModule,
   CmsModalModule,
   DndModule
+  PropertiesModule
 } from '@angular-cms/modules';
 
 import { CmsHeaderComponent } from './shared/components/cms-header/cms-header.component';
@@ -46,6 +47,7 @@ import { QuillModule } from 'ngx-quill';
     DndModule.forRoot(),
     CoreModule.forChild(),
     ...CMS.NG_MODULES,
+    PropertiesModule.forRoot(),
     PortalRoutingModule
   ],
   declarations: [

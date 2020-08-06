@@ -7,7 +7,7 @@ import { ContentAreaProperty } from './content-area.property';
 @Injectable()
 export class ContentAreaFactory extends CmsPropertyFactory {
     constructor(injector: Injector) {
-        super(UIHint.ContentArea, injector);
+        super(injector, UIHint.ContentArea, ContentAreaProperty);
     }
 
     createPropertyComponent(property: ContentTypeProperty, formGroup: FormGroup): ComponentRef<any> {

@@ -3,7 +3,7 @@ import { APP_INITIALIZER, Injector, ModuleWithProviders, NgModule, PLATFORM_ID }
 import { EVENT_MANAGER_PLUGINS } from '@angular/platform-browser';
 import { RouteReuseStrategy, Routes } from '@angular/router';
 import { CmsProperty } from './bases/cms-property';
-import { CmsPropertyFactory, getCmsPropertyFactory, PROPERTY_PROVIDERS_TOKEN } from './bases/cms-property.factory';
+import { CmsPropertyFactory, PROPERTY_PROVIDERS_TOKEN } from './bases/cms-property.factory';
 import { CMS } from './cms';
 import { cmsInitializer, CONFIG_DEPS, configDepsFactory } from './cms.initializer';
 import { CoreModule } from "./core.module";
@@ -116,7 +116,7 @@ export class AngularCms {
         if (propertyFactory) {
             CMS.PROPERTY_PROVIDERS.push({ provide: PROPERTY_PROVIDERS_TOKEN, useClass: propertyFactory, multi: true });
         } else {
-            CMS.PROPERTY_PROVIDERS.push({ provide: PROPERTY_PROVIDERS_TOKEN, useFactory: getCmsPropertyFactory(uniquePropertyUIHint), deps: [Injector], multi: true });
+            //CMS.PROPERTY_PROVIDERS.push({ provide: PROPERTY_PROVIDERS_TOKEN, useFactory: getCmsPropertyFactory(uniquePropertyUIHint), deps: [Injector], multi: true });
         }
     }
 

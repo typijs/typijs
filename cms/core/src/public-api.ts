@@ -4,7 +4,7 @@
 export * from './angular-cms.module';
 export * from './bases/cms-component';
 export { CmsProperty } from './bases/cms-property';
-export { CmsPropertyFactory, CmsPropertyFactoryResolver, getCmsPropertyFactory, PROPERTY_PROVIDERS_TOKEN } from './bases/cms-property.factory';
+export { CmsPropertyFactory, CmsPropertyFactoryResolver, PROPERTY_PROVIDERS_TOKEN } from './bases/cms-property.factory';
 export * from './bases/selection-factory';
 export * from './cms';
 export * from './constants';

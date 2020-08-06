@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, ModuleWithProviders, Injector } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -7,7 +7,7 @@ import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontaweso
 import { faFile, faFolder, faCube, faImage, faBars, faHashtag, faList, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { QuillModule } from 'ngx-quill';
 
-import { CoreModule } from '@angular-cms/core';
+import { CoreModule, PROPERTY_PROVIDERS_TOKEN } from '@angular-cms/core';
 
 import { CmsBsDropdownModule } from '../shared/libs/ngx-bootstrap/bs-dropdown.module';
 import { DndModule } from '../shared/drag-drop/dnd.module';
@@ -31,11 +31,17 @@ import { ContentAreaProperty } from './content-area/content-area.property';
 import { ContentReferenceControl } from './content-reference/content-reference.control';
 import { ContentReferenceProperty } from './content-reference/content-reference.property';
 
-import { registerCmsProperties } from './registerCmsProperties';
 import { ImageReferenceProperty } from './image-reference/image-reference.property';
 import { ImageReferenceControl } from './image-reference/image-reference.control';
+import { ObjectListFactory } from './object-list/object-list.factory';
+import { DropdownPropertyFactory, CheckboxPropertyFactory } from './select/select-property.factory';
+import { ContentAreaFactory } from './content-area/content-area.factory';
+import { ContentReferenceFactory } from './content-reference/content-reference.factory';
+import { XHtmlPropertyFactory } from './xhtml/xhtml.factory';
+import { TextareaPropertyFactory } from './textarea/textarea.factory';
+import { TextPropertyFactory } from './text/text.factory';
+import { ImagePropertyFactory } from './image-reference/image-reference.factory';
 
-registerCmsProperties();
 
 @NgModule({
     imports: [
@@ -96,5 +102,22 @@ registerCmsProperties();
 export class PropertiesModule {
     constructor(library: FaIconLibrary) {
         library.addIcons(faFolder, faFile, faImage, faCube, faBars, faHashtag, faList, faTimes);
+    }
+
+    public static forRoot(): ModuleWithProviders<PropertiesModule> {
+        return {
+            ngModule: PropertiesModule,
+            providers: [
+                { provide: PROPERTY_PROVIDERS_TOKEN, useClass: ImagePropertyFactory, multi: true },
+                { provide: PROPERTY_PROVIDERS_TOKEN, useClass: TextPropertyFactory, multi: true },
+                { provide: PROPERTY_PROVIDERS_TOKEN, useClass: TextareaPropertyFactory, multi: true },
+                { provide: PROPERTY_PROVIDERS_TOKEN, useClass: XHtmlPropertyFactory, multi: true },
+                { provide: PROPERTY_PROVIDERS_TOKEN, useClass: ContentReferenceFactory, multi: true },
+                { provide: PROPERTY_PROVIDERS_TOKEN, useClass: ContentAreaFactory, multi: true },
+                { provide: PROPERTY_PROVIDERS_TOKEN, useClass: CheckboxPropertyFactory, multi: true },
+                { provide: PROPERTY_PROVIDERS_TOKEN, useClass: DropdownPropertyFactory, multi: true },
+                { provide: PROPERTY_PROVIDERS_TOKEN, useClass: ObjectListFactory, multi: true }
+            ]
+        };
     }
 }

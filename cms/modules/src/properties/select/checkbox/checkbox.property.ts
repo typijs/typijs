@@ -1,4 +1,4 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component } from '@angular/core';
 import { SelectProperty } from '../select-property';
 
 @Component({

@@ -7,7 +7,7 @@ import { ObjectListProperty } from './object-list.property';
 @Injectable()
 export class ObjectListFactory extends CmsPropertyFactory {
     constructor(injector: Injector) {
-        super(UIHint.ObjectList, injector);
+        super(injector, UIHint.ObjectList, ObjectListProperty);
     }
 
     createPropertyComponent(property: ContentTypeProperty, formGroup: FormGroup): ComponentRef<any> {
