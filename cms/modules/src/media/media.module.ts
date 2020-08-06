@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faFolder, faFolderPlus, faPhotoVideo } from '@fortawesome/free-solid-svg-icons';
 
-import { CoreModule } from '@angular-cms/core';
+import { CoreModule, AngularCms } from '@angular-cms/core';
 
 //import { CmsProgressbarModule, CmsModalModule, CmsAngularSplitModule } from '../shared/libs';
 import { CmsAngularSplitModule } from '../shared/libs/angular-split/module';
@@ -22,6 +22,8 @@ import { FileModalComponent } from './upload/file-modal.component';
 import { FileDropComponent } from './upload/file-drop.component';
 import { UploadService } from './upload/upload.service';
 import { FileSelectDirective } from './upload/file-select.directive';
+import { CmsModuleRoot, CmsWidgetPosition } from '@angular-cms/core';
+import { ContentFormEditComponent } from '../content/content-form-edit/content-form-edit.component';
 
 @NgModule({
     imports: [
@@ -58,5 +60,27 @@ import { FileSelectDirective } from './upload/file-select.directive';
 export class MediaModule {
     constructor(library: FaIconLibrary) {
         library.addIcons(faFolder, faPhotoVideo, faFolderPlus);
+        AngularCms.registerModule({
+            module: MediaModule,
+            roots: [
+                {
+                    name: CmsModuleRoot.Editor,
+                    routes: [
+                        {
+                            path: 'content/media/:id',
+                            component: ContentFormEditComponent
+                        }
+                    ],
+                    widgets: [
+                        {
+                            component: MediaTreeComponent,
+                            position: CmsWidgetPosition.Right,
+                            group: "Medias"
+                        }
+                    ]
+                }
+            ]
+
+        })
     }
 }

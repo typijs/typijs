@@ -4,9 +4,10 @@
   "scripts": {
     "ng": "ng",
     "dev": "ng serve",
+    "dev:aot": "ng serve --aot",
     "build:libs": "ng build core && ng build modules && ng build portal",
-    "build:ssr": "concurrently \"ng build\" \"ng run cms-demo:server\"",
-    "build:ssr:prod": "concurrently \"ng build --prod\" \"ng run cms-demo:server\"",
+    "build:ssr": "ng build && ng run cms-demo:server",
+    "build:ssr:prod": "ng build --prod && ng run cms-demo:server",
     "start:ssr": "ts-node -P ./cms-demo/server.tsconfig.json ./cms-demo/server.ts",
     "prerender": "ts-node -P ./cms-demo/server.tsconfig.json ./cms-demo/prerender.ts",
     "prerender:debug": "ts-node -P ./cms-demo/server.tsconfig.json --inspect ./cms-demo/prerender.ts"

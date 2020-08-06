@@ -14,7 +14,9 @@ import {
   CmsTabsModule,
   CmsProgressbarModule,
   CmsModalModule,
-  DndModule
+  DndModule,
+  MediaModule,
+  BlockModule,
   PropertiesModule
 } from '@angular-cms/modules';
 
@@ -28,6 +30,8 @@ import { WidgetService } from './services/widget.service';
 import { PortalComponent } from './portal.component';
 import { PortalRoutingModule } from './portal.routing';
 import { QuillModule } from 'ngx-quill';
+import { Router } from '@angular/router';
+import { PageModule } from '@angular-cms/modules';
 
 @NgModule({
   imports: [
@@ -46,8 +50,10 @@ import { QuillModule } from 'ngx-quill';
 
     DndModule.forRoot(),
     CoreModule.forChild(),
-    ...CMS.NG_MODULES,
     PropertiesModule.forRoot(),
+    PageModule,
+    MediaModule,
+    BlockModule,
     PortalRoutingModule
   ],
   declarations: [

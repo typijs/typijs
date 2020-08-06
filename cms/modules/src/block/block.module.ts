@@ -12,7 +12,9 @@ import { DndModule } from '../shared/drag-drop/dnd.module';
 import { TreeModule } from '../shared/tree/tree.module';
 
 import { BlockTreeComponent } from './block-tree.component';
-
+import { CmsModuleRoot, CmsWidgetPosition, AngularCms } from '@angular-cms/core';
+import { ContentFormEditComponent } from '../content/content-form-edit/content-form-edit.component';
+import { ContentTypeListComponent } from '../content/content-type-list/content-type-list.component';
 @NgModule({
     imports: [
         CommonModule,
@@ -38,5 +40,34 @@ import { BlockTreeComponent } from './block-tree.component';
 export class BlockModule {
     constructor(library: FaIconLibrary) {
         library.addIcons(faFolder, faCubes, faCube, faFolderPlus, faPlusSquare, faBars, faPlus);
+        AngularCms.registerModule({
+            module: BlockModule,
+            roots: [
+                {
+                    name: CmsModuleRoot.Editor,
+                    routes: [
+                        {
+                            path: 'new/block',
+                            component: ContentTypeListComponent
+                        },
+                        {
+                            path: 'new/block/:parentId',
+                            component: ContentTypeListComponent
+                        },
+                        {
+                            path: 'content/block/:id',
+                            component: ContentFormEditComponent
+                        }
+                    ],
+                    widgets: [
+                        {
+                            component: BlockTreeComponent,
+                            position: CmsWidgetPosition.Right,
+                            group: "Blocks"
+                        }
+                    ]
+                }
+            ]
+        })
     }
 }
