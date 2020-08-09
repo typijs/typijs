@@ -1,9 +1,8 @@
 import 'reflect-metadata';
-import { Component, ComponentFactoryResolver, Inject, Injector, Input, ViewChild } from '@angular/core';
+import { Component, ComponentRef, Input, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
-import { CMS, CmsProperty, InsertPointDirective, ISelectionFactory, PROPERTIES_METADATA_KEY, PROPERTY_METADATA_KEY, UIHint } from '@angular-cms/core';
-import { SelectProperty } from '../select/select-property';
+import { CmsProperty, CmsPropertyFactoryResolver, InsertPointDirective, PROPERTIES_METADATA_KEY, PROPERTY_METADATA_KEY, UIHint } from '@angular-cms/core';
 import { ObjectListControl } from './object-list.control';
 
 @Component({
@@ -81,9 +80,8 @@ export class ObjectListProperty extends CmsProperty {
     modelForm: FormGroup = new FormGroup({});
 
     constructor(
-        private formBuilder: FormBuilder,
-        @Inject(ComponentFactoryResolver) private componentFactoryResolver: ComponentFactoryResolver,
-        private injector: Injector) {
+        private propertyFactoryResolver: CmsPropertyFactoryResolver,
+        private formBuilder: FormBuilder) {
         super();
     }
 
@@ -115,25 +113,21 @@ export class ObjectListProperty extends CmsProperty {
         }
     }
 
-    private createModelFormControls(properties) {
-        if (properties) {
-            let viewContainerRef = this.modelEditHost.viewContainerRef;
-            viewContainerRef.clear();
+    private createModelFormControls(properties): ComponentRef<any>[] {
+        const propertyControls: ComponentRef<any>[] = [];
 
-            properties.forEach(property => {
-                let propertyFactory = this.componentFactoryResolver.resolveComponentFactory(CMS.PROPERTIES[property.metadata.displayType]);
-                let propertyComponent = viewContainerRef.createComponent(propertyFactory);
-                (<CmsProperty>propertyComponent.instance).label = property.metadata.displayName;
-                (<CmsProperty>propertyComponent.instance).formGroup = this.modelForm;
-                (<CmsProperty>propertyComponent.instance).propertyName = property.name;
+        if (!properties) return propertyControls
 
-                if (propertyComponent.instance instanceof SelectProperty) {
-                    (<SelectProperty>propertyComponent.instance).selectItems = (<ISelectionFactory>(this.injector.get(property.metadata.selectionFactory))).GetSelections();
-                } else if (propertyComponent.instance instanceof ObjectListProperty) {
-                    (<ObjectListProperty>propertyComponent.instance).itemType = property.metadata.objectListItemType;
-                }
-            });
-        }
+        let viewContainerRef = this.modelEditHost.viewContainerRef;
+        viewContainerRef.clear();
+
+        properties.forEach(property => {
+            const propertyFactory = this.propertyFactoryResolver.resolvePropertyFactory(property.metadata.displayType);
+            const propertyComponent = propertyFactory.createPropertyComponent(property, this.modelForm);
+            viewContainerRef.insert(propertyComponent.hostView);
+            propertyControls.push(propertyComponent);
+        });
+        return propertyControls;
     }
 
     onSubmit() {

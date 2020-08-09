@@ -1,10 +1,11 @@
-import { AngularCms, CmsModuleRoot, CmsRootConfig, CmsWidgetPosition, CoreModule, EDITOR_ROUTES_TOKEN } from '@angular-cms/core';
 import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
+import { NgModule, ModuleWithProviders } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faFile, faFolder, faPlus, faSitemap } from '@fortawesome/free-solid-svg-icons';
+
+import { CmsWidgetPosition, CoreModule, EDITOR_ROUTES, EDITOR_WIDGETS, ADMIN_WIDGETS } from '@angular-cms/core';
 import { ContentFormEditComponent } from '../content/content-form-edit/content-form-edit.component';
 import { ContentTypeListComponent } from '../content/content-type-list/content-type-list.component';
 import { ContentModule } from '../content/content.module';
@@ -37,75 +38,38 @@ import { PageTreeComponent } from './page-tree.component';
     exports: [
         PageTreeComponent,
         PageTreeReadonlyComponent
-    ],
-    providers: [
-        {
-            provide: EDITOR_ROUTES_TOKEN, useValue: [
-                {
-                    path: 'new/page',
-                    component: ContentTypeListComponent
-                },
-                {
-                    path: 'new/page/:parentId',
-                    component: ContentTypeListComponent
-                },
-                {
-                    path: 'content/page/:id',
-                    component: ContentFormEditComponent
-                }
-            ],
-            multi: true
-        }
     ]
 })
 export class PageModule {
     constructor(library: FaIconLibrary) {
         library.addIcons(faFolder, faSitemap, faFile, faPlus);
-        AngularCms.registerModule({
-            module: PageModule,
-            roots: [
+    }
+
+    public static forRoot(): ModuleWithProviders<PageModule> {
+        return {
+            ngModule: PageModule,
+            providers: [
                 {
-                    name: CmsModuleRoot.Editor,
-                    widgets: [
-                        {
-                            component: PageTreeComponent,
-                            position: CmsWidgetPosition.Left,
-                            group: 'Pages'
-                        }
-                    ]
+                    provide: EDITOR_ROUTES, useValue: [
+                        { path: 'new/page', component: ContentTypeListComponent },
+                        { path: 'new/page/:parentId', component: ContentTypeListComponent },
+                        { path: 'content/page/:id', component: ContentFormEditComponent }
+                    ],
+                    multi: true
                 },
                 {
-                    name: CmsModuleRoot.Admin,
-                    widgets: [
-                        {
-                            component: PageTreeReadonlyComponent,
-                            position: CmsWidgetPosition.Right,
-                            group: 'Pages'
-                        }
-                    ]
+                    provide: EDITOR_WIDGETS, useValue: [
+                        { group: 'Pages', position: CmsWidgetPosition.Left, component: PageTreeComponent }
+                    ],
+                    multi: true
+                },
+                {
+                    provide: ADMIN_WIDGETS, useValue: [
+                        { group: 'Pages', position: CmsWidgetPosition.Right, component: PageTreeReadonlyComponent }
+                    ],
+                    multi: true
                 }
             ]
-
-        })
+        }
     }
 }
-
-export const pageModuleConfig: CmsRootConfig[] = [
-    {
-        name: CmsModuleRoot.Editor,
-        routes: [
-            {
-                path: 'new/page',
-                component: ContentTypeListComponent
-            },
-            {
-                path: 'new/page/:parentId',
-                component: ContentTypeListComponent
-            },
-            {
-                path: 'content/page/:id',
-                component: ContentFormEditComponent
-            }
-        ]
-    }
-]

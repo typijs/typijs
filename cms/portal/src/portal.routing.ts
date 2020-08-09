@@ -2,27 +2,16 @@
 import { NgModule, ANALYZE_FOR_ENTRY_COMPONENTS } from '@angular/core';
 import { RouterModule, Routes, Route, ROUTES } from '@angular/router';
 
-import { EDITOR_ROUTES_TOKEN, Roles, AuthGuard, CmsModuleRoot } from '@angular-cms/core';
+import { EDITOR_ROUTES, ADMIN_ROUTES, Roles, AuthGuard } from '@angular-cms/core';
 
-import './cms-module-register';
 import { PortalComponent } from './portal.component';
 import { EditorComponent } from './editor/editor.component';
 import { AdminComponent } from './admin/admin.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { pageModuleConfig } from '@angular-cms/modules';
 
-export function getChildRoutes(childModuleName: CmsModuleRoot): Route[] {
-    let result = [];
-    pageModuleConfig.filter(x => x.name == childModuleName).map(x => x.routes).forEach(routers => {
-        if (routers) result = result.concat(routers)
-    });
-    return result;
-}
-
-export function getPortalRoutes(editorRoutes: Routes[]): Route[] {
-    //const editorRoutes = getChildRoutes(CmsModuleRoot.Editor)
-    const childRoute: Route[] = editorRoutes.reduce((a, b) => a.concat(b));
-    const adminRoutes = getChildRoutes(CmsModuleRoot.Admin)
+export function getPortalRoutes(editorRoutes: Routes[], adminRoutes: Routes[]): Route[] {
+    const childEditorRoutes: Route[] = editorRoutes.reduce((a, b) => a.concat(b));
+    const childAdminRoutes: Route[] = adminRoutes.reduce((a, b) => a.concat(b));
     return [{
         path: '', component: PortalComponent,
         children: [
@@ -49,7 +38,7 @@ export function getPortalRoutes(editorRoutes: Routes[]): Route[] {
                 data: {
                     role: Roles.Editor
                 },
-                children: childRoute
+                children: childEditorRoutes
             },
             {
                 path: 'admin',
@@ -58,7 +47,7 @@ export function getPortalRoutes(editorRoutes: Routes[]): Route[] {
                 data: {
                     role: Roles.Admin
                 },
-                children: adminRoutes
+                children: childAdminRoutes
             }
         ]
     }];
@@ -76,7 +65,7 @@ export function getPortalRoutes(editorRoutes: Routes[]): Route[] {
         {
             provide: ROUTES,
             useFactory: getPortalRoutes,
-            deps: [EDITOR_ROUTES_TOKEN],
+            deps: [EDITOR_ROUTES, ADMIN_ROUTES],
             useValue: {},
             multi: true
         },

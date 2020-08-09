@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
+import { NgModule, ModuleWithProviders } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faFolder, faFolderPlus, faPhotoVideo } from '@fortawesome/free-solid-svg-icons';
 
-import { CoreModule, AngularCms } from '@angular-cms/core';
+import { CoreModule, AngularCms, EDITOR_ROUTES, EDITOR_WIDGETS } from '@angular-cms/core';
 
 //import { CmsProgressbarModule, CmsModalModule, CmsAngularSplitModule } from '../shared/libs';
 import { CmsAngularSplitModule } from '../shared/libs/angular-split/module';
@@ -54,33 +54,31 @@ import { ContentFormEditComponent } from '../content/content-form-edit/content-f
     ],
     exports: [
         MediaTreeComponent
-    ],
-    providers: [UploadService]
+    ]
 })
 export class MediaModule {
     constructor(library: FaIconLibrary) {
         library.addIcons(faFolder, faPhotoVideo, faFolderPlus);
-        AngularCms.registerModule({
-            module: MediaModule,
-            roots: [
+    }
+
+    public static forRoot(): ModuleWithProviders<MediaModule> {
+        return {
+            ngModule: MediaModule,
+            providers: [
+                UploadService,
                 {
-                    name: CmsModuleRoot.Editor,
-                    routes: [
-                        {
-                            path: 'content/media/:id',
-                            component: ContentFormEditComponent
-                        }
+                    provide: EDITOR_ROUTES, useValue: [
+                        { path: 'content/media/:id', component: ContentFormEditComponent }
                     ],
-                    widgets: [
-                        {
-                            component: MediaTreeComponent,
-                            position: CmsWidgetPosition.Right,
-                            group: "Medias"
-                        }
-                    ]
+                    multi: true
+                },
+                {
+                    provide: EDITOR_WIDGETS, useValue: [
+                        { group: "Medias", position: CmsWidgetPosition.Right, component: MediaTreeComponent }
+                    ],
+                    multi: true
                 }
             ]
-
-        })
+        }
     }
 }

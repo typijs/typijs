@@ -6,7 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faChevronRight, faChevronLeft, faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 
-import { CMS, CoreModule } from '@angular-cms/core';
+import { CoreModule } from '@angular-cms/core';
 import {
   CmsAngularSplitModule,
   CmsBsDropdownModule,
@@ -15,9 +15,11 @@ import {
   CmsProgressbarModule,
   CmsModalModule,
   DndModule,
+  PageModule,
   MediaModule,
   BlockModule,
-  PropertiesModule
+  PropertiesModule,
+  SiteManageModule
 } from '@angular-cms/modules';
 
 import { CmsHeaderComponent } from './shared/components/cms-header/cms-header.component';
@@ -30,8 +32,6 @@ import { WidgetService } from './services/widget.service';
 import { PortalComponent } from './portal.component';
 import { PortalRoutingModule } from './portal.routing';
 import { QuillModule } from 'ngx-quill';
-import { Router } from '@angular/router';
-import { PageModule } from '@angular-cms/modules';
 
 @NgModule({
   imports: [
@@ -51,9 +51,10 @@ import { PageModule } from '@angular-cms/modules';
     DndModule.forRoot(),
     CoreModule.forChild(),
     PropertiesModule.forRoot(),
-    PageModule,
-    MediaModule,
-    BlockModule,
+    PageModule.forRoot(),
+    MediaModule.forRoot(),
+    BlockModule.forRoot(),
+    SiteManageModule.forRoot(),
     PortalRoutingModule
   ],
   declarations: [

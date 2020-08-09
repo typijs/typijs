@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 
 import { CmsPropertyFactoryResolver } from './bases/cms-property.factory';
-import { CMS } from './cms';
 import { CmsContentRender } from './infrastructure/rendering/cms-content';
 import { ContentAreaRender } from './infrastructure/rendering/content-area/content-area';
 import { ContentAreaDirective } from './infrastructure/rendering/content-area/content-area.directive';
@@ -56,7 +55,7 @@ export class CoreModule {
   public static forChild(): ModuleWithProviders<CoreModule> {
     return {
       ngModule: CoreModule,
-      providers: [...CMS.PROPERTY_PROVIDERS, CmsPropertyFactoryResolver]
+      providers: [CmsPropertyFactoryResolver]
     };
   }
 }

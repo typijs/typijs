@@ -1,19 +1,12 @@
 import { Injectable, ComponentFactoryResolver, ComponentRef, InjectionToken, Injector, Inject } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
-import { CMS } from '../cms';
 import { CmsProperty } from './cms-property';
 import { ClassOf } from '../types';
 import { ContentTypeProperty } from '../types/content-type';
 
 // https://stackoverflow.com/questions/51824125/injection-of-multiple-instances-in-angular
 export const PROPERTY_PROVIDERS_TOKEN: InjectionToken<CmsPropertyFactory[]> = new InjectionToken<CmsPropertyFactory[]>('PROPERTY_PROVIDERS_TOKEN');
-
-// export function getCmsPropertyFactory(propertyUIHint: string) {
-//     return (injector: Injector): CmsPropertyFactory => {
-//         return new CmsPropertyFactory(propertyUIHint, injector)
-//     };
-// };
 
 export class CmsPropertyFactory {
     protected componentFactoryResolver: ComponentFactoryResolver;

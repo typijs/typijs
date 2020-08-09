@@ -1,20 +1,20 @@
 import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
+import { NgModule, ModuleWithProviders } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faCubes, faFolder, faCube, faFolderPlus, faPlusSquare, faBars, faPlus } from '@fortawesome/free-solid-svg-icons';
 
-//import { CmsBsDropdownModule, CmsAngularSplitModule } from '../shared/libs';
+import { CmsWidgetPosition, EDITOR_ROUTES, EDITOR_WIDGETS } from '@angular-cms/core';
+
 import { CmsAngularSplitModule } from '../shared/libs/angular-split/module';
 import { CmsBsDropdownModule } from '../shared/libs/ngx-bootstrap/bs-dropdown.module';
 import { DndModule } from '../shared/drag-drop/dnd.module';
 import { TreeModule } from '../shared/tree/tree.module';
-
 import { BlockTreeComponent } from './block-tree.component';
-import { CmsModuleRoot, CmsWidgetPosition, AngularCms } from '@angular-cms/core';
 import { ContentFormEditComponent } from '../content/content-form-edit/content-form-edit.component';
 import { ContentTypeListComponent } from '../content/content-type-list/content-type-list.component';
+
 @NgModule({
     imports: [
         CommonModule,
@@ -40,34 +40,27 @@ import { ContentTypeListComponent } from '../content/content-type-list/content-t
 export class BlockModule {
     constructor(library: FaIconLibrary) {
         library.addIcons(faFolder, faCubes, faCube, faFolderPlus, faPlusSquare, faBars, faPlus);
-        AngularCms.registerModule({
-            module: BlockModule,
-            roots: [
+    }
+
+    public static forRoot(): ModuleWithProviders<BlockModule> {
+        return {
+            ngModule: BlockModule,
+            providers: [
                 {
-                    name: CmsModuleRoot.Editor,
-                    routes: [
-                        {
-                            path: 'new/block',
-                            component: ContentTypeListComponent
-                        },
-                        {
-                            path: 'new/block/:parentId',
-                            component: ContentTypeListComponent
-                        },
-                        {
-                            path: 'content/block/:id',
-                            component: ContentFormEditComponent
-                        }
+                    provide: EDITOR_ROUTES, useValue: [
+                        { path: 'new/block', component: ContentTypeListComponent },
+                        { path: 'new/block/:parentId', component: ContentTypeListComponent },
+                        { path: 'content/block/:id', component: ContentFormEditComponent }
                     ],
-                    widgets: [
-                        {
-                            component: BlockTreeComponent,
-                            position: CmsWidgetPosition.Right,
-                            group: "Blocks"
-                        }
-                    ]
+                    multi: true
+                },
+                {
+                    provide: EDITOR_WIDGETS, useValue: [
+                        { group: "Blocks", position: CmsWidgetPosition.Right, component: BlockTreeComponent }
+                    ],
+                    multi: true
                 }
             ]
-        })
+        }
     }
 }
