@@ -10,8 +10,8 @@ import { AdminComponent } from './admin/admin.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 
 export function getPortalRoutes(editorRoutes: Routes[], adminRoutes: Routes[]): Route[] {
-    const childEditorRoutes: Route[] = editorRoutes.reduce((a, b) => a.concat(b));
-    const childAdminRoutes: Route[] = adminRoutes.reduce((a, b) => a.concat(b));
+    const childEditorRoutes: Route[] = editorRoutes.reduce((a, b) => a.concat(b), []);
+    const childAdminRoutes: Route[] = adminRoutes.reduce((a, b) => a.concat(b), []);
     return [{
         path: '', component: PortalComponent,
         children: [

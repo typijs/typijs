@@ -6,7 +6,7 @@ import { ClassOf } from '../types';
 import { ContentTypeProperty } from '../types/content-type';
 
 // https://stackoverflow.com/questions/51824125/injection-of-multiple-instances-in-angular
-export const PROPERTY_PROVIDERS_TOKEN: InjectionToken<CmsPropertyFactory[]> = new InjectionToken<CmsPropertyFactory[]>('PROPERTY_PROVIDERS_TOKEN');
+export const PROPERTY_FACTORIES: InjectionToken<CmsPropertyFactory[]> = new InjectionToken<CmsPropertyFactory[]>('PROPERTY_FACTORIES');
 
 export class CmsPropertyFactory {
     protected componentFactoryResolver: ComponentFactoryResolver;
@@ -43,7 +43,7 @@ export class CmsPropertyFactory {
  */
 @Injectable()
 export class CmsPropertyFactoryResolver {
-    constructor(@Inject(PROPERTY_PROVIDERS_TOKEN) private propertyFactories: CmsPropertyFactory[]) { }
+    constructor(@Inject(PROPERTY_FACTORIES) private propertyFactories: CmsPropertyFactory[]) { }
 
     resolvePropertyFactory(uiHint: string): CmsPropertyFactory {
         //TODO: Need to get last element to allow override factory

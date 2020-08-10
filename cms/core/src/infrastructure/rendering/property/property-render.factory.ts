@@ -7,7 +7,7 @@ import { ContentAreaRender } from '../content-area/content-area';
 import { CmsPropertyRender, ImageRender, ObjectListRender, TextRender, UrlListRender, UrlRender, XHtmlRender } from "./property-render";
 
 // https://stackoverflow.com/questions/51824125/injection-of-multiple-instances-in-angular
-export const PROPERTY_RENDER: InjectionToken<CmsPropertyRenderFactory[]> = new InjectionToken<CmsPropertyRenderFactory[]>('PROPERTY_RENDER_PROVIDERS_TOKEN');
+export const PROPERTY_RENDERS: InjectionToken<CmsPropertyRenderFactory[]> = new InjectionToken<CmsPropertyRenderFactory[]>('PROPERTY_RENDERS');
 
 export class CmsPropertyRenderFactory {
     protected componentFactoryResolver: ComponentFactoryResolver;
@@ -40,7 +40,7 @@ export class CmsPropertyRenderFactory {
     providedIn: 'root'
 })
 export class CmsPropertyRenderFactoryResolver {
-    constructor(@Inject(PROPERTY_RENDER) private propertyRenderFactories: CmsPropertyRenderFactory[]) { }
+    constructor(@Inject(PROPERTY_RENDERS) private propertyRenderFactories: CmsPropertyRenderFactory[]) { }
 
     resolvePropertyRenderFactory(uiHint: string): CmsPropertyRenderFactory {
         const propertyRenderFactory = this.propertyRenderFactories.find(x => x.isMatching(uiHint));

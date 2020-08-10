@@ -18,6 +18,6 @@ export class EditorComponent extends BaseLayoutComponent {
     }
 
     protected getCmsWidgets(): Array<CmsComponentConfig> {
-        return this.editorWidgets.reduce((a, b) => a.concat(b));
+        return this.editorWidgets.reduce((a, b) => a.concat(b), []);
     }
 }

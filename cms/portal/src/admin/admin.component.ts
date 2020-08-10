@@ -18,6 +18,6 @@ export class AdminComponent extends BaseLayoutComponent {
     }
 
     protected getCmsWidgets(): Array<CmsComponentConfig> {
-        return this.adminWidgets.reduce((a, b) => a.concat(b));
+        return this.adminWidgets.reduce((a, b) => a.concat(b), []);
     }
 }

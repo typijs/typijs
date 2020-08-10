@@ -12,7 +12,7 @@ import { AuthService } from './infrastructure/auth/auth.service';
 import { localStorageFactory, LOCAL_STORAGE } from './infrastructure/browser/browser-storage.service';
 import { ConfigService } from './infrastructure/config/config.service';
 import { CmsContentRender } from './infrastructure/rendering/cms-content';
-import { ContentAreaRenderFactory, ImageRenderFactory, ObjectListRenderFactory, PROPERTY_RENDER, TextareaRenderFactory, TextRenderFactory, UrlListRenderFactory, UrlRenderFactory, XHtmlRenderFactory } from './infrastructure/rendering/property/property-render.factory';
+import { ContentAreaRenderFactory, ImageRenderFactory, ObjectListRenderFactory, PROPERTY_RENDERS, TextareaRenderFactory, TextRenderFactory, UrlListRenderFactory, UrlRenderFactory, XHtmlRenderFactory } from './infrastructure/rendering/property/property-render.factory';
 import { setAppInjector } from './utils/appInjector';
 import { CustomRouteReuseStrategy } from './utils/route-reuse-strategy';
 import { UndetectedEventPlugin } from './utils/undetected.event';
@@ -36,14 +36,14 @@ export class AngularCms {
                 { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
                 { provide: EVENT_MANAGER_PLUGINS, useClass: UndetectedEventPlugin, multi: true },
                 { provide: RouteReuseStrategy, useClass: CustomRouteReuseStrategy },
-                { provide: PROPERTY_RENDER, useClass: ContentAreaRenderFactory, multi: true },
-                { provide: PROPERTY_RENDER, useClass: TextRenderFactory, multi: true },
-                { provide: PROPERTY_RENDER, useClass: TextareaRenderFactory, multi: true },
-                { provide: PROPERTY_RENDER, useClass: XHtmlRenderFactory, multi: true },
-                { provide: PROPERTY_RENDER, useClass: ImageRenderFactory, multi: true },
-                { provide: PROPERTY_RENDER, useClass: UrlRenderFactory, multi: true },
-                { provide: PROPERTY_RENDER, useClass: UrlListRenderFactory, multi: true },
-                { provide: PROPERTY_RENDER, useClass: ObjectListRenderFactory, multi: true },
+                { provide: PROPERTY_RENDERS, useClass: ContentAreaRenderFactory, multi: true },
+                { provide: PROPERTY_RENDERS, useClass: TextRenderFactory, multi: true },
+                { provide: PROPERTY_RENDERS, useClass: TextareaRenderFactory, multi: true },
+                { provide: PROPERTY_RENDERS, useClass: XHtmlRenderFactory, multi: true },
+                { provide: PROPERTY_RENDERS, useClass: ImageRenderFactory, multi: true },
+                { provide: PROPERTY_RENDERS, useClass: UrlRenderFactory, multi: true },
+                { provide: PROPERTY_RENDERS, useClass: UrlListRenderFactory, multi: true },
+                { provide: PROPERTY_RENDERS, useClass: ObjectListRenderFactory, multi: true },
                 //Not working on SSR mode and AOT
                 //https://www.bennadel.com/blog/3565-providing-module-configuration-using-forroot-and-ahead-of-time-compiling-in-angular-7-2-0.htm
             ]
