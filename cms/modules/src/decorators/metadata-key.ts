@@ -1,0 +1,6 @@
+export const COLUMN_METADATA_KEY = Symbol("COLUMN_METADATA_KEY");
+export const COLUMNS_METADATA_KEY = Symbol("COLUMNS_METADATA_KEY");
+
+export const TABLE_METADATA_KEY = Symbol("TABLE_METADATA_KEY");
+export const TABLE_INDICATOR = Symbol("TABLE_INDICATOR");
+

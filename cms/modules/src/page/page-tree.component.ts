@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 
 import { Page, PageService } from '@angular-cms/core';
-//import { TreeNode, TreeComponent, TreeConfig, NodeMenuItemAction, TreeMenuActionEvent } from '../shared/tree';
 import { TreeNode } from '../shared/tree/interfaces/tree-node';
 import { TreeComponent } from '../shared/tree/components/tree.component';
 import { TreeConfig } from '../shared/tree/interfaces/tree-config';
@@ -12,6 +11,7 @@ import { NodeMenuItemAction, TreeMenuActionEvent } from '../shared/tree/interfac
 import { PageTreeService } from './page-tree.service';
 import { SubscriptionDestroy } from '../shared/subscription-destroy';
 import { SubjectService } from '../shared/services/subject.service';
+import { TreeService } from '../shared/tree/interfaces/tree-service';
 
 const PageMenuItemAction = {
     DeletePage: 'DeletePage',
@@ -39,7 +39,7 @@ const PageMenuItemAction = {
         </cms-tree>
         `,
     styleUrls: ['./page-tree.scss'],
-    providers: [PageTreeService]
+    providers: [PageTreeService, { provide: TreeService, useExisting: PageTreeService }]
 })
 export class PageTreeComponent extends SubscriptionDestroy {
     @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
@@ -48,7 +48,6 @@ export class PageTreeComponent extends SubscriptionDestroy {
     treeConfig: TreeConfig;
 
     constructor(
-        private pageTreeService: PageTreeService,
         private pageService: PageService,
         private subjectService: SubjectService,
         private router: Router,
@@ -114,7 +113,6 @@ export class PageTreeComponent extends SubscriptionDestroy {
 
     private initTreeConfiguration(): TreeConfig {
         return {
-            service: this.pageTreeService,
             menuItems: [
                 {
                     action: PageMenuItemAction.NewPage,

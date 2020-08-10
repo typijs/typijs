@@ -13,7 +13,7 @@ export class DragLeaveDirective {
         this.renderer.removeClass(this.hostElement.nativeElement.parentNode, 'drag-over');
     }
 
-    @HostListener('drop', ['$event'])
+    @HostListener('drop')
     public onDrop() {
         this.renderer.removeClass(this.hostElement.nativeElement.parentNode, 'drag-over');
     }

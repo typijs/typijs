@@ -1,12 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { NgModule, ModuleWithProviders } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faFolder, faFolderPlus, faPhotoVideo } from '@fortawesome/free-solid-svg-icons';
 
-import { CoreModule } from '@angular-cms/core';
+import { CoreModule, AngularCms, EDITOR_ROUTES, EDITOR_WIDGETS } from '@angular-cms/core';
 
 //import { CmsProgressbarModule, CmsModalModule, CmsAngularSplitModule } from '../shared/libs';
 import { CmsAngularSplitModule } from '../shared/libs/angular-split/module';
@@ -23,11 +22,12 @@ import { FileModalComponent } from './upload/file-modal.component';
 import { FileDropComponent } from './upload/file-drop.component';
 import { UploadService } from './upload/upload.service';
 import { FileSelectDirective } from './upload/file-select.directive';
+import { CmsModuleRoot, CmsWidgetPosition } from '@angular-cms/core';
+import { ContentFormEditComponent } from '../content/content-form-edit/content-form-edit.component';
 
 @NgModule({
     imports: [
         CommonModule,
-        HttpClientModule,
         FormsModule,
         ReactiveFormsModule,
         RouterModule,
@@ -54,11 +54,31 @@ import { FileSelectDirective } from './upload/file-select.directive';
     ],
     exports: [
         MediaTreeComponent
-    ],
-    providers: [UploadService]
+    ]
 })
 export class MediaModule {
     constructor(library: FaIconLibrary) {
         library.addIcons(faFolder, faPhotoVideo, faFolderPlus);
+    }
+
+    public static forRoot(): ModuleWithProviders<MediaModule> {
+        return {
+            ngModule: MediaModule,
+            providers: [
+                UploadService,
+                {
+                    provide: EDITOR_ROUTES, useValue: [
+                        { path: 'content/media/:id', component: ContentFormEditComponent }
+                    ],
+                    multi: true
+                },
+                {
+                    provide: EDITOR_WIDGETS, useValue: [
+                        { group: "Medias", position: CmsWidgetPosition.Right, component: MediaTreeComponent }
+                    ],
+                    multi: true
+                }
+            ]
+        }
     }
 }

@@ -1,5 +1,5 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
-import { CMS, CmsComponentConfig } from '@angular-cms/core';
+import { Component, ChangeDetectorRef, Inject } from '@angular/core';
+import { EDITOR_WIDGETS, CmsComponentConfig } from '@angular-cms/core';
 
 import { BaseLayoutComponent } from '../shared/base-layout.component';
 import { WidgetService } from '../services/widget.service';
@@ -10,12 +10,14 @@ import { WidgetService } from '../services/widget.service';
 export class EditorComponent extends BaseLayoutComponent {
 
     constructor(
+        @Inject(EDITOR_WIDGETS) private editorWidgets: CmsComponentConfig[][],
         _changeDetectionRef: ChangeDetectorRef,
         widgetService: WidgetService) {
         super(_changeDetectionRef, widgetService);
+        this.cmsWidgets = this.getCmsWidgets();
     }
 
     protected getCmsWidgets(): Array<CmsComponentConfig> {
-        return CMS.EDITOR_WIDGETS();
+        return this.editorWidgets.reduce((a, b) => a.concat(b), []);
     }
 }

@@ -7,7 +7,7 @@ import { ContentReferenceProperty } from './content-reference.property';
 @Injectable()
 export class ContentReferenceFactory extends CmsPropertyFactory {
     constructor(injector: Injector) {
-        super(UIHint.ContentReference, injector);
+        super(injector, UIHint.ContentReference, ContentReferenceProperty);
     }
 
     createPropertyComponent(property: ContentTypeProperty, formGroup: FormGroup): ComponentRef<any> {

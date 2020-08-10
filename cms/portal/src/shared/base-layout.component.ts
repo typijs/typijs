@@ -10,13 +10,13 @@ export abstract class BaseLayoutComponent implements OnInit {
 
     private insertPoints: QueryList<InsertPointDirective>;
     private componentRefs: ComponentRef<any>[] = [];
-    private cmsWidgets: CmsComponentConfig[] = [];
+    protected cmsWidgets: CmsComponentConfig[] = [];
 
     rightTabs: Array<CmsTab> = [];
     leftTabs: Array<CmsTab> = [];
 
     constructor(private _changeDetectionRef: ChangeDetectorRef, private widgetService: WidgetService) {
-        this.cmsWidgets = this.getCmsWidgets();
+        //this.cmsWidgets = this.getCmsWidgets();
     }
 
     protected abstract getCmsWidgets(): Array<CmsComponentConfig>;

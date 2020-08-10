@@ -1,9 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 
 import { CmsPropertyFactoryResolver } from './bases/cms-property.factory';
-import { CMS } from './cms';
 import { CmsContentRender } from './infrastructure/rendering/cms-content';
 import { ContentAreaRender } from './infrastructure/rendering/content-area/content-area';
 import { ContentAreaDirective } from './infrastructure/rendering/content-area/content-area.directive';
@@ -15,8 +13,7 @@ import { AbsolutePipe } from './pipes/absolute.pipe';
 
 @NgModule({
   imports: [
-    CommonModule,
-    HttpClientModule
+    CommonModule
   ],
   declarations: [
     SafePipe,
@@ -38,7 +35,7 @@ import { AbsolutePipe } from './pipes/absolute.pipe';
   exports: [
     SafePipe,
     AbsolutePipe,
-    
+
     CmsContentRender,
     InsertPointDirective,
     CmsPropertyDirective,
@@ -58,7 +55,7 @@ export class CoreModule {
   public static forChild(): ModuleWithProviders<CoreModule> {
     return {
       ngModule: CoreModule,
-      providers: [...CMS.PROPERTY_PROVIDERS, CmsPropertyFactoryResolver]
+      providers: [CmsPropertyFactoryResolver]
     };
   }
 }

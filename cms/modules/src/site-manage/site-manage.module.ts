@@ -1,26 +1,22 @@
-import { NgModule } from '@angular/core';
+import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
-import { CoreModule } from '@angular-cms/core';
-
-import { SiteManageEntryComponent } from './site-manage-entry.component';
-import { SiteManageComponent } from './site-manage.component';
+import { CmsWidgetPosition, ADMIN_ROUTES, ADMIN_WIDGETS } from '@angular-cms/core';
+import { SiteManageComponent, SiteManageEntryComponent } from './site-manage.component';
 import { SiteManageService } from './site-manage.service';
-import { PropertiesModule } from '../properties/properties.module';
+import { CrudModule } from '../shared/crud/crud.module';
+import { CrudBaseService } from '../shared/crud/crud.service';
 
 @NgModule({
     imports: [
         CommonModule,
-        HttpClientModule,
         FormsModule,
         ReactiveFormsModule,
         RouterModule,
 
-        CoreModule,
-        PropertiesModule
+        CrudModule
     ],
     declarations: [
         SiteManageComponent,
@@ -33,7 +29,35 @@ import { PropertiesModule } from '../properties/properties.module';
     exports: [
         SiteManageComponent,
         SiteManageEntryComponent
-    ],
-    providers: [SiteManageService]
+    ]
 })
-export class SiteManageModule { }
+export class SiteManageModule {
+    public static forRoot(): ModuleWithProviders<SiteManageModule> {
+        return {
+            ngModule: SiteManageModule,
+            providers: [
+                SiteManageService,
+                { provide: CrudBaseService, useExisting: SiteManageService },
+                {
+                    provide: ADMIN_ROUTES, useValue: [
+                        {
+                            path: 'site-manage',
+                            component: SiteManageComponent
+                        }
+                    ],
+                    multi: true
+                },
+                {
+                    provide: ADMIN_WIDGETS, useValue: [
+                        {
+                            component: SiteManageEntryComponent,
+                            position: CmsWidgetPosition.Left,
+                            group: 'Config'
+                        }
+                    ],
+                    multi: true
+                }
+            ]
+        }
+    }
+}

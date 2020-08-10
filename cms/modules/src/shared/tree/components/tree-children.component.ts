@@ -43,7 +43,6 @@ export class TreeChildrenComponent extends TreeBaseComponent implements OnInit {
     @Input() templates: any = {};
 
     public nodeChildren: TreeNode[] = [];
-    private treeService: TreeService;
 
     constructor(private treeStore: TreeStore) { super() }
 
@@ -70,14 +69,9 @@ export class TreeChildrenComponent extends TreeBaseComponent implements OnInit {
             })
         });
 
-        if (this.config) {
-            this.treeService = this.config.service;
-            if (this.treeService) {
-                this.treeStore.getTreeChildrenData(this.root.id).subscribe((nodeChildren: TreeNode[]) => {
-                    this.treeStore.getTreeNodesSubjectByKey$(this.root.id).next(nodeChildren);
-                });
-            }
-        }
+        this.treeStore.getTreeChildrenData(this.root.id).subscribe((nodeChildren: TreeNode[]) => {
+            this.treeStore.getTreeNodesSubjectByKey$(this.root.id).next(nodeChildren);
+        });
     }
 
     private setExpandStateForNewNodeChildren(newNodes: TreeNode[]) {
