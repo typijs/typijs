@@ -3,8 +3,8 @@
  */
 export * from './angular-cms.module';
 export * from './bases/cms-component';
-export { CmsProperty } from './bases/cms-property';
-export { CmsPropertyFactory, CmsPropertyFactoryResolver, PROPERTY_FACTORIES } from './bases/cms-property.factory';
+export * from './bases/cms-property';
+export * from './bases/cms-property.factory';
 export * from './bases/selection-factory';
 export * from './cms';
 export * from './constants';
@@ -15,7 +15,7 @@ export * from './decorators/metadata-key';
 export * from './decorators/property.decorator';
 export * from './decorators/validate.decorator';
 
-export { clone, generateUUID, sortTabByTitle } from './helpers/common';
+export * from './helpers/common';
 
 export * from './infrastructure/auth/auth.enum';
 export * from './infrastructure/auth/auth.guard';

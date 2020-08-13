@@ -15,10 +15,6 @@ import { HttpClientModule } from '@angular/common/http';
 AngularCms.registerContentTypes(contentTypes);
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    LayoutComponent,
-  ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'serverApp' }),
     TransferHttpCacheModule,
@@ -29,7 +25,10 @@ AngularCms.registerContentTypes(contentTypes);
     PagesModule,
     BlocksModule
   ],
-  providers: [],
+  declarations: [
+    AppComponent,
+    LayoutComponent,
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faCubes, faFolder, faCube, faFolderPlus, faPlusSquare, faBars, faPlus } from '@fortawesome/free-solid-svg-icons';
 
@@ -14,6 +14,12 @@ import { TreeModule } from '../shared/tree/tree.module';
 import { BlockTreeComponent } from './block-tree.component';
 import { ContentFormEditComponent } from '../content/content-form-edit/content-form-edit.component';
 import { ContentTypeListComponent } from '../content/content-type-list/content-type-list.component';
+
+const blockRoutes: Routes = [
+    { path: 'new/block', component: ContentTypeListComponent },
+    { path: 'new/block/:parentId', component: ContentTypeListComponent },
+    { path: 'content/block/:id', component: ContentFormEditComponent }
+]
 
 @NgModule({
     imports: [
@@ -46,14 +52,7 @@ export class BlockModule {
         return {
             ngModule: BlockModule,
             providers: [
-                {
-                    provide: EDITOR_ROUTES, useValue: [
-                        { path: 'new/block', component: ContentTypeListComponent },
-                        { path: 'new/block/:parentId', component: ContentTypeListComponent },
-                        { path: 'content/block/:id', component: ContentFormEditComponent }
-                    ],
-                    multi: true
-                },
+                { provide: EDITOR_ROUTES, useValue: blockRoutes, multi: true },
                 {
                     provide: EDITOR_WIDGETS, useValue: [
                         { group: "Blocks", position: CmsWidgetPosition.Right, component: BlockTreeComponent }
