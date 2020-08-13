@@ -12,6 +12,8 @@ import { CustomModule } from './lazy/custom.module';
     imports: [
         ReactiveFormsModule,
         NgxWigModule,
+        //Extend Admin, Editor UI
+        CustomModule.forRoot(),
         CmsPortalModule.forRoot()
     ],
     declarations: [
