@@ -7,6 +7,7 @@ import { ContentTypeProperty } from '../types/content-type';
 
 // https://stackoverflow.com/questions/51824125/injection-of-multiple-instances-in-angular
 export const PROPERTY_FACTORIES: InjectionToken<CmsPropertyFactory[]> = new InjectionToken<CmsPropertyFactory[]>('PROPERTY_FACTORIES');
+export const DEFAULT_PROPERTY_FACTORIES: InjectionToken<CmsPropertyFactory[]> = new InjectionToken<CmsPropertyFactory[]>('DEFAULT_PROPERTY_FACTORIES');
 
 export class CmsPropertyFactory {
     protected componentFactoryResolver: ComponentFactoryResolver;
@@ -43,14 +44,20 @@ export class CmsPropertyFactory {
  */
 @Injectable()
 export class CmsPropertyFactoryResolver {
-    constructor(@Inject(PROPERTY_FACTORIES) private propertyFactories: CmsPropertyFactory[]) { }
+    constructor(
+        @Inject(DEFAULT_PROPERTY_FACTORIES) private defaultPropertyFactories: CmsPropertyFactory[],
+        @Inject(PROPERTY_FACTORIES) private propertyFactories: CmsPropertyFactory[]) { }
 
     resolvePropertyFactory(uiHint: string): CmsPropertyFactory {
         //TODO: Need to get last element to allow override factory
-        const propertyFactory = this.propertyFactories.find(x => x.isMatching(uiHint));
-        if (!propertyFactory)
-            throw new Error(`The CMS can not resolve the Property Factor for the property with UIHint of ${uiHint}`);
+        let lastIndex = this.propertyFactories.map(x => x.isMatching(uiHint)).lastIndexOf(true);
+        if (lastIndex == -1) {
+            lastIndex = this.defaultPropertyFactories.map(x => x.isMatching(uiHint)).lastIndexOf(true);
+        } else {
+            return this.propertyFactories[lastIndex];
+        }
 
-        return propertyFactory;
+        if (lastIndex == -1) throw new Error(`The CMS can not resolve the Property Factor for the property with UIHint of ${uiHint}`);
+        return this.defaultPropertyFactories[lastIndex];;
     }
 }

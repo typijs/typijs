@@ -8,6 +8,7 @@ import { CmsPropertyRender, ImageRender, ObjectListRender, TextRender, UrlListRe
 
 // https://stackoverflow.com/questions/51824125/injection-of-multiple-instances-in-angular
 export const PROPERTY_RENDERS: InjectionToken<CmsPropertyRenderFactory[]> = new InjectionToken<CmsPropertyRenderFactory[]>('PROPERTY_RENDERS');
+export const DEFAULT_PROPERTY_RENDERS: InjectionToken<CmsPropertyRenderFactory[]> = new InjectionToken<CmsPropertyRenderFactory[]>('DEFAULT_PROPERTY_RENDERS');
 
 export class CmsPropertyRenderFactory {
     protected componentFactoryResolver: ComponentFactoryResolver;
@@ -40,14 +41,20 @@ export class CmsPropertyRenderFactory {
     providedIn: 'root'
 })
 export class CmsPropertyRenderFactoryResolver {
-    constructor(@Inject(PROPERTY_RENDERS) private propertyRenderFactories: CmsPropertyRenderFactory[]) { }
+    constructor(
+        @Inject(DEFAULT_PROPERTY_RENDERS) private defaultPropertyRenderFactories: CmsPropertyRenderFactory[],
+        @Inject(PROPERTY_RENDERS) private propertyRenderFactories: CmsPropertyRenderFactory[]) { }
 
     resolvePropertyRenderFactory(uiHint: string): CmsPropertyRenderFactory {
-        const propertyRenderFactory = this.propertyRenderFactories.find(x => x.isMatching(uiHint));
-        if (!propertyRenderFactory)
-            throw new Error(`The CMS can not resolve the Property Render Factor for the property with UIHint of ${uiHint}`);
+        let lastIndex = this.propertyRenderFactories.map(x => x.isMatching(uiHint)).lastIndexOf(true);
+        if (lastIndex == -1) {
+            lastIndex = this.defaultPropertyRenderFactories.map(x => x.isMatching(uiHint)).lastIndexOf(true);
+        } else {
+            return this.propertyRenderFactories[lastIndex];
+        }
+        if (lastIndex == -1) throw new Error(`The CMS can not resolve the Property Render Factor for the property with UIHint of ${uiHint}`);
 
-        return propertyRenderFactory;
+        return this.defaultPropertyRenderFactories[lastIndex];;
     }
 }
 
