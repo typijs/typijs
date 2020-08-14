@@ -1,4 +1,4 @@
-import { Injectable, ComponentFactoryResolver, ComponentRef, InjectionToken, Injector, Inject } from '@angular/core';
+import { Injectable, ComponentFactoryResolver, ComponentRef, InjectionToken, Injector, Inject, Optional } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { CmsProperty } from './cms-property';
@@ -46,18 +46,18 @@ export class CmsPropertyFactory {
 export class CmsPropertyFactoryResolver {
     constructor(
         @Inject(DEFAULT_PROPERTY_FACTORIES) private defaultPropertyFactories: CmsPropertyFactory[],
-        @Inject(PROPERTY_FACTORIES) private propertyFactories: CmsPropertyFactory[]) { }
+        @Optional() @Inject(PROPERTY_FACTORIES) private propertyFactories?: CmsPropertyFactory[]) { }
 
     resolvePropertyFactory(uiHint: string): CmsPropertyFactory {
-        //TODO: Need to get last element to allow override factory
-        let lastIndex = this.propertyFactories.map(x => x.isMatching(uiHint)).lastIndexOf(true);
-        if (lastIndex == -1) {
-            lastIndex = this.defaultPropertyFactories.map(x => x.isMatching(uiHint)).lastIndexOf(true);
-        } else {
-            return this.propertyFactories[lastIndex];
+        let lastIndex = -1;
+        if (this.propertyFactories) {
+            lastIndex = this.propertyFactories.map(x => x.isMatching(uiHint)).lastIndexOf(true);
+            if (lastIndex != -1) return this.propertyFactories[lastIndex];
         }
 
+        lastIndex = this.defaultPropertyFactories.map(x => x.isMatching(uiHint)).lastIndexOf(true);
         if (lastIndex == -1) throw new Error(`The CMS can not resolve the Property Factor for the property with UIHint of ${uiHint}`);
+
         return this.defaultPropertyFactories[lastIndex];;
     }
 }

@@ -1,4 +1,4 @@
-import { ComponentFactoryResolver, ComponentRef, Inject, Injectable, InjectionToken, Injector } from '@angular/core';
+import { ComponentFactoryResolver, ComponentRef, Inject, Injectable, InjectionToken, Injector, Optional } from '@angular/core';
 
 import { ClassOf } from '../../../types';
 import { ContentTypeProperty } from '../../../types/content-type';
@@ -43,15 +43,16 @@ export class CmsPropertyRenderFactory {
 export class CmsPropertyRenderFactoryResolver {
     constructor(
         @Inject(DEFAULT_PROPERTY_RENDERS) private defaultPropertyRenderFactories: CmsPropertyRenderFactory[],
-        @Inject(PROPERTY_RENDERS) private propertyRenderFactories: CmsPropertyRenderFactory[]) { }
+        @Optional() @Inject(PROPERTY_RENDERS) private propertyRenderFactories?: CmsPropertyRenderFactory[]) { }
 
     resolvePropertyRenderFactory(uiHint: string): CmsPropertyRenderFactory {
-        let lastIndex = this.propertyRenderFactories.map(x => x.isMatching(uiHint)).lastIndexOf(true);
-        if (lastIndex == -1) {
-            lastIndex = this.defaultPropertyRenderFactories.map(x => x.isMatching(uiHint)).lastIndexOf(true);
-        } else {
-            return this.propertyRenderFactories[lastIndex];
+        let lastIndex = -1;
+        if (this.propertyRenderFactories) {
+            lastIndex = this.propertyRenderFactories.map(x => x.isMatching(uiHint)).lastIndexOf(true);
+            if (lastIndex != -1) return this.propertyRenderFactories[lastIndex];
         }
+
+        lastIndex = this.defaultPropertyRenderFactories.map(x => x.isMatching(uiHint)).lastIndexOf(true);
         if (lastIndex == -1) throw new Error(`The CMS can not resolve the Property Render Factor for the property with UIHint of ${uiHint}`);
 
         return this.defaultPropertyRenderFactories[lastIndex];;
