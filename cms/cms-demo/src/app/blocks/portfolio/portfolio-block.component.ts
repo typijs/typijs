@@ -4,6 +4,7 @@ import { PortfolioBlock } from './portfolio.blocktype';
 
 @Component({
     selector: '[portfolio-block]',
+    host: { 'class': 'grid_1_of_3 images_1_of_3' },
     templateUrl: 'portfolio-block.component.html'
 })
 

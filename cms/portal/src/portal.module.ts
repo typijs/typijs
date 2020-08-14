@@ -49,7 +49,7 @@ import { QuillModule } from 'ngx-quill';
     QuillModule.forRoot(),
 
     DndModule.forRoot(),
-    CoreModule.forChild(),
+    CoreModule.forRoot(),
     PropertiesModule.forRoot(),
     PageModule.forRoot(),
     MediaModule.forRoot(),

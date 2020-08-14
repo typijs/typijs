@@ -1,12 +1,13 @@
 import { NgModule } from '@angular/core';
-
+import { ReactiveFormsModule } from '@angular/forms';
+import { NgxWigModule } from 'ngx-wig';
 import { PROPERTY_FACTORIES } from '@angular-cms/core';
 import { CmsPortalModule } from '@angular-cms/portal';
-import { NgxWigModule } from 'ngx-wig';
+
+import { CustomModule } from './lazy/custom.module';
 import { NgxWigPropertyFactory } from './xhtml/wig.factory';
 import { NgxWigProperty } from './xhtml/wig.property';
-import { ReactiveFormsModule } from '@angular/forms';
-import { CustomModule } from './lazy/custom.module';
+
 
 @NgModule({
     imports: [

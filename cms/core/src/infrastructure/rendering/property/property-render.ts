@@ -1,11 +1,10 @@
-import { Component, HostBinding, Input } from '@angular/core';
+import { Component, HostBinding, Input, Directive } from '@angular/core';
 import { DomSanitizer, SafeHtml, SafeUrl } from '@angular/platform-browser';
 
 import { isUrlAbsolute } from '../../../helpers/common';
 import { CmsImage, CmsLink } from '../../../types';
 import { ContentTypeProperty } from '../../../types/content-type';
 import { ConfigService } from '../../config/config.service';
-
 
 export abstract class CmsPropertyRender {
     @Input()
@@ -77,6 +76,35 @@ export class ImageRender extends CmsPropertyRender {
             this.alt = value.alt;
         }
     }
+}
+
+@Directive({
+    selector: 'img[cmsImage]',
+    exportAs: 'cmsImage',
+    host: {
+        '[attr.src]': 'src',
+        '[attr.alt]': 'alt'
+    }
+})
+export class CmsImageRender {
+    src: SafeUrl;
+    alt: string;
+
+    private _value: CmsImage;
+    @Input('cmsImage')
+    set value(value: CmsImage) {
+        this._value = value;
+        if (value) {
+            const imgSrc = isUrlAbsolute(value.src) ? value.src : `${this.configService.baseApiUrl}${value.src}`
+            this.src = this.sanitizer.bypassSecurityTrustUrl(imgSrc);
+            this.alt = value.alt;
+        }
+    }
+    get value(): CmsImage {
+        return this._value;
+    }
+
+    constructor(private configService: ConfigService, private sanitizer: DomSanitizer) { }
 }
 
 @Component({

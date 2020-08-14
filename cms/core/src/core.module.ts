@@ -3,11 +3,11 @@ import { ModuleWithProviders, NgModule } from '@angular/core';
 
 import { CmsPropertyFactoryResolver } from './bases/cms-property.factory';
 import { CmsContentRender } from './infrastructure/rendering/cms-content';
-import { ContentAreaRender } from './infrastructure/rendering/content-area/content-area';
+import { ContentAreaRender, ContentArea } from './infrastructure/rendering/content-area/content-area';
 import { ContentAreaDirective } from './infrastructure/rendering/content-area/content-area.directive';
 import { InsertPointDirective } from './infrastructure/rendering/insert-point.directive';
 import { CmsPropertyDirective } from './infrastructure/rendering/property/cms-property.directive';
-import { ImageRender, ObjectListRender, TextRender, UrlListRender, UrlRender, XHtmlRender } from './infrastructure/rendering/property/property-render';
+import { ImageRender, ObjectListRender, TextRender, UrlListRender, UrlRender, XHtmlRender, CmsImageRender } from './infrastructure/rendering/property/property-render';
 import { SafePipe } from './pipes/safe.pipe';
 import { AbsolutePipe } from './pipes/absolute.pipe';
 
@@ -24,6 +24,9 @@ import { AbsolutePipe } from './pipes/absolute.pipe';
     CmsPropertyDirective,
     ContentAreaDirective,
 
+    ContentArea,
+    CmsImageRender,
+
     ContentAreaRender,
     TextRender,
     XHtmlRender,
@@ -35,6 +38,9 @@ import { AbsolutePipe } from './pipes/absolute.pipe';
   exports: [
     SafePipe,
     AbsolutePipe,
+
+    ContentArea,
+    CmsImageRender,
 
     CmsContentRender,
     InsertPointDirective,
@@ -52,7 +58,7 @@ import { AbsolutePipe } from './pipes/absolute.pipe';
   ]
 })
 export class CoreModule {
-  public static forChild(): ModuleWithProviders<CoreModule> {
+  public static forRoot(): ModuleWithProviders<CoreModule> {
     return {
       ngModule: CoreModule,
       providers: [CmsPropertyFactoryResolver]
