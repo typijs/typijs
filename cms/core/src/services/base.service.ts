@@ -1,7 +1,7 @@
 
 import { HttpClient } from '@angular/common/http';
 import { AppInjector } from '../utils/appInjector';
-import { ConfigService } from '../infrastructure/config/config.service';
+import { ConfigService } from '../config/config.service';
 
 export abstract class BaseService {
     protected baseApiUrl: string = AppInjector ? AppInjector.get(ConfigService).baseApiUrl : '';

@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { BaseService } from '../../services/base.service';
+import { BaseService } from '../services/base.service';
 import { AuthStatus, TokenResponse } from './auth.model';
 
 @Injectable({ providedIn: 'root' })

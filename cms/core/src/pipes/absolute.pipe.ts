@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { ConfigService } from '../infrastructure/config/config.service';
+import { ConfigService } from '../config/config.service';
 import { isUrlAbsolute } from '../helpers/common';
 
 @Pipe({

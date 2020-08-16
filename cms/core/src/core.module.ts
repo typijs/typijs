@@ -2,12 +2,14 @@ import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 
 import { CmsPropertyFactoryResolver } from './bases/cms-property.factory';
-import { CmsContentRender } from './infrastructure/rendering/cms-content';
-import { ContentAreaRender, ContentArea } from './infrastructure/rendering/content-area/content-area';
-import { ContentAreaDirective } from './infrastructure/rendering/content-area/content-area.directive';
-import { InsertPointDirective } from './infrastructure/rendering/insert-point.directive';
-import { CmsPropertyDirective } from './infrastructure/rendering/property/cms-property.directive';
-import { ImageRender, ObjectListRender, TextRender, UrlListRender, UrlRender, XHtmlRender, CmsImageRender } from './infrastructure/rendering/property/property-render';
+import { CmsPageRender } from './renders/page-render';
+import { ContentAreaPropertyRender, ContentArea } from './renders/content-area/content-area';
+import { ContentAreaDirective } from './renders/content-area/content-area.directive';
+import { InsertPointDirective } from './renders/insert-point.directive';
+import { CmsPropertyDirective } from './renders/cms-property.directive';
+import { ObjectListRender, TextPropertyRender, UrlListRender, UrlRender, XHtmlPropertyRender } from './renders/property-render';
+import { ImageRenderDirective } from "./renders/image/image-render.directive";
+import { ImagePropertyRender } from "./renders/image/image-render";
 import { SafePipe } from './pipes/safe.pipe';
 import { AbsolutePipe } from './pipes/absolute.pipe';
 
