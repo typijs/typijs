@@ -22,17 +22,17 @@ import { AbsolutePipe } from './pipes/absolute.pipe';
     AbsolutePipe,
 
     InsertPointDirective,
-    CmsContentRender,
+    CmsPageRender,
     CmsPropertyDirective,
     ContentAreaDirective,
 
     ContentArea,
-    CmsImageRender,
+    ImageRenderDirective,
 
-    ContentAreaRender,
-    TextRender,
-    XHtmlRender,
-    ImageRender,
+    ContentAreaPropertyRender,
+    TextPropertyRender,
+    XHtmlPropertyRender,
+    ImagePropertyRender,
     UrlRender,
     UrlListRender,
     ObjectListRender
@@ -42,18 +42,18 @@ import { AbsolutePipe } from './pipes/absolute.pipe';
     AbsolutePipe,
 
     ContentArea,
-    CmsImageRender,
+    ImageRenderDirective,
 
-    CmsContentRender,
+    CmsPageRender,
     InsertPointDirective,
     CmsPropertyDirective,
     ContentAreaDirective
   ],
   entryComponents: [
-    ContentAreaRender,
-    TextRender,
-    XHtmlRender,
-    ImageRender,
+    ContentAreaPropertyRender,
+    TextPropertyRender,
+    XHtmlPropertyRender,
+    ImagePropertyRender,
     UrlRender,
     UrlListRender,
     ObjectListRender

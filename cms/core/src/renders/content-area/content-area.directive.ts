@@ -1,18 +1,18 @@
 import { ComponentFactoryResolver, ComponentRef, Directive, Input, OnDestroy, ViewContainerRef } from '@angular/core';
 
-import { CmsComponent } from '../../../bases/cms-component';
-import { ContentTypeService } from '../../../services/content-type.service';
-import { Block } from '../../../services/content/models/block.model';
-import { BlockData, ContentData } from '../../../services/content/models/content-data';
+import { CmsComponent } from '../../bases/cms-component';
+import { ContentTypeService } from '../../services/content-type.service';
+import { Block } from '../../services/content/models/block.model';
+import { BlockData, ContentData } from '../../services/content/models/content-data';
 
 @Directive({
-    selector: '[cmsContentArea]'
+    selector: '[contentArea]'
 })
 export class ContentAreaDirective implements OnDestroy {
     private componentRefs: Array<ComponentRef<any>> = [];
 
     private _value: Array<any>;
-    @Input('cmsContentArea')
+    @Input('contentArea')
     set value(value: Array<any>) {
         this.viewContainerRef.clear();
         this._value = value;

@@ -1,24 +1,24 @@
 import 'reflect-metadata';
 import { Component, ComponentFactoryResolver, ComponentRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 
-import { CmsComponent } from '../../bases/cms-component';
-import { ngEditMode, ngId } from '../../constants';
-import { ContentTypeMetadata } from '../../decorators/content-type.decorator';
-import { clone } from '../../helpers/common';
-import { ContentTypeService } from '../../services/content-type.service';
-import { PageData } from '../../services/content/models/content-data';
-import { Page } from '../../services/content/models/page.model';
-import { PageService } from '../../services/content/page.service';
-import { ContentTypeProperty } from '../../types/content-type';
-import { UIHint } from '../../types/ui-hint';
+import { CmsComponent } from '../bases/cms-component';
+import { ngEditMode, ngId } from '../constants';
+import { ContentTypeMetadata } from '../decorators/content-type.decorator';
+import { clone } from '../helpers/common';
+import { ContentTypeService } from '../services/content-type.service';
+import { PageData } from '../services/content/models/content-data';
+import { Page } from '../services/content/models/page.model';
+import { PageService } from '../services/content/page.service';
+import { ContentTypeProperty } from '../types/content-type';
+import { UIHint } from '../types/ui-hint';
 import { BrowserLocationService } from '../browser/browser-location.service';
 import { InsertPointDirective } from './insert-point.directive';
 
 @Component({
-    selector: 'cms-content',
+    selector: 'cms-page',
     template: `<ng-template cmsInsertPoint></ng-template>`
 })
-export class CmsContentRender implements OnInit, OnDestroy {
+export class CmsPageRender implements OnInit, OnDestroy {
 
     private pageComponentRef: ComponentRef<any>;
     @ViewChild(InsertPointDirective, { static: true }) pageEditHost: InsertPointDirective;

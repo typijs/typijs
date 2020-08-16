@@ -1,10 +1,11 @@
 import { ComponentFactoryResolver, ComponentRef, Inject, Injectable, InjectionToken, Injector, Optional } from '@angular/core';
 
-import { ClassOf } from '../../../types';
-import { ContentTypeProperty } from '../../../types/content-type';
-import { UIHint } from '../../../types/ui-hint';
-import { ContentAreaRender } from '../content-area/content-area';
-import { CmsPropertyRender, ImageRender, ObjectListRender, TextRender, UrlListRender, UrlRender, XHtmlRender } from "./property-render";
+import { ClassOf } from '../types';
+import { ContentTypeProperty } from '../types/content-type';
+import { UIHint } from '../types/ui-hint';
+import { ContentAreaPropertyRender } from './content-area/content-area';
+import { CmsPropertyRender, ObjectListRender, TextPropertyRender, UrlListRender, UrlRender, XHtmlPropertyRender } from "./property-render";
+import { ImagePropertyRender } from "./image/image-render";
 
 // https://stackoverflow.com/questions/51824125/injection-of-multiple-instances-in-angular
 export const PROPERTY_RENDERS: InjectionToken<CmsPropertyRenderFactory[]> = new InjectionToken<CmsPropertyRenderFactory[]>('PROPERTY_RENDERS');
@@ -62,35 +63,35 @@ export class CmsPropertyRenderFactoryResolver {
 @Injectable()
 export class ContentAreaRenderFactory extends CmsPropertyRenderFactory {
     constructor(injector: Injector) {
-        super(injector, UIHint.ContentArea, ContentAreaRender);
+        super(injector, UIHint.ContentArea, ContentAreaPropertyRender);
     }
 }
 
 @Injectable()
 export class TextRenderFactory extends CmsPropertyRenderFactory {
     constructor(injector: Injector) {
-        super(injector, UIHint.Text, TextRender);
+        super(injector, UIHint.Text, TextPropertyRender);
     }
 }
 
 @Injectable()
 export class TextareaRenderFactory extends CmsPropertyRenderFactory {
     constructor(injector: Injector) {
-        super(injector, UIHint.Textarea, TextRender);
+        super(injector, UIHint.Textarea, TextPropertyRender);
     }
 }
 
 @Injectable()
 export class XHtmlRenderFactory extends CmsPropertyRenderFactory {
     constructor(injector: Injector) {
-        super(injector, UIHint.XHtml, XHtmlRender);
+        super(injector, UIHint.XHtml, XHtmlPropertyRender);
     }
 }
 
 @Injectable()
 export class ImageRenderFactory extends CmsPropertyRenderFactory {
     constructor(injector: Injector) {
-        super(injector, UIHint.Image, ImageRender);
+        super(injector, UIHint.Image, ImagePropertyRender);
     }
 }
 

@@ -4,11 +4,11 @@
 </div>
 
 <div class="banner-division">
-    <h3>
-        <ng-container [cmsProperty]="getProperty('header')"></ng-container>
+    <h3 [cmsProperty]="getProperty('header')">
+        <!-- <ng-container [cmsProperty]="getProperty('header')"></ng-container> -->
     </h3>
-    <div>
-        <ng-container [cmsProperty]="getProperty('summary')"></ng-container>
+    <div [cmsProperty]="getProperty('summary')">
+        <!-- <ng-container [cmsProperty]="getProperty('summary')"></ng-container> -->
     </div>
     <a [href]="currentContent.link">Read more</a>
 </div>

@@ -57,7 +57,7 @@ export class AngularCms {
                     {
                         path: '**',
                         data: { reuse: false }, //pass reuse param to CustomRouteReuseStrategy
-                        component: CmsContentRender,
+                        component: CmsPageRender,
                     }
                 ]
             }
