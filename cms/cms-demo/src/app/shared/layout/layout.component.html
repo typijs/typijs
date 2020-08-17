@@ -5,7 +5,7 @@
             <div class="header" *ngIf="menuItems$ | async as menuItems">
                 <div class="logo">
                     <a href="javascript:void(0)" [routerLink]="['']">
-                        <img *ngIf='startPage.logo' [src]="startPage.logo.src" [alt]="startPage.logo.src">
+                        <img *ngIf='startPage.logo' [cmsImage]="startPage.logo">
                     </a>
                 </div>
                 <div class="cssmenu">
@@ -127,7 +127,7 @@
     <!-- start footer copy -->
     <div class="wrap">
         <div class="wrapper">
-            <div class="copy" [innerHTML]="startPage.footerText">
+            <div class="copy" [cmsXhtml]="startPage.footerText">
 
             </div>
         </div>

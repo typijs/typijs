@@ -1,6 +1,5 @@
 <!-- start banner -->
-<div class="banner">
-    <ng-container [cmsProperty]="getProperty('features')"></ng-container>
+<div class="banner" [cmsContentArea]="currentContent.features">
 </div>
 
 <!-- start content -->
@@ -34,16 +33,15 @@
     <div class="content">
         <h2>how can we help you?</h2>
     </div>
-    <div class="grids_of_3">
-        <ng-template *ngIf="currentContent.portfolios.length >= 3"
-            [cmsContentArea]="currentContent.portfolios.slice(0, 3)"></ng-template>
-        <ng-template *ngIf="currentContent.portfolios.length < 3" [cmsContentArea]="currentContent.portfolios">
-        </ng-template>
+    <div class="grids_of_3" *ngIf="currentContent.portfolios.length >= 3"
+        [cmsContentArea]="currentContent.portfolios.slice(0, 3)">
         <div class="clear"></div>
     </div>
-    <div class="grids_of_3">
-        <ng-template *ngIf="currentContent.portfolios.length > 3" [cmsContentArea]="currentContent.portfolios.slice(4)">
-        </ng-template>
+    <div class="grids_of_3" *ngIf="currentContent.portfolios.length < 3" [cmsContentArea]="currentContent.portfolios">
+        <div class="clear"></div>
+    </div>
+    <div class="grids_of_3" *ngIf="currentContent.portfolios.length > 3"
+        [cmsContentArea]="currentContent.portfolios.slice(4)">
         <div class="clear"></div>
     </div>
 </div>

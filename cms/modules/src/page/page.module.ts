@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faFile, faFolder, faPlus, faSitemap } from '@fortawesome/free-solid-svg-icons';
 
@@ -13,6 +13,12 @@ import { DndModule } from '../shared/drag-drop/dnd.module';
 import { TreeModule } from '../shared/tree/tree.module';
 import { PageTreeReadonlyComponent } from './page-tree-readonly.component';
 import { PageTreeComponent } from './page-tree.component';
+
+const pageRoutes: Routes = [
+    { path: 'new/page', component: ContentTypeListComponent },
+    { path: 'new/page/:parentId', component: ContentTypeListComponent },
+    { path: 'content/page/:id', component: ContentFormEditComponent }
+]
 
 @NgModule({
     imports: [
@@ -49,14 +55,7 @@ export class PageModule {
         return {
             ngModule: PageModule,
             providers: [
-                {
-                    provide: EDITOR_ROUTES, useValue: [
-                        { path: 'new/page', component: ContentTypeListComponent },
-                        { path: 'new/page/:parentId', component: ContentTypeListComponent },
-                        { path: 'content/page/:id', component: ContentFormEditComponent }
-                    ],
-                    multi: true
-                },
+                { provide: EDITOR_ROUTES, useValue: pageRoutes, multi: true },
                 {
                     provide: EDITOR_WIDGETS, useValue: [
                         { group: 'Pages', position: CmsWidgetPosition.Left, component: PageTreeComponent }

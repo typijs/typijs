@@ -7,15 +7,22 @@ import { CMS } from './cms';
 import { cmsInitializer, configDepsFactory, CONFIG_DEPS } from './cms.initializer';
 import { CoreModule } from "./core.module";
 import { BLOCK_TYPE_INDICATOR, MEDIA_TYPE_INDICATOR, PAGE_TYPE_INDICATOR } from './decorators/metadata-key';
-import { AuthInterceptor } from './infrastructure/auth/auth.interceptor';
-import { AuthService } from './infrastructure/auth/auth.service';
-import { localStorageFactory, LOCAL_STORAGE } from './infrastructure/browser/browser-storage.service';
-import { ConfigService } from './infrastructure/config/config.service';
-import { CmsContentRender } from './infrastructure/rendering/cms-content';
-import { ContentAreaRenderFactory, ImageRenderFactory, ObjectListRenderFactory, PROPERTY_RENDERS, TextareaRenderFactory, TextRenderFactory, UrlListRenderFactory, UrlRenderFactory, XHtmlRenderFactory } from './infrastructure/rendering/property/property-render.factory';
+import { AuthInterceptor } from './auth/auth.interceptor';
+import { AuthService } from './auth/auth.service';
+import { localStorageFactory, LOCAL_STORAGE } from './browser/browser-storage.service';
+import { ConfigService } from './config/config.service';
+import { CmsPageRender } from './renders/page-render';
+import { DEFAULT_PROPERTY_RENDERS } from './renders/property-render.factory';
 import { setAppInjector } from './utils/appInjector';
 import { CustomRouteReuseStrategy } from './utils/route-reuse-strategy';
 import { UndetectedEventPlugin } from './utils/undetected.event';
+import { ContentAreaRenderFactory } from './renders/content-area/content-area';
+import { TextRenderFactory, TextareaRenderFactory } from './renders/text/text-render';
+import { XHtmlRenderFactory } from './renders/xhtml/xhtml-render';
+import { ImageRenderFactory } from './renders/image/image-render';
+import { UrlRenderFactory } from './renders/url/url-render';
+import { UrlListRenderFactory } from './renders/url-list/url-list-render';
+import { ObjectListRenderFactory } from './renders/object-list/object-list-render';
 
 /**
  * Re-export Core Module to used on client
@@ -36,16 +43,14 @@ export class AngularCms {
                 { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
                 { provide: EVENT_MANAGER_PLUGINS, useClass: UndetectedEventPlugin, multi: true },
                 { provide: RouteReuseStrategy, useClass: CustomRouteReuseStrategy },
-                { provide: PROPERTY_RENDERS, useClass: ContentAreaRenderFactory, multi: true },
-                { provide: PROPERTY_RENDERS, useClass: TextRenderFactory, multi: true },
-                { provide: PROPERTY_RENDERS, useClass: TextareaRenderFactory, multi: true },
-                { provide: PROPERTY_RENDERS, useClass: XHtmlRenderFactory, multi: true },
-                { provide: PROPERTY_RENDERS, useClass: ImageRenderFactory, multi: true },
-                { provide: PROPERTY_RENDERS, useClass: UrlRenderFactory, multi: true },
-                { provide: PROPERTY_RENDERS, useClass: UrlListRenderFactory, multi: true },
-                { provide: PROPERTY_RENDERS, useClass: ObjectListRenderFactory, multi: true },
-                //Not working on SSR mode and AOT
-                //https://www.bennadel.com/blog/3565-providing-module-configuration-using-forroot-and-ahead-of-time-compiling-in-angular-7-2-0.htm
+                { provide: DEFAULT_PROPERTY_RENDERS, useClass: ContentAreaRenderFactory, multi: true },
+                { provide: DEFAULT_PROPERTY_RENDERS, useClass: TextRenderFactory, multi: true },
+                { provide: DEFAULT_PROPERTY_RENDERS, useClass: TextareaRenderFactory, multi: true },
+                { provide: DEFAULT_PROPERTY_RENDERS, useClass: XHtmlRenderFactory, multi: true },
+                { provide: DEFAULT_PROPERTY_RENDERS, useClass: ImageRenderFactory, multi: true },
+                { provide: DEFAULT_PROPERTY_RENDERS, useClass: UrlRenderFactory, multi: true },
+                { provide: DEFAULT_PROPERTY_RENDERS, useClass: UrlListRenderFactory, multi: true },
+                { provide: DEFAULT_PROPERTY_RENDERS, useClass: ObjectListRenderFactory, multi: true }
             ]
         };
     }
@@ -59,7 +64,7 @@ export class AngularCms {
                     {
                         path: '**',
                         data: { reuse: false }, //pass reuse param to CustomRouteReuseStrategy
-                        component: CmsContentRender,
+                        component: CmsPageRender,
                     }
                 ]
             }

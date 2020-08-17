@@ -7,7 +7,7 @@ import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontaweso
 import { faFile, faFolder, faCube, faImage, faBars, faHashtag, faList, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { QuillModule } from 'ngx-quill';
 
-import { CoreModule, PROPERTY_FACTORIES } from '@angular-cms/core';
+import { CoreModule, DEFAULT_PROPERTY_FACTORIES } from '@angular-cms/core';
 
 import { CmsBsDropdownModule } from '../shared/libs/ngx-bootstrap/bs-dropdown.module';
 import { DndModule } from '../shared/drag-drop/dnd.module';
@@ -108,15 +108,15 @@ export class PropertiesModule {
         return {
             ngModule: PropertiesModule,
             providers: [
-                { provide: PROPERTY_FACTORIES, useClass: ImagePropertyFactory, multi: true },
-                { provide: PROPERTY_FACTORIES, useClass: TextPropertyFactory, multi: true },
-                { provide: PROPERTY_FACTORIES, useClass: TextareaPropertyFactory, multi: true },
-                { provide: PROPERTY_FACTORIES, useClass: XHtmlPropertyFactory, multi: true },
-                { provide: PROPERTY_FACTORIES, useClass: ContentReferenceFactory, multi: true },
-                { provide: PROPERTY_FACTORIES, useClass: ContentAreaFactory, multi: true },
-                { provide: PROPERTY_FACTORIES, useClass: CheckboxPropertyFactory, multi: true },
-                { provide: PROPERTY_FACTORIES, useClass: DropdownPropertyFactory, multi: true },
-                { provide: PROPERTY_FACTORIES, useClass: ObjectListFactory, multi: true }
+                { provide: DEFAULT_PROPERTY_FACTORIES, useClass: ImagePropertyFactory, multi: true },
+                { provide: DEFAULT_PROPERTY_FACTORIES, useClass: TextPropertyFactory, multi: true },
+                { provide: DEFAULT_PROPERTY_FACTORIES, useClass: TextareaPropertyFactory, multi: true },
+                { provide: DEFAULT_PROPERTY_FACTORIES, useClass: XHtmlPropertyFactory, multi: true },
+                { provide: DEFAULT_PROPERTY_FACTORIES, useClass: ContentReferenceFactory, multi: true },
+                { provide: DEFAULT_PROPERTY_FACTORIES, useClass: ContentAreaFactory, multi: true },
+                { provide: DEFAULT_PROPERTY_FACTORIES, useClass: CheckboxPropertyFactory, multi: true },
+                { provide: DEFAULT_PROPERTY_FACTORIES, useClass: DropdownPropertyFactory, multi: true },
+                { provide: DEFAULT_PROPERTY_FACTORIES, useClass: ObjectListFactory, multi: true }
             ]
         };
     }

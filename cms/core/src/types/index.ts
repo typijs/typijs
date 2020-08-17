@@ -18,7 +18,7 @@ export type CmsImage = {
     thumbnail: string
 }
 
-export type CmsLink = {
+export type CmsUrl = {
     url: string,
     text: string
     target: '_blank ' | '_self' | '_parent' | '_top'

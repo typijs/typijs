@@ -6,8 +6,8 @@ import { InjectionToken } from '@angular/core';
 
 export const EDITOR_ROUTES: InjectionToken<Routes[]> = new InjectionToken<Routes[]>('EDITOR_ROUTES');
 export const ADMIN_ROUTES: InjectionToken<Routes[]> = new InjectionToken<Routes[]>('ADMIN_ROUTES');
-export const EDITOR_WIDGETS: InjectionToken<Routes[]> = new InjectionToken<CmsComponentConfig[][]>('EDITOR_WIDGETS');
-export const ADMIN_WIDGETS: InjectionToken<Routes[]> = new InjectionToken<CmsComponentConfig[][]>('ADMIN_WIDGETS');
+export const EDITOR_WIDGETS: InjectionToken<CmsComponentConfig[]> = new InjectionToken<CmsComponentConfig[][]>('EDITOR_WIDGETS');
+export const ADMIN_WIDGETS: InjectionToken<CmsComponentConfig[]> = new InjectionToken<CmsComponentConfig[][]>('ADMIN_WIDGETS');
 
 /**
  * The type of global CMS model. It keeps all cms configurations

@@ -1,9 +1,9 @@
 import { InjectionToken } from '@angular/core';
 
-import { configLoadFactory } from './infrastructure/config/config.factory';
-import { ConfigService } from './infrastructure/config/config.service';
-import { AuthService } from './infrastructure/auth/auth.service';
-import { authCheckFactory } from './infrastructure/auth/auth.factory';
+import { configLoadFactory } from './config/config.factory';
+import { ConfigService } from './config/config.service';
+import { AuthService } from './auth/auth.service';
+import { authCheckFactory } from './auth/auth.factory';
 
 export const CONFIG_DEPS = new InjectionToken<(() => Function)[]>('CONFIG_DEPENDENCIES');
 

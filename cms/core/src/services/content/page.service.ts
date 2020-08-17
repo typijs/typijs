@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 import { Page } from './models/page.model';
 import { ContentService } from './content.service';
-import { BrowserLocationService } from '../../infrastructure/browser/browser-location.service';
+import { BrowserLocationService } from '../../browser/browser-location.service';
 import { btoa } from '../../helpers/base64';
 
 @Injectable({

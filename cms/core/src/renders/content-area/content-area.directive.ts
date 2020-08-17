@@ -1,19 +1,18 @@
-import { Input, Directive, ViewContainerRef, ComponentFactoryResolver, OnDestroy, ComponentRef } from '@angular/core';
+import { ComponentFactoryResolver, ComponentRef, Directive, Input, OnDestroy, ViewContainerRef } from '@angular/core';
 
-import { BLOCK_TYPE_METADATA_KEY } from '../../../decorators/metadata-key';
-import { CMS } from '../../../cms';
-import { ContentData, BlockData } from '../../../services/content/models/content-data';
-import { CmsComponent } from '../../../bases/cms-component';
-import { Block } from '../../../services/content/models/block.model';
+import { CmsComponent } from '../../bases/cms-component';
+import { ContentTypeService } from '../../services/content-type.service';
+import { Block } from '../../services/content/models/block.model';
+import { BlockData, ContentData } from '../../services/content/models/content-data';
 
 @Directive({
-    selector: '[cmsContentArea]'
+    selector: '[contentArea]'
 })
 export class ContentAreaDirective implements OnDestroy {
     private componentRefs: Array<ComponentRef<any>> = [];
 
     private _value: Array<any>;
-    @Input('cmsContentArea')
+    @Input('contentArea')
     set value(value: Array<any>) {
         this.viewContainerRef.clear();
         this._value = value;
@@ -30,6 +29,7 @@ export class ContentAreaDirective implements OnDestroy {
 
     constructor(
         private viewContainerRef: ViewContainerRef,
+        private contentTypeService: ContentTypeService,
         private componentFactoryResolver: ComponentFactoryResolver) { }
 
     ngOnDestroy() {
@@ -40,11 +40,8 @@ export class ContentAreaDirective implements OnDestroy {
     }
 
     private createBlockComponent(block: Block): ComponentRef<any> {
-        const contentType = CMS.BLOCK_TYPES[block.contentType];
-        if (!contentType) return;
-        const metadata = Reflect.getMetadata(BLOCK_TYPE_METADATA_KEY, contentType);
-
-        const blockFactory = this.componentFactoryResolver.resolveComponentFactory(metadata.componentRef);
+        const blockContentType = this.contentTypeService.getBlockType(block.contentType)
+        const blockFactory = this.componentFactoryResolver.resolveComponentFactory(blockContentType.metadata.componentRef);
         const blockComponent = this.viewContainerRef.createComponent(blockFactory);
 
         (<CmsComponent<ContentData>>blockComponent.instance).currentContent = new BlockData(block);
