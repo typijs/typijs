@@ -29,8 +29,15 @@ export * from './browser/browser-location.service';
 export * from './browser/browser-storage.service';
 export * from './config/config.factory';
 export * from './config/config.service';
+
 export * from './renders/page-render';
-export * from './renders/content-area/content-area';
+export * from './renders/content-area/content-area-as-directive';
+export * from './renders/image/image-render.directive';
+export * from './renders/text/text-render-as-directive';
+export * from './renders/url/url-render.directive';
+export * from './renders/url-list/url-list-render-as-directive';
+export * from './renders/xhtml/xhtml-render.directive';
+
 export * from './renders/insert-point.directive';
 export * from './renders/cms-property.directive';
 export * from './renders/property-render.factory';

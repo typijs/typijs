@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AngularCms, CmsContentRender, CmsLoginComponent, CmsLogoutComponent } from '@angular-cms/core';
+import { AngularCms, CmsPageRender, CmsLoginComponent, CmsLogoutComponent } from '@angular-cms/core';
 import { LayoutComponent } from './shared/layout/layout.component';
 
 const routes: Routes = [
@@ -17,7 +17,7 @@ const routes: Routes = [
       {
         path: '**',
         data: { reuse: false }, //pass reuse param to CustomRouteReuseStrategy
-        component: CmsContentRender,
+        component: CmsPageRender,
       }
     ]
   }

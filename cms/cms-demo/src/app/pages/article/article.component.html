@@ -1,19 +1,17 @@
 <div class="main1">
     <div class="content">
-        <h2>
-            <ng-container [cmsProperty]="getProperty('title')"></ng-container>
+        <h2 [cmsProperty]="getProperty('title')">
         </h2>
     </div>
     <div class="blog">
         <div class="blog_list">
-            <h4>
-                <ng-container [cmsProperty]="getProperty('title')"></ng-container>
+            <h4 [cmsText]="currentContent.title">
             </h4>
-            <h5>January 3rd, 2013 , Posted by&nbsp;<a href="javascript:void(0)">{{currentContent.author}}</a></h5>
+            <h5>January 3rd, 2013 , Posted by&nbsp;<a href="javascript:void(0)" [cmsText]="currentContent.author"></a>
+            </h5>
             <div class="blog_para">
-                <ng-container [cmsProperty]="getProperty('image')"></ng-container>
-                <p class="para1">
-                    <ng-container [cmsProperty]="getProperty('content')"></ng-container>
+                <img [cmsImage]="currentContent.image" />
+                <p class="para1" [cmsProperty]="getProperty('content')">
                 </p>
                 <div class="clear"></div>
             </div>

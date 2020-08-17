@@ -1,4 +1,4 @@
-import { ComponentRef, Directive, ElementRef, Input, NgZone, OnDestroy, OnInit, Renderer2, ViewContainerRef, Component, ViewChild, ChangeDetectionStrategy, Injector } from '@angular/core';
+import { ElementRef, NgZone, OnDestroy, OnInit, Renderer2, Injector } from '@angular/core';
 import { BrowserLocationService } from '../browser/browser-location.service';
 import { ngEditMode } from '../constants';
 
@@ -25,10 +25,10 @@ export abstract class PropertyDirectiveBase implements OnInit, OnDestroy {
             this.setDefaultBorderStyle();
             //TODO: The event will work fine when putting the register in zone.runOutsideAngular. Need to find out.
             this.zone.runOutsideAngular(() => {
-                this.unbindMouseEnterListener = this.renderer.listen(this.elementRef.nativeElement, 'mouseenter', (event) => {
+                this.unbindMouseEnterListener = this.renderer.listen(this.elementRef.nativeElement, 'mouseenter', () => {
                     this.setHoverBorderStyle();
                 });
-                this.unbindMouseLeaveListener = this.renderer.listen(this.elementRef.nativeElement, 'mouseleave', (event) => {
+                this.unbindMouseLeaveListener = this.renderer.listen(this.elementRef.nativeElement, 'mouseleave', () => {
                     this.setDefaultBorderStyle();
                 });
             });

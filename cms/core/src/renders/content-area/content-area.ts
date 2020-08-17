@@ -1,25 +1,18 @@
-import { Component, Input } from '@angular/core';
+import { Component, Injectable, Injector } from '@angular/core';
+import { UIHint } from '../../types/ui-hint';
 import { CmsPropertyRender } from "../property-render";
+import { CmsPropertyRenderFactory } from '../property-render.factory';
 
 @Component({
     selector: '[contentAreaProperty]',
     template: `<ng-container [contentArea]="value"></ng-container>`
 })
-export class ContentAreaPropertyRender extends CmsPropertyRender {}
+export class ContentAreaPropertyRender extends CmsPropertyRender<Array<any>> { }
 
-@Component({
-    selector: '[cmsContentArea]',
-    exportAs: 'contentArea',
-    template: `<ng-container [contentArea]="value"></ng-container><ng-content></ng-content>`
-})
-export class ContentArea {
-    private _value: Array<any>;
-
-    @Input('cmsContentArea')
-    set value(value: Array<any>) {
-        this._value = value;
-    }
-    get value(): Array<any> {
-        return this._value;
+@Injectable()
+export class ContentAreaRenderFactory extends CmsPropertyRenderFactory {
+    constructor(injector: Injector) {
+        super(injector, UIHint.ContentArea, ContentAreaPropertyRender);
     }
 }
+

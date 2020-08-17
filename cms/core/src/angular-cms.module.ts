@@ -12,10 +12,17 @@ import { AuthService } from './auth/auth.service';
 import { localStorageFactory, LOCAL_STORAGE } from './browser/browser-storage.service';
 import { ConfigService } from './config/config.service';
 import { CmsPageRender } from './renders/page-render';
-import { ContentAreaRenderFactory, ImageRenderFactory, ObjectListRenderFactory, DEFAULT_PROPERTY_RENDERS, TextareaRenderFactory, TextRenderFactory, UrlListRenderFactory, UrlRenderFactory, XHtmlRenderFactory } from './renders/property-render.factory';
+import { DEFAULT_PROPERTY_RENDERS } from './renders/property-render.factory';
 import { setAppInjector } from './utils/appInjector';
 import { CustomRouteReuseStrategy } from './utils/route-reuse-strategy';
 import { UndetectedEventPlugin } from './utils/undetected.event';
+import { ContentAreaRenderFactory } from './renders/content-area/content-area';
+import { TextRenderFactory, TextareaRenderFactory } from './renders/text/text-render';
+import { XHtmlRenderFactory } from './renders/xhtml/xhtml-render';
+import { ImageRenderFactory } from './renders/image/image-render';
+import { UrlRenderFactory } from './renders/url/url-render';
+import { UrlListRenderFactory } from './renders/url-list/url-list-render';
+import { ObjectListRenderFactory } from './renders/object-list/object-list-render';
 
 /**
  * Re-export Core Module to used on client

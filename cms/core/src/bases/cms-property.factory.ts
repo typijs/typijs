@@ -4,6 +4,7 @@ import { FormGroup } from '@angular/forms';
 import { CmsProperty } from './cms-property';
 import { ClassOf } from '../types';
 import { ContentTypeProperty } from '../types/content-type';
+import { UIHint } from '../types/ui-hint';
 
 // https://stackoverflow.com/questions/51824125/injection-of-multiple-instances-in-angular
 export const PROPERTY_FACTORIES: InjectionToken<CmsPropertyFactory[]> = new InjectionToken<CmsPropertyFactory[]>('PROPERTY_FACTORIES');
@@ -57,6 +58,11 @@ export class CmsPropertyFactoryResolver {
 
         lastIndex = this.defaultPropertyFactories.map(x => x.isMatching(uiHint)).lastIndexOf(true);
         if (lastIndex == -1) throw new Error(`The CMS can not resolve the Property Factor for the property with UIHint of ${uiHint}`);
+        if (lastIndex == -1) {
+            console.warn(`The CMS can not resolve the Property Factor for the property with UIHint of ${uiHint}. The default Text Factory will be returned`);
+            lastIndex = this.defaultPropertyFactories.map(x => x.isMatching(UIHint.Text)).lastIndexOf(true);
+            return this.defaultPropertyFactories[lastIndex];
+        }
 
         return this.defaultPropertyFactories[lastIndex];;
     }

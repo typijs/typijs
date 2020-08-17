@@ -15,7 +15,8 @@ export class CmsPropertyDirective extends PropertyDirectiveBase {
 
     @ViewChild(InsertPointDirective, { static: true }) pageEditHost: InsertPointDirective;
 
-    private viewContainerRef: ViewContainerRef;
+    ngEditMode: boolean = false;
+
     @Input('cmsProperty')
     set model(value: PropertyModel) {
         this._model = value;
@@ -25,9 +26,8 @@ export class CmsPropertyDirective extends PropertyDirectiveBase {
         return this._model;
     }
 
-    ngEditMode: boolean = false;
-
     private _model: PropertyModel;
+    private viewContainerRef: ViewContainerRef;
     private componentRefs: Array<ComponentRef<any>> = [];
 
     constructor(

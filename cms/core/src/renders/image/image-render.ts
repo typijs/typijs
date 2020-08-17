@@ -1,15 +1,17 @@
-import { Component, HostBinding } from '@angular/core';
+import { Component, HostBinding, Injectable, Injector } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { isUrlAbsolute } from '../../helpers/common';
+import { UIHint } from '../../types/ui-hint';
 import { CmsImage } from '../../types';
 import { ConfigService } from '../../config/config.service';
 import { CmsPropertyRender } from '../property-render';
+import { CmsPropertyRenderFactory } from '../property-render.factory';
 
 @Component({
     selector: 'img',
     template: ``
 })
-export class ImagePropertyRender extends CmsPropertyRender {
+export class ImagePropertyRender extends CmsPropertyRender<CmsImage> {
     @HostBinding('attr.src') src: SafeUrl;
     @HostBinding('attr.alt') alt;
 
@@ -22,3 +24,11 @@ export class ImagePropertyRender extends CmsPropertyRender {
         }
     }
 }
+
+@Injectable()
+export class ImageRenderFactory extends CmsPropertyRenderFactory {
+    constructor(injector: Injector) {
+        super(injector, UIHint.Image, ImagePropertyRender);
+    }
+}
+
