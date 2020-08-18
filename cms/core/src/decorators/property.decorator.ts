@@ -31,15 +31,15 @@ export type PropertyMetadata = {
  * https://www.typescriptlang.org/docs/handbook/decorators.html#decorator-factories
  * @param metadata 
  */
-export function Property(metadata: PropertyMetadata) {
+export function Property(metadata: PropertyMetadata): PropertyDecorator {
     function propertyDecorator(target: object, propertyKey: string) {
-        const properties: string[] = Reflect.getMetadata(PROPERTIES_METADATA_KEY, target.constructor) || [];
-        if (properties.indexOf(propertyKey) == -1) properties.push(propertyKey);
+        const properties: string[] = Reflect.getOwnMetadata(PROPERTIES_METADATA_KEY, target.constructor) || [];
+        if (properties.indexOf(propertyKey) === -1) { properties.push(propertyKey); }
         Reflect.defineMetadata(PROPERTIES_METADATA_KEY, properties, target.constructor);
 
-        //Obtaining type metadata using the reflect metadata API
-        const propertyTypeMetadata = Reflect.getMetadata("design:type", target, propertyKey);
-        if (propertyTypeMetadata) Object.assign(metadata, { _propertyType: propertyTypeMetadata.name })
+        // Obtaining type metadata using the reflect metadata API
+        const propertyTypeMetadata = Reflect.getMetadata('design:type', target, propertyKey);
+        if (propertyTypeMetadata) { Object.assign(metadata, { _propertyType: propertyTypeMetadata.name }); }
 
         return Reflect.defineMetadata(PROPERTY_METADATA_KEY, metadata, target.constructor, propertyKey);
     }

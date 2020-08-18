@@ -1,11 +1,13 @@
 import 'reflect-metadata';
+import { BlockData, ContentData, PageData } from '../services/content/models/content-data';
+import { ClassOf } from '../types';
 import {
-    PAGE_TYPE_METADATA_KEY,
-    PAGE_TYPE_INDICATOR,
-    BLOCK_TYPE_METADATA_KEY,
     BLOCK_TYPE_INDICATOR,
+    BLOCK_TYPE_METADATA_KEY,
     MEDIA_TYPE_INDICATOR,
-    MEDIA_TYPE_METADATA_KEY
+    MEDIA_TYPE_METADATA_KEY,
+    PAGE_TYPE_INDICATOR,
+    PAGE_TYPE_METADATA_KEY
 } from './metadata-key';
 
 export type ContentTypeMetadata = {
@@ -24,7 +26,7 @@ export type ContentTypeMetadata = {
  * @param metadata 
  */
 export function PageType(metadata: ContentTypeMetadata) {
-    function pageTypeDecorator(target: Function) {
+    function pageTypeDecorator<T extends PageData>(target: ClassOf<T>) {
         registerPageTypeDecorator(target);
         Reflect.defineMetadata(PAGE_TYPE_METADATA_KEY, metadata, target);
     }
@@ -41,10 +43,10 @@ function registerPageTypeDecorator(target: any) {
  * The factory, is just a function that receives any parameters you want and returns a function with a decorator signature
  * 
  * https://www.typescriptlang.org/docs/handbook/decorators.html#decorator-factories
- * @param metadata 
+ * @param metadata
  */
 export function BlockType(metadata: ContentTypeMetadata) {
-    function blockTypeDecorator(target: Function) {
+    function blockTypeDecorator<T extends BlockData>(target: ClassOf<T>) {
         registerBlockTypeDecorator(target);
         Reflect.defineMetadata(BLOCK_TYPE_METADATA_KEY, metadata, target);
     }
@@ -65,7 +67,7 @@ function registerBlockTypeDecorator(target: any) {
  * @param metadata 
  */
 export function MediaType(metadata: ContentTypeMetadata) {
-    function mediaTypeDecorator(target: Function) {
+    function mediaTypeDecorator<T extends ContentData>(target: ClassOf<T>) {
         registerMediaTypeDecorator(target);
         Reflect.defineMetadata(MEDIA_TYPE_METADATA_KEY, metadata, target);
     }

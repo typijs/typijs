@@ -20,21 +20,32 @@ export class ContentTypeService {
     /**
      * Gets content type properties
      * @param contentTypeTarget The class which be decorated by @PageType or @BlockType
-     * @returns content type properties 
+     * @returns content type properties
      */
     getContentTypeProperties(contentTypeTarget: any): ContentTypeProperty[] {
-        const properties: Array<string> = Reflect.getMetadata(PROPERTIES_METADATA_KEY, contentTypeTarget);
-        return properties.map(propertyName => ({ name: propertyName, metadata: Reflect.getMetadata(PROPERTY_METADATA_KEY, contentTypeTarget, propertyName) }))
+        const properties: string[] = [];
+        let target = contentTypeTarget;
+        // walk up the property chain to get all base class fields
+        while (target !== Object.prototype) {
+            const childFields = Reflect.getOwnMetadata(PROPERTIES_METADATA_KEY, target) || [];
+            properties.push(...childFields);
+            target = Object.getPrototypeOf(target);
+        }
+
+        return properties.map(propertyName => ({
+            name: propertyName,
+            metadata: Reflect.getMetadata(PROPERTY_METADATA_KEY, contentTypeTarget, propertyName)
+        }));
     }
 
     /**
      * Get all property metadata of a Page Type via page type name
      * @param pageTypeName The name of Page Type such as `HomePage`, `PortfolioPage`...
-     * @returns page type properties 
+     * @returns page type properties
      */
     getPageTypeProperties(pageTypeName: string): ContentTypeProperty[] {
         const contentTypeTarget = CMS.PAGE_TYPES[pageTypeName];
-        if(!contentTypeTarget) throw new Error(`The ${pageTypeName} has not registered yet`)
+        if (!contentTypeTarget) throw new Error(`The ${pageTypeName} has not registered yet`)
         return this.getContentTypeProperties(contentTypeTarget);
     }
 
@@ -46,7 +57,7 @@ export class ContentTypeService {
      */
     getPageTypeProperty(pageTypeName: string, propertyName: string): ContentTypeProperty {
         const contentTypeTarget = CMS.PAGE_TYPES[pageTypeName];
-        if(!contentTypeTarget) throw new Error(`The ${pageTypeName} has not registered yet`)
+        if (!contentTypeTarget) throw new Error(`The ${pageTypeName} has not registered yet`)
         return { name: propertyName, metadata: Reflect.getMetadata(PROPERTY_METADATA_KEY, contentTypeTarget, propertyName) }
     }
 
@@ -57,7 +68,7 @@ export class ContentTypeService {
      */
     getBlockTypeProperties(blockTypeName: string): ContentTypeProperty[] {
         const contentTypeTarget = CMS.BLOCK_TYPES[blockTypeName];
-        if(!contentTypeTarget) throw new Error(`The ${blockTypeName} has not registered yet`)
+        if (!contentTypeTarget) throw new Error(`The ${blockTypeName} has not registered yet`)
 
         return this.getContentTypeProperties(contentTypeTarget);
     }
@@ -70,7 +81,7 @@ export class ContentTypeService {
      */
     getBlockTypeProperty(blockTypeName: string, propertyName: string): ContentTypeProperty {
         const contentTypeTarget = CMS.BLOCK_TYPES[blockTypeName];
-        if(!contentTypeTarget) throw new Error(`The ${blockTypeName} has not registered yet`)
+        if (!contentTypeTarget) throw new Error(`The ${blockTypeName} has not registered yet`)
 
         return { name: propertyName, metadata: Reflect.getMetadata(PROPERTY_METADATA_KEY, contentTypeTarget, propertyName) }
     }
@@ -83,14 +94,14 @@ export class ContentTypeService {
      */
     getPageType(pageTypeName: string): ContentType {
         const contentTypeTarget = CMS.PAGE_TYPES[pageTypeName];
-        if(!contentTypeTarget) throw new Error(`The ${pageTypeName} has not registered yet`)
+        if (!contentTypeTarget) throw new Error(`The ${pageTypeName} has not registered yet`)
 
         const pageMetadata: ContentTypeMetadata = Reflect.getMetadata(PAGE_TYPE_METADATA_KEY, contentTypeTarget);
-        return <ContentType>{
+        return {
             name: pageTypeName,
             metadata: pageMetadata,
             properties: this.getContentTypeProperties(contentTypeTarget)
-        }
+        } as ContentType;
     }
 
     /**
@@ -100,14 +111,14 @@ export class ContentTypeService {
      */
     getBlockType(blockTypeName: string): ContentType {
         const contentTypeTarget = CMS.BLOCK_TYPES[blockTypeName];
-        if(!contentTypeTarget) throw new Error(`The ${blockTypeName} has not registered yet`)
-        
+        if (!contentTypeTarget) throw new Error(`The ${blockTypeName} has not registered yet`)
+
         const pageMetadata: ContentTypeMetadata = Reflect.getMetadata(BLOCK_TYPE_METADATA_KEY, contentTypeTarget);
-        return <ContentType>{
+        return {
             name: blockTypeName,
             metadata: pageMetadata,
             properties: this.getContentTypeProperties(contentTypeTarget)
-        }
+        } as ContentType;
     }
 
     /**
@@ -117,14 +128,14 @@ export class ContentTypeService {
      */
     getMediaType(mediaTypeName: string): ContentType {
         const contentTypeTarget = CMS.MEDIA_TYPES[mediaTypeName];
-        if(!contentTypeTarget) throw new Error(`The ${mediaTypeName} has not registered yet`)
+        if (!contentTypeTarget) throw new Error(`The ${mediaTypeName} has not registered yet`)
 
         const pageMetadata: ContentTypeMetadata = Reflect.getMetadata(MEDIA_TYPE_METADATA_KEY, contentTypeTarget);
-        return <ContentType>{
+        return {
             name: mediaTypeName,
             metadata: pageMetadata,
             properties: this.getContentTypeProperties(contentTypeTarget)
-        }
+        } as ContentType;
     }
 
     /**
