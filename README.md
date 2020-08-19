@@ -95,7 +95,10 @@ The Admin UI can be accessed via router: http://localhost:4200/cms/admin
 
 `admin/12345678` or `editor/1234qwer!`
 
-> See demo on below (waiting for gif loading, only 35MB =))
+## How it run
+I created a GIF for demo purpose. It's just only 35MB (haha), so be patient for loading please.
+
+> In case your device or browser can't load the this gif, there is a video you can see [Angular Cms Demo](https://www.youtube.com/watch?v=2Bq-7O1n9Gc)
 
 ![cms-demo-site](resources/images/angular-cms-demo.gif)
 
@@ -137,8 +140,8 @@ However, it still need a storage to store data, right?. Angular CMS uses the API
 
 ## Prerequisites
 Must install:
-* Node.js version 12+ or later
-* MongoDB
+* Node.js version 10+ or later
+* MongoDB latest
   
 Optional:
 * MongoDB Compass Community (Optional)
@@ -155,7 +158,7 @@ Optional:
 
 ```
 
-## How to run in dev mode
+## How to setup for development
 
 ### Setup Npm Symlinks
 
