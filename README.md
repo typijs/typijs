@@ -95,7 +95,7 @@ The Admin UI can be accessed via router: http://localhost:4200/cms/admin
 
 `admin/12345678` or `editor/1234qwer!`
 
-> See demo on below (waiting for gif loading :)
+> See demo on below (waiting for gif loading, only 35MB =))
 
 ![cms-demo-site](resources/images/angular-cms-demo.gif)
 
@@ -134,21 +134,6 @@ However, it still need a storage to store data, right?. Angular CMS uses the API
 **Upload media by drag & drop**
 
 ![cms-demo-site](resources/images/upload-media-progress.jpg)
-
-**Edit content by drag & drop block into Content area**
-
-![cms-demo-site](resources/images/dnd-item-content-area.jpg)
-
-**Drop image into Html editor**
-
-![cms-demo-site](resources/images/drop-image-wyswyg.jpg)
-
-**Content tree view with menu and inline edit**
-
-![cms-demo-site](resources/images/tree-view-menu.jpg)
-
-![cms-demo-site](resources/images/tree-view-inline.jpg)
-
 
 ## Prerequisites
 Must install:
