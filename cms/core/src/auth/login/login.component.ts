@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { first } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 
 import { AuthService } from '../auth.service';
 
@@ -50,7 +50,7 @@ export class CmsLoginComponent implements OnInit {
 
         this.loading = true;
         this.authService.login(this.f.username.value, this.f.password.value)
-            .pipe(first())
+            .pipe(take(1))
             .subscribe({
                 next: () => {
                     this.router.navigate([this.returnUrl]);
