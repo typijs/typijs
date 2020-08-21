@@ -7,7 +7,7 @@ import { CmsPropertyRenderFactory } from '../property-render.factory';
     selector: '[contentAreaProperty]',
     template: `<ng-container [contentArea]="value"></ng-container>`
 })
-export class ContentAreaPropertyRender extends CmsPropertyRender<Array<any>> { }
+export class ContentAreaPropertyRender extends CmsPropertyRender<any[]> { }
 
 @Injectable()
 export class ContentAreaRenderFactory extends CmsPropertyRenderFactory {

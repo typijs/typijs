@@ -21,7 +21,7 @@ const CHECKBOX_GROUP_VALUE_ACCESSOR = {
 })
 export class CheckboxGroupControl extends CmsControl {
 
-    @Input() selectItems: Array<any>;
+    @Input() selectItems: any[];
 
     // Typescript uses getter/setter syntax that is like ActionScript3.
     // used to store internal value

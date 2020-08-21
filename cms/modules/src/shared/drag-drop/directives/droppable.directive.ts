@@ -49,7 +49,7 @@ export class Droppable implements OnInit, OnDestroy {
     /**
      * Defines compatible drag drop pairs. Values must match both in draggable and droppable.dropScope.
      */
-    @Input() dropScope: string | Array<string> | Function = 'default';
+    @Input() dropScope: string | string[] | Function = 'default';
 
     /**
      * Defines if drop is enabled. `true` by default.

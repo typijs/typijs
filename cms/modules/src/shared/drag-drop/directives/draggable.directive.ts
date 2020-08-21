@@ -27,7 +27,7 @@ export class Draggable implements OnDestroy {
     /**
      * Defines compatible drag drop pairs. Values must match both in draggable and droppable.dropScope.
      */
-    @Input() dragScope: string | Array<string> = 'default';
+    @Input() dragScope: string | string[] = 'default';
 
     /**
      * CSS class applied on the source draggable element while being dragged.

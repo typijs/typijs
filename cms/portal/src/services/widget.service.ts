@@ -10,16 +10,16 @@ import {
 
 @Injectable()
 export class WidgetService {
-    private defaultGroup: string = 'Global';
+    private defaultGroup = 'Global';
 
     constructor(@Inject(ComponentFactoryResolver) private componentFactoryResolver: ComponentFactoryResolver) { }
 
     createWidgetComponents(
-        registeredWidgets: Array<CmsComponentConfig>,
+        registeredWidgets: CmsComponentConfig[],
         insertPoints: QueryList<InsertPointDirective>,
-        tabs: Array<CmsTab>): ComponentRef<any>[] {
+        tabs: CmsTab[]): ComponentRef<any>[] {
 
-        const componentRefs: Array<any> = [];
+        const componentRefs: any[] = [];
         if (tabs) {
             tabs.forEach((tab: CmsTab) => {
                 // get View Container Ref for each tab
@@ -39,7 +39,7 @@ export class WidgetService {
         return componentRefs;
     }
 
-    extractCmsTabsFromRegisteredWidgets(registeredWidgets: Array<CmsComponentConfig>, position: CmsWidgetPosition): Array<CmsTab> {
+    extractCmsTabsFromRegisteredWidgets(registeredWidgets: CmsComponentConfig[], position: CmsWidgetPosition): CmsTab[] {
         const tabs: CmsTab[] = [];
         const widgets = registeredWidgets.filter(widget => widget.position == position);
 

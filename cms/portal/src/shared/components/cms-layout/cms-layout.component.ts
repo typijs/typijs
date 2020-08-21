@@ -35,8 +35,8 @@ const defaultPanelConfigs: PanelConfig[] = [
 export class CmsLayoutComponent implements OnInit {
     @ViewChildren(InsertPointDirective) insertPoints: QueryList<InsertPointDirective>;
 
-    @Input() rightTabs: Array<CmsTab> = [];
-    @Input() leftTabs: Array<CmsTab> = [];
+    @Input() rightTabs: CmsTab[] = [];
+    @Input() leftTabs: CmsTab[] = [];
 
     layoutConfig: LayoutConfig;
     private readonly layoutConfigKey: string = 'cms-layout-config-key';
@@ -75,7 +75,7 @@ export class CmsLayoutComponent implements OnInit {
         this.saveLocalStorage();
     }
 
-    onDragEnd(eventData: { gutterNum: number, sizes: Array<number> }) {
+    onDragEnd(eventData: { gutterNum: number, sizes: number[] }) {
         this.subjectService.portalLayoutChanged$.next(false);
         // Set size for all visible columns
         this.layoutConfig.panels.filter(x => x.visible == true).forEach((row, index) => row.size = eventData.sizes[index]);

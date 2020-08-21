@@ -87,7 +87,7 @@ const BLOCK_MENU_ACTION = {
 })
 export class BlockTreeComponent extends SubscriptionDestroy implements OnInit {
     @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
-    blocks: Array<Block>;
+    blocks: Block[];
 
     root: TreeNode;
     treeConfig: TreeConfig;

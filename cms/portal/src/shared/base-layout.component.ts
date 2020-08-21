@@ -12,25 +12,25 @@ export abstract class BaseLayoutComponent implements OnInit, AfterViewInit, OnDe
     private componentRefs: ComponentRef<any>[] = [];
     protected cmsWidgets: CmsComponentConfig[] = [];
 
-    rightTabs: Array<CmsTab> = [];
-    leftTabs: Array<CmsTab> = [];
+    rightTabs: CmsTab[] = [];
+    leftTabs: CmsTab[] = [];
 
     constructor(private _changeDetectionRef: ChangeDetectorRef, private widgetService: WidgetService) {
-        //this.cmsWidgets = this.getCmsWidgets();
+        // this.cmsWidgets = this.getCmsWidgets();
     }
 
-    protected abstract getCmsWidgets(): Array<CmsComponentConfig>;
+    protected abstract getCmsWidgets(): CmsComponentConfig[];
 
     ngOnInit() {
         this.rightTabs = this.getTabsForRightPanel();
         this.leftTabs = this.getTabsForLeftPanel();
     }
 
-    private getTabsForRightPanel(): Array<CmsTab> {
+    private getTabsForRightPanel(): CmsTab[] {
         return this.widgetService.extractCmsTabsFromRegisteredWidgets(this.cmsWidgets, CmsWidgetPosition.Right);
     }
 
-    private getTabsForLeftPanel(): Array<CmsTab> {
+    private getTabsForLeftPanel(): CmsTab[] {
         return this.widgetService.extractCmsTabsFromRegisteredWidgets(this.cmsWidgets, CmsWidgetPosition.Left);
     }
 

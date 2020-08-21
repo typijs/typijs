@@ -75,7 +75,7 @@ export class MediaTreeComponent extends SubscriptionDestroy implements OnInit {
     @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
     @ViewChild(FileModalComponent, { static: false }) fileModal: FileModalComponent;
 
-    medias: Array<Media>;
+    medias: Media[];
     root: TreeNode;
     treeConfig: TreeConfig;
     selectedFolder: Partial<TreeNode>;

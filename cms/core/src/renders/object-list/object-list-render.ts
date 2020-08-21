@@ -7,7 +7,7 @@ import { CmsPropertyRenderFactory } from '../property-render.factory';
     selector: 'ul',
     template: `<ng-container *ngIf="value"><li *ngFor="let item of value">{{item | json}}</li></ng-container>`
 })
-export class ObjectListPropertyRender extends CmsPropertyRender<Array<any>> { }
+export class ObjectListPropertyRender extends CmsPropertyRender<any[]> { }
 
 
 @Injectable()
