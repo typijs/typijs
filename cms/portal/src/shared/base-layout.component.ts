@@ -1,11 +1,11 @@
-import { ChangeDetectorRef, OnInit, QueryList, ViewChild, ComponentRef } from '@angular/core';
+import { ChangeDetectorRef, OnInit, QueryList, ViewChild, ComponentRef, AfterViewInit, OnDestroy } from '@angular/core';
 
 import { CmsComponentConfig, CmsTab, CmsWidgetPosition, InsertPointDirective } from '@angular-cms/core';
 
 import { WidgetService } from '../services/widget.service';
 import { CmsLayoutComponent } from './components/cms-layout/cms-layout.component';
 
-export abstract class BaseLayoutComponent implements OnInit {
+export abstract class BaseLayoutComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild(CmsLayoutComponent, { static: false }) private cmsLayout: CmsLayoutComponent;
 
     private insertPoints: QueryList<InsertPointDirective>;
@@ -22,7 +22,7 @@ export abstract class BaseLayoutComponent implements OnInit {
     protected abstract getCmsWidgets(): Array<CmsComponentConfig>;
 
     ngOnInit() {
-        this.rightTabs = this.getTabsForRightPanel()
+        this.rightTabs = this.getTabsForRightPanel();
         this.leftTabs = this.getTabsForLeftPanel();
     }
 
@@ -49,19 +49,19 @@ export abstract class BaseLayoutComponent implements OnInit {
 
     private createWidgetsForRightPanel(): ComponentRef<any>[] {
         const rightRegisteredWidgets = this.cmsWidgets.filter(widget => widget.position == CmsWidgetPosition.Right);
-        return this.widgetService.createWidgetComponents(rightRegisteredWidgets, this.insertPoints, this.rightTabs)
+        return this.widgetService.createWidgetComponents(rightRegisteredWidgets, this.insertPoints, this.rightTabs);
     }
 
     private createWidgetsForLeftPanel(): ComponentRef<any>[] {
         const leftRegisteredWidgets = this.cmsWidgets.filter(widget => widget.position == CmsWidgetPosition.Left);
-        return this.widgetService.createWidgetComponents(leftRegisteredWidgets, this.insertPoints, this.leftTabs)
+        return this.widgetService.createWidgetComponents(leftRegisteredWidgets, this.insertPoints, this.leftTabs);
     }
 
     ngOnDestroy() {
         if (this.componentRefs) {
             this.componentRefs.forEach(cmpRef => {
                 cmpRef.destroy();
-            })
+            });
             this.componentRefs = [];
         }
     }

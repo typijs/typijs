@@ -13,10 +13,10 @@ import { FileModalComponent } from './upload/file-modal.component';
 import { UploadService } from './upload/upload.service';
 import { TreeService } from '../shared/tree/interfaces/tree-service';
 
-const MediaMenuItemAction = {
+const MEDIA_MENU_ACTION = {
     DeleteFolder: 'DeleteFolder',
     NewFileUpload: 'NewFile'
-}
+};
 
 @Component({
     template: `
@@ -143,17 +143,17 @@ export class MediaTreeComponent extends SubscriptionDestroy implements OnInit {
     menuItemSelected(nodeAction: TreeMenuActionEvent) {
         const { action, node } = nodeAction;
         switch (action) {
-            case MediaMenuItemAction.NewFileUpload:
+            case MEDIA_MENU_ACTION.NewFileUpload:
                 this.fileModal.openFileUploadModal(node);
                 break;
-            case MediaMenuItemAction.DeleteFolder:
+            case MEDIA_MENU_ACTION.DeleteFolder:
                 this.folderDelete(node);
                 break;
         }
     }
 
     private folderDelete(nodeToDelete: TreeNode) {
-        if (nodeToDelete.id == '0') return;
+        if (nodeToDelete.id == '0') { return; }
         this.mediaService.softDeleteContent(nodeToDelete.id).subscribe(([folderToDelete, deleteResult]: [Media, any]) => {
             console.log(deleteResult);
             this.cmsTree.reloadSubTree(nodeToDelete.parentId);
@@ -165,29 +165,29 @@ export class MediaTreeComponent extends SubscriptionDestroy implements OnInit {
             menuItems: [
                 {
                     action: NodeMenuItemAction.NewNodeInline,
-                    name: "New Folder"
+                    name: 'New Folder'
                 },
                 {
-                    action: MediaMenuItemAction.NewFileUpload,
-                    name: "Upload"
+                    action: MEDIA_MENU_ACTION.NewFileUpload,
+                    name: 'Upload'
                 },
                 {
                     action: NodeMenuItemAction.EditNowInline,
-                    name: "Rename"
+                    name: 'Rename'
                 },
                 {
                     action: NodeMenuItemAction.Copy,
-                    name: "Copy"
+                    name: 'Copy'
                 },
                 {
                     action: NodeMenuItemAction.Paste,
-                    name: "Paste"
+                    name: 'Paste'
                 },
                 {
-                    action: MediaMenuItemAction.DeleteFolder,
-                    name: "Delete"
+                    action: MEDIA_MENU_ACTION.DeleteFolder,
+                    name: 'Delete'
                 },
             ]
-        }
+        };
     }
 }

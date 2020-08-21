@@ -75,12 +75,14 @@ export class AngularCms {
 
     /**
      * Registers multi content types with cms
-     * 
+     *
      * https://www.laurivan.com/scan-decorated-classes-in-typescript/
-     * @param theEntryScope 
+     * @param theEntryScope
      */
-    public static registerContentTypes(theEntryScope: any) {
-        for (let prop in theEntryScope) {
+    static registerContentTypes(theEntryScope: any) {
+        for (const prop in theEntryScope) {
+            if (!theEntryScope.hasOwnProperty(prop)) { continue; }
+
             if (theEntryScope[prop][PAGE_TYPE_INDICATOR]) {
                 CMS.PAGE_TYPES[prop] = theEntryScope[prop];
             }

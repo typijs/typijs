@@ -13,10 +13,10 @@ import { SubscriptionDestroy } from '../shared/subscription-destroy';
 import { SubjectService } from '../shared/services/subject.service';
 import { TreeService } from '../shared/tree/interfaces/tree-service';
 
-const PageMenuItemAction = {
+const PAGE_MENU_ACTION = {
     DeletePage: 'DeletePage',
     NewPage: 'NewPage'
-}
+};
 
 @Component({
     template: `
@@ -92,10 +92,10 @@ export class PageTreeComponent extends SubscriptionDestroy implements OnInit {
     menuItemSelected(nodeAction: TreeMenuActionEvent) {
         const { action, node } = nodeAction;
         switch (action) {
-            case PageMenuItemAction.NewPage:
+            case PAGE_MENU_ACTION.NewPage:
                 this.pageCreating(node);
                 break;
-            case PageMenuItemAction.DeletePage:
+            case PAGE_MENU_ACTION.DeletePage:
                 this.pageDelete(node);
                 break;
         }
@@ -118,26 +118,26 @@ export class PageTreeComponent extends SubscriptionDestroy implements OnInit {
         return {
             menuItems: [
                 {
-                    action: PageMenuItemAction.NewPage,
-                    name: "New Page"
+                    action: PAGE_MENU_ACTION.NewPage,
+                    name: 'New Page'
                 },
                 {
                     action: NodeMenuItemAction.Cut,
-                    name: "Cut"
+                    name: 'Cut'
                 },
                 {
                     action: NodeMenuItemAction.Copy,
-                    name: "Copy"
+                    name: 'Copy'
                 },
                 {
                     action: NodeMenuItemAction.Paste,
-                    name: "Paste"
+                    name: 'Paste'
                 },
                 {
-                    action: PageMenuItemAction.DeletePage,
-                    name: "Delete"
+                    action: PAGE_MENU_ACTION.DeletePage,
+                    name: 'Delete'
                 },
             ]
-        }
+        };
     }
 }

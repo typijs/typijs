@@ -14,21 +14,25 @@ export class Droppable implements OnInit, OnDestroy {
     /**
      *  Event fired when Drag dragged element enters a valid drop target.
      */
+    // tslint:disable-next-line: no-output-on-prefix
     @Output() onDragEnter: EventEmitter<any> = new EventEmitter();
 
     /**
      * Event fired when an element is being dragged over a valid drop target
      */
+    // tslint:disable-next-line: no-output-on-prefix
     @Output() onDragOver: EventEmitter<any> = new EventEmitter();
 
     /**
      * Event fired when a dragged element leaves a valid drop target.
      */
+    // tslint:disable-next-line: no-output-on-prefix
     @Output() onDragLeave: EventEmitter<any> = new EventEmitter();
 
     /**
      * Event fired when an element is dropped on a valid drop target.
      */
+    // tslint:disable-next-line: no-output-on-prefix
     @Output() onDrop: EventEmitter<DropEvent> = new EventEmitter();
 
     /**
@@ -125,27 +129,27 @@ export class Droppable implements OnInit, OnDestroy {
     }
 
     setDragPlaceholder(placeholderElement: ElementRef) {
-        this.placeholder = placeholderElement ? placeholderElement.nativeElement : this.createDefaultDragPlaceHolder()
+        this.placeholder = placeholderElement ? placeholderElement.nativeElement : this.createDefaultDragPlaceHolder();
     }
 
     private createDefaultDragPlaceHolder(): any {
         const defaultPlaceHolder = this.renderer.createElement('div');
-        this.renderer.addClass(defaultPlaceHolder, 'drag-placeholder')
+        this.renderer.addClass(defaultPlaceHolder, 'drag-placeholder');
         return defaultPlaceHolder;
     }
 
     private getPlaceholderIndex() {
-        if (!this.el.nativeElement.children) return 0;
-        if (!this.placeholder) return this.el.nativeElement.children.length;
+        if (!this.el.nativeElement.children) { return 0; }
+        if (!this.placeholder) { return this.el.nativeElement.children.length; }
 
         return Array.prototype.indexOf.call(this.el.nativeElement.children, this.placeholder);
     }
 
     private insertDropPlaceholder(event) {
-        if (!this.placeholder) return;
+        if (!this.placeholder) { return; }
 
         event = event.originalEvent || event;
-        let listNode = this.el.nativeElement;
+        const listNode = this.el.nativeElement;
 
         // Make sure the placeholder is shown, which is especially important if the list is empty.
         if (this.placeholder.parentNode != listNode) {
@@ -162,8 +166,8 @@ export class Droppable implements OnInit, OnDestroy {
             if (listItemNode.parentNode == listNode && listItemNode != this.placeholder) {
                 // If the mouse pointer is in the upper half of the list item element,
                 // we position the placeholder before the list item, otherwise after it.
-                let rect = listItemNode.getBoundingClientRect();
-                let isFirstHalf = event.clientY < rect.top + rect.height / 2;
+                const rect = listItemNode.getBoundingClientRect();
+                const isFirstHalf = event.clientY < rect.top + rect.height / 2;
                 listNode.insertBefore(this.placeholder, isFirstHalf ? listItemNode : listItemNode.nextSibling);
             }
         }
@@ -173,11 +177,11 @@ export class Droppable implements OnInit, OnDestroy {
         event = event.originalEvent || event;
         const listNode = this.el.nativeElement;
 
-        let newTarget = document.elementFromPoint(event.clientX, event.clientY);
+        const newTarget = document.elementFromPoint(event.clientX, event.clientY);
         if (listNode.contains(newTarget) && !event._dndPhShown) {
             // Signalize to potential parent lists that a placeholder is already shown.
             event._dndPhShown = true;
-        } else if(this.placeholder) {
+        } else if (this.placeholder) {
             this.placeholder.remove();
         }
     }
@@ -212,17 +216,17 @@ export class Droppable implements OnInit, OnDestroy {
                 e.preventDefault();
                 e.stopPropagation();
 
-                this.dndService.onDragEnd.next();
+                this.dndService.dragEnd$.next();
                 this.onDrop.emit(new DropEvent(e, this.dndService.dragData, this.getPlaceholderIndex()));
                 this.dndService.dragData = null;
                 this.dndService.scope = null;
-                if(this.placeholder) this.placeholder.remove();
+                if (this.placeholder) { this.placeholder.remove(); }
             }
         });
     }
 
     allowDrop(): Observable<boolean> {
-        //let allowed: boolean | Observable<boolean> = false;
+        // let allowed: boolean | Observable<boolean> = false;
         let allowed: any = false;
 
         /* tslint:disable:curly */
@@ -246,9 +250,6 @@ export class Droppable implements OnInit, OnDestroy {
             }
         }
 
-        /* tslint:enable:curly */
-        /* tslint:disable:one-line */
-
         return of(allowed && this.dropEnabled);
     }
 
@@ -257,7 +258,7 @@ export class Droppable implements OnInit, OnDestroy {
             return;
         }
         this._isServiceActive = true;
-        this.dragStartSubscription = this.dndService.onDragStart.subscribe(() => {
+        this.dragStartSubscription = this.dndService.dragStart$.subscribe(() => {
             this._isDragActive = true;
             this.allowDrop().subscribe(result => {
                 if (result && this._isDragActive) {
@@ -278,7 +279,7 @@ export class Droppable implements OnInit, OnDestroy {
             });
         });
 
-        this.dragEndSubscription = this.dndService.onDragEnd.subscribe(() => {
+        this.dragEndSubscription = this.dndService.dragEnd$.subscribe(() => {
             this._isDragActive = false;
             this.renderer.removeClass(this.el.nativeElement, this.dragHintClass);
             this.unbindDragListeners();

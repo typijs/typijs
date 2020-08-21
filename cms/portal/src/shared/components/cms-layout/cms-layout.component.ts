@@ -26,13 +26,13 @@ const defaultPanelConfigs: PanelConfig[] = [
         visible: true,
         size: 300
     }
-]
+];
 
 @Component({
     selector: 'cms-layout',
     templateUrl: './cms-layout.component.html'
 })
-export class CmsLayoutComponent {
+export class CmsLayoutComponent implements OnInit {
     @ViewChildren(InsertPointDirective) insertPoints: QueryList<InsertPointDirective>;
 
     @Input() rightTabs: Array<CmsTab> = [];
@@ -48,7 +48,7 @@ export class CmsLayoutComponent {
 
     ngOnInit() {
         if (this.storageService.get(this.layoutConfigKey)) {
-            this.layoutConfig = JSON.parse(this.storageService.get(this.layoutConfigKey))
+            this.layoutConfig = JSON.parse(this.storageService.get(this.layoutConfigKey));
         } else {
             this.resetConfig();
         }
@@ -78,7 +78,7 @@ export class CmsLayoutComponent {
     onDragEnd(eventData: { gutterNum: number, sizes: Array<number> }) {
         this.subjectService.portalLayoutChanged$.next(false);
         // Set size for all visible columns
-        this.layoutConfig.panels.filter(x => x.visible == true).forEach((row, index) => row.size = eventData.sizes[index])
+        this.layoutConfig.panels.filter(x => x.visible == true).forEach((row, index) => row.size = eventData.sizes[index]);
         this.saveLocalStorage();
     }
 

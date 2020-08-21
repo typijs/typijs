@@ -1,4 +1,7 @@
-import { Directive, ElementRef, HostListener, Input, Output, EventEmitter, OnInit, HostBinding, Renderer2, NgZone, OnDestroy, ViewChild } from '@angular/core';
+import {
+    Directive, ElementRef, EventEmitter, HostBinding, HostListener,
+    Input, NgZone, OnDestroy, Output, Renderer2, ViewChild
+} from '@angular/core';
 import { DndService } from '../dnd.service';
 import { DragHandle } from './drag-handle.directive';
 
@@ -138,7 +141,7 @@ export class Draggable implements OnDestroy {
 
             e.stopPropagation();
             this.onDragStart.emit(e);
-            this.dndService.onDragStart.next();
+            this.dndService.dragStart$.next();
 
             this.zone.runOutsideAngular(() => {
                 this.unbindDragListener = this.renderer.listen(this.hostElement.nativeElement, 'drag', (dragEvent) => {
@@ -158,7 +161,7 @@ export class Draggable implements OnDestroy {
     dragEnd(e: Event) {
         this.unbindDragListeners();
         this.renderer.removeClass(this.hostElement.nativeElement, this.dragClass);
-        this.dndService.onDragEnd.next();
+        this.dndService.dragEnd$.next();
         this.onDragEnd.emit(e);
         e.stopPropagation();
         e.preventDefault();

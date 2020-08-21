@@ -22,13 +22,14 @@ export class WidgetService {
         const componentRefs: Array<any> = [];
         if (tabs) {
             tabs.forEach((tab: CmsTab) => {
-                //get View Container Ref for each tab
+                // get View Container Ref for each tab
                 const viewContainerRef = insertPoints.find(x => x.name == tab.name).viewContainerRef;
-                if (!viewContainerRef) return;
+                if (!viewContainerRef) { return; }
 
                 viewContainerRef.clear();
-                //get registered widgets for each tab
-                const registeredWidgetsInTab = registeredWidgets.filter(x => x.group == tab.title || (!x.group && tab.title == this.defaultGroup));
+                // get registered widgets for each tab
+                const registeredWidgetsInTab = registeredWidgets
+                    .filter(x => x.group == tab.title || (!x.group && tab.title == this.defaultGroup));
                 registeredWidgetsInTab.forEach(widget => {
                     componentRefs.push(this.createWidget(viewContainerRef, widget));
                 });

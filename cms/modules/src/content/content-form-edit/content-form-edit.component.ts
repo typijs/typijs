@@ -1,4 +1,4 @@
-import { Component, ViewChildren, QueryList, OnInit, ChangeDetectorRef, ComponentRef } from '@angular/core';
+import { Component, ViewChildren, QueryList, OnInit, ChangeDetectorRef, ComponentRef, OnDestroy, AfterViewInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, UrlSegment } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
@@ -14,7 +14,7 @@ import {
     ngEditMode, ngId
 } from '@angular-cms/core';
 
-import { ContentAreaItem } from "../../properties/content-area/content-area.model";
+import { ContentAreaItem } from '../../properties/content-area/content-area.model';
 import { SubjectService } from '../../shared/services/subject.service';
 import { SubscriptionDestroy } from '../../shared/subscription-destroy';
 
@@ -23,7 +23,7 @@ import { SubscriptionDestroy } from '../../shared/subscription-destroy';
     templateUrl: './content-form-edit.component.html',
     styleUrls: ['./content-form-edit.scss']
 })
-export class ContentFormEditComponent extends SubscriptionDestroy implements OnInit {
+export class ContentFormEditComponent extends SubscriptionDestroy implements OnInit, OnDestroy, AfterViewInit {
 
     @ViewChildren(InsertPointDirective) insertPoints: QueryList<InsertPointDirective>;
 
@@ -260,19 +260,19 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
 
                 switch (fieldType) {
                     case UIHint.ContentArea:
-                        const contentAreaItems: ContentAreaItem[] = this.currentContent.properties[fieldName]
+                        const contentAreaItems: ContentAreaItem[] = this.currentContent.properties[fieldName];
                         if (Array.isArray(contentAreaItems)) {
                             contentAreaItems.forEach(areaItem => {
                                 if (childItems.findIndex(x => x.content && x.content == areaItem._id) == -1) {
                                     const refPath = this.getRefPathFromContentType(areaItem.type);
-                                    if (refPath) childItems.push({ refPath: refPath, content: areaItem._id })
+                                    if (refPath) { childItems.push({ refPath, content: areaItem._id }); }
                                 }
-                            })
+                            });
                         }
                         break;
                 }
             }
-        })
+        });
         return childItems;
     }
 

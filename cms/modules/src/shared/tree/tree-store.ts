@@ -75,20 +75,21 @@ export class TreeStore {
     }
 
     private getNodeData(nodeId: string): Observable<TreeNode> {
-        if (nodeId == '0') return of(new TreeNode({ id: nodeId }));
+        if (nodeId == '0') { return of(new TreeNode({ id: nodeId })); }
         return this.treeService.getNode(nodeId).pipe(
             switchMap((nodeData: TreeNode) => this.updateTreeNodesData(nodeData))
         );
     }
 
     private updateTreeNodesData = (currentNode: TreeNode): Observable<TreeNode> => {
-        if (!currentNode) return of(new TreeNode({ id: '0' }))
+        if (!currentNode) { return of(new TreeNode({ id: '0' })); }
 
         const key = currentNode.parentId ? currentNode.parentId : '0';
-        if (!this.treeNodes[key]) return of(currentNode);
+        if (!this.treeNodes[key]) { return of(currentNode); }
 
-        const matchIndex = this.treeNodes[key].findIndex((x: TreeNode) => x.id == currentNode.id || (x.isNew && x.name == currentNode.name));
-        if (matchIndex == -1) return of(currentNode);
+        const matchIndex = this.treeNodes[key]
+            .findIndex((x: TreeNode) => x.id == currentNode.id || (x.isNew && x.name == currentNode.name));
+        if (matchIndex == -1) { return of(currentNode); }
 
         this.treeNodes[key][matchIndex].id = currentNode.id;
         this.treeNodes[key][matchIndex].parentPath = currentNode.parentPath;
@@ -158,7 +159,7 @@ export class TreeStore {
                 this.fireNodePasted(node);
                 break;
             default:
-                this.fireMenuActionSelected(nodeAction)
+                this.fireMenuActionSelected(nodeAction);
                 break;
         }
     }
@@ -204,7 +205,7 @@ export class TreeStore {
 
     cancelNodeInlineEdit(node: TreeNode) {
         node.isEditing = false;
-        if (this.editingNode) node.name = this.editingNode.name;
+        if (this.editingNode) { node.name = this.editingNode.name; }
         this.editingNode = null;
     }
 
@@ -220,7 +221,7 @@ export class TreeStore {
         this.nodePasted$.next(node);
     }
 
-    //fire and forward menu action click event
+    // fire and forward menu action click event
     private fireMenuActionSelected(actionEvent: TreeMenuActionEvent) {
         this.nodeMenuActionEvent$.next(actionEvent);
     }

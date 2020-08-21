@@ -1,6 +1,6 @@
 import { Component, Injectable, Injector } from '@angular/core';
 import { UIHint } from '../../types/ui-hint';
-import { CmsPropertyRender } from "../property-render";
+import { CmsPropertyRender } from '../property-render';
 import { CmsPropertyRenderFactory } from '../property-render.factory';
 
 @Component({
