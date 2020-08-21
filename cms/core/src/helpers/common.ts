@@ -55,7 +55,7 @@ export function clone(obj: any) {
 
   // Handle Object
   if (obj instanceof Object) {
-    return Object.assign({}, obj);
+    return { ...obj };
   }
 
   throw new Error('Unable to copy obj! Its type isn\'t supported.');

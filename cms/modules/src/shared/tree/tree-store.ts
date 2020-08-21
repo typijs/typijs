@@ -200,7 +200,8 @@ export class TreeStore {
 
     showNodeInlineEdit(node: TreeNode) {
         node.isEditing = true;
-        this.editingNode = Object.assign({}, node);
+        // copy node data
+        this.editingNode = { ...node };
     }
 
     cancelNodeInlineEdit(node: TreeNode) {

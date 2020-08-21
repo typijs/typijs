@@ -14,7 +14,7 @@ export type MongoDbOptions = {
 export class Database {
     private mongoDbOptions: MongoDbOptions;
     constructor(dbOptions?: MongoDbOptions) {
-        this.mongoDbOptions = dbOptions ? Object.assign(config.mongdb, dbOptions) : config.mongdb;
+        this.mongoDbOptions = dbOptions ? { ...config.mongdb, ...dbOptions } : { ...config.mongdb };
     }
 
     public connect = async () => {

@@ -12,13 +12,14 @@ export abstract class ContentData {
 export class BlockData extends ContentData {
     constructor(block: Partial<Block>) {
         super();
-        const blockData = Object.assign(<BlockData>{
+        const blockData = {
+            ...block.properties,
             id: block._id,
             parentId: block.parentId,
             contentType: block.contentType,
             name: block.name,
             type: 'block'
-        }, block.properties);
+        };
 
         Object.assign(this, blockData);
     }
@@ -30,7 +31,8 @@ export class PageData extends ContentData {
 
     constructor(page: Partial<Page>) {
         super();
-        const pageData = Object.assign(<PageData>{
+        const pageData = {
+            ...page.properties,
             id: page._id,
             linkUrl: page.publishedLinkUrl,
             parentId: page.parentId,
@@ -38,7 +40,7 @@ export class PageData extends ContentData {
             contentType: page.contentType,
             name: page.name,
             type: 'page'
-        }, page.properties);
+        };
 
         Object.assign(this, pageData);
     }

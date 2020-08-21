@@ -18,6 +18,7 @@ import { ContentAreaItem } from '../../properties/content-area/content-area.mode
 import { SubjectService } from '../../shared/services/subject.service';
 import { SubscriptionDestroy } from '../../shared/subscription-destroy';
 
+export type ContentAreaItemType = 'page' | 'block' | 'media' | 'folder_block' | 'folder_media';
 
 @Component({
     templateUrl: './content-form-edit.component.html',
@@ -55,8 +56,8 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
         this.route.params
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(params => {
-                const contentId = params['id'];
-                this.typeOfContent = this.getTypeContentFromUrl(this.route.snapshot.url)
+                const contentId = params.id;
+                this.typeOfContent = this.getTypeContentFromUrl(this.route.snapshot.url);
                 this.editMode = 'AllProperties';
                 if (contentId) {
                     switch (this.typeOfContent) {
@@ -139,8 +140,10 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
                 if (Array.isArray(contentAreaItems)) {
                     contentAreaItems.forEach(areaItem => {
                         const matchItem = childItems.find(x => x.content._id == areaItem._id);
-                        if (matchItem) Object.assign(areaItem, { name: matchItem.content.name, isPublished: matchItem.content.isPublished });
-                    })
+                        if (matchItem) {
+                            Object.assign(areaItem, { name: matchItem.content.name, isPublished: matchItem.content.isPublished });
+                        }
+                    });
                 }
                 return contentAreaItems;
             default:
@@ -276,7 +279,7 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
         return childItems;
     }
 
-    private getRefPathFromContentType(contentAreaItemType: 'page' | 'block' | 'media' | 'folder_block' | 'folder_media'): 'cms_Block' | 'cms_Page' | 'cms_Media' {
+    private getRefPathFromContentType(contentAreaItemType: ContentAreaItemType): 'cms_Block' | 'cms_Page' | 'cms_Media' {
         switch (contentAreaItemType) {
             case PAGE_TYPE: return 'cms_Page';
             case BLOCK_TYPE: return 'cms_Block';

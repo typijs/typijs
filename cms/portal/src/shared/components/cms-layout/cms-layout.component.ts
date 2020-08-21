@@ -55,7 +55,7 @@ export class CmsLayoutComponent implements OnInit {
     }
 
     private resetConfig() {
-        this.layoutConfig = Object.assign({}, { headerSize: this.headerSizeDefault, panels: defaultPanelConfigs });
+        this.layoutConfig = { headerSize: this.headerSizeDefault, panels: defaultPanelConfigs };
 
         this.storageService.remove(this.layoutConfigKey);
     }
