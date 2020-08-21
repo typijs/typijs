@@ -8,11 +8,11 @@ import { PropertyDirectiveBase } from '../property-directive.base';
 export class TextRenderDirective extends PropertyDirectiveBase {
 
     @Input('cmsText')
-    set value(value: string) {
-        this._value = value;
-    }
     get value(): string {
         return this._value;
+    }
+    set value(value: string) {
+        this._value = value;
     }
     private _value: string;
 

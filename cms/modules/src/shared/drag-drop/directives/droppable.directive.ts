@@ -50,7 +50,11 @@ export class Droppable implements OnInit, OnDestroy {
     /**
      * Defines if drop is enabled. `true` by default.
      */
-    @Input() set dropEnabled(value: boolean) {
+    @Input()
+    get dropEnabled() {
+        return this._dropEnabled;
+    }
+    set dropEnabled(value: boolean) {
         this._dropEnabled = value;
 
         if (this._dropEnabled === true) {
@@ -58,19 +62,15 @@ export class Droppable implements OnInit, OnDestroy {
         } else {
             this.unsubscribeService();
         }
-    };
-
-    get dropEnabled() {
-        return this._dropEnabled;
     }
 
     /**
-     * 
+     *
      */
     private dragStartSubscription: Subscription;
 
     /**
-     * 
+     *
      */
     private dragEndSubscription: Subscription;
 

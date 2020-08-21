@@ -8,22 +8,23 @@ import { AuthStatus, TokenResponse } from './auth.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService extends BaseService {
+    authStatus$: Observable<AuthStatus>;
+    get authStatus(): AuthStatus {
+        return this.authSubject.value;
+    }
+
+    get isLoggedIn(): boolean {
+        return this.authStatus && this.authStatus.token ? true : false;
+    }
+
     protected apiUrl: string = `${this.baseApiUrl}/auth`;
     private authSubject: BehaviorSubject<AuthStatus>;
-    public authStatus$: Observable<AuthStatus>;
+    private refreshTokenTimeout;
 
     constructor(httpClient: HttpClient) {
         super(httpClient);
         this.authSubject = new BehaviorSubject<AuthStatus>(null);
         this.authStatus$ = this.authSubject.asObservable();
-    }
-
-    public get authStatus(): AuthStatus {
-        return this.authSubject.value;
-    }
-
-    public get isLoggedIn(): boolean {
-        return this.authStatus && this.authStatus.token ? true : false
     }
 
     setBaseApiUrl = (baseApiUrl: string): AuthService => {
@@ -58,15 +59,13 @@ export class AuthService extends BaseService {
                     const authStatus = new AuthStatus(tokenResponse.token);
                     this.authSubject.next(authStatus);
                     this.startRefreshTokenTimer();
-                    return authStatus
+                    return authStatus;
                 }
                 return null;
             }));
     }
 
     // helper methods
-    private refreshTokenTimeout;
-
     private startRefreshTokenTimer() {
         if (this.authStatus) {
             // set a timeout to refresh the token a minute before it expires

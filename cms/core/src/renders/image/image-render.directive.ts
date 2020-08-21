@@ -19,6 +19,9 @@ export class ImageRenderDirective extends PropertyDirectiveBase {
 
     private _value: CmsImage;
     @Input('cmsImage')
+    get value(): CmsImage {
+        return this._value;
+    }
     set value(value: CmsImage) {
         this._value = value;
         if (value) {
@@ -27,15 +30,12 @@ export class ImageRenderDirective extends PropertyDirectiveBase {
             this.alt = value.alt;
         }
     }
-    get value(): CmsImage {
-        return this._value;
-    }
 
     constructor(
-        private configService: ConfigService, 
-        private sanitizer: DomSanitizer, 
-        injector: Injector, 
-        elementRef: ElementRef) { 
+        private configService: ConfigService,
+        private sanitizer: DomSanitizer,
+        injector: Injector,
+        elementRef: ElementRef) {
         super(injector, elementRef);
     }
 }

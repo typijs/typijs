@@ -39,41 +39,44 @@ export class Draggable implements OnDestroy {
     /**
      * The url to image that will be used as custom drag image when the draggable is being dragged.
      */
-    @Input() set dragImage(value: string) {
+    @Input()
+    get dragImage() {
+        return this._dragImage;
+    }
+    set dragImage(value: string) {
         this._dragImage = value;
         this.dragImageElement = new Image();
         this.dragImageElement.src = this.dragImage;
-    }
-
-    get dragImage() {
-        return this._dragImage;
     }
 
     /**
      * Defines if drag is enabled. `true` by default.
      */
     @HostBinding('draggable')
-    @Input() set dragEnabled(value: boolean) {
-        this._dragEnabled = value;
-    };
-
+    @Input()
     get dragEnabled() {
         return this._dragEnabled;
+    }
+    set dragEnabled(value: boolean) {
+        this._dragEnabled = value;
     }
 
     /**
      * Event fired when Drag is started
      */
+    // tslint:disable-next-line: no-output-on-prefix
     @Output() onDragStart: EventEmitter<any> = new EventEmitter();
 
     /**
      * Event fired while the element is being dragged
      */
+    // tslint:disable-next-line: no-output-on-prefix
     @Output() onDrag: EventEmitter<any> = new EventEmitter();
 
     /**
      * Event fired when drag ends
      */
+    // tslint:disable-next-line: no-output-on-prefix
     @Output() onDragEnd: EventEmitter<any> = new EventEmitter();
 
     /**
