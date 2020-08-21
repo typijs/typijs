@@ -12,7 +12,7 @@ export function configLoadFactory(configService: ConfigService): () => Promise<b
                     resolve(true);
                 }),
 
-                //this 'config.json' file won’t be available is when we are using ng serve during development.
+                // this 'config.json' file won’t be available is when we are using ng serve during development.
                 catchError((error: { status: number }): ObservableInput<{}> => {
                     console.log('/=========ERROR IN LOAD CONFIG==========/');
                     console.log(error);

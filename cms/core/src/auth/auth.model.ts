@@ -4,12 +4,12 @@ export type TokenPayload = {
     iat: number
     exp: number
     [key: string]: any
-}
+};
 
 export type TokenResponse = {
     token?: string
     expiry?: string
-}
+};
 
 export class AuthStatus {
     userId: string;
@@ -21,7 +21,7 @@ export class AuthStatus {
         const jwtToken: TokenPayload = JSON.parse(atob(token.split('.')[1]));
         this.userId = jwtToken.sub;
         this.roles = jwtToken.roles;
-        this.expiry = new Date(jwtToken.exp * 1000)
+        this.expiry = new Date(jwtToken.exp * 1000);
         this.token = token;
     }
 }

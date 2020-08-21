@@ -5,11 +5,11 @@ import { NodeMenuItemAction } from '../interfaces/tree-menu';
 import { SubscriptionDestroy } from '../../subscription-destroy';
 
 export abstract class TreeBaseComponent extends SubscriptionDestroy {
-    @Output("selectNode") selectNodeEvent: EventEmitter<TreeNode> = new EventEmitter();
-    @Output("nodeOnBlur") nodeOnBlurEvent: EventEmitter<TreeNode> = new EventEmitter();
-    @Output("submitInlineNode") submitInlineNodeEvent: EventEmitter<TreeNode> = new EventEmitter();
-    @Output("cancelInlineNode") cancelInlineNodeEvent: EventEmitter<TreeNode> = new EventEmitter();
-    @Output("menuItemSelected") menuItemSelectedEvent: EventEmitter<{ action: NodeMenuItemAction, node: TreeNode }> = new EventEmitter();
+    @Output('selectNode') selectNodeEvent: EventEmitter<TreeNode> = new EventEmitter();
+    @Output('nodeOnBlur') nodeOnBlurEvent: EventEmitter<TreeNode> = new EventEmitter();
+    @Output('submitInlineNode') submitInlineNodeEvent: EventEmitter<TreeNode> = new EventEmitter();
+    @Output('cancelInlineNode') cancelInlineNodeEvent: EventEmitter<TreeNode> = new EventEmitter();
+    @Output('menuItemSelected') menuItemSelectedEvent: EventEmitter<{ action: NodeMenuItemAction, node: TreeNode }> = new EventEmitter();
 
     selectNode(node: TreeNode) {
         this.selectNodeEvent.emit(node);
@@ -20,7 +20,7 @@ export abstract class TreeBaseComponent extends SubscriptionDestroy {
     }
 
     menuItemSelected(nodeAction: { action: NodeMenuItemAction, node: TreeNode }) {
-        this.menuItemSelectedEvent.emit(nodeAction)
+        this.menuItemSelectedEvent.emit(nodeAction);
     }
 
     submitInlineNode(node: TreeNode) {

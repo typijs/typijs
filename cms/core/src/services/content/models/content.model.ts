@@ -2,31 +2,31 @@ export type ChildItemRef = {
     _id?: string;
     refPath: string;
     content: string | any;
-}
+};
 
 export class Content {
-    //mongoose id
+    // mongoose id
     _id?: string;
-    //Common
+    // Common
     name?: string;
-    //IHierarchyContent
+    // IHierarchyContent
     parentId: string;
     parentPath: string;
     ancestors: string[];
     hasChildren: boolean;
-    //IPublishableContent
+    // IPublishableContent
     published: Date;
     publishedBy: any;
 
     isPublished: boolean;
-    //IContentHasChildItems
+    // IContentHasChildItems
     childItems: ChildItemRef[];
     publishedChildItems: ChildItemRef[];
 
-    //IContent
+    // IContent
     contentType: string;
-    //contain all property's values which are defined as property (using decorator @Property) of content type
-    //@key will be property name of content type
+    // contain all property's values which are defined as property (using decorator @Property) of content type
+    // @key will be property name of content type
     properties: { [key: string]: any };
 
     isDirty: boolean;

@@ -13,7 +13,7 @@ const BLOCKS_COMPONENT = [
     PortfolioBlockComponent,
     ContactUsComponent,
     LinkListComponent
-]
+];
 
 @NgModule({
     imports: [

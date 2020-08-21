@@ -14,7 +14,7 @@ const customRoutes: Routes = [
         path: 'test-lazy',
         loadChildren: () => import('./lazy.module').then(m => m.LazyModule)
     }
-]
+];
 
 @NgModule({
     imports: [
@@ -31,7 +31,7 @@ const customRoutes: Routes = [
     ]
 })
 export class CustomModule {
-    public static forRoot(): ModuleWithProviders<CustomModule> {
+    static forRoot(): ModuleWithProviders<CustomModule> {
         return {
             ngModule: CustomModule,
             providers: [
@@ -47,6 +47,6 @@ export class CustomModule {
                     multi: true
                 }
             ]
-        }
+        };
     }
 }

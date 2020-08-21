@@ -3,7 +3,6 @@ import { takeUntil } from 'rxjs/operators';
 
 import { TreeStore } from '../tree-store';
 import { TreeNode } from '../interfaces/tree-node';
-import { TreeService } from '../interfaces/tree-service';
 import { TreeConfig } from '../interfaces/tree-config';
 import { TreeBaseComponent } from './tree-base.component';
 
@@ -13,8 +12,8 @@ import { TreeBaseComponent } from './tree-base.component';
     <ul class="tree">
         <li class="tree-item" *ngFor="let node of nodeChildren">
             <!-- Default tree node template -->
-            <tree-node 
-                [node]="node" 
+            <tree-node
+                [node]="node"
                 [config]="config"
                 [templates]="templates"
                 (selectNode)="selectNode($event)"
@@ -23,9 +22,9 @@ import { TreeBaseComponent } from './tree-base.component';
                 (submitInlineNode)="submitInlineNode($event)"
                 (cancelInlineNode)="cancelInlineNode($event)">
             </tree-node>
-            <tree-children *ngIf="node.isExpanded" 
-                [root]="node" 
-                [config]="config" 
+            <tree-children *ngIf="node.isExpanded"
+                [root]="node"
+                [config]="config"
                 [templates]="templates"
                 (selectNode)="selectNode($event)"
                 (menuItemSelected)="menuItemSelected($event)"
@@ -42,31 +41,32 @@ export class TreeChildrenComponent extends TreeBaseComponent implements OnInit {
     @Input() root: TreeNode;
     @Input() templates: any = {};
 
-    public nodeChildren: TreeNode[] = [];
+    nodeChildren: TreeNode[] = [];
 
-    constructor(private treeStore: TreeStore) { super() }
+    constructor(private treeStore: TreeStore) { super(); }
 
     ngOnInit() {
         this.treeStore.getTreeNodesSubjectByKey$(this.root.id)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe((nodes: TreeNode[]) => {
-                //Trigger render the the sub tree
+                // Trigger render the the sub tree
                 const selectedNode = this.treeStore.getSelectedNode();
                 this.nodeChildren = this.setExpandStateForNewNodeChildren(nodes);
                 this.nodeChildren.forEach(child => {
                     if (selectedNode && selectedNode.id == child.id) {
                         this.treeStore.fireNodeSelectedInner(selectedNode);
                     }
-                })
+                });
             });
 
-        //using this event to set all other child node is false
+        // using this event to set all other child node is false
         this.treeStore.nodeSelectedInner$.subscribe(selectedNode => {
             this.nodeChildren.forEach(childNode => {
                 childNode.isSelected = selectedNode.id == childNode.id;
-                if (childNode.isSelected && selectedNode.isNeedToScroll)
+                if (childNode.isSelected && selectedNode.isNeedToScroll) {
                     this.treeStore.fireScrollToSelectedNode(childNode);
-            })
+                }
+            });
         });
 
         this.treeStore.getTreeChildrenData(this.root.id).subscribe((nodeChildren: TreeNode[]) => {
@@ -75,12 +75,12 @@ export class TreeChildrenComponent extends TreeBaseComponent implements OnInit {
     }
 
     private setExpandStateForNewNodeChildren(newNodes: TreeNode[]) {
-        if (!this.nodeChildren) return newNodes;
+        if (!this.nodeChildren) { return newNodes; }
 
         this.nodeChildren.forEach((node: TreeNode) => {
             const matchIndex = newNodes.findIndex(x => x.id == node.id);
-            if (matchIndex != -1) newNodes[matchIndex].isExpanded = node.isExpanded;
-        })
+            if (matchIndex != -1) { newNodes[matchIndex].isExpanded = node.isExpanded; }
+        });
         return newNodes;
     }
 }

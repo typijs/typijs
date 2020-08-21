@@ -6,7 +6,7 @@ export class TreeNode {
   url: string;
 
   isNeedToScroll: boolean = false;
-  isExpanded: boolean = false;;
+  isExpanded: boolean = false;
   isSelected: boolean = false;
   isEditing: boolean = false;
   isLoading: boolean = false;
@@ -16,7 +16,7 @@ export class TreeNode {
   parentPath: string;
   [propName: string]: any;
 
-  public constructor(init?: Partial<TreeNode>) {
+  constructor(init?: Partial<TreeNode>) {
     Object.assign(this, init);
   }
 

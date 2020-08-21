@@ -12,13 +12,14 @@ export class XHtmlRenderDirective extends PropertyDirectiveBase {
     innerHtml: SafeHtml;
 
     @Input('cmsXhtml')
-    set value(value: string) {
-        this._value = value;
-        if (value)
-            this.innerHtml = this.sanitizer.bypassSecurityTrustHtml(value);
-    }
     get value(): string {
         return this._value;
+    }
+    set value(value: string) {
+        this._value = value;
+        if (value) {
+            this.innerHtml = this.sanitizer.bypassSecurityTrustHtml(value);
+        }
     }
     private _value: string;
 

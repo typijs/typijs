@@ -1,79 +1,296 @@
 {
-  "extends": "tslint:recommended",
+  "extends": [
+    "tslint:recommended",
+    "rxjs-tslint-rules"
+  ],
   "rulesDirectory": [
-    "codelyzer"
+    "node_modules/vrsource-tslint-rules/rules",
+    "node_modules/codelyzer"
   ],
   "rules": {
-    "array-type": false,
-    "arrow-parens": false,
-    "deprecation": {
-      "severity": "warning"
-    },
-    "import-blacklist": [
-      true,
-      "rxjs/Rx"
-    ],
-    "interface-name": false,
-    "max-classes-per-file": false,
     "max-line-length": [
       true,
-      140
+      {
+        "limit": 140,
+        "check-strings": true,
+        "check-regex": true,
+        "ignore-pattern": "//\\s+https?://"
+      }
     ],
-    "member-access": false,
-    "member-ordering": [
+    "max-classes-per-file": false,
+    "no-angle-bracket-type-assertion": false,
+    // Disable this flag because of SHA tslint#48b0c597f9257712c7d1f04b55ed0aa60e333f6a
+    // TSLint now shows warnings if types for properties are inferred. This rule needs to be
+    // disabled because all properties need to have explicit types set to work for Dgeni.
+    "no-inferrable-types": false,
+    "comment-format": [
+      true,
+      "check-space"
+    ],
+    "indent": [
+      true,
+      "spaces"
+    ],
+    "eofline": true,
+    "no-construct": true,
+    "prefer-literal": [
+      true,
+      "object"
+    ],
+    "no-duplicate-variable": true,
+    "no-eval": true,
+    "no-arg": true,
+    "no-internal-module": true,
+    "no-trailing-whitespace": true,
+    "no-bitwise": true,
+    "no-shadowed-variable": true,
+    "no-unused-expression": true,
+    "no-var-keyword": true,
+    "member-access": [
+      true,
+      "no-public"
+    ],
+    "no-debugger": true,
+    "one-line": [
+      true,
+      "check-catch",
+      "check-else",
+      "check-open-brace",
+      "check-whitespace"
+    ],
+    "quotemark": [
+      true,
+      "single",
+      "avoid-escape"
+    ],
+    "semicolon": true,
+    "typedef-whitespace": [
       true,
       {
-        "order": [
-          "static-field",
-          "instance-field",
-          "static-method",
-          "instance-method"
+        "call-signature": "nospace",
+        "index-signature": "nospace",
+        "parameter": "nospace",
+        "property-declaration": "nospace",
+        "variable-declaration": "nospace"
+      }
+    ],
+    "curly": true,
+    "variable-name": [
+      true,
+      "ban-keywords",
+      "check-format",
+      "allow-leading-underscore",
+      "allow-snake-case"
+    ],
+    "whitespace": [
+      true,
+      "check-branch",
+      "check-decl",
+      "check-operator",
+      "check-separator",
+      "check-type",
+      "check-preblock"
+    ],
+    // Bans jasmine helper functions that will prevent the CI from properly running tests.
+    "ban": [
+      true,
+      [
+        "fit"
+      ],
+      [
+        "fdescribe"
+      ],
+      [
+        "xit"
+      ],
+      [
+        "xdescribe"
+      ],
+      {
+        "name": [
+          "first"
+        ],
+        "message": "Use take(1) instead."
+      },
+      // {
+      //   "name": [
+      //     "Object",
+      //     "assign"
+      //   ],
+      //   "message": "Use the spread operator instead."
+      // },
+      {
+        "name": [
+          "*",
+          "asObservable"
+        ],
+        "message": "Cast to Observable type instead."
+      }
+    ],
+    // Avoids inconsistent linebreak styles in source files. Forces developers to use LF linebreaks.
+    // "linebreak-style": [
+    //   true,
+    //   "LF"
+    // ],
+    "linebreak-style": false,
+    // Namespaces are not allowed, because of Closure compiler.
+    "no-namespace": true,
+    "jsdoc-format": [
+      true,
+      "check-multiline-start"
+    ],
+    "no-duplicate-imports": true,
+    "await-promise": true,
+    "array-type": [
+      true,
+      "array"
+    ],
+    // Codelyzer
+    "template-banana-in-box": true,
+    "contextual-lifecycle": true,
+    "contextual-decorator": true,
+    "no-output-on-prefix": true,
+    "template-no-negated-async": true,
+    "use-lifecycle-interface": true,
+    // RxJS
+    "rxjs-no-unsafe-takeuntil": true,
+    "rxjs-no-unsafe-catch": true,
+    // Custom Rules
+    "ts-loader": true,
+    "no-exposed-todo": true,
+    "no-import-export-spacing": true,
+    "no-private-getters": [
+      true,
+      "^_"
+    ],
+    "no-undecorated-base-class-di": true,
+    "no-undecorated-class-with-angular-features": true,
+    "setters-after-getters": true,
+    "ng-on-changes-property-access": true,
+    "require-breaking-change-version": true,
+    "class-list-signatures": true,
+    "no-nested-ternary": true,
+    "prefer-const-enum": true,
+    "no-lifecycle-invocation": [
+      true,
+      "**/!(*.spec).ts"
+    ],
+    "lightweight-tokens": [
+      true,
+      [
+        "src/**/!(*.spec).ts"
+      ],
+      // Directionality is always used in Angular Material and therefore does not
+      // need a lightweight token. Date Adapter is not very significant and does not
+      // need a dedicated token.
+      [
+        "Directionality",
+        "DateAdapter"
+      ]
+    ],
+    "coercion-types": [
+      true,
+      [
+        "coerceBooleanProperty",
+        "coerceCssPixelValue",
+        "coerceNumberProperty"
+      ],
+      {
+        "CanDisable": [
+          "disabled"
+        ],
+        "CanDisableRipple": [
+          "disableRipple"
+        ],
+        "HasTabIndex": [
+          "tabIndex"
         ]
       }
     ],
-    "no-consecutive-blank-lines": false,
-    "no-console": [
+    "no-host-decorator-in-concrete": [
       true,
-      "debug",
-      "info",
-      "time",
-      "timeEnd",
-      "trace"
+      "HostBinding",
+      "HostListener"
     ],
-    "no-empty": false,
-    "no-inferrable-types": [
+    "member-naming": [
       true,
-      "ignore-params"
+      {
+        "private": "^_"
+      }
     ],
-    "no-non-null-assertion": true,
-    "no-redundant-jsdoc": true,
-    "no-switch-case-fall-through": true,
-    "no-var-requires": false,
-    "object-literal-key-quotes": [
+    "symbol-naming": [
       true,
-      "as-needed"
+      "^_?[A-Z][a-zA-Z0-9]*$"
     ],
-    "object-literal-sort-keys": false,
-    "ordered-imports": false,
-    "quotemark": [
+    "validate-decorators": [
       true,
-      "single"
+      {
+        "Component": {
+          "argument": 0,
+          "properties": {
+            "!host": "\\[class\\]",
+            "!preserveWhitespaces": ".*",
+            "!styles": ".*",
+            "!moduleId": ".*",
+            "changeDetection": "\\.OnPush$",
+            "encapsulation": "\\.None$"
+          }
+        },
+        "Directive": {
+          "argument": 0,
+          "properties": {
+            "!host": "\\[class\\]"
+          }
+        },
+        "NgModule": {
+          "argument": 0,
+          "properties": {
+            "*": "^(?!\\s*$).+"
+          }
+        },
+        "ContentChildren": {
+          "argument": 1,
+          "required": true,
+          "properties": {
+            "descendants": "^(true|false)$"
+          }
+        }
+      },
+      "src/!(e2e-app|components-examples|universal-app|dev-app)/**/!(*.spec).ts"
     ],
-    "trailing-comma": false,
-    "component-class-suffix": true,
-    "contextual-lifecycle": true,
-    "directive-class-suffix": true,
-    "no-conflicting-lifecycle": true,
-    "no-host-metadata-property": true,
-    "no-input-rename": true,
-    "no-inputs-metadata-property": true,
-    "no-output-native": true,
-    "no-output-on-prefix": true,
-    "no-output-rename": true,
-    "no-outputs-metadata-property": true,
-    "template-banana-in-box": true,
-    "template-no-negated-async": true,
-    "use-lifecycle-interface": true,
-    "use-pipe-transform-interface": true
+    "require-license-banner": [
+      true,
+      "src/!(e2e-app|components-examples|universal-app)/**/!(*.spec).ts",
+      "test/benchmarks/**/*.ts"
+    ],
+    "no-cross-entry-point-relative-imports": [
+      true,
+      "src/!(e2e-app|components-examples|universal-app|dev-app)/**/!(*.spec).ts",
+      "!src/+(cdk|material)/schematics/**/*",
+      "!src/cdk/testing/+(private|tests)/**/*",
+      "!src/google-maps/testing/**/*"
+    ],
+    "file-name-casing": [
+      true,
+      {
+        // Exclude custom lint rule files since they have to always be camel-cased and end
+        // with "Rule".
+        "\\w+Rule.ts": "camel-case",
+        ".*": "kebab-case"
+      }
+    ],
+    "no-unescaped-html-tag": true,
+    // Ensures that all rxjs imports come only from `rxjs` and `rxjs/operators`. Also ensures
+    // that no AST utils from `@schematics/angular` are imported. These should be vendored.
+    "import-blacklist": [
+      true,
+      [
+        "^@schematics/angular/.*(ast).*",
+        "^rxjs(?!$|/operators$).*"
+      ]
+    ]
+  },
+  "linterOptions": {
+    "exclude": []
   }
 }

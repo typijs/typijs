@@ -1,4 +1,7 @@
-import { ComponentRef, ElementRef, Input, ViewContainerRef, Component, ViewChild, ChangeDetectionStrategy, Injector } from '@angular/core';
+import {
+    ComponentRef, ElementRef, Input, ViewContainerRef, Component, ViewChild,
+    ChangeDetectionStrategy, Injector, OnInit, OnDestroy
+} from '@angular/core';
 
 import { PropertyModel } from '../types/content-type';
 import { CmsPropertyRenderFactoryResolver } from './property-render.factory';
@@ -11,24 +14,23 @@ import { PropertyDirectiveBase } from './property-directive.base';
     template: `<ng-container cmsInsertPoint></ng-container><ng-content></ng-content>`,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CmsPropertyDirective extends PropertyDirectiveBase {
+export class CmsPropertyDirective extends PropertyDirectiveBase implements OnInit, OnDestroy {
 
     @ViewChild(InsertPointDirective, { static: true }) pageEditHost: InsertPointDirective;
 
     ngEditMode: boolean = false;
 
     @Input('cmsProperty')
+    get model(): PropertyModel {
+        return this._model;
+    }
     set model(value: PropertyModel) {
         this._model = value;
 
     }
-    get model(): PropertyModel {
-        return this._model;
-    }
-
     private _model: PropertyModel;
     private viewContainerRef: ViewContainerRef;
-    private componentRefs: Array<ComponentRef<any>> = [];
+    private componentRefs: ComponentRef<any>[] = [];
 
     constructor(
         injector: Injector,
@@ -45,8 +47,10 @@ export class CmsPropertyDirective extends PropertyDirectiveBase {
     }
 
     private renderProperty() {
-        const propertyFactory = this.propertyRenderFactoryResolver.resolvePropertyRenderFactory(this.model.property.metadata.displayType)
-        if (!propertyFactory) throw new Error(`Can not resolver propertyRender Factory for ${this.model.property.metadata.displayType}`)
+        const propertyFactory = this.propertyRenderFactoryResolver.resolvePropertyRenderFactory(this.model.property.metadata.displayType);
+        if (!propertyFactory) {
+            throw new Error(`Can not resolver propertyRender Factory for ${this.model.property.metadata.displayType}`);
+        }
 
         const propertyComponent = propertyFactory.createPropertyComponent(this.model.property, this.model.value);
         this.viewContainerRef.insert(propertyComponent.hostView);

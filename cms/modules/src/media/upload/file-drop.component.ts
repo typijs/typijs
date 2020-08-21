@@ -8,11 +8,11 @@ import { UploadService } from './upload.service';
     template: `
         <form #f="ngForm" enctype="multipart/form-data" novalidate>
             <div class="dropbox">
-                <input type="file"  
-                    multiple 
+                <input type="file"
+                    multiple
                     cmsFileSelect
                     [name]="uploadFieldName"
-                    (onFileSelected)="filesSelected($event)"/>
+                    (fileSelected)="filesSelected($event)"/>
             </div>
         </form>
     `,
@@ -29,7 +29,7 @@ import { UploadService } from './upload.service';
 })
 
 export class FileDropComponent {
-    @Input() uploadFieldName: string = "files"; //default field file name
+    @Input() uploadFieldName: string = 'files'; // default field file name
     @Input() targetFolder: Partial<TreeNode>;
 
     constructor(private uploadService: UploadService) {

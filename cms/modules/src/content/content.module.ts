@@ -1,4 +1,4 @@
-import "reflect-metadata";
+import 'reflect-metadata';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -7,7 +7,7 @@ import { CoreModule } from '@angular-cms/core';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faList, faDesktop, faSave, faFileExport, faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 
-//import { CmsAngularSplitModule, CmsTabsModule } from '../shared/libs';
+// import { CmsAngularSplitModule, CmsTabsModule } from '../shared/libs';
 import { CmsAngularSplitModule } from '../shared/libs/angular-split/module';
 import { CmsButtonsModule } from '../shared/libs/ngx-bootstrap/buttons.module';
 import { CmsTabsModule } from '../shared/libs/ngx-bootstrap/tabs.module';

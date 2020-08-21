@@ -10,7 +10,7 @@ const chars = {
             const ascii = chars.ascii();
 
             for (let c = 0; c < ascii.length; c++) {
-                let chr = ascii[c];
+                const chr = ascii[c];
                 this.cache[chr] = c;
             }
         }
@@ -18,15 +18,17 @@ const chars = {
     }
 };
 
-//encode base 64
+// encode base 64
 export function btoa(data: string): string {
-    let ascii = chars.ascii(),
-        len = data.length - 1,
-        i = -1,
-        b64 = '';
+    const ascii = chars.ascii();
+    const len = data.length - 1;
+    let i = -1;
+    let b64 = '';
 
     while (i < len) {
-        let code = data.charCodeAt(++i) << 16 | data.charCodeAt(++i) << 8 | data.charCodeAt(++i);
+        // tslint:disable-next-line: no-bitwise
+        const code = data.charCodeAt(++i) << 16 | data.charCodeAt(++i) << 8 | data.charCodeAt(++i);
+        // tslint:disable-next-line: no-bitwise
         b64 += ascii[(code >>> 18) & 63] + ascii[(code >>> 12) & 63] + ascii[(code >>> 6) & 63] + ascii[code & 63];
     }
 
@@ -40,9 +42,9 @@ export function btoa(data: string): string {
     }
 
     return b64;
-};
+}
 
-//decode base 64
+// decode base 64
 export function atob(b64: string): string {
     let indices = chars.indices(),
         pos = b64.indexOf('='),
@@ -52,8 +54,10 @@ export function atob(b64: string): string {
         data = '';
 
     while (i < len) {
-        let code = indices[b64[++i]] << 18 | indices[b64[++i]] << 12 | indices[b64[++i]] << 6 | indices[b64[++i]];
+        // tslint:disable-next-line: no-bitwise
+        const code = indices[b64[++i]] << 18 | indices[b64[++i]] << 12 | indices[b64[++i]] << 6 | indices[b64[++i]];
         if (code !== 0) {
+            // tslint:disable-next-line: no-bitwise
             data += String.fromCharCode((code >>> 16) & 255, (code >>> 8) & 255, code & 255);
         }
     }
@@ -63,4 +67,4 @@ export function atob(b64: string): string {
     }
 
     return data;
-};
+}

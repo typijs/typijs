@@ -7,13 +7,13 @@ import { TreeNode } from '../../shared/tree/interfaces/tree-node';
 
 export type UploadProgress = {
     [key: string]: { progress: Observable<number> }
-}
+};
 
 export type FileUploadProgress = {
     folder: Partial<TreeNode>;
     files: File[];
     uploadProgress: UploadProgress;
-}
+};
 
 @Injectable()
 export class UploadService {
@@ -23,7 +23,7 @@ export class UploadService {
 
     constructor(private mediaService: MediaService) { }
 
-    public uploadFiles(files: Array<File>, targetFolder: Partial<TreeNode>) {
+    uploadFiles(files: File[], targetFolder: Partial<TreeNode>) {
         const uploadProgress = this.getUploadProgress(files, targetFolder);
 
         this.fileUploadProgress$.next({
@@ -44,7 +44,7 @@ export class UploadService {
         });
     }
 
-    private getUploadProgress(files: Array<File>, targetFolder: Partial<TreeNode>): UploadProgress {
+    private getUploadProgress(files: File[], targetFolder: Partial<TreeNode>): UploadProgress {
         // this will be the our resulting map
         const uploadProgress: UploadProgress = {};
         const parentFolderId = targetFolder ? targetFolder.id : '';
@@ -72,6 +72,7 @@ export class UploadService {
 
             // Save every progress-observable in a map of all observables
             uploadProgress[file.name] = {
+                // tslint:disable-next-line: ban
                 progress: progress.asObservable()
             };
         });

@@ -9,8 +9,8 @@ export class AuthGuard implements CanActivate {
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
         if (this.authService.isLoggedIn) {
             // logged in so return true
-            const authStatus = this.authService.authStatus
-            const roleMatch = this.checkRoleMatch(authStatus.roles, route)
+            const authStatus = this.authService.authStatus;
+            const roleMatch = this.checkRoleMatch(authStatus.roles, route);
             if (!roleMatch) {
                 alert('You do not have the permissions to view this resource');
             }
@@ -23,7 +23,7 @@ export class AuthGuard implements CanActivate {
     }
 
     private checkRoleMatch(userRoles: string[], route?: ActivatedRouteSnapshot) {
-        if (route && route.data && route.data.role) return userRoles.includes(route.data.role)
+        if (route && route.data && route.data.role) { return userRoles.includes(route.data.role); }
         return true;
     }
 }

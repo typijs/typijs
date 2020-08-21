@@ -6,7 +6,7 @@ const OBJECT_LIST_VALUE_ACCESSOR = {
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => ObjectListControl),
     multi: true
-}
+};
 
 @Component({
     selector: 'object-list',
@@ -36,29 +36,29 @@ const OBJECT_LIST_VALUE_ACCESSOR = {
     providers: [OBJECT_LIST_VALUE_ACCESSOR]
 })
 export class ObjectListControl extends CmsControl {
-    private _model: Array<any>;
     get model() {
         return this._model;
     }
+    private _model: any[];
 
     writeValue(value: any): void {
         this._model = value;
     }
 
     addItem(item) {
-        if (!this._model) this._model = [];
+        if (!this._model) { this._model = []; }
         this._model.push(item);
         this.onChange(this._model);
     }
 
-    getItems(control): Array<any> {
-        let items = []
+    getItems(control): any[] {
+        const items = [];
         Object.keys(control).forEach(key => {
             items.push({
-                key: key,
+                key,
                 value: control[key]
-            })
-        })
-        return items
+            });
+        });
+        return items;
     }
 }

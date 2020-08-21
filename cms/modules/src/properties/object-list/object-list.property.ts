@@ -2,7 +2,10 @@ import 'reflect-metadata';
 import { Component, ComponentRef, Input, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
-import { CmsProperty, CmsPropertyFactoryResolver, InsertPointDirective, PROPERTIES_METADATA_KEY, PROPERTY_METADATA_KEY, UIHint } from '@angular-cms/core';
+import {
+    CmsProperty, CmsPropertyFactoryResolver, InsertPointDirective,
+    PROPERTIES_METADATA_KEY, PROPERTY_METADATA_KEY, UIHint
+} from '@angular-cms/core';
 import { ObjectListControl } from './object-list.control';
 
 @Component({
@@ -14,7 +17,6 @@ import { ObjectListControl } from './object-list.control';
             <div class="card">
                 <div class="card-body">
                     <object-list [formControlName]="propertyName"></object-list>
-                    
                     <a href="javascript:void(0)" class="btn btn-default btn-block" (click)="openDiglog()">Add item</a>
                 </div>
             </div>
@@ -56,15 +58,16 @@ export class ObjectListProperty extends CmsProperty {
     @Input()
     set itemType(itemType: any) {
         this._itemType = itemType;
-        let properties = Reflect.getMetadata(PROPERTIES_METADATA_KEY, this._itemType);
-        let propertiesMetadata = [];
-        if (properties)
+        const properties = Reflect.getMetadata(PROPERTIES_METADATA_KEY, this._itemType);
+        const propertiesMetadata = [];
+        if (properties) {
             properties.forEach(element => {
                 propertiesMetadata.push({
                     name: element,
                     metadata: Reflect.getMetadata(PROPERTY_METADATA_KEY, this._itemType, element)
-                })
+                });
             });
+        }
 
         if (propertiesMetadata.length > 0) {
             this.createModelFormGroup(propertiesMetadata);
@@ -95,30 +98,30 @@ export class ObjectListProperty extends CmsProperty {
 
     private createModelFormGroup(properties) {
         if (properties) {
-            let group = {};
+            const group = {};
             properties.forEach(property => {
-                let validators = [];
+                const validators = [];
                 if (property.metadata.validates) {
                     property.metadata.validates.forEach(validate => {
                         validators.push(validate.validateFn);
-                    })
+                    });
                 }
                 if (property.metadata.displayType == UIHint.ObjectList) {
-                    group[property.name] = [[], validators]
+                    group[property.name] = [[], validators];
                 } else {
-                    group[property.name] = ['', validators]
+                    group[property.name] = ['', validators];
                 }
             });
-            this.modelForm = this.formBuilder.group(group)
+            this.modelForm = this.formBuilder.group(group);
         }
     }
 
     private createModelFormControls(properties): ComponentRef<any>[] {
         const propertyControls: ComponentRef<any>[] = [];
 
-        if (!properties) return propertyControls
+        if (!properties) { return propertyControls; }
 
-        let viewContainerRef = this.modelEditHost.viewContainerRef;
+        const viewContainerRef = this.modelEditHost.viewContainerRef;
         viewContainerRef.clear();
 
         properties.forEach(property => {

@@ -56,6 +56,6 @@ export * from './types';
 export * from './types/content-type';
 export * from './types/module-config';
 export * from './types/ui-hint';
-export * from './utils/appInjector';
+export * from './utils/app-injector';
 export * from './utils/route-reuse-strategy';
 export * from './utils/undetected.event';

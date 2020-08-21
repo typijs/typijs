@@ -1,6 +1,6 @@
-import Quill from 'quill'
+import Quill from 'quill';
 
-import ImageResize from 'quill-image-resize-module'
+import ImageResize from 'quill-image-resize-module';
 Quill.register('modules/imageResize', ImageResize);
 
 function $create(elName) {
@@ -13,19 +13,19 @@ function $setAttr(el, key, value) {
 export class ClickMeButton {
     constructor(quill, options) {
         const toolbarModule = quill.getModule('toolbar');
-        let toolbarEl = toolbarModule.container;
-        const buttonContainer = $create("span");
-        $setAttr(buttonContainer, "class", "ql-formats");
-        const span = $create("span");
-        span.innerHTML = "Click Me";
-        span.title = "Try click me";
-        if(options.handler) {
+        const toolbarEl = toolbarModule.container;
+        const buttonContainer = $create('span');
+        $setAttr(buttonContainer, 'class', 'ql-formats');
+        const span = $create('span');
+        span.innerHTML = 'Click Me';
+        span.title = 'Try click me';
+        if (options.handler) {
             span.onclick = options.handler;
         }
-        
+
         buttonContainer.appendChild(span);
         toolbarEl.appendChild(buttonContainer);
     }
 }
 
-Quill.register("modules/clickMeButton", ClickMeButton);
+Quill.register('modules/clickMeButton', ClickMeButton);

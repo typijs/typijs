@@ -1,5 +1,5 @@
 
-import { NgModule, ANALYZE_FOR_ENTRY_COMPONENTS } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule, Routes, Route, ROUTES } from '@angular/router';
 
 import { EDITOR_ROUTES, ADMIN_ROUTES, Roles, AuthGuard } from '@angular-cms/core';
@@ -51,7 +51,7 @@ export function getPortalRoutes(editorRoutes: Routes[], adminRoutes: Routes[]): 
             }
         ]
     }];
-};
+}
 
 @NgModule({
     imports: [
@@ -69,7 +69,7 @@ export function getPortalRoutes(editorRoutes: Routes[], adminRoutes: Routes[]): 
             useValue: {},
             multi: true
         },
-        //{ provide: ANALYZE_FOR_ENTRY_COMPONENTS, multi: true, useValue: cmsRoutes },
+        // { provide: ANALYZE_FOR_ENTRY_COMPONENTS, multi: true, useValue: cmsRoutes },
     ]
 })
 export class PortalRoutingModule { }

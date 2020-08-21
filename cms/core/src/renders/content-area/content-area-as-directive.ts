@@ -9,13 +9,13 @@ import { PropertyDirectiveBase } from '../property-directive.base';
 export class ContentAreaRenderDirective extends PropertyDirectiveBase {
 
     @Input('cmsContentArea')
-    set value(value: Array<any>) {
-        this._value = value;
-    }
-    get value(): Array<any> {
+    get value(): any[] {
         return this._value;
     }
-    private _value: Array<any>;
+    set value(value: any[]) {
+        this._value = value;
+    }
+    private _value: any[];
 
     constructor(injector: Injector, elementRef: ElementRef) {
         super(injector, elementRef);

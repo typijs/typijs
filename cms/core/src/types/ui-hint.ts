@@ -17,9 +17,10 @@ export type CmsPropertyUIType = {
     Datepicker: string;
     Timepicker: string;
     [key: string]: string;
-}
+};
 
-//build-in property types
+// build-in property types
+// tslint:disable-next-line: variable-name
 export const UIHint: CmsPropertyUIType = {
     Text: 'Text',
     Number: 'Number',

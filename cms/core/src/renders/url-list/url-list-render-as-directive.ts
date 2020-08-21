@@ -10,11 +10,11 @@ import { PropertyDirectiveBase } from '../property-directive.base';
 })
 export class UrlListRenderDirective extends PropertyDirectiveBase {
     @Input('cmsUrlList')
-    set value(value: CmsUrl[]) {
-        this._value = value;
-    }
     get value(): CmsUrl[] {
         return this._value;
+    }
+    set value(value: CmsUrl[]) {
+        this._value = value;
     }
     private _value: CmsUrl[];
 

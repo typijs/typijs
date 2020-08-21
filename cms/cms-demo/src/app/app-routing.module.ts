@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AngularCms, CmsPageRender, CmsLoginComponent, CmsLogoutComponent } from '@angular-cms/core';
+import { CmsPageRender, CmsLoginComponent, CmsLogoutComponent } from '@angular-cms/core';
 import { LayoutComponent } from './shared/layout/layout.component';
 
 const routes: Routes = [
@@ -16,17 +16,17 @@ const routes: Routes = [
     children: [
       {
         path: '**',
-        data: { reuse: false }, //pass reuse param to CustomRouteReuseStrategy
+        data: { reuse: false }, // pass reuse param to CustomRouteReuseStrategy
         component: CmsPageRender,
       }
     ]
   }
-]
+];
 
-//temporary comment since this way don't working with Angular Universal
-//fix for error: Angular CLI ERROR in Cannot read property 'loadChildren' of null
-//AngularCms.registerCmsRoutes(LayoutComponent).forEach(x => routes.push(x))
-//routes.push(...AngularCms.registerCmsRoutes(LayoutComponent));
+// temporary comment since this way don't working with Angular Universal
+// fix for error: Angular CLI ERROR in Cannot read property 'loadChildren' of null
+// AngularCms.registerCmsRoutes(LayoutComponent).forEach(x => routes.push(x))
+// routes.push(...AngularCms.registerCmsRoutes(LayoutComponent));
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

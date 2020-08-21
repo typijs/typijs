@@ -1,9 +1,9 @@
-import { Component, ViewChild, Injector } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 
 import { Block, BlockService, BLOCK_TYPE } from '@angular-cms/core';
-//import { TreeNode, TreeComponent, TreeConfig, NodeMenuItemAction, TreeMenuActionEvent } from '../shared/tree';
+// import { TreeNode, TreeComponent, TreeConfig, NodeMenuItemAction, TreeMenuActionEvent } from '../shared/tree';
 import { TreeNode } from '../shared/tree/interfaces/tree-node';
 import { TreeComponent } from '../shared/tree/components/tree.component';
 import { TreeConfig } from '../shared/tree/interfaces/tree-config';
@@ -14,17 +14,17 @@ import { SubscriptionDestroy } from '../shared/subscription-destroy';
 import { SubjectService } from '../shared/services/subject.service';
 import { TreeService } from '../shared/tree/interfaces/tree-service';
 
-const BlockMenuItemAction = {
+const BLOCK_MENU_ACTION = {
     DeleteFolder: 'DeleteFolder',
     NewBlock: 'NewBlock'
-}
+};
 
 @Component({
     template: `
     <as-split direction="vertical" gutterSize="4">
         <as-split-area size="50">
-            <cms-tree 
-                class="tree-root pl-1 pt-2 d-block" 
+            <cms-tree
+                class="tree-root pl-1 pt-2 d-block"
                 [root]="root"
                 [config]="treeConfig"
                 (nodeSelected)="folderSelected($event)"
@@ -36,10 +36,17 @@ const BlockMenuItemAction = {
                         <fa-icon class="mr-1" *ngIf="node.id == '0'" [icon]="['fas', 'cubes']"></fa-icon>
                         <fa-icon class="mr-1" *ngIf="node.id != '0'" [icon]="['fas', 'folder']"></fa-icon>
                         <span class="node-name">{{node.name}}</span>
-                        <button type="button" class="btn btn-xs btn-secondary float-right mr-1" *ngIf="node.id == '0'" (click)="clickToCreateFolder(node)">
+                        <button type="button"
+                            class="btn btn-xs btn-secondary float-right mr-1"
+                            *ngIf="node.id == '0'"
+                            (click)="clickToCreateFolder(node)">
                             <fa-icon [icon]="['fas', 'folder-plus']"></fa-icon>
                         </button>
-                        <a role="button"  class="btn btn-xs btn-secondary mr-1 float-right" href="javascript:void(0)" *ngIf="node.id == '0'" [routerLink]="['new/block']">
+                        <a role="button"
+                            class="btn btn-xs btn-secondary mr-1 float-right"
+                            href="javascript:void(0)"
+                            *ngIf="node.id == '0'"
+                            [routerLink]="['new/block']">
                             <fa-icon [icon]="['fas', 'plus']"></fa-icon>
                         </a>
                     </span>
@@ -48,9 +55,9 @@ const BlockMenuItemAction = {
         </as-split-area>
         <as-split-area size="50">
             <div class="list-group list-block" *ngIf="blocks">
-                <a *ngFor="let block of blocks" 
-                    [draggable] 
-                    [dragData]="block"  
+                <a *ngFor="let block of blocks"
+                    [draggable]
+                    [dragData]="block"
                     href="javascript:void(0)"
                     class="list-group-item list-group-item-action p-2">
                     <div class="d-flex align-items-center">
@@ -58,7 +65,9 @@ const BlockMenuItemAction = {
                         <div class="w-100 mr-2 text-truncate" [routerLink]="['content/block', block._id]">{{block.name}}</div>
                         <div class="hover-menu ml-auto" dropdown container="body">
                             <fa-icon class="mr-1" [icon]="['fas', 'bars']" dropdownToggle></fa-icon>
-                            <div class="cms-dropdown-menu dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
+                            <div class="cms-dropdown-menu dropdown-menu dropdown-menu-right"
+                                *dropdownMenu
+                                aria-labelledby="simple-dropdown">
                                 <a class="dropdown-item p-2" href="javascript:void(0)" [routerLink]="['content/block', block._id]">
                                     Edit
                                 </a>
@@ -76,9 +85,9 @@ const BlockMenuItemAction = {
     styleUrls: ['./block-tree.scss'],
     providers: [BlockTreeService, { provide: TreeService, useExisting: BlockTreeService }]
 })
-export class BlockTreeComponent extends SubscriptionDestroy {
+export class BlockTreeComponent extends SubscriptionDestroy implements OnInit {
     @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
-    blocks: Array<Block>;
+    blocks: Block[];
 
     root: TreeNode;
     treeConfig: TreeConfig;
@@ -97,33 +106,33 @@ export class BlockTreeComponent extends SubscriptionDestroy {
         this.subjectService.blockFolderCreated$
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(createdFolder => {
-                this.cmsTree.selectNode({ id: createdFolder._id, isNeedToScroll: true })
+                this.cmsTree.selectNode({ id: createdFolder._id, isNeedToScroll: true });
                 this.cmsTree.reloadSubTree(createdFolder.parentId);
             });
 
         this.subjectService.blockCreated$
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(createdBlock => {
-                this.cmsTree.selectNode({ id: createdBlock.parentId })
+                this.cmsTree.selectNode({ id: createdBlock.parentId });
             });
 
         this.folderSelected({ id: '0' });
     }
 
     clickToCreateFolder(node: TreeNode) {
-        this.cmsTree.handleNodeMenuItemSelected({ action: NodeMenuItemAction.NewNodeInline, node: node })
+        this.cmsTree.handleNodeMenuItemSelected({ action: NodeMenuItemAction.NewNodeInline, node });
     }
 
     folderSelected(node) {
-        //load child block in folder
+        // load child block in folder
         this.blockService.getContentInFolder(node.id).subscribe((childBlocks: Block[]) => {
             childBlocks.forEach(block => Object.assign(block, {
                 type: BLOCK_TYPE,
                 contentType: block.contentType,
                 isPublished: block.isPublished
             }));
-            this.blocks = childBlocks
-        })
+            this.blocks = childBlocks;
+        });
     }
 
     createBlockFolder(node: TreeNode) {
@@ -141,21 +150,21 @@ export class BlockTreeComponent extends SubscriptionDestroy {
     menuItemSelected(nodeAction: TreeMenuActionEvent) {
         const { action, node } = nodeAction;
         switch (action) {
-            case BlockMenuItemAction.NewBlock:
+            case BLOCK_MENU_ACTION.NewBlock:
                 this.blockCreated(node);
                 break;
-            case BlockMenuItemAction.DeleteFolder:
+            case BLOCK_MENU_ACTION.DeleteFolder:
                 this.folderDelete(node);
                 break;
         }
     }
 
     private blockCreated(parentNode) {
-        this.router.navigate(["new/block", parentNode.id], { relativeTo: this.route })
+        this.router.navigate(['new/block', parentNode.id], { relativeTo: this.route });
     }
 
     private folderDelete(nodeToDelete: TreeNode) {
-        if (nodeToDelete.id == '0') return;
+        if (nodeToDelete.id == '0') { return; }
         this.blockService.softDeleteContent(nodeToDelete.id).subscribe(([, deleteResult]: [Block, any]) => {
             console.log(deleteResult);
             this.cmsTree.reloadSubTree(nodeToDelete.parentId);
@@ -166,30 +175,30 @@ export class BlockTreeComponent extends SubscriptionDestroy {
         return {
             menuItems: [
                 {
-                    action: BlockMenuItemAction.NewBlock,
-                    name: "New Block"
+                    action: BLOCK_MENU_ACTION.NewBlock,
+                    name: 'New Block'
                 },
                 {
                     action: NodeMenuItemAction.NewNodeInline,
-                    name: "New Folder"
+                    name: 'New Folder'
                 },
                 {
                     action: NodeMenuItemAction.EditNowInline,
-                    name: "Rename"
+                    name: 'Rename'
                 },
                 {
                     action: NodeMenuItemAction.Copy,
-                    name: "Copy"
+                    name: 'Copy'
                 },
                 {
                     action: NodeMenuItemAction.Paste,
-                    name: "Paste"
+                    name: 'Paste'
                 },
                 {
-                    action: BlockMenuItemAction.DeleteFolder,
-                    name: "Delete"
+                    action: BLOCK_MENU_ACTION.DeleteFolder,
+                    name: 'Delete'
                 },
             ]
-        }
+        };
     }
 }

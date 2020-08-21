@@ -7,7 +7,7 @@ const lazyRoutes: Routes = [
         path: '',
         component: LazyComponent
     }
-]
+];
 
 @NgModule({
     imports: [RouterModule.forChild(lazyRoutes)],

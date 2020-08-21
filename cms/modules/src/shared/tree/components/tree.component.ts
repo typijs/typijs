@@ -12,10 +12,10 @@ import { SubscriptionDestroy } from '../../subscription-destroy';
     template: `
             <div class="tree">
                 <div class="tree-item">
-                    <tree-node 
+                    <tree-node
                         class="node-root"
-                        [node]="root" 
-                        [config]="config" 
+                        [node]="root"
+                        [config]="config"
                         [templates]="templates"
                         (selectNode)="selectNode($event)"
                         (menuItemSelected)="handleNodeMenuItemSelected($event)"
@@ -23,9 +23,9 @@ import { SubscriptionDestroy } from '../../subscription-destroy';
                         (submitInlineNode)="submitInlineNode($event)"
                         (cancelInlineNode)="cancelInlineNode($event)">
                     </tree-node>
-                    <tree-children 
-                        [root]="root" 
-                        [config]="config" 
+                    <tree-children
+                        [root]="root"
+                        [config]="config"
                         [templates]="templates"
                         (selectNode)="selectNode($event)"
                         (menuItemSelected)="handleNodeMenuItemSelected($event)"
@@ -56,7 +56,7 @@ export class TreeComponent extends SubscriptionDestroy implements OnInit {
     @Output() nodePasted: EventEmitter<any> = new EventEmitter();
     @Output() menuItemSelected: EventEmitter<TreeMenuActionEvent> = new EventEmitter();
 
-    public templates: TreeNodeTemplate;
+    templates: TreeNodeTemplate;
 
     constructor(private treeStore: TreeStore) { super(); }
 
@@ -64,11 +64,11 @@ export class TreeComponent extends SubscriptionDestroy implements OnInit {
         this.templates = {
             loadingTemplate: this.loadingTemplate,
             treeNodeTemplate: this.treeNodeTemplate
-        }
+        };
         this.subscribeAndEmitNodeMenuItemSelectedEvent();
     }
 
-    //Set node.isSelected = true when node is clicked and fire node selected event
+    // Set node.isSelected = true when node is clicked and fire node selected event
     selectNode(node: Partial<TreeNode>) {
         this.treeStore.setSelectedNode(node);
         this.treeStore.fireNodeSelectedInner(node);
@@ -76,7 +76,7 @@ export class TreeComponent extends SubscriptionDestroy implements OnInit {
     }
 
     nodeOnBlur(node: TreeNode) {
-        if (!node.name) this.cancelInlineNode(node);
+        if (!node.name) { this.cancelInlineNode(node); }
     }
 
     submitInlineNode(node: TreeNode) {
@@ -103,16 +103,16 @@ export class TreeComponent extends SubscriptionDestroy implements OnInit {
         }
     }
 
-    //Reload the node data
-    //Reload node's children
-    //@nodeId: Mongoose ObjectId
+    // Reload the node data
+    // Reload node's children
+    // @nodeId: Mongoose ObjectId
     reloadSubTree(subTreeRootId: string) {
         this.treeStore.reloadTreeChildrenData(subTreeRootId);
     }
 
     locateToSelectedNode(node: TreeNode) {
         this.treeStore.locateToSelectedNode(node).subscribe(nodeId => {
-            console.log(`locateToSelectedNode has id = ${nodeId}`)
+            console.log(`locateToSelectedNode has id = ${nodeId}`);
         });
     }
 

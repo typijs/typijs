@@ -8,6 +8,7 @@ import { UIHint } from '../types/ui-hint';
 
 // https://stackoverflow.com/questions/51824125/injection-of-multiple-instances-in-angular
 export const PROPERTY_FACTORIES: InjectionToken<CmsPropertyFactory[]> = new InjectionToken<CmsPropertyFactory[]>('PROPERTY_FACTORIES');
+// tslint:disable-next-line: max-line-length
 export const DEFAULT_PROPERTY_FACTORIES: InjectionToken<CmsPropertyFactory[]> = new InjectionToken<CmsPropertyFactory[]>('DEFAULT_PROPERTY_FACTORIES');
 
 export class CmsPropertyFactory {
@@ -37,10 +38,10 @@ export class CmsPropertyFactory {
     }
 }
 
-//TODO: In Angular 9, should use the providerIn: 'any' for this service. Detail: https://indepth.dev/angulars-root-and-any-provider-scopes/
+// TODO: In Angular 9, should use the providerIn: 'any' for this service. Detail: https://indepth.dev/angulars-root-and-any-provider-scopes/
 /**
  * In Angular 9, should use the providerIn: 'any' for this service
- * 
+ *
  * Detail: https://indepth.dev/angulars-root-and-any-provider-scopes/
  */
 @Injectable()
@@ -53,17 +54,18 @@ export class CmsPropertyFactoryResolver {
         let lastIndex = -1;
         if (this.propertyFactories) {
             lastIndex = this.propertyFactories.map(x => x.isMatching(uiHint)).lastIndexOf(true);
-            if (lastIndex != -1) return this.propertyFactories[lastIndex];
+            if (lastIndex != -1) { return this.propertyFactories[lastIndex]; }
         }
 
         lastIndex = this.defaultPropertyFactories.map(x => x.isMatching(uiHint)).lastIndexOf(true);
-        if (lastIndex == -1) throw new Error(`The CMS can not resolve the Property Factor for the property with UIHint of ${uiHint}`);
+        if (lastIndex == -1) { throw new Error(`The CMS can not resolve the Property Factor for the property with UIHint of ${uiHint}`); }
         if (lastIndex == -1) {
-            console.warn(`The CMS can not resolve the Property Factor for the property with UIHint of ${uiHint}. The default Text Factory will be returned`);
+            console.warn(`The CMS can not resolve the Property Factor for the property with UIHint of ${uiHint}.\n
+            The default Text Factory will be returned`);
             lastIndex = this.defaultPropertyFactories.map(x => x.isMatching(UIHint.Text)).lastIndexOf(true);
             return this.defaultPropertyFactories[lastIndex];
         }
 
-        return this.defaultPropertyFactories[lastIndex];;
+        return this.defaultPropertyFactories[lastIndex];
     }
 }

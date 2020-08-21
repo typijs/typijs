@@ -2,8 +2,8 @@
  * Public API Surface of modules
  */
 
-//TODO: https://github.com/ng-packagr/ng-packagr/issues/727
-//Can not export like that in Angular 8. Need to update to 9
+// TODO: https://github.com/ng-packagr/ng-packagr/issues/727
+// Can not export like that in Angular 8. Need to update to 9
 // export * from './shared/libs';
 // export * from './shared/drag-drop';
 

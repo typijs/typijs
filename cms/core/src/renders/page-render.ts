@@ -56,7 +56,7 @@ export class CmsPageRender implements OnInit, OnDestroy {
                 pageType.properties.forEach(property => this.populateReferenceProperty(currentPage, property));
                 this.pageComponentRef = this.createPageComponent(currentPage, pageType.metadata);
             }
-        })
+        });
     }
 
     private resolveContentDataByUrl() {
@@ -68,17 +68,17 @@ export class CmsPageRender implements OnInit, OnDestroy {
                 pageType.properties.forEach(property => this.populateReferenceProperty(currentPage, property));
                 this.pageComponentRef = this.createPageComponent(currentPage, pageType.metadata);
             }
-        })
+        });
     }
 
     private populateReferenceProperty(currentPage: Page, property: ContentTypeProperty): void {
-        if (!currentPage.properties) return;
+        if (!currentPage.properties) { return; }
 
         const childItems = currentPage.publishedChildItems;
         const fieldType = property.metadata.displayType;
         switch (fieldType) {
             case UIHint.ContentArea:
-                const fieldValue = currentPage.properties[property.name]
+                const fieldValue = currentPage.properties[property.name];
                 if (Array.isArray(fieldValue)) {
                     for (let i = 0; i < fieldValue.length; i++) {
                         const matchItem = childItems.find(x => x.content && x.content._id == fieldValue[i]._id);

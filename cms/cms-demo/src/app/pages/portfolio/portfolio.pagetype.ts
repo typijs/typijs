@@ -2,22 +2,22 @@ import { Property, PageType, UIHint, ValidationTypes, PageData } from '@angular-
 import { PortfolioComponent } from './portfolio.component';
 
 @PageType({
-    displayName: "Portfolio Page",
+    displayName: 'Portfolio Page',
     componentRef: PortfolioComponent,
-    description: "This is portfolio page type"
+    description: 'This is portfolio page type'
 })
 export class PortfolioPage extends PageData {
 
     @Property({
-        displayName: "Header",
+        displayName: 'Header',
         displayType: UIHint.Text,
-        validates: [ValidationTypes.required("This field is required")]
+        validates: [ValidationTypes.required('This field is required')]
     })
     header: string;
 
     @Property({
-        displayName: "Number Items Per Page",
+        displayName: 'Number Items Per Page',
         displayType: UIHint.Text
     })
-    numberItemsPerPage: Number;
+    numberItemsPerPage: number;
 }

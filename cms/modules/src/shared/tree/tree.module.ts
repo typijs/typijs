@@ -32,7 +32,7 @@ import { TreeComponent } from './components/tree.component';
     ]
 })
 export class TreeModule {
-    constructor(private library: FaIconLibrary) {
+    constructor(library: FaIconLibrary) {
         library.addIcons(faBars, faCaretDown, faCaretRight, faMinusSquare, faPlusSquare);
     }
 }

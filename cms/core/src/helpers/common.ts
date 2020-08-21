@@ -1,4 +1,4 @@
-import { CmsTab } from "../types";
+import { CmsTab } from '../types';
 
 export function sortTabByTitle(tabOne: CmsTab, tabTwo: CmsTab): number {
   const titleOne = tabOne.title ? tabOne.title.toUpperCase() : ''; // ignore upper and lowercase
@@ -13,17 +13,20 @@ export function sortTabByTitle(tabOne: CmsTab, tabTwo: CmsTab): number {
 }
 
 export function generateUUID(): string {
-  let d = new Date().getTime();//Timestamp
-  let d2 = (performance && performance.now && (performance.now() * 1000)) || 0;//Time in microseconds since page-load or 0 if unsupported
+  let d = new Date().getTime(); // Timestamp
+  let d2 = (performance && performance.now && (performance.now() * 1000)) || 0; // Time in microseconds since page-load or 0 if unsupported
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    let r = Math.random() * 16;//random number between 0 and 16
-    if (d > 0) {//Use timestamp until depleted
+    let r = Math.random() * 16; // random number between 0 and 16
+    if (d > 0) {// Use timestamp until depleted
+      // tslint:disable-next-line: no-bitwise
       r = (d + r) % 16 | 0;
       d = Math.floor(d / 16);
-    } else {//Use microseconds since page-load if supported
+    } else {// Use microseconds since page-load if supported
+      // tslint:disable-next-line: no-bitwise
       r = (d2 + r) % 16 | 0;
       d2 = Math.floor(d2 / 16);
     }
+    // tslint:disable-next-line: no-bitwise
     return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
   });
 }
@@ -32,7 +35,7 @@ export function clone(obj: any) {
   let copy: any;
 
   // Handle the 3 simple types, and null or undefined
-  if (null == obj || "object" != typeof obj) return obj;
+  if (null == obj || 'object' != typeof obj) { return obj; }
 
   // Handle Date
   if (obj instanceof Date) {
@@ -52,14 +55,14 @@ export function clone(obj: any) {
 
   // Handle Object
   if (obj instanceof Object) {
-    return Object.assign({}, obj);
+    return { ...obj };
   }
 
-  throw new Error("Unable to copy obj! Its type isn't supported.");
+  throw new Error('Unable to copy obj! Its type isn\'t supported.');
 }
 
 export function isUrlAbsolute(url: string): boolean {
-  if (!url) return true;
+  if (!url) { return true; }
   if (url.indexOf('//') === 0) { return true; } // URL is protocol-relative (= absolute)
   if (url.indexOf('://') === -1) { return false; } // URL has no protocol (= relative)
   if (url.indexOf('.') === -1) { return false; } // URL does not contain a dot, i.e. no TLD (= relative, possibly REST)

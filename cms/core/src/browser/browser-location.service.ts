@@ -2,7 +2,7 @@ import { PLATFORM_ID, Injectable, Inject, Optional } from '@angular/core';
 import { isPlatformBrowser, isPlatformServer } from '@angular/common';
 import { REQUEST } from '@nguniversal/express-engine/tokens';
 
-//export abstract class LocationRef extends Location { }
+// export abstract class LocationRef extends Location { }
 export type LocationRef = {
     /**
      * Ex: http://localhost:4200 or http://yourdomain.com
@@ -13,7 +13,7 @@ export type LocationRef = {
      */
     pathname: string,
     search: string
-}
+};
 
 @Injectable({
     providedIn: 'root'

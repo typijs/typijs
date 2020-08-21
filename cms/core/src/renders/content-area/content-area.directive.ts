@@ -9,22 +9,22 @@ import { BlockData, ContentData } from '../../services/content/models/content-da
     selector: '[contentArea]'
 })
 export class ContentAreaDirective implements OnDestroy {
-    private componentRefs: Array<ComponentRef<any>> = [];
+    private componentRefs: ComponentRef<any>[] = [];
 
-    private _value: Array<any>;
+    private _value: any[];
     @Input('contentArea')
-    set value(value: Array<any>) {
+    get value(): any[] {
+        return this._value;
+    }
+    set value(value: any[]) {
         this.viewContainerRef.clear();
         this._value = value;
         if (this._value) {
             this._value.forEach(block => {
                 const createdComponent = this.createBlockComponent(block);
-                if (createdComponent) this.componentRefs.push(createdComponent);
-            })
+                if (createdComponent) { this.componentRefs.push(createdComponent); }
+            });
         }
-    }
-    get value(): Array<any> {
-        return this._value;
     }
 
     constructor(
@@ -40,7 +40,7 @@ export class ContentAreaDirective implements OnDestroy {
     }
 
     private createBlockComponent(block: Block): ComponentRef<any> {
-        const blockContentType = this.contentTypeService.getBlockType(block.contentType)
+        const blockContentType = this.contentTypeService.getBlockType(block.contentType);
         const blockFactory = this.componentFactoryResolver.resolveComponentFactory(blockContentType.metadata.componentRef);
         const blockComponent = this.viewContainerRef.createComponent(blockFactory);
 

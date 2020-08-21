@@ -1,5 +1,5 @@
 import { Media, MediaService, MEDIA_TYPE } from '@angular-cms/core';
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
 
 import { SubjectService } from '../shared/services/subject.service';
@@ -13,10 +13,10 @@ import { FileModalComponent } from './upload/file-modal.component';
 import { UploadService } from './upload/upload.service';
 import { TreeService } from '../shared/tree/interfaces/tree-service';
 
-const MediaMenuItemAction = {
+const MEDIA_MENU_ACTION = {
     DeleteFolder: 'DeleteFolder',
     NewFileUpload: 'NewFile'
-}
+};
 
 @Component({
     template: `
@@ -26,8 +26,8 @@ const MediaMenuItemAction = {
             </div>
             <as-split direction="vertical" gutterSize="4">
                 <as-split-area size="50">
-                    <cms-tree 
-                        class="tree-root pl-1 pt-2 d-block" 
+                    <cms-tree
+                        class="tree-root pl-1 pt-2 d-block"
                         [root]="root"
                         [config]="treeConfig"
                         (nodeSelected)="folderSelected($event)"
@@ -39,7 +39,9 @@ const MediaMenuItemAction = {
                                 <fa-icon class="mr-1" *ngIf="node.id == 0" [icon]="['fas', 'photo-video']"></fa-icon>
                                 <fa-icon class="mr-1" *ngIf="node.id != 0" [icon]="['fas', 'folder']"></fa-icon>
                                 <span class="node-name">{{node.name}}</span>
-                                <button type="button" class="btn btn-xs btn-secondary float-right mr-1" *ngIf="node.id == '0'" (click)="clickToCreateFolder(node)">
+                                <button type="button"
+                                    class="btn btn-xs btn-secondary float-right mr-1"
+                                    *ngIf="node.id == '0'" (click)="clickToCreateFolder(node)">
                                     <fa-icon [icon]="['fas', 'folder-plus']"></fa-icon>
                                 </button>
                             </span>
@@ -48,10 +50,10 @@ const MediaMenuItemAction = {
                 </as-split-area>
                 <as-split-area size="50">
                     <div class="list-group list-media"  *ngIf="medias" #mediaItem>
-                        <a *ngFor="let media of medias" 
-                            [draggable] 
-                            [dragData]="media"  
-                            class="list-group-item list-group-item-action flex-column align-items-start p-1" 
+                        <a *ngFor="let media of medias"
+                            [draggable]
+                            [dragData]="media"
+                            class="list-group-item list-group-item-action flex-column align-items-start p-1"
                             [routerLink]="['content/media', media._id]">
                             <div class="d-flex align-items-center">
                                 <img width='50' class="mr-1" [src]='media.thumbnail | absolute'/>
@@ -68,12 +70,12 @@ const MediaMenuItemAction = {
     styleUrls: ['./media-tree.scss'],
     providers: [MediaTreeService, { provide: TreeService, useExisting: MediaTreeService }]
 })
-export class MediaTreeComponent extends SubscriptionDestroy {
+export class MediaTreeComponent extends SubscriptionDestroy implements OnInit {
 
     @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
     @ViewChild(FileModalComponent, { static: false }) fileModal: FileModalComponent;
 
-    medias: Array<Media>;
+    medias: Media[];
     root: TreeNode;
     treeConfig: TreeConfig;
     selectedFolder: Partial<TreeNode>;
@@ -91,15 +93,15 @@ export class MediaTreeComponent extends SubscriptionDestroy {
         this.subjectService.mediaFolderCreated$
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(createdFolder => {
-                this.cmsTree.selectNode({ id: createdFolder._id, isNeedToScroll: true })
+                this.cmsTree.selectNode({ id: createdFolder._id, isNeedToScroll: true });
                 this.cmsTree.reloadSubTree(createdFolder.parentId);
             });
 
         this.uploadService.uploadComplete$
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(nodeId => {
-                //Reload current node
-                if (this.selectedFolder.id == nodeId) this.reloadSelectedFolder(nodeId);
+                // Reload current node
+                if (this.selectedFolder.id == nodeId) { this.reloadSelectedFolder(nodeId); }
             });
 
         this.folderSelected(this.root);
@@ -111,7 +113,7 @@ export class MediaTreeComponent extends SubscriptionDestroy {
     }
 
     private reloadSelectedFolder(folderId: string) {
-        //load child block in folder
+        // load child block in folder
         this.mediaService.getContentInFolder(folderId).subscribe(childMedias => {
             childMedias.forEach(media => Object.assign(media, {
                 type: MEDIA_TYPE,
@@ -119,11 +121,11 @@ export class MediaTreeComponent extends SubscriptionDestroy {
                 isPublished: media.isPublished
             }));
             this.medias = childMedias;
-        })
+        });
     }
 
     clickToCreateFolder(node: TreeNode) {
-        this.cmsTree.handleNodeMenuItemSelected({ action: NodeMenuItemAction.NewNodeInline, node: node })
+        this.cmsTree.handleNodeMenuItemSelected({ action: NodeMenuItemAction.NewNodeInline, node });
     }
 
     createMediaFolder(node: TreeNode) {
@@ -141,17 +143,17 @@ export class MediaTreeComponent extends SubscriptionDestroy {
     menuItemSelected(nodeAction: TreeMenuActionEvent) {
         const { action, node } = nodeAction;
         switch (action) {
-            case MediaMenuItemAction.NewFileUpload:
+            case MEDIA_MENU_ACTION.NewFileUpload:
                 this.fileModal.openFileUploadModal(node);
                 break;
-            case MediaMenuItemAction.DeleteFolder:
+            case MEDIA_MENU_ACTION.DeleteFolder:
                 this.folderDelete(node);
                 break;
         }
     }
 
     private folderDelete(nodeToDelete: TreeNode) {
-        if (nodeToDelete.id == '0') return;
+        if (nodeToDelete.id == '0') { return; }
         this.mediaService.softDeleteContent(nodeToDelete.id).subscribe(([folderToDelete, deleteResult]: [Media, any]) => {
             console.log(deleteResult);
             this.cmsTree.reloadSubTree(nodeToDelete.parentId);
@@ -163,29 +165,29 @@ export class MediaTreeComponent extends SubscriptionDestroy {
             menuItems: [
                 {
                     action: NodeMenuItemAction.NewNodeInline,
-                    name: "New Folder"
+                    name: 'New Folder'
                 },
                 {
-                    action: MediaMenuItemAction.NewFileUpload,
-                    name: "Upload"
+                    action: MEDIA_MENU_ACTION.NewFileUpload,
+                    name: 'Upload'
                 },
                 {
                     action: NodeMenuItemAction.EditNowInline,
-                    name: "Rename"
+                    name: 'Rename'
                 },
                 {
                     action: NodeMenuItemAction.Copy,
-                    name: "Copy"
+                    name: 'Copy'
                 },
                 {
                     action: NodeMenuItemAction.Paste,
-                    name: "Paste"
+                    name: 'Paste'
                 },
                 {
-                    action: MediaMenuItemAction.DeleteFolder,
-                    name: "Delete"
+                    action: MEDIA_MENU_ACTION.DeleteFolder,
+                    name: 'Delete'
                 },
             ]
-        }
+        };
     }
 }

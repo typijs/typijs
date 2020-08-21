@@ -14,7 +14,7 @@ export class XHtmlPropertyRender extends CmsPropertyRender<string> {
     constructor(private sanitizer: DomSanitizer) { super(); }
 
     protected onValueChange(value: string) {
-        if (value) this.innerHtml = this.sanitizer.bypassSecurityTrustHtml(value);
+        if (value) { this.innerHtml = this.sanitizer.bypassSecurityTrustHtml(value); }
     }
 }
 

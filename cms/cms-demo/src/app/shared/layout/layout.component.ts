@@ -1,5 +1,5 @@
 import { PageData, PageService } from '@angular-cms/core';
-import { Component, ViewEncapsulation, Inject } from '@angular/core';
+import { Component, ViewEncapsulation, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
@@ -10,9 +10,9 @@ import { HomePage } from '../../pages/home/home.pagetype';
   styleUrls: ['./layout.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class LayoutComponent {
+export class LayoutComponent implements OnInit {
   startPage$: Observable<HomePage>;
-  menuItems$: Observable<Array<PageData>>;
+  menuItems$: Observable<PageData[]>;
 
   constructor(private contentService: PageService) { }
 

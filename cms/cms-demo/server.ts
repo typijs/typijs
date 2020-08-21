@@ -1,7 +1,6 @@
 import 'zone.js/dist/zone-node';
 import 'reflect-metadata';
 
-import { enableProdMode } from '@angular/core';
 import { ngExpressEngine, RenderOptions } from '@nguniversal/express-engine';
 import * as express from 'express';
 import { join } from 'path';
@@ -9,10 +8,10 @@ import { join } from 'path';
 import { provideModuleMap } from '@nguniversal/module-map-ngfactory-loader';
 
 export function detectBot(userAgent: string): boolean {
-    if (!userAgent) return false;
+    if (!userAgent) { return false; }
 
-    //See more at https://user-agents.net/bots 
-    //or https://github.com/monperrus/crawler-user-agents/blob/master/crawler-user-agents.json
+    // See more at https://user-agents.net/bots
+    // or https://github.com/monperrus/crawler-user-agents/blob/master/crawler-user-agents.json
     const bots = [
         'googlebot', 'Google-Site-Verification', 'google page speed', 'lighthouse',
         'AdsBot', 'APIs-Google', 'Feedfetcher-Google', 'Mediapartners-Google', 'HeadlessChrome', 'developers.google.com/+/web/snippet',
@@ -89,11 +88,11 @@ export function app() {
     return server;
 }
 
-//enableProdMode();
+// enableProdMode();
 const port = process.env.PORT || 4200;
 
 // Start up the Node server
-const server = app();
-server.listen(port, () => {
+const serverRender = app();
+serverRender.listen(port, () => {
     console.log(`Node Express for SSR  listening on http://localhost:${port}`);
 });

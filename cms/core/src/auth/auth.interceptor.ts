@@ -26,13 +26,14 @@ export class AuthInterceptor implements HttpInterceptor {
     }
 
     private handleAuthError(error: HttpErrorResponse): Observable<any> {
-        //handle your auth error or rethrow
+        // handle your auth error or rethrow
         if (error.status === 401 && this.authService.isLoggedIn) {
             // auto logout if 401 or 403 response returned from api
             this.authService.logout();
             this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.routerState.snapshot.url } });
-            // if you've caught / handled the error, you don't want to rethrow it unless you also want downstream consumers to have to handle it as well.
-            //return of(error.message); // or EMPTY may be appropriate here
+            // if you've caught / handled the error
+            // you don't want to rethrow it unless you also want downstream consumers to have to handle it as well.
+            // return of(error.message); // or EMPTY may be appropriate here
         }
         return throwError(error);
     }

@@ -13,7 +13,7 @@ import { NgxWigProperty } from './xhtml/wig.property';
     imports: [
         ReactiveFormsModule,
         NgxWigModule,
-        //Extend Admin, Editor UI
+        // Extend Admin, Editor UI
         CustomModule.forRoot(),
         CmsPortalModule.forRoot()
     ],
@@ -24,7 +24,7 @@ import { NgxWigProperty } from './xhtml/wig.property';
         NgxWigProperty
     ],
     providers: [
-        //Override the default xhtml property, using the ngx-wig instead of ngx-quill
+        // Override the default xhtml property, using the ngx-wig instead of ngx-quill
         { provide: PROPERTY_FACTORIES, useClass: NgxWigPropertyFactory, multi: true }
     ]
 })

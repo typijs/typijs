@@ -2,11 +2,13 @@ import { ComponentFactoryResolver, ComponentRef, Inject, Injectable, InjectionTo
 
 import { ClassOf } from '../types';
 import { ContentTypeProperty } from '../types/content-type';
-import { CmsPropertyRender } from "./property-render";
+import { CmsPropertyRender } from './property-render';
 import { UIHint } from '../types/ui-hint';
 
 // https://stackoverflow.com/questions/51824125/injection-of-multiple-instances-in-angular
+// tslint:disable-next-line: max-line-length
 export const PROPERTY_RENDERS: InjectionToken<CmsPropertyRenderFactory[]> = new InjectionToken<CmsPropertyRenderFactory[]>('PROPERTY_RENDERS');
+// tslint:disable-next-line: max-line-length
 export const DEFAULT_PROPERTY_RENDERS: InjectionToken<CmsPropertyRenderFactory[]> = new InjectionToken<CmsPropertyRenderFactory[]>('DEFAULT_PROPERTY_RENDERS');
 
 export class CmsPropertyRenderFactory {
@@ -48,11 +50,12 @@ export class CmsPropertyRenderFactoryResolver {
         let lastIndex = -1;
         if (this.propertyRenderFactories) {
             lastIndex = this.propertyRenderFactories.map(x => x.isMatching(uiHint)).lastIndexOf(true);
-            if (lastIndex != -1) return this.propertyRenderFactories[lastIndex];
+            if (lastIndex != -1) { return this.propertyRenderFactories[lastIndex]; }
         }
 
         lastIndex = this.defaultPropertyRenderFactories.map(x => x.isMatching(uiHint)).lastIndexOf(true);
         if (lastIndex == -1) {
+            // tslint:disable-next-line: max-line-length
             console.warn(`The CMS can not resolve the Property Render Factor for the property with UIHint of ${uiHint}. The default Text Render will be returned`);
             lastIndex = this.defaultPropertyRenderFactories.map(x => x.isMatching(UIHint.Text)).lastIndexOf(true);
             return this.defaultPropertyRenderFactories[lastIndex];

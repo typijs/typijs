@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CmsComponent, PageService } from '@angular-cms/core';
 import { PortfolioPage } from './portfolio.pagetype';
 import { Observable } from 'rxjs';
@@ -9,7 +9,7 @@ import { ArticlePage } from '../article/article.pagetype';
     templateUrl: 'portfolio.component.html'
 })
 
-export class PortfolioComponent extends CmsComponent<PortfolioPage> {
+export class PortfolioComponent extends CmsComponent<PortfolioPage> implements OnInit {
     portfolioPages$: Observable<ArticlePage[]>;
     constructor(private contentService: PageService) {
         super();
@@ -18,6 +18,6 @@ export class PortfolioComponent extends CmsComponent<PortfolioPage> {
     ngOnInit() {
         this.portfolioPages$ = this.contentService.getPublishedPageChildren(this.currentContent.id).pipe(
             map(children => children.map(childPage => new ArticlePage(childPage)))
-        )
+        );
     }
 }

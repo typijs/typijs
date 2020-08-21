@@ -20,7 +20,7 @@ export abstract class CmsProperty {
     }
     private _property: ContentTypeProperty;
 
-    public id: string = this.getId();
+    id: string = this.getId();
 
     protected getId(id: number | string = generateUUID()): string {
         return this.constructor.name + '_' + id;

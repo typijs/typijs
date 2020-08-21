@@ -17,7 +17,7 @@ export class EditorComponent extends BaseLayoutComponent {
         this.cmsWidgets = this.getCmsWidgets();
     }
 
-    protected getCmsWidgets(): Array<CmsComponentConfig> {
+    protected getCmsWidgets(): CmsComponentConfig[] {
         return this.editorWidgets.reduce((a, b) => a.concat(b), []);
     }
 }

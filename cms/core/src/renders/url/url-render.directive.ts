@@ -16,15 +16,15 @@ export class UrlRenderDirective extends PropertyDirectiveBase {
 
     private _value: CmsUrl;
     @Input('cmsUrl')
+    get value(): CmsUrl {
+        return this._value;
+    }
     set value(value: CmsUrl) {
         this._value = value;
         if (value) {
             this.href = this.sanitizer.bypassSecurityTrustUrl(value.url);
             this.target = value.target;
         }
-    }
-    get value(): CmsUrl {
-        return this._value;
     }
 
     constructor(

@@ -6,7 +6,7 @@ const CHECKBOX_GROUP_VALUE_ACCESSOR = {
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => CheckboxGroupControl),
     multi: true
-}
+};
 
 @Component({
     selector: 'checkbox-group',
@@ -21,16 +21,16 @@ const CHECKBOX_GROUP_VALUE_ACCESSOR = {
 })
 export class CheckboxGroupControl extends CmsControl {
 
-    @Input() selectItems: Array<any>;
+    @Input() selectItems: any[];
 
-    //Typescript uses getter/setter syntax that is like ActionScript3.
-    //used to store internal value
+    // Typescript uses getter/setter syntax that is like ActionScript3.
+    // used to store internal value
     private _model: any;
     get model() {
         return this._model;
     }
 
-    //Implement of the ControlValueAccessor interface
+    // Implement of the ControlValueAccessor interface
     writeValue(value: any): void {
         if (this.selectItems && value instanceof Array) {
             this.selectItems.forEach(item => {
@@ -39,12 +39,12 @@ export class CheckboxGroupControl extends CmsControl {
                 } else {
                     item.selected = false;
                 }
-            })
+            });
         }
         this._model = value;
     }
 
-    //methods depend on control business
+    // methods depend on control business
     addOrRemove(value: any) {
         if (this.contains(value)) {
             this.remove(value);

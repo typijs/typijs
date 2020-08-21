@@ -15,14 +15,14 @@ export class BlockTreeService implements TreeService {
 
     getNode(nodeId: string): Observable<TreeNode> {
         return this.blockService.getContent(nodeId).pipe(
-            map(block => TreeNode.createInstanceFromContent(block, FOLDER_BLOCK)))
+            map(block => TreeNode.createInstanceFromContent(block, FOLDER_BLOCK)));
     }
 
     loadChildren(parentNodeId: string): Observable<TreeNode[]> {
         return this.blockService.getFolderChildren(parentNodeId).pipe(
             map((childFolders: Block[]) => {
                 return childFolders.map(folder => TreeNode.createInstanceFromContent(folder, FOLDER_BLOCK)
-                )
+                );
             })
         );
     }

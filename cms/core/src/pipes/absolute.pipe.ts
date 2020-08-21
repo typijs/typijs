@@ -8,8 +8,8 @@ import { isUrlAbsolute } from '../helpers/common';
 export class AbsolutePipe implements PipeTransform {
     constructor(private configService: ConfigService) { }
 
-    public transform(value: string): string {
-        if (isUrlAbsolute(value)) return value;
-        return `${this.configService.baseApiUrl}${value}`
+    transform(value: string): string {
+        if (isUrlAbsolute(value)) { return value; }
+        return `${this.configService.baseApiUrl}${value}`;
     }
 }

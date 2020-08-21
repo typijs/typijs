@@ -17,7 +17,7 @@ export class AdminComponent extends BaseLayoutComponent {
         this.cmsWidgets = this.getCmsWidgets();
     }
 
-    protected getCmsWidgets(): Array<CmsComponentConfig> {
+    protected getCmsWidgets(): CmsComponentConfig[] {
         return this.adminWidgets.reduce((a, b) => a.concat(b), []);
     }
 }

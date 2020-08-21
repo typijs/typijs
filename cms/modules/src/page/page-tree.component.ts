@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 
@@ -13,15 +13,15 @@ import { SubscriptionDestroy } from '../shared/subscription-destroy';
 import { SubjectService } from '../shared/services/subject.service';
 import { TreeService } from '../shared/tree/interfaces/tree-service';
 
-const PageMenuItemAction = {
+const PAGE_MENU_ACTION = {
     DeletePage: 'DeletePage',
     NewPage: 'NewPage'
-}
+};
 
 @Component({
     template: `
-        <cms-tree 
-            class="tree-root pl-1 pt-2 d-block" 
+        <cms-tree
+            class="tree-root pl-1 pt-2 d-block"
             [root]="root"
             [config]="treeConfig"
             (nodeSelected)="pageSelected($event)"
@@ -31,7 +31,10 @@ const PageMenuItemAction = {
                     <fa-icon class="mr-1" *ngIf="node.id == '0'" [icon]="['fas', 'sitemap']"></fa-icon>
                     <fa-icon class="mr-1" *ngIf="node.id != '0'" [icon]="['fas', 'file']"></fa-icon>
                     <span>{{node.name}}</span>
-                    <a role="button"  class="btn btn-xs btn-secondary mr-1 float-right" href="javascript:void(0)" *ngIf="node.id == '0'" [routerLink]="['new/page']">
+                    <a role="button"
+                        class="btn btn-xs btn-secondary mr-1 float-right"
+                        href="javascript:void(0)"
+                        *ngIf="node.id == '0'" [routerLink]="['new/page']">
                         <fa-icon [icon]="['fas', 'plus']"></fa-icon>
                     </a>
                 </span>
@@ -41,7 +44,7 @@ const PageMenuItemAction = {
     styleUrls: ['./page-tree.scss'],
     providers: [PageTreeService, { provide: TreeService, useExisting: PageTreeService }]
 })
-export class PageTreeComponent extends SubscriptionDestroy {
+export class PageTreeComponent extends SubscriptionDestroy implements OnInit {
     @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
 
     root: TreeNode;
@@ -52,7 +55,7 @@ export class PageTreeComponent extends SubscriptionDestroy {
         private subjectService: SubjectService,
         private router: Router,
         private route: ActivatedRoute) {
-        super()
+        super();
         this.root = new TreeNode({ id: '0', name: 'Root', hasChildren: true });
         this.treeConfig = this.initTreeConfiguration();
     }
@@ -61,8 +64,8 @@ export class PageTreeComponent extends SubscriptionDestroy {
         this.subjectService.pageCreated$
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe((createdPage: Page) => {
-                //Reload parent page
-                //Reload the children of parent to update the created page
+                // Reload parent page
+                // Reload the children of parent to update the created page
                 this.cmsTree.selectNode({ id: createdPage._id, isNeedToScroll: true });
                 this.cmsTree.reloadSubTree(createdPage.parentId);
             });
@@ -82,28 +85,28 @@ export class PageTreeComponent extends SubscriptionDestroy {
     }
 
     pageSelected(node: TreeNode) {
-        if (node.id == '0') return;
-        this.router.navigate(["content/page", node.id], { relativeTo: this.route })
+        if (node.id == '0') { return; }
+        this.router.navigate(['content/page', node.id], { relativeTo: this.route });
     }
 
     menuItemSelected(nodeAction: TreeMenuActionEvent) {
         const { action, node } = nodeAction;
         switch (action) {
-            case PageMenuItemAction.NewPage:
+            case PAGE_MENU_ACTION.NewPage:
                 this.pageCreating(node);
                 break;
-            case PageMenuItemAction.DeletePage:
+            case PAGE_MENU_ACTION.DeletePage:
                 this.pageDelete(node);
                 break;
         }
     }
 
     private pageCreating(parentNode: TreeNode) {
-        this.router.navigate(["new/page", parentNode.id], { relativeTo: this.route })
+        this.router.navigate(['new/page', parentNode.id], { relativeTo: this.route });
     }
 
     private pageDelete(nodeToDelete: TreeNode) {
-        if (nodeToDelete.id == '0') return;
+        if (nodeToDelete.id == '0') { return; }
         this.pageService.softDeleteContent(nodeToDelete.id).subscribe(([pageToDelete, deleteResult]: [Page, any]) => {
             console.log(deleteResult);
             this.cmsTree.selectNode({ id: pageToDelete.parentId, isNeedToScroll: true });
@@ -115,26 +118,26 @@ export class PageTreeComponent extends SubscriptionDestroy {
         return {
             menuItems: [
                 {
-                    action: PageMenuItemAction.NewPage,
-                    name: "New Page"
+                    action: PAGE_MENU_ACTION.NewPage,
+                    name: 'New Page'
                 },
                 {
                     action: NodeMenuItemAction.Cut,
-                    name: "Cut"
+                    name: 'Cut'
                 },
                 {
                     action: NodeMenuItemAction.Copy,
-                    name: "Copy"
+                    name: 'Copy'
                 },
                 {
                     action: NodeMenuItemAction.Paste,
-                    name: "Paste"
+                    name: 'Paste'
                 },
                 {
-                    action: PageMenuItemAction.DeletePage,
-                    name: "Delete"
+                    action: PAGE_MENU_ACTION.DeletePage,
+                    name: 'Delete'
                 },
             ]
-        }
+        };
     }
 }
