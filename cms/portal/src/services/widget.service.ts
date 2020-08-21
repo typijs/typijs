@@ -58,7 +58,7 @@ export class WidgetService {
     }
 
     private createWidget(viewContainerRef: ViewContainerRef, widget: CmsComponentConfig): ComponentRef<any> {
-        let componentFactory = this.componentFactoryResolver.resolveComponentFactory(widget.component);
+        const componentFactory = this.componentFactoryResolver.resolveComponentFactory(widget.component);
         return viewContainerRef.createComponent(componentFactory);
     }
 }

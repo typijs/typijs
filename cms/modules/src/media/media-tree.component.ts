@@ -1,5 +1,5 @@
 import { Media, MediaService, MEDIA_TYPE } from '@angular-cms/core';
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
 
 import { SubjectService } from '../shared/services/subject.service';
@@ -70,7 +70,7 @@ const MediaMenuItemAction = {
     styleUrls: ['./media-tree.scss'],
     providers: [MediaTreeService, { provide: TreeService, useExisting: MediaTreeService }]
 })
-export class MediaTreeComponent extends SubscriptionDestroy {
+export class MediaTreeComponent extends SubscriptionDestroy implements OnInit {
 
     @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
     @ViewChild(FileModalComponent, { static: false }) fileModal: FileModalComponent;

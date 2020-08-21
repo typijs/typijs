@@ -23,14 +23,14 @@ export class CheckboxGroupControl extends CmsControl {
 
     @Input() selectItems: Array<any>;
 
-    //Typescript uses getter/setter syntax that is like ActionScript3.
-    //used to store internal value
+    // Typescript uses getter/setter syntax that is like ActionScript3.
+    // used to store internal value
     private _model: any;
     get model() {
         return this._model;
     }
 
-    //Implement of the ControlValueAccessor interface
+    // Implement of the ControlValueAccessor interface
     writeValue(value: any): void {
         if (this.selectItems && value instanceof Array) {
             this.selectItems.forEach(item => {

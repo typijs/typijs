@@ -1,4 +1,4 @@
-import { Input, ViewChildren, Component, QueryList } from '@angular/core';
+import { Input, ViewChildren, Component, QueryList, OnInit } from '@angular/core';
 
 import { CmsTab, InsertPointDirective, BrowserStorageService } from '@angular-cms/core';
 import { SubjectService } from '@angular-cms/modules';
@@ -6,12 +6,12 @@ import { SubjectService } from '@angular-cms/modules';
 type PanelConfig = {
     visible: boolean,
     size: number | string
-}
+};
 
 type LayoutConfig = {
     headerSize: number
     panels: PanelConfig[]
-}
+};
 
 const defaultPanelConfigs: PanelConfig[] = [
     {

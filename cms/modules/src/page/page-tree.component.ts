@@ -20,8 +20,8 @@ const PageMenuItemAction = {
 
 @Component({
     template: `
-        <cms-tree 
-            class="tree-root pl-1 pt-2 d-block" 
+        <cms-tree
+            class="tree-root pl-1 pt-2 d-block"
             [root]="root"
             [config]="treeConfig"
             (nodeSelected)="pageSelected($event)"
@@ -85,8 +85,8 @@ export class PageTreeComponent extends SubscriptionDestroy implements OnInit {
     }
 
     pageSelected(node: TreeNode) {
-        if (node.id == '0') return;
-        this.router.navigate(["content/page", node.id], { relativeTo: this.route })
+        if (node.id == '0') { return; }
+        this.router.navigate(['content/page', node.id], { relativeTo: this.route });
     }
 
     menuItemSelected(nodeAction: TreeMenuActionEvent) {
@@ -102,11 +102,11 @@ export class PageTreeComponent extends SubscriptionDestroy implements OnInit {
     }
 
     private pageCreating(parentNode: TreeNode) {
-        this.router.navigate(["new/page", parentNode.id], { relativeTo: this.route })
+        this.router.navigate(['new/page', parentNode.id], { relativeTo: this.route });
     }
 
     private pageDelete(nodeToDelete: TreeNode) {
-        if (nodeToDelete.id == '0') return;
+        if (nodeToDelete.id == '0') { return; }
         this.pageService.softDeleteContent(nodeToDelete.id).subscribe(([pageToDelete, deleteResult]: [Page, any]) => {
             console.log(deleteResult);
             this.cmsTree.selectNode({ id: pageToDelete.parentId, isNeedToScroll: true });

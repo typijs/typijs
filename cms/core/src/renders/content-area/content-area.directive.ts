@@ -40,7 +40,7 @@ export class ContentAreaDirective implements OnDestroy {
     }
 
     private createBlockComponent(block: Block): ComponentRef<any> {
-        const blockContentType = this.contentTypeService.getBlockType(block.contentType)
+        const blockContentType = this.contentTypeService.getBlockType(block.contentType);
         const blockFactory = this.componentFactoryResolver.resolveComponentFactory(blockContentType.metadata.componentRef);
         const blockComponent = this.viewContainerRef.createComponent(blockFactory);
 
