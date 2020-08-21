@@ -2,50 +2,50 @@ import { Property, PageType, UIHint, PageData, CmsImage, ContentReference } from
 import { HomeComponent } from './home.component';
 
 @PageType({
-    displayName: "Home Page",
+    displayName: 'Home Page',
     componentRef: HomeComponent,
-    description: "This is home page type"
+    description: 'This is home page type'
 })
 export class HomePage extends PageData {
 
     @Property({
-        displayName: "Logo",
+        displayName: 'Logo',
         displayType: UIHint.Image
     })
     logo: CmsImage;
 
     @Property({
-        displayName: "Projects Page Root",
+        displayName: 'Projects Page Root',
         displayType: UIHint.ContentReference,
         allowedTypes: ['PortfolioPage'],
     })
     latestProjectRoot: ContentReference;
 
     @Property({
-        displayName: "Highlight Features",
-        description: "This is highlight feature will be in banner area",
+        displayName: 'Highlight Features',
+        description: 'This is highlight feature will be in banner area',
         displayType: UIHint.ContentArea,
         allowedTypes: ['FeatureBlock', 'PortfolioBlock'],
         newProperty: 'abc'
     })
-    features: Array<any>;
+    features: any[];
 
     @Property({
-        displayName: "Highlight Portfolios",
+        displayName: 'Highlight Portfolios',
         displayType: UIHint.ContentArea,
         allowedTypes: ['PortfolioBlock']
     })
-    portfolios: Array<any>;
+    portfolios: any[];
 
     @Property({
-        displayName: "Footer",
+        displayName: 'Footer',
         displayType: UIHint.ContentArea
     })
-    footer: Array<any>;
+    footer: any[];
 
     @Property({
-        displayName: "Footer Text",
-        description: "This is footer text to show the copyright",
+        displayName: 'Footer Text',
+        description: 'This is footer text to show the copyright',
         displayType: UIHint.XHtml
     })
     footerText: string;

@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, UrlSegment, Params } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 
@@ -17,7 +17,7 @@ import { SubscriptionDestroy } from '../../shared/subscription-destroy';
     templateUrl: './content-type-list.component.html',
     styleUrls: ['./content-type-list.scss']
 })
-export class ContentTypeListComponent extends SubscriptionDestroy implements OnDestroy {
+export class ContentTypeListComponent extends SubscriptionDestroy implements OnInit, OnDestroy {
     contentName: string;
     contentTypes: ContentType[] = [];
     private typeOfContent: string;
@@ -30,22 +30,22 @@ export class ContentTypeListComponent extends SubscriptionDestroy implements OnD
         private blockService: BlockService,
         private subjectService: SubjectService,
         private contentTypeService: ContentTypeService
-    ) { super() }
+    ) { super(); }
 
     ngOnInit() {
         this.route.params
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe((params: Params) => {
                 this.parentId = params['parentId'] || undefined;
-                this.typeOfContent = this.getTypeContentFromUrl(this.route.snapshot.url)
+                this.typeOfContent = this.getTypeContentFromUrl(this.route.snapshot.url);
 
                 switch (this.typeOfContent) {
                     case PAGE_TYPE:
-                        this.contentName = "New Page";
+                        this.contentName = 'New Page';
                         this.contentTypes = this.contentTypeService.getAllPageTypes();
                         break;
                     case BLOCK_TYPE:
-                        this.contentName = "New Block";
+                        this.contentName = 'New Block';
                         this.contentTypes = this.contentTypeService.getAllBlockTypes();
                         break;
                 }
@@ -62,7 +62,7 @@ export class ContentTypeListComponent extends SubscriptionDestroy implements OnD
                 name: this.contentName,
                 contentType: contentType.name,
                 parentId: this.parentId
-            }
+            };
 
             switch (this.typeOfContent) {
                 case PAGE_TYPE:
@@ -79,19 +79,19 @@ export class ContentTypeListComponent extends SubscriptionDestroy implements OnD
         this.pageService.createContent(content).subscribe(
             (createdPage: Page) => {
                 this.subjectService.firePageCreated(createdPage);
-                //this.router.navigate(["/cms/editor/content/", PAGE_TYPE, res._id])
+                // this.router.navigate(["/cms/editor/content/", PAGE_TYPE, res._id])
             },
             error => console.log(error)
-        )
+        );
     }
 
     private createNewBlock(content: Partial<Block>) {
         this.blockService.createContent(content).subscribe(
             (createdBlock: Block) => {
                 this.subjectService.fireBlockCreated(createdBlock);
-                this.router.navigate(["/cms/editor/content/", BLOCK_TYPE, createdBlock._id])
+                this.router.navigate(['/cms/editor/content/', BLOCK_TYPE, createdBlock._id]);
             },
             error => console.log(error)
-        )
+        );
     }
 }

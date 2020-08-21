@@ -5,7 +5,7 @@ import { RouteReuseStrategy, Routes } from '@angular/router';
 
 import { CMS } from './cms';
 import { cmsInitializer, configDepsFactory, CONFIG_DEPS } from './cms.initializer';
-import { CoreModule } from "./core.module";
+import { CoreModule } from './core.module';
 import { BLOCK_TYPE_INDICATOR, MEDIA_TYPE_INDICATOR, PAGE_TYPE_INDICATOR } from './decorators/metadata-key';
 import { AuthInterceptor } from './auth/auth.interceptor';
 import { AuthService } from './auth/auth.service';
@@ -13,7 +13,7 @@ import { localStorageFactory, LOCAL_STORAGE } from './browser/browser-storage.se
 import { ConfigService } from './config/config.service';
 import { CmsPageRender } from './renders/page-render';
 import { DEFAULT_PROPERTY_RENDERS } from './renders/property-render.factory';
-import { setAppInjector } from './utils/appInjector';
+import { setAppInjector } from './utils/app-injector';
 import { CustomRouteReuseStrategy } from './utils/route-reuse-strategy';
 import { UndetectedEventPlugin } from './utils/undetected.event';
 import { ContentAreaRenderFactory } from './renders/content-area/content-area';
@@ -33,7 +33,7 @@ export class AngularCms {
         setAppInjector(this.injector);
     }
 
-    public static forRoot(): ModuleWithProviders<AngularCms> {
+    static forRoot(): ModuleWithProviders<AngularCms> {
         return {
             ngModule: AngularCms,
             providers: [
@@ -55,7 +55,7 @@ export class AngularCms {
         };
     }
 
-    public static registerCmsRoutes(layoutComponent): Routes {
+    static registerCmsRoutes(layoutComponent): Routes {
         const cmsRoutes: Routes = [
             {
                 path: '',
@@ -63,7 +63,7 @@ export class AngularCms {
                 children: [
                     {
                         path: '**',
-                        data: { reuse: false }, //pass reuse param to CustomRouteReuseStrategy
+                        data: { reuse: false }, // pass reuse param to CustomRouteReuseStrategy
                         component: CmsPageRender,
                     }
                 ]

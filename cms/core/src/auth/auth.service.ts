@@ -43,11 +43,11 @@ export class AuthService extends BaseService {
     }
 
     logout() {
-        //revoke refresh token
+        // revoke refresh token
         this.httpClient.post<any>(`${this.apiUrl}/revoke-token`, {}, { withCredentials: true }).subscribe();
-        //revoke access token
+        // revoke access token
         this.authSubject.next(null);
-        //stop refresh token request
+        // stop refresh token request
         this.stopRefreshTokenTimer();
     }
 
@@ -77,6 +77,6 @@ export class AuthService extends BaseService {
     }
 
     private stopRefreshTokenTimer() {
-        if (this.refreshTokenTimeout) clearTimeout(this.refreshTokenTimeout);
+        if (this.refreshTokenTimeout) { clearTimeout(this.refreshTokenTimeout); }
     }
 }

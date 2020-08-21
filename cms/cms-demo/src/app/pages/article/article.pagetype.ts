@@ -2,46 +2,46 @@ import { Property, PageType, UIHint, ValidationTypes, PageData, CmsImage } from 
 import { ArticleComponent } from './article.component';
 
 @PageType({
-    displayName: "Article Page",
+    displayName: 'Article Page',
     componentRef: ArticleComponent,
-    description: "This is article page type"
+    description: 'This is article page type'
 })
 export class ArticlePage extends PageData {
 
     @Property({
-        displayName: "Title",
+        displayName: 'Title',
         displayType: UIHint.Text,
-        validates: [ValidationTypes.required("This field is required")]
+        validates: [ValidationTypes.required('This field is required')]
     })
     title: string;
 
     @Property({
-        displayName: "Author",
+        displayName: 'Author',
         displayType: UIHint.Text
     })
     author: string;
 
     @Property({
-        displayName: "Image Teaser",
+        displayName: 'Image Teaser',
         displayType: UIHint.Image
     })
     image: CmsImage;
 
     @Property({
-        displayName: "Summary",
+        displayName: 'Summary',
         displayType: UIHint.XHtml,
-        validates: [ValidationTypes.required("This field is required")]
+        validates: [ValidationTypes.required('This field is required')]
     })
     summary: string;
 
     @Property({
-        displayName: "Content",
+        displayName: 'Content',
         displayType: UIHint.XHtml
     })
     content: string;
 
     @Property({
-        displayName: "Published Date",
+        displayName: 'Published Date',
         displayType: UIHint.Text
     })
     publishedDate: string;

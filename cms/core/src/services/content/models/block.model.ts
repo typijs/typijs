@@ -9,5 +9,5 @@ export const mapToBlockData = (block: Block): BlockData => {
         parentId: block.parentId,
         contentType: block.contentType,
         name: block.name
-    })
-}
+    });
+};

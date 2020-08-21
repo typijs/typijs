@@ -33,7 +33,7 @@ export class MediaService extends ContentService<Media> {
    * Gets image url
    * @param id The id of media
    * @param fileName File name must include the correct extension
-   * @returns image url 
+   * @returns image url
    */
   getImageUrl(id: string, fileName: string): string {
     return `${this.apiAssetUrl}/${id}/${fileName}`;

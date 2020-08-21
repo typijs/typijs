@@ -11,7 +11,7 @@ const CONTENT_REFERENCE_VALUE_ACCESSOR = {
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => ContentReferenceControl),
     multi: true
-}
+};
 
 @Component({
     selector: 'content-reference',
@@ -49,7 +49,7 @@ export class ContentReferenceControl extends CmsControl {
     isDropAllowed = (dragData) => {
         const { contentType, type } = dragData;
 
-        if (!this.allowedTypes) return type == PAGE_TYPE;
+        if (!this.allowedTypes) { return type == PAGE_TYPE; }
         return this.allowedTypes.indexOf(contentType) > -1 && type == PAGE_TYPE;
     }
 
@@ -57,18 +57,18 @@ export class ContentReferenceControl extends CmsControl {
         const { _id, id, name, type, contentType, owner, guid } = e.dragData;
         this.model = <ContentReference>{
             id: _id ? _id : id,
-            type: type,
-            name: name,
-            contentType: contentType
-        }
+            type,
+            name,
+            contentType
+        };
 
         this.onChange(this.model);
 
         if (owner && guid) {
             const contentAreaItem: Partial<ContentAreaItem> = {
-                owner: owner,
-                guid: guid
-            }
+                owner,
+                guid
+            };
             this.subjectService.fireContentDropFinished(contentAreaItem);
         }
     }

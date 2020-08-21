@@ -15,7 +15,7 @@ const PAGES_COMPONENT = [
     ArticleComponent,
     BlogComponent,
     PortfolioComponent
-]
+];
 
 @NgModule({
     imports: [

@@ -3,9 +3,9 @@ import { EventManager } from '@angular/platform-browser';
 
 /**
  * Listen to events without triggering change detection
- * 
+ *
  * Credit: https://github.com/kryops/ng2-events/blob/master/src/undetected/undetected.event.ts
- * 
+ *
  * Usage:
  * <button (undetected.click)="handleClick()"></button>
  */

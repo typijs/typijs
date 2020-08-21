@@ -26,8 +26,8 @@ const MediaMenuItemAction = {
             </div>
             <as-split direction="vertical" gutterSize="4">
                 <as-split-area size="50">
-                    <cms-tree 
-                        class="tree-root pl-1 pt-2 d-block" 
+                    <cms-tree
+                        class="tree-root pl-1 pt-2 d-block"
                         [root]="root"
                         [config]="treeConfig"
                         (nodeSelected)="folderSelected($event)"
@@ -39,7 +39,9 @@ const MediaMenuItemAction = {
                                 <fa-icon class="mr-1" *ngIf="node.id == 0" [icon]="['fas', 'photo-video']"></fa-icon>
                                 <fa-icon class="mr-1" *ngIf="node.id != 0" [icon]="['fas', 'folder']"></fa-icon>
                                 <span class="node-name">{{node.name}}</span>
-                                <button type="button" class="btn btn-xs btn-secondary float-right mr-1" *ngIf="node.id == '0'" (click)="clickToCreateFolder(node)">
+                                <button type="button"
+                                    class="btn btn-xs btn-secondary float-right mr-1"
+                                    *ngIf="node.id == '0'" (click)="clickToCreateFolder(node)">
                                     <fa-icon [icon]="['fas', 'folder-plus']"></fa-icon>
                                 </button>
                             </span>
@@ -48,10 +50,10 @@ const MediaMenuItemAction = {
                 </as-split-area>
                 <as-split-area size="50">
                     <div class="list-group list-media"  *ngIf="medias" #mediaItem>
-                        <a *ngFor="let media of medias" 
-                            [draggable] 
-                            [dragData]="media"  
-                            class="list-group-item list-group-item-action flex-column align-items-start p-1" 
+                        <a *ngFor="let media of medias"
+                            [draggable]
+                            [dragData]="media"
+                            class="list-group-item list-group-item-action flex-column align-items-start p-1"
                             [routerLink]="['content/media', media._id]">
                             <div class="d-flex align-items-center">
                                 <img width='50' class="mr-1" [src]='media.thumbnail | absolute'/>
@@ -91,15 +93,15 @@ export class MediaTreeComponent extends SubscriptionDestroy {
         this.subjectService.mediaFolderCreated$
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(createdFolder => {
-                this.cmsTree.selectNode({ id: createdFolder._id, isNeedToScroll: true })
+                this.cmsTree.selectNode({ id: createdFolder._id, isNeedToScroll: true });
                 this.cmsTree.reloadSubTree(createdFolder.parentId);
             });
 
         this.uploadService.uploadComplete$
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(nodeId => {
-                //Reload current node
-                if (this.selectedFolder.id == nodeId) this.reloadSelectedFolder(nodeId);
+                // Reload current node
+                if (this.selectedFolder.id == nodeId) { this.reloadSelectedFolder(nodeId); }
             });
 
         this.folderSelected(this.root);
@@ -111,7 +113,7 @@ export class MediaTreeComponent extends SubscriptionDestroy {
     }
 
     private reloadSelectedFolder(folderId: string) {
-        //load child block in folder
+        // load child block in folder
         this.mediaService.getContentInFolder(folderId).subscribe(childMedias => {
             childMedias.forEach(media => Object.assign(media, {
                 type: MEDIA_TYPE,
@@ -119,11 +121,11 @@ export class MediaTreeComponent extends SubscriptionDestroy {
                 isPublished: media.isPublished
             }));
             this.medias = childMedias;
-        })
+        });
     }
 
     clickToCreateFolder(node: TreeNode) {
-        this.cmsTree.handleNodeMenuItemSelected({ action: NodeMenuItemAction.NewNodeInline, node: node })
+        this.cmsTree.handleNodeMenuItemSelected({ action: NodeMenuItemAction.NewNodeInline, node });
     }
 
     createMediaFolder(node: TreeNode) {

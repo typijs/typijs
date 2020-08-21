@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { TreeNode } from "./tree-node";
+import { TreeNode } from './tree-node';
 
 export abstract class TreeService {
     abstract getNode: (nodeId: string) => Observable<TreeNode>;

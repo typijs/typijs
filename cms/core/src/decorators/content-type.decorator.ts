@@ -14,16 +14,16 @@ export type ContentTypeMetadata = {
     displayName?: string;
     description?: string;
     componentRef?: any;
-}
+};
 
-//https://www.laurivan.com/scan-decorated-classes-in-typescript/
+// https://www.laurivan.com/scan-decorated-classes-in-typescript/
 /**
  * The PageType decorator factory
- * 
+ *
  * The factory, is just a function that receives any parameters you want and returns a function with a decorator signature
- * 
+ *
  * https://www.typescriptlang.org/docs/handbook/decorators.html#decorator-factories
- * @param metadata 
+ * @param metadata
  */
 export function PageType(metadata: ContentTypeMetadata) {
     function pageTypeDecorator<T extends PageData>(target: ClassOf<T>) {
@@ -39,9 +39,9 @@ function registerPageTypeDecorator(target: any) {
 
 /**
  * The BlockType decorator factory
- * 
+ *
  * The factory, is just a function that receives any parameters you want and returns a function with a decorator signature
- * 
+ *
  * https://www.typescriptlang.org/docs/handbook/decorators.html#decorator-factories
  * @param metadata
  */
@@ -60,11 +60,11 @@ function registerBlockTypeDecorator(target: any) {
 
 /**
  * The MediaType decorator factory
- * 
+ *
  * The factory, is just a function that receives any parameters you want and returns a function with a decorator signature
- * 
+ *
  * https://www.typescriptlang.org/docs/handbook/decorators.html#decorator-factories
- * @param metadata 
+ * @param metadata
  */
 export function MediaType(metadata: ContentTypeMetadata) {
     function mediaTypeDecorator<T extends ContentData>(target: ClassOf<T>) {

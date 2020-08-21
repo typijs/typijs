@@ -10,9 +10,9 @@ export abstract class ModalComponent extends SubscriptionDestroy {
 
     protected isModalShown: boolean = false;
     protected config: ModalOptions = {
-        backdrop: true, //Show backdrop
-        keyboard: false, //Esc button option
-        ignoreBackdropClick: false //Backdrop click to hide
+        backdrop: true, // Show backdrop
+        keyboard: false, // Esc button option
+        ignoreBackdropClick: false // Backdrop click to hide
     };
 
     constructor(public modalService: BsModalService) {
@@ -28,7 +28,7 @@ export abstract class ModalComponent extends SubscriptionDestroy {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe((reason: string) => {
                 this.isModalShown = false;
-            })
+            });
     }
 
     showModal() {
@@ -36,6 +36,6 @@ export abstract class ModalComponent extends SubscriptionDestroy {
     }
 
     hideModal() {
-        this.modalRef.hide()
+        this.modalRef.hide();
     }
 }

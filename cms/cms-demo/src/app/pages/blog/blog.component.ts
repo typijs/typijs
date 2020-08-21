@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CmsComponent } from '@angular-cms/core';
 import { BlogPage } from './blog.pagetype';
 

@@ -19,10 +19,10 @@ export class ErrorInterceptor implements HttpInterceptor {
                     errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
                 }
 
-                //console.error(errorMessage);
-                //TODO: show Toast here
+                // console.error(errorMessage);
+                // TODO: show Toast here
                 return throwError(errorMessage);
             })
-        )
+        );
     }
 }

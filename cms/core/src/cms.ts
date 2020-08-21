@@ -25,10 +25,10 @@ export type CmsModel = {
      * This property keeps all Media Types class was registered via decorator `@MediaType`
      */
     MEDIA_TYPES: CmsObject;
-}
+};
 
 export const CMS: CmsModel = {
     PAGE_TYPES: {},
     BLOCK_TYPES: {},
     MEDIA_TYPES: {}
-}
+};

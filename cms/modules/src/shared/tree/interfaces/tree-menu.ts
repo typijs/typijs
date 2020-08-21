@@ -1,23 +1,21 @@
-import { TreeNode } from './tree-node'
-import { TypeofExpr } from '@angular/compiler'
+import { TreeNode } from './tree-node';
 
 export enum NodeMenuItemAction {
-    //NewNode,
+    // NewNode,
     NewNodeInline,
     EditNowInline,
     Cut,
     Copy,
     Paste,
-    //Delete
+    // Delete
 }
 
 export type TreeMenuItem = {
     action: NodeMenuItemAction | string
     name: string;
-}
+};
 
 export type TreeMenuActionEvent = {
     action: NodeMenuItemAction | number | string;
     node: TreeNode;
-}
-
+};

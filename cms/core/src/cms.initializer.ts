@@ -9,10 +9,10 @@ export const CONFIG_DEPS = new InjectionToken<(() => Function)[]>('CONFIG_DEPEND
 
 // Use a factory that return an array of dependant functions to be executed
 export function configDepsFactory(authService: AuthService, configService: ConfigService) {
-    return [authCheckFactory(authService, configService)]
+    return [authCheckFactory(authService, configService)];
 }
 
-//https://medium.com/@gmurop/managing-dependencies-among-app-initializers-in-angular-652be4afce6f
+// https://medium.com/@gmurop/managing-dependencies-among-app-initializers-in-angular-652be4afce6f
 export function cmsInitializer(configService: ConfigService, configDeps: (() => Function)[]): () => Promise<any> {
     return (): Promise<any> => new Promise((resolve, reject) => {
         configLoadFactory(configService)()

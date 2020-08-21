@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntil } from 'rxjs/operators';
 
@@ -31,7 +31,10 @@ const PageMenuItemAction = {
                     <fa-icon class="mr-1" *ngIf="node.id == '0'" [icon]="['fas', 'sitemap']"></fa-icon>
                     <fa-icon class="mr-1" *ngIf="node.id != '0'" [icon]="['fas', 'file']"></fa-icon>
                     <span>{{node.name}}</span>
-                    <a role="button"  class="btn btn-xs btn-secondary mr-1 float-right" href="javascript:void(0)" *ngIf="node.id == '0'" [routerLink]="['new/page']">
+                    <a role="button"
+                        class="btn btn-xs btn-secondary mr-1 float-right"
+                        href="javascript:void(0)"
+                        *ngIf="node.id == '0'" [routerLink]="['new/page']">
                         <fa-icon [icon]="['fas', 'plus']"></fa-icon>
                     </a>
                 </span>
@@ -41,7 +44,7 @@ const PageMenuItemAction = {
     styleUrls: ['./page-tree.scss'],
     providers: [PageTreeService, { provide: TreeService, useExisting: PageTreeService }]
 })
-export class PageTreeComponent extends SubscriptionDestroy {
+export class PageTreeComponent extends SubscriptionDestroy implements OnInit {
     @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
 
     root: TreeNode;
@@ -52,7 +55,7 @@ export class PageTreeComponent extends SubscriptionDestroy {
         private subjectService: SubjectService,
         private router: Router,
         private route: ActivatedRoute) {
-        super()
+        super();
         this.root = new TreeNode({ id: '0', name: 'Root', hasChildren: true });
         this.treeConfig = this.initTreeConfiguration();
     }
@@ -61,8 +64,8 @@ export class PageTreeComponent extends SubscriptionDestroy {
         this.subjectService.pageCreated$
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe((createdPage: Page) => {
-                //Reload parent page
-                //Reload the children of parent to update the created page
+                // Reload parent page
+                // Reload the children of parent to update the created page
                 this.cmsTree.selectNode({ id: createdPage._id, isNeedToScroll: true });
                 this.cmsTree.reloadSubTree(createdPage.parentId);
             });

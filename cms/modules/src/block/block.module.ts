@@ -19,7 +19,7 @@ const blockRoutes: Routes = [
     { path: 'new/block', component: ContentTypeListComponent },
     { path: 'new/block/:parentId', component: ContentTypeListComponent },
     { path: 'content/block/:id', component: ContentFormEditComponent }
-]
+];
 
 @NgModule({
     imports: [
@@ -48,18 +48,18 @@ export class BlockModule {
         library.addIcons(faFolder, faCubes, faCube, faFolderPlus, faPlusSquare, faBars, faPlus);
     }
 
-    public static forRoot(): ModuleWithProviders<BlockModule> {
+    static forRoot(): ModuleWithProviders<BlockModule> {
         return {
             ngModule: BlockModule,
             providers: [
                 { provide: EDITOR_ROUTES, useValue: blockRoutes, multi: true },
                 {
                     provide: EDITOR_WIDGETS, useValue: [
-                        { group: "Blocks", position: CmsWidgetPosition.Right, component: BlockTreeComponent }
+                        { group: 'Blocks', position: CmsWidgetPosition.Right, component: BlockTreeComponent }
                     ],
                     multi: true
                 }
             ]
-        }
+        };
     }
 }

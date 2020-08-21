@@ -16,10 +16,10 @@ export class TreeStore {
     nodePasted$: Subject<TreeNode> = new Subject<TreeNode>();
     scrollToSelectedNode$: BehaviorSubject<TreeNode> = new BehaviorSubject<TreeNode>(new TreeNode());
 
-    //The tree-children component will subscribe the treeNodesRxSubject to reload sub tree
-    //store Subject of node's children with key = nodeId to load sub tree
+    // The tree-children component will subscribe the treeNodesRxSubject to reload sub tree
+    // store Subject of node's children with key = nodeId to load sub tree
     private treeNodesRxSubject$: { [key: string]: Subject<TreeNode[]> } = {};
-    //store node's children with key = nodeId, ex nodes[parentId] = array of node's children
+    // store node's children with key = nodeId, ex nodes[parentId] = array of node's children
     private treeNodes: { [key: string]: TreeNode[] } = {};
     private selectedNode: Partial<TreeNode>;
     private editingNode: Partial<TreeNode>;
@@ -35,7 +35,7 @@ export class TreeStore {
         this.selectedNode = node;
     }
 
-    //key will be node id (ObjectId)
+    // key will be node id (ObjectId)
     getTreeNodesSubjectByKey$(key: string): Subject<TreeNode[]> {
         if (!this.treeNodesRxSubject$.hasOwnProperty(key)) {
             this.treeNodesRxSubject$[key] = new Subject<TreeNode[]>();
@@ -44,16 +44,16 @@ export class TreeStore {
     }
 
     getTreeChildrenData(nodeId: string): Observable<TreeNode[]> {
-        if (this.treeNodes[nodeId]) return of(this.treeNodes[nodeId]);
+        if (this.treeNodes[nodeId]) { return of(this.treeNodes[nodeId]); }
 
         return this.getNodeChildren(nodeId);
     }
 
-    //Reload node's children
-    //@nodeId: Mongoose ObjectId
+    // Reload node's children
+    // @nodeId: Mongoose ObjectId
     reloadTreeChildrenData(subTreeRootId: string) {
-        if (!subTreeRootId) subTreeRootId = '0'
-        //Reload the root node of sub tree
+        if (!subTreeRootId) { subTreeRootId = '0'; }
+        // Reload the root node of sub tree
 
         forkJoin(this.getNodeData(subTreeRootId), this.getNodeChildren(subTreeRootId))
             .subscribe(([subTreeRootNode, nodeChildren]: [TreeNode, TreeNode[]]) => {
@@ -64,8 +64,8 @@ export class TreeStore {
 
     private getNodeChildren(parentId: string): Observable<TreeNode[]> {
 
-        if (!parentId) parentId = '0';
-        //the 'tap' operator same as 'do'
+        if (!parentId) { parentId = '0'; }
+        // the 'tap' operator same as 'do'
         return this.treeService.loadChildren(parentId).pipe(
             tap((childNodes: TreeNode[]) => {
                 this.treeNodes[parentId] = childNodes;
@@ -99,7 +99,7 @@ export class TreeStore {
     }
 
     locateToSelectedNode(newSelectedNode: TreeNode): Observable<string> {
-        if (this.selectedNode && this.selectedNode.id == newSelectedNode.id) return empty();
+        if (this.selectedNode && this.selectedNode.id == newSelectedNode.id) { return empty(); }
 
         this.setSelectedNode(newSelectedNode);
         this.fireNodeSelectedInner(newSelectedNode);
@@ -109,16 +109,18 @@ export class TreeStore {
 
         if (parentIds.length > 0) {
             return from(parentIds).pipe(
-                concatMap((nodeId: string, index: number) => (this.treeNodes[nodeId] ? of(this.treeNodes[nodeId]) : this.treeService.loadChildren(nodeId))
-                    .pipe(map((nodes: TreeNode[]) => [nodeId, index, nodes]))
+                concatMap((nodeId: string, index: number) =>
+                    (this.treeNodes[nodeId] ? of(this.treeNodes[nodeId]) : this.treeService.loadChildren(nodeId))
+                        .pipe(map((nodes: TreeNode[]) => [nodeId, index, nodes]))
                 ),
                 map(([nodeId, index, nodes]: [string, number, TreeNode[]]) => {
-                    if (!this.treeNodes[nodeId]) this.treeNodes[nodeId] = nodes;
+                    if (!this.treeNodes[nodeId]) { this.treeNodes[nodeId] = nodes; }
 
                     if (index > 0) {
                         const currentNodeIndex = this.treeNodes[parentIds[index - 1]].findIndex(x => x.id == nodeId);
-                        if (currentNodeIndex != -1)
+                        if (currentNodeIndex != -1) {
                             this.treeNodes[parentIds[index - 1]][currentNodeIndex].isExpanded = true;
+                        }
                     }
                     return nodeId;
                 })
@@ -126,7 +128,7 @@ export class TreeStore {
         }
     }
 
-    //fire all tree events
+    // fire all tree events
     fireNodeSelectedInner(node: Partial<TreeNode>) {
         this.nodeSelectedInner$.next(node);
     }
@@ -139,11 +141,11 @@ export class TreeStore {
         const { action, node } = nodeAction;
         switch (action) {
             case NodeMenuItemAction.NewNodeInline:
-                //add temp new node with status is new
+                // add temp new node with status is new
                 this.showNewNodeInline(node);
                 break;
             case NodeMenuItemAction.EditNowInline:
-                //update current node with status is rename
+                // update current node with status is rename
                 this.showNodeInlineEdit(node);
                 break;
             case NodeMenuItemAction.Cut:
@@ -173,11 +175,11 @@ export class TreeStore {
             parentNode.hasChildren = true;
         } else {
             this.getNodeChildren(parentNode.id).subscribe((nodeChildren: TreeNode[]) => {
-                //insert new node to begin of node's children
+                // insert new node to begin of node's children
                 this.treeNodes[parentNode.id].unshift(newInlineNode);
                 parentNode.isExpanded = true;
                 parentNode.hasChildren = true;
-                //reload sub tree
+                // reload sub tree
                 this.getTreeNodesSubjectByKey$(parentNode.id).next(this.treeNodes[parentNode.id]);
             });
         }
@@ -187,7 +189,7 @@ export class TreeStore {
         const childNodes = this.treeNodes[node.parentId ? node.parentId : '0'];
         if (childNodes) {
             const newNodeIndex = childNodes.findIndex((x: TreeNode) => !x.id);
-            if (newNodeIndex > -1) childNodes.splice(newNodeIndex, 1);
+            if (newNodeIndex > -1) { childNodes.splice(newNodeIndex, 1); }
             if (childNodes.length == 0) {
                 parent.hasChildren = false;
                 parent.isExpanded = false;

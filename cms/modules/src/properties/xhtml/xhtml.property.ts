@@ -5,8 +5,8 @@ import { CmsProperty, PAGE_TYPE, MEDIA_TYPE, MediaService } from '@angular-cms/c
 import { DropEvent } from '../../shared/drag-drop/drop-event.model';
 
 import './quill-inline-style';
-//Temp comment since this import is not working with --prod in runtime
-//quill Cannot import modules/imageResize. Are you sure it was registered?
+// Temp comment since this import is not working with --prod in runtime
+// quill Cannot import modules/imageResize. Are you sure it was registered?
 // import './quill-modules';
 import './ngx-quill.extension';
 
@@ -31,11 +31,11 @@ import './ngx-quill.extension';
 export class XHtmlProperty extends CmsProperty {
     @ViewChild('editor', { static: true }) editor: QuillEditorComponent;
 
-    modules: { [key: string]: any } = {}
+    modules: { [key: string]: any } = {};
     constructor(private mediaService: MediaService) {
         super();
-        //Temp comment since this import is not working with --prod in runtime
-        //quill Cannot import modules/imageResize. Are you sure it was registered?
+        // Temp comment since this import is not working with --prod in runtime
+        // quill Cannot import modules/imageResize. Are you sure it was registered?
         // this.modules = {
         //     imageResize: {},
         //     //clickMeButton: { handler: this.handleClickMe }
@@ -66,7 +66,7 @@ export class XHtmlProperty extends CmsProperty {
         const src = this.mediaService.getImageUrl(_id, name);
         const insertOps = [
             { insert: { image: src }, attributes: { width: '150' } }
-        ]
+        ];
         this.editor.insertAtCursorPosition(insertOps);
     }
 
@@ -74,7 +74,7 @@ export class XHtmlProperty extends CmsProperty {
         const { name, linkUrl } = dragData;
         const insertOps = [
             { insert: name, attributes: { link: linkUrl } }
-        ]
+        ];
         this.editor.insertAtCursorPosition(insertOps);
     }
 }

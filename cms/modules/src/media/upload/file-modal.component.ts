@@ -20,8 +20,8 @@ import { UploadProgress, UploadService } from './upload.service';
             <div class="mb-3">
                 <div class="custom-file col-5">
                     <input type="file" id="modalInputFile" class="custom-file-input" multiple
-                        cmsFileSelect 
-                        (onFileSelected)="filesSelected($event)"/>
+                        cmsFileSelect
+                        (fileSelected)="filesSelected($event)"/>
                     <label class="custom-file-label" for="modalInputFile">Choose files</label>
                 </div>
                 <span class="align-middle"> Or drop files here</span>
@@ -42,9 +42,9 @@ import { UploadProgress, UploadService } from './upload.service';
                         <td><div>{{file.name}}</div></td>
                         <td><div>{{file.size/1000}}</div></td>
                         <td>
-                            <progressbar 
-                                *ngIf="progress" 
-                                [animate]="true"  
+                            <progressbar
+                                *ngIf="progress"
+                                [animate]="true"
                                 [value]="progress[file.name].progress | async">
                                 <b>{{progress[file.name].progress | async}}%</b>
                             </progressbar>
@@ -88,20 +88,20 @@ import { UploadProgress, UploadService } from './upload.service';
 export class FileModalComponent extends ModalComponent {
     @Input() targetFolder: Partial<TreeNode>;
     progress: UploadProgress;
-    chooseFiles: Array<File>;
+    chooseFiles: File[];
 
     constructor(modalService: BsModalService, private uploadService: UploadService) {
         super(modalService);
         this.config = {
             ignoreBackdropClick: true
-        }
+        };
         this.uploadService.fileUploadProgress$
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(data => {
                 this.targetFolder = data.folder;
                 this.progress = data.uploadProgress;
                 this.chooseFiles = data.files;
-                if (!this.isModalShown) this.showModal();
+                if (!this.isModalShown) { this.showModal(); }
             });
     }
 

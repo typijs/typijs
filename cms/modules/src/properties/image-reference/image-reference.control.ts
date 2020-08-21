@@ -1,6 +1,6 @@
 import { Component, forwardRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { CmsImage, MediaService, MEDIA_TYPE } from '@angular-cms/core';
+import { CmsImage, MEDIA_TYPE } from '@angular-cms/core';
 import { DropEvent } from '../../shared/drag-drop/drop-event.model';
 import { CmsControl } from '../cms-control';
 
@@ -8,7 +8,7 @@ const IMAGE_REFERENCE_VALUE_ACCESSOR = {
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => ImageReferenceControl),
     multi: true
-}
+};
 
 @Component({
     selector: 'image-reference',
@@ -34,7 +34,7 @@ const IMAGE_REFERENCE_VALUE_ACCESSOR = {
 export class ImageReferenceControl extends CmsControl {
     model: CmsImage;
 
-    constructor(private mediaService: MediaService) {
+    constructor() {
         super();
     }
 
@@ -43,20 +43,20 @@ export class ImageReferenceControl extends CmsControl {
     }
 
     onDropImage(e: DropEvent) {
-        const { _id, name, link, thumbnail } = e.dragData;
+        const { name, link, thumbnail } = e.dragData;
         this.model = <CmsImage>{
             alt: name,
             src: link,
             thumbnail
-        }
+        };
         this.onChange(this.model);
     }
 
     isDropAllowed = (dragData) => {
-        if (!dragData) return false;
+        if (!dragData) { return false; }
         const { contentType, type } = dragData;
 
-        return contentType == 'ImageContent' && type == MEDIA_TYPE
+        return contentType == 'ImageContent' && type == MEDIA_TYPE;
     }
 
     removeImage() {

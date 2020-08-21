@@ -14,7 +14,7 @@ const siteRoutes: Routes = [
         path: 'site-manage',
         component: SiteManageComponent
     }
-]
+];
 
 @NgModule({
     imports: [
@@ -39,7 +39,7 @@ const siteRoutes: Routes = [
     ]
 })
 export class SiteManageModule {
-    public static forRoot(): ModuleWithProviders<SiteManageModule> {
+    static forRoot(): ModuleWithProviders<SiteManageModule> {
         return {
             ngModule: SiteManageModule,
             providers: [
@@ -57,6 +57,6 @@ export class SiteManageModule {
                     multi: true
                 }
             ]
-        }
+        };
     }
 }

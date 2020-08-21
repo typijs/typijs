@@ -2,11 +2,11 @@ import { Page } from './page.model';
 import { Block } from './block.model';
 
 export abstract class ContentData {
-    public id: string;
-    public parentId?: string;
-    public contentType: string;
-    public name: string;
-    public type: 'page' | 'block';
+    id: string;
+    parentId?: string;
+    contentType: string;
+    name: string;
+    type: 'page' | 'block';
 }
 
 export class BlockData extends ContentData {
@@ -25,8 +25,8 @@ export class BlockData extends ContentData {
 }
 
 export class PageData extends ContentData {
-    public linkUrl: string;
-    public urlSegment: string;
+    linkUrl: string;
+    urlSegment: string;
 
     constructor(page: Partial<Page>) {
         super();

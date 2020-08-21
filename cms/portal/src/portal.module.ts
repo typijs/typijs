@@ -1,4 +1,4 @@
-import "reflect-metadata";
+import 'reflect-metadata';
 import { CommonModule } from '@angular/common';
 import { NgModule, ModuleWithProviders } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -72,7 +72,7 @@ export class CmsPortalModule {
     library.addIcons(faChevronRight, faChevronLeft, faAngleUp, faAngleDown);
   }
 
-  public static forRoot(): ModuleWithProviders<CmsPortalModule> {
+  static forRoot(): ModuleWithProviders<CmsPortalModule> {
     return {
       ngModule: CmsPortalModule,
       providers: [
@@ -82,6 +82,6 @@ export class CmsPortalModule {
         { provide: ADMIN_WIDGETS, useValue: [], multi: true },
         { provide: EDITOR_WIDGETS, useValue: [], multi: true }
       ]
-    }
+    };
   }
 }

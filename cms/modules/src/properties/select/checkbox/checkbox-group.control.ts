@@ -6,7 +6,7 @@ const CHECKBOX_GROUP_VALUE_ACCESSOR = {
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => CheckboxGroupControl),
     multi: true
-}
+};
 
 @Component({
     selector: 'checkbox-group',
@@ -39,12 +39,12 @@ export class CheckboxGroupControl extends CmsControl {
                 } else {
                     item.selected = false;
                 }
-            })
+            });
         }
         this._model = value;
     }
 
-    //methods depend on control business
+    // methods depend on control business
     addOrRemove(value: any) {
         if (this.contains(value)) {
             this.remove(value);

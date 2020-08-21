@@ -18,7 +18,7 @@ const pageRoutes: Routes = [
     { path: 'new/page', component: ContentTypeListComponent },
     { path: 'new/page/:parentId', component: ContentTypeListComponent },
     { path: 'content/page/:id', component: ContentFormEditComponent }
-]
+];
 
 @NgModule({
     imports: [
@@ -51,7 +51,7 @@ export class PageModule {
         library.addIcons(faFolder, faSitemap, faFile, faPlus);
     }
 
-    public static forRoot(): ModuleWithProviders<PageModule> {
+    static forRoot(): ModuleWithProviders<PageModule> {
         return {
             ngModule: PageModule,
             providers: [
@@ -69,6 +69,6 @@ export class PageModule {
                     multi: true
                 }
             ]
-        }
+        };
     }
 }

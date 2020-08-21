@@ -1,4 +1,4 @@
-import { NgModule, ModuleWithProviders, Injector } from '@angular/core';
+import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -104,7 +104,7 @@ export class PropertiesModule {
         library.addIcons(faFolder, faFile, faImage, faCube, faBars, faHashtag, faList, faTimes);
     }
 
-    public static forRoot(): ModuleWithProviders<PropertiesModule> {
+    static forRoot(): ModuleWithProviders<PropertiesModule> {
         return {
             ngModule: PropertiesModule,
             providers: [

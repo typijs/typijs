@@ -20,10 +20,10 @@ export abstract class PropertyDirectiveBase implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.ngEditMode = this.getEditModeFlag();
-        //TODO: need to check is authenticate and user belong Editor group
+        // TODO: need to check is authenticate and user belong Editor group
         if (this.ngEditMode) {
             this.setDefaultBorderStyle();
-            //TODO: The event will work fine when putting the register in zone.runOutsideAngular. Need to find out.
+            // TODO: The event will work fine when putting the register in zone.runOutsideAngular. Need to find out.
             this.zone.runOutsideAngular(() => {
                 this.unbindMouseEnterListener = this.renderer.listen(this.elementRef.nativeElement, 'mouseenter', () => {
                     this.setHoverBorderStyle();
@@ -37,7 +37,7 @@ export abstract class PropertyDirectiveBase implements OnInit, OnDestroy {
 
     private getEditModeFlag(): boolean {
         const params = this.locationService.getURLSearchParams();
-        return params.get(ngEditMode) == 'True' || params.get(ngEditMode) == 'true'
+        return params.get(ngEditMode) == 'True' || params.get(ngEditMode) == 'true';
     }
 
     private setDefaultBorderStyle() {
@@ -51,7 +51,7 @@ export abstract class PropertyDirectiveBase implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        if (this.unbindMouseEnterListener) this.unbindMouseEnterListener();
-        if (this.unbindMouseLeaveListener) this.unbindMouseLeaveListener();
+        if (this.unbindMouseEnterListener) { this.unbindMouseEnterListener(); }
+        if (this.unbindMouseLeaveListener) { this.unbindMouseLeaveListener(); }
     }
 }

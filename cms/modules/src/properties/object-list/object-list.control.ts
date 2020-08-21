@@ -6,7 +6,7 @@ const OBJECT_LIST_VALUE_ACCESSOR = {
     provide: NG_VALUE_ACCESSOR,
     useExisting: forwardRef(() => ObjectListControl),
     multi: true
-}
+};
 
 @Component({
     selector: 'object-list',

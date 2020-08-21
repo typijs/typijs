@@ -19,5 +19,5 @@ export const mapToPageData = (page: Page): PageData => {
         urlSegment: page.urlSegment,
         contentType: page.contentType,
         name: page.name
-    }, page.properties)
-}
+    }, page.properties);
+};

@@ -5,14 +5,14 @@ import { AngularSplitModule } from 'angular-split';
     exports: [AngularSplitModule]
 })
 export class CmsAngularSplitModule {
-    public static forRoot(): ModuleWithProviders<AngularSplitModule> {
+    static forRoot(): ModuleWithProviders<AngularSplitModule> {
         return {
             ngModule: AngularSplitModule,
             providers: []
         };
     }
 
-    public static forChild(): ModuleWithProviders<AngularSplitModule> {
+    static forChild(): ModuleWithProviders<AngularSplitModule> {
         return {
             ngModule: AngularSplitModule,
             providers: []

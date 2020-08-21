@@ -11,8 +11,8 @@ import { TreeService } from '../shared/tree/interfaces/tree-service';
         <li class="nav-item nav-dropdown open">
             <ul class="nav-dropdown-items">
                 <li class="nav-item">
-                    <cms-tree 
-                        class="tree-root" 
+                    <cms-tree
+                        class="tree-root"
                         [root]="root">
                         <ng-template #treeNodeTemplate let-node>
                             <i class="fa fa-folder-o"></i>

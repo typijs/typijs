@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core'
-import { Router } from '@angular/router'
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
-import { AuthService } from '../auth.service'
+import { AuthService } from '../auth.service';
 
 @Component({
     template: `<p>Logging out...</p>`,
@@ -11,6 +11,6 @@ export class CmsLogoutComponent implements OnInit {
 
     ngOnInit() {
         this.authService.logout();
-        this.router.navigate(['/'])
+        this.router.navigate(['/']);
     }
 }

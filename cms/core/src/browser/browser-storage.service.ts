@@ -1,7 +1,7 @@
 import { Injectable, Inject, InjectionToken } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
-//export abstract class StorageRef extends Storage { }
+// export abstract class StorageRef extends Storage { }
 export interface StorageRef {
     getItem(key: string);
     setItem(key: string, value: string);
