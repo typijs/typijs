@@ -5,6 +5,8 @@
     "ng": "ng",
     "dev": "ng serve",
     "dev:aot": "ng serve --aot",
+    "tslint": "tslint -c tslint.json --project ./tsconfig.json",
+    "tslint:fix": "tslint --fix -c tslint.json --project ./tsconfig.json",
     "build:libs": "ng build core && ng build modules && ng build portal",
     "build:ssr": "ng build && ng run cms-demo:server",
     "build:ssr:prod": "ng build --prod && ng run cms-demo:server",
@@ -62,9 +64,11 @@
     "karma-jasmine-html-reporter": "^1.4.0",
     "ng-packagr": "^5.4.0",
     "protractor": "~5.4.0",
+    "rxjs-tslint-rules": "^4.33.1",
     "ts-node": "^7.0.0",
     "tsickle": "^0.37.0",
-    "tslint": "~5.15.0",
-    "typescript": "^3.5.3"
+    "tslint": "^6.1.0",
+    "typescript": "^3.5.3",
+    "vrsource-tslint-rules": "^5.1.1"
   }
 }
