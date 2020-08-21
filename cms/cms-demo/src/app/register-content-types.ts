@@ -5,5 +5,5 @@ export { BlogPage } from './pages/blog/blog.pagetype';
 
 export { FeatureBlock } from './blocks/feature/feature.blocktype';
 export { PortfolioBlock } from './blocks/portfolio/portfolio.blocktype';
-export { ContactUsBlock } from './blocks/contact-us/contact-us.blocktype';
+export * from './blocks/contact-us/contact-us.blocktype';
 export { LinkListBlock } from './blocks/link-list/link-list.blocktype';

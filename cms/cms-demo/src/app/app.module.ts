@@ -4,7 +4,7 @@ import { TransferHttpCacheModule } from '@nguniversal/common';
 
 import { AngularCms, AuthModule } from '@angular-cms/core';
 
-import * as contentTypes from './registerContentTypes';
+import * as contentTypes from './register-content-types';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LayoutComponent } from './shared/layout/layout.component';
