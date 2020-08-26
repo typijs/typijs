@@ -3,7 +3,7 @@ import {
     CmsObject, CmsPropertyFactoryResolver, CmsTab,
     Content,
     ContentTypeProperty, InsertPointDirective,
-    Media, Page, sortTabByTitle
+    Media, Page, sortTabByTitle, TypeOfContent
 } from '@angular-cms/core';
 import { AfterViewInit, ChangeDetectorRef, Component, ComponentRef, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -78,7 +78,7 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
         });
     }
 
-    private getTypeContentFromUrl(url: UrlSegment[]): string {
+    private getTypeContentFromUrl(url: UrlSegment[]): TypeOfContent {
         return url.length >= 2 && url[0].path === 'content' ? url[1].path : '';
     }
 

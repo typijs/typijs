@@ -1,4 +1,4 @@
-import { ADMIN_WIDGETS, CmsWidgetPosition, CoreModule, EDITOR_ROUTES, EDITOR_WIDGETS } from '@angular-cms/core';
+import { ADMIN_WIDGETS, CmsWidgetPosition, CoreModule, EDITOR_ROUTES, EDITOR_WIDGETS, PAGE_TYPE } from '@angular-cms/core';
 import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -15,9 +15,9 @@ import { PageTreeReadonlyComponent } from './page-tree-readonly.component';
 import { PageTreeComponent } from './page-tree.component';
 
 const pageRoutes: Routes = [
-    { path: 'new/page', component: ContentTypeListComponent },
-    { path: 'new/page/:parentId', component: ContentTypeListComponent },
-    { path: 'content/page/:id', component: ContentFormEditComponent }
+    { path: `new/${PAGE_TYPE}`, component: ContentTypeListComponent },
+    { path: `new/${PAGE_TYPE}/:parentId`, component: ContentTypeListComponent },
+    { path: `content/${PAGE_TYPE}/:id`, component: ContentFormEditComponent }
 ];
 
 @NgModule({

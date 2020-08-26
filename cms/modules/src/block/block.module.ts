@@ -1,4 +1,4 @@
-import { CmsWidgetPosition, EDITOR_ROUTES, EDITOR_WIDGETS } from '@angular-cms/core';
+import { CmsWidgetPosition, EDITOR_ROUTES, EDITOR_WIDGETS, BLOCK_TYPE } from '@angular-cms/core';
 import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -17,9 +17,9 @@ import { BlockTreeComponent } from './block-tree.component';
 
 
 const blockRoutes: Routes = [
-    { path: 'new/block', component: ContentTypeListComponent },
-    { path: 'new/block/:parentId', component: ContentTypeListComponent },
-    { path: 'content/block/:id', component: ContentFormEditComponent }
+    { path: `new/${BLOCK_TYPE}`, component: ContentTypeListComponent },
+    { path: `new/${BLOCK_TYPE}/:parentId`, component: ContentTypeListComponent },
+    { path: `content/${BLOCK_TYPE}/:id`, component: ContentFormEditComponent }
 ];
 
 @NgModule({

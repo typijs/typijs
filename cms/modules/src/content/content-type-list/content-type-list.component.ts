@@ -1,4 +1,4 @@
-import { ContentType } from '@angular-cms/core';
+import { ContentType, TypeOfContent } from '@angular-cms/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, UrlSegment } from '@angular/router';
 import { switchMap, takeUntil } from 'rxjs/operators';
@@ -49,7 +49,7 @@ export class ContentTypeListComponent extends SubscriptionDestroy implements OnI
         }
     }
 
-    private getTypeContentFromUrl(url: UrlSegment[]): string {
+    private getTypeContentFromUrl(url: UrlSegment[]): TypeOfContent {
         return url.length >= 2 && url[0].path === 'new' ? url[1].path : '';
     }
 }
