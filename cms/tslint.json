@@ -11,7 +11,7 @@
     "max-line-length": [
       true,
       {
-        "limit": 140,
+        "limit": 200,
         "check-strings": true,
         "check-regex": true,
         "ignore-pattern": "//\\s+https?://"

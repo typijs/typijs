@@ -37,7 +37,7 @@ export abstract class PropertyDirectiveBase implements OnInit, OnDestroy {
 
     private getEditModeFlag(): boolean {
         const params = this.locationService.getURLSearchParams();
-        return params.get(ngEditMode) == 'True' || params.get(ngEditMode) == 'true';
+        return params.get(ngEditMode) === 'True' || params.get(ngEditMode) === 'true';
     }
 
     private setDefaultBorderStyle() {
