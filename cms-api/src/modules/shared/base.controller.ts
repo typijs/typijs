@@ -4,6 +4,7 @@ import * as httpStatus from 'http-status';
 import { pick } from '../../utils/pick';
 import { IBaseDocument } from './base.model';
 import { BaseService } from './base.service';
+import { PaginateOptions } from '../../db/plugins/paginate';
 
 export abstract class BaseController<T extends IBaseDocument> {
   private baseService: BaseService<T>;
@@ -22,7 +23,7 @@ export abstract class BaseController<T extends IBaseDocument> {
   }
 
   public paginate = async (req: express.Request, res: express.Response) => {
-    const options = pick(req.query, ['sortBy', 'limit', 'page']);
+    const options = pick(req.query, ['sortBy', 'limit', 'page']) as PaginateOptions;
     const result = await this.baseService.paginate({}, options);
     res.status(httpStatus.OK).json(result);
   };
