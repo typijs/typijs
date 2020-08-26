@@ -1,16 +1,16 @@
+import { ADMIN_WIDGETS, CmsWidgetPosition, CoreModule, EDITOR_ROUTES, EDITOR_WIDGETS } from '@angular-cms/core';
 import { CommonModule } from '@angular/common';
-import { NgModule, ModuleWithProviders } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, } from '@angular/forms';
+import { ModuleWithProviders, NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faFile, faFolder, faPlus, faSitemap } from '@fortawesome/free-solid-svg-icons';
-
-import { CmsWidgetPosition, CoreModule, EDITOR_ROUTES, EDITOR_WIDGETS, ADMIN_WIDGETS } from '@angular-cms/core';
 import { ContentFormEditComponent } from '../content/content-form-edit/content-form-edit.component';
+import { CONTENT_FORM_SERVICES } from '../content/content-form.service';
 import { ContentTypeListComponent } from '../content/content-type-list/content-type-list.component';
-import { ContentModule } from '../content/content.module';
 import { DndModule } from '../shared/drag-drop/dnd.module';
 import { TreeModule } from '../shared/tree/tree.module';
+import { PageFormService } from './page-form.service';
 import { PageTreeReadonlyComponent } from './page-tree-readonly.component';
 import { PageTreeComponent } from './page-tree.component';
 
@@ -29,7 +29,6 @@ const pageRoutes: Routes = [
         FontAwesomeModule,
 
         CoreModule,
-        ContentModule,
         TreeModule,
         DndModule
     ],
@@ -55,6 +54,7 @@ export class PageModule {
         return {
             ngModule: PageModule,
             providers: [
+                { provide: CONTENT_FORM_SERVICES, useClass: PageFormService, multi: true },
                 { provide: EDITOR_ROUTES, useValue: pageRoutes, multi: true },
                 {
                     provide: EDITOR_WIDGETS, useValue: [

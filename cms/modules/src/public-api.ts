@@ -18,6 +18,7 @@ export * from './shared/libs/angular-split/module';
 export * from './shared/drag-drop/dnd.module';
 export * from './shared/services/subject.service';
 
+export * from './content/content.module';
 export * from './properties/properties.module';
 
 export * from './page/page.module';

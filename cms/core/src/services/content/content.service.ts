@@ -14,9 +14,9 @@ export abstract class ContentService<T extends Content> extends FolderService<T>
     return this.httpClient.post<T>(this.apiUrl, content);
   }
 
-  editContent(content: Partial<T>): Observable<string> {
-    return this.httpClient.put(`${this.apiUrl}/${content._id}`, content, { responseType: 'text' });
-  }
+    editContent(content: Partial<T>): Observable<T> {
+        return this.httpClient.put<T>(`${this.apiUrl}/${content._id}`, content);
+    }
 
   getContentChildren(parentId: string): Observable<T[]> {
     return this.httpClient.get<T[]>(`${this.apiUrl}/children/${parentId}`);

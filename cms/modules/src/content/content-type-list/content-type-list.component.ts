@@ -1,17 +1,9 @@
+import { ContentType } from '@angular-cms/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, UrlSegment, Params } from '@angular/router';
-import { takeUntil } from 'rxjs/operators';
-
-import {
-    BLOCK_TYPE, PAGE_TYPE,
-    ContentType, ContentTypeService,
-    Block, BlockService,
-    Page, PageService,
-} from '@angular-cms/core';
-
-import { SubjectService } from '../../shared/services/subject.service';
+import { ActivatedRoute, Params, UrlSegment } from '@angular/router';
+import { switchMap, takeUntil } from 'rxjs/operators';
 import { SubscriptionDestroy } from '../../shared/subscription-destroy';
-
+import { ContentFormService, ContentFormServiceResolver } from '../content-form.service';
 
 @Component({
     templateUrl: './content-type-list.component.html',
@@ -20,40 +12,29 @@ import { SubscriptionDestroy } from '../../shared/subscription-destroy';
 export class ContentTypeListComponent extends SubscriptionDestroy implements OnInit, OnDestroy {
     contentName: string;
     contentTypes: ContentType[] = [];
-    private typeOfContent: string;
+    private contentService: ContentFormService;
     private parentId: string;
 
     constructor(
-        private router: Router,
         private route: ActivatedRoute,
-        private pageService: PageService,
-        private blockService: BlockService,
-        private subjectService: SubjectService,
-        private contentTypeService: ContentTypeService
+        private contentServiceResolver: ContentFormServiceResolver
     ) { super(); }
 
     ngOnInit() {
         this.route.params
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe((params: Params) => {
-                this.parentId = params['parentId'] || undefined;
-                this.typeOfContent = this.getTypeContentFromUrl(this.route.snapshot.url);
+            .pipe(
+                switchMap((params: Params) => {
+                    this.parentId = params.parentId || undefined;
 
-                switch (this.typeOfContent) {
-                    case PAGE_TYPE:
-                        this.contentName = 'New Page';
-                        this.contentTypes = this.contentTypeService.getAllPageTypes();
-                        break;
-                    case BLOCK_TYPE:
-                        this.contentName = 'New Block';
-                        this.contentTypes = this.contentTypeService.getAllBlockTypes();
-                        break;
-                }
-            });
-    }
-
-    private getTypeContentFromUrl(url: UrlSegment[]) {
-        return url.length >= 2 && url[0].path == 'new' ? url[1].path : '';
+                    const typeOfContent = this.getTypeContentFromUrl(this.route.snapshot.url);
+                    this.contentName = `New ${typeOfContent}`;
+                    this.contentService = this.contentServiceResolver.resolveContentFormService(typeOfContent);
+                    this.contentTypes = this.contentService.getAllContentTypes();
+                    return this.contentTypes;
+                }),
+                takeUntil(this.unsubscribe$)
+            )
+            .subscribe();
     }
 
     createNewContent(contentType: ContentType) {
@@ -64,34 +45,11 @@ export class ContentTypeListComponent extends SubscriptionDestroy implements OnI
                 parentId: this.parentId
             };
 
-            switch (this.typeOfContent) {
-                case PAGE_TYPE:
-                    this.createNewPage(content);
-                    break;
-                case BLOCK_TYPE:
-                    this.createNewBlock(content);
-                    break;
-            }
+            this.contentService.createContent(content).subscribe();
         }
     }
 
-    private createNewPage(content: Partial<Page>) {
-        this.pageService.createContent(content).subscribe(
-            (createdPage: Page) => {
-                this.subjectService.firePageCreated(createdPage);
-                // this.router.navigate(["/cms/editor/content/", PAGE_TYPE, res._id])
-            },
-            error => console.log(error)
-        );
-    }
-
-    private createNewBlock(content: Partial<Block>) {
-        this.blockService.createContent(content).subscribe(
-            (createdBlock: Block) => {
-                this.subjectService.fireBlockCreated(createdBlock);
-                this.router.navigate(['/cms/editor/content/', BLOCK_TYPE, createdBlock._id]);
-            },
-            error => console.log(error)
-        );
+    private getTypeContentFromUrl(url: UrlSegment[]): string {
+        return url.length >= 2 && url[0].path === 'new' ? url[1].path : '';
     }
 }
