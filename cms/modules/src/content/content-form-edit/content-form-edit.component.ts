@@ -206,7 +206,7 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
 
     // get all reference id of blocks in all content area
     private extractChildItemsRefs(): ChildItemRef[] {
-        let childItems: ChildItemRef[] = [];
+        const childItems: ChildItemRef[] = [];
 
         Object.keys(this.currentContent.properties).forEach(propertyName => {
             const property = this.contentTypeProperties.find(x => x.name === propertyName);
@@ -214,7 +214,9 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
                 const propertyType = property.metadata.displayType;
                 const propertyFactory = this.propertyFactoryResolver.resolvePropertyFactory(propertyType);
                 const propertyChildItems = propertyFactory.getChildItemsRef(this.currentContent, property);
-                if (propertyChildItems.length > 0) { childItems = childItems.concat(); }
+                if (propertyChildItems.length > 0) {
+                    childItems.push(...propertyChildItems);
+                }
             }
         });
         return childItems;
