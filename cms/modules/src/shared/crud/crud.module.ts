@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { PropertiesModule } from '../../properties/properties.module';
-import { TableComponent } from './table.component';
+import { DataTableComponent } from './datatable.component';
 
 @NgModule({
     imports: [
@@ -14,10 +14,10 @@ import { TableComponent } from './table.component';
         PropertiesModule
     ],
     declarations: [
-        TableComponent
+        DataTableComponent
     ],
     exports: [
-        TableComponent
+        DataTableComponent
     ]
 })
 export class CrudModule { }

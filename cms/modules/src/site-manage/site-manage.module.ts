@@ -4,10 +4,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 
 import { CmsWidgetPosition, ADMIN_ROUTES, ADMIN_WIDGETS } from '@angular-cms/core';
-import { SiteManageComponent, SiteManageEntryComponent } from './site-manage.component';
+import { SiteManageComponent, SiteManageMenuComponent } from './site-manage.component';
 import { SiteManageService } from './site-manage.service';
 import { CrudModule } from '../shared/crud/crud.module';
-import { CrudBaseService } from '../shared/crud/crud.service';
 
 const siteRoutes: Routes = [
     {
@@ -27,15 +26,11 @@ const siteRoutes: Routes = [
     ],
     declarations: [
         SiteManageComponent,
-        SiteManageEntryComponent
+        SiteManageMenuComponent
     ],
     entryComponents: [
         SiteManageComponent,
-        SiteManageEntryComponent
-    ],
-    exports: [
-        SiteManageComponent,
-        SiteManageEntryComponent
+        SiteManageMenuComponent
     ]
 })
 export class SiteManageModule {
@@ -44,12 +39,11 @@ export class SiteManageModule {
             ngModule: SiteManageModule,
             providers: [
                 SiteManageService,
-                { provide: CrudBaseService, useExisting: SiteManageService },
                 { provide: ADMIN_ROUTES, useValue: siteRoutes, multi: true },
                 {
                     provide: ADMIN_WIDGETS, useValue: [
                         {
-                            component: SiteManageEntryComponent,
+                            component: SiteManageMenuComponent,
                             position: CmsWidgetPosition.Left,
                             group: 'Config'
                         }

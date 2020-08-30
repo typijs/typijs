@@ -1,13 +1,18 @@
-import { Injectable } from '@angular/core';
-import { CrudBaseService } from '../shared/crud/crud.service';
-import { SiteManage } from './site-manage.model';
+import { Injectable, Injector } from '@angular/core';
+import { SiteDefinition } from './site-manage.model';
+import { BaseService } from '@angular-cms/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable()
-export class SiteManageService extends CrudBaseService<SiteManage> {
-    protected modelType: new () => SiteManage = SiteManage;
-    apiUrl: string = `${this.baseApiUrl}/site-definition`;
+export class SiteManageService extends BaseService {
+    protected apiUrl: string = `${this.baseApiUrl}/site-definition`;
+
     constructor(httpClient: HttpClient) {
         super(httpClient);
+    }
+
+    getAllSiteDefinitions(): Observable<SiteDefinition[]> {
+        return this.httpClient.get<SiteDefinition[]>(this.apiUrl);
     }
 }

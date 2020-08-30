@@ -6,7 +6,7 @@ import { Column } from '../decorators/column.decorator';
     displayName: 'Site Management',
     description: 'Configuration for site'
 })
-export class SiteManage {
+export class SiteDefinition {
     @Column({
         displayName: 'Start Page',
         displayType: UIHint.ContentReference

@@ -8,7 +8,7 @@ export type ValidateMetadata = {
     message?: string
 };
 
-export type PropertyMetadata = {
+export interface PropertyMetadata {
     displayName?: string;
     description?: string;
     displayType?: string;
@@ -19,9 +19,9 @@ export type PropertyMetadata = {
     validates?: ValidateMetadata[];
     allowedTypes?: string[];
     // be only used as private property for internal methods
-    _propertyType?: string
+    _propertyType?: string;
     [key: string]: any;
-};
+}
 
 /**
  * The property decorator factory
