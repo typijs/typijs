@@ -50,11 +50,11 @@ export class CmsPropertyRenderFactoryResolver {
         let lastIndex = -1;
         if (this.propertyRenderFactories) {
             lastIndex = this.propertyRenderFactories.map(x => x.isMatching(uiHint)).lastIndexOf(true);
-            if (lastIndex != -1) { return this.propertyRenderFactories[lastIndex]; }
+            if (lastIndex !== -1) { return this.propertyRenderFactories[lastIndex]; }
         }
 
         lastIndex = this.defaultPropertyRenderFactories.map(x => x.isMatching(uiHint)).lastIndexOf(true);
-        if (lastIndex == -1) {
+        if (lastIndex === -1) {
             // tslint:disable-next-line: max-line-length
             console.warn(`The CMS can not resolve the Property Render Factor for the property with UIHint of ${uiHint}. The default Text Render will be returned`);
             lastIndex = this.defaultPropertyRenderFactories.map(x => x.isMatching(UIHint.Text)).lastIndexOf(true);

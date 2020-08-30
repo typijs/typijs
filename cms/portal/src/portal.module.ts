@@ -8,18 +8,20 @@ import { faChevronRight, faChevronLeft, faAngleUp, faAngleDown } from '@fortawes
 
 import { CoreModule, EDITOR_ROUTES, ADMIN_ROUTES, ADMIN_WIDGETS, EDITOR_WIDGETS } from '@angular-cms/core';
 import {
-  CmsAngularSplitModule,
-  CmsBsDropdownModule,
-  CmsButtonsModule,
-  CmsTabsModule,
-  CmsProgressbarModule,
-  CmsModalModule,
-  DndModule,
-  PageModule,
-  MediaModule,
-  BlockModule,
-  PropertiesModule,
-  SiteManageModule
+    CmsAngularSplitModule,
+    CmsBsDropdownModule,
+    CmsButtonsModule,
+    CmsTabsModule,
+    CmsProgressbarModule,
+    CmsModalModule,
+    DndModule,
+    PageModule,
+    MediaModule,
+    BlockModule,
+    PropertiesModule,
+    ContentModule,
+    SiteManageModule,
+    ContentTypeModule
 } from '@angular-cms/modules';
 
 import { CmsHeaderComponent } from './shared/components/cms-header/cms-header.component';
@@ -34,54 +36,56 @@ import { PortalRoutingModule } from './portal.routing';
 import { QuillModule } from 'ngx-quill';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
 
-    FontAwesomeModule,
-    CmsAngularSplitModule.forRoot(),
-    CmsTabsModule.forRoot(),
-    CmsBsDropdownModule.forRoot(),
-    CmsButtonsModule.forRoot(),
-    CmsProgressbarModule.forRoot(),
-    CmsModalModule.forRoot(),
-    QuillModule.forRoot(),
+        FontAwesomeModule,
+        CmsAngularSplitModule.forRoot(),
+        CmsTabsModule.forRoot(),
+        CmsBsDropdownModule.forRoot(),
+        CmsButtonsModule.forRoot(),
+        CmsProgressbarModule.forRoot(),
+        CmsModalModule.forRoot(),
+        QuillModule.forRoot(),
 
-    DndModule.forRoot(),
-    CoreModule.forRoot(),
-    PropertiesModule.forRoot(),
-    PageModule.forRoot(),
-    MediaModule.forRoot(),
-    BlockModule.forRoot(),
-    SiteManageModule.forRoot(),
-    PortalRoutingModule
-  ],
-  declarations: [
-    PortalComponent,
-    CmsLayoutComponent,
-    CmsHeaderComponent,
-    ReplaceDirective,
-    DashboardComponent,
-    AdminComponent,
-    EditorComponent
-  ]
+        DndModule.forRoot(),
+        CoreModule.forRoot(),
+        PropertiesModule.forRoot(),
+        ContentModule.forRoot(),
+        PageModule.forRoot(),
+        MediaModule.forRoot(),
+        BlockModule.forRoot(),
+        SiteManageModule.forRoot(),
+        ContentTypeModule.forRoot(),
+        PortalRoutingModule
+    ],
+    declarations: [
+        PortalComponent,
+        CmsLayoutComponent,
+        CmsHeaderComponent,
+        ReplaceDirective,
+        DashboardComponent,
+        AdminComponent,
+        EditorComponent
+    ]
 })
 export class CmsPortalModule {
-  constructor(library: FaIconLibrary) {
-    library.addIcons(faChevronRight, faChevronLeft, faAngleUp, faAngleDown);
-  }
+    constructor(library: FaIconLibrary) {
+        library.addIcons(faChevronRight, faChevronLeft, faAngleUp, faAngleDown);
+    }
 
-  static forRoot(): ModuleWithProviders<CmsPortalModule> {
-    return {
-      ngModule: CmsPortalModule,
-      providers: [
-        WidgetService,
-        { provide: EDITOR_ROUTES, useValue: [], multi: true },
-        { provide: ADMIN_ROUTES, useValue: [], multi: true },
-        { provide: ADMIN_WIDGETS, useValue: [], multi: true },
-        { provide: EDITOR_WIDGETS, useValue: [], multi: true }
-      ]
-    };
-  }
+    static forRoot(): ModuleWithProviders<CmsPortalModule> {
+        return {
+            ngModule: CmsPortalModule,
+            providers: [
+                WidgetService,
+                { provide: EDITOR_ROUTES, useValue: [], multi: true },
+                { provide: ADMIN_ROUTES, useValue: [], multi: true },
+                { provide: ADMIN_WIDGETS, useValue: [], multi: true },
+                { provide: EDITOR_WIDGETS, useValue: [], multi: true }
+            ]
+        };
+    }
 }

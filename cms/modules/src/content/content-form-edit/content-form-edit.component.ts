@@ -1,24 +1,18 @@
-import { Component, ViewChildren, QueryList, OnInit, ChangeDetectorRef, ComponentRef, OnDestroy, AfterViewInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute, UrlSegment } from '@angular/router';
-import { takeUntil } from 'rxjs/operators';
-
 import {
-    PAGE_TYPE, BLOCK_TYPE, MEDIA_TYPE, FOLDER_BLOCK, FOLDER_MEDIA,
-    UIHint, CmsTab,
-    sortTabByTitle,
-    CmsPropertyFactoryResolver, InsertPointDirective,
-    Content, Media, Block, Page, ChildItemRef,
-    ContentTypeProperty, ContentTypeService,
-    PageService, BlockService,
-    ngEditMode, ngId
+    Block, ChildItemRef,
+    CmsObject, CmsPropertyFactoryResolver, CmsTab,
+    Content,
+    ContentTypeProperty, InsertPointDirective,
+    Media, Page, sortTabByTitle, TypeOfContent
 } from '@angular-cms/core';
-
-import { ContentAreaItem } from '../../properties/content-area/content-area.model';
+import { AfterViewInit, ChangeDetectorRef, Component, ComponentRef, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, UrlSegment } from '@angular/router';
+import { of } from 'rxjs';
+import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { SubjectService } from '../../shared/services/subject.service';
 import { SubscriptionDestroy } from '../../shared/subscription-destroy';
-
-export type ContentAreaItemType = 'page' | 'block' | 'media' | 'folder_block' | 'folder_media';
+import { ContentFormService, ContentFormServiceResolver, ContentInfo } from '../content-form.service';
 
 @Component({
     templateUrl: './content-form-edit.component.html',
@@ -36,70 +30,43 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
     showIframeHider = false;
     previewUrl: string;
 
-    private typeOfContent: 'page' | 'block' | 'media' | string;
+    private contentService: ContentFormService;
+    private readonly defaultGroup: string = 'Content';
     private contentTypeProperties: ContentTypeProperty[] = [];
     private componentRefs: ComponentRef<any>[] = [];
-    private readonly defaultGroup: string = 'Content';
 
     constructor(
+        private contentServiceResolver: ContentFormServiceResolver,
         private propertyFactoryResolver: CmsPropertyFactoryResolver,
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
-        private contentTypeService: ContentTypeService,
-        private pageService: PageService,
-        private blockService: BlockService,
         private subjectService: SubjectService,
         private changeDetectionRef: ChangeDetectorRef
     ) { super(); }
 
     ngOnInit() {
         this.route.params
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(params => {
-                const contentId = params.id;
-                this.typeOfContent = this.getTypeContentFromUrl(this.route.snapshot.url);
-                this.editMode = 'AllProperties';
-                if (contentId) {
-                    switch (this.typeOfContent) {
-                        case PAGE_TYPE:
-                            this.subscribeGetPageContent(contentId);
-                            break;
-                        case BLOCK_TYPE:
-                            this.subscribeGetBlockContent(contentId);
-                            break;
-                    }
-                }
-            });
+            .pipe(
+                switchMap(params => {
+                    const contentId = params.id;
+                    const typeOfContent = this.getTypeContentFromUrl(this.route.snapshot.url);
+                    this.contentService = this.contentServiceResolver.resolveContentFormService(typeOfContent);
+
+                    return contentId ? this.contentService.getContent(contentId) : of({});
+                }),
+                tap((result: ContentInfo) => {
+                    this.contentTypeProperties = result.contentTypeProperties;
+                    this.previewUrl = result.previewUrl;
+                }),
+                map((result: ContentInfo) => result.contentData),
+                takeUntil(this.unsubscribe$))
+            .subscribe((contentData: Content) => this.bindDataForContentForm(contentData));
 
         this.subjectService.portalLayoutChanged$
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe((showIframeHider: boolean) => {
                 this.showIframeHider = showIframeHider;
             });
-    }
-
-    private subscribeGetPageContent(contentId: string): void {
-        this.pageService.getContent(contentId).subscribe(contentData => {
-            this.subjectService.firePageSelected(contentData);
-            this.contentTypeProperties = this.contentTypeService.getPageTypeProperties(contentData.contentType);
-            this.previewUrl = this.getPublishedUrlOfContent(contentData);
-            this.bindDataForContentForm(contentData);
-        });
-    }
-
-    private subscribeGetBlockContent(contentId: string): void {
-        this.blockService.getContent(contentId).subscribe(contentData => {
-            this.contentTypeProperties = this.contentTypeService.getBlockTypeProperties(contentData.contentType);
-            this.bindDataForContentForm(contentData);
-        });
-    }
-
-    private getPublishedUrlOfContent(contentData: Page): string {
-        return `http://localhost:4200${contentData.publishedLinkUrl}?${ngEditMode}=True&${ngId}=${contentData._id}`;
-    }
-
-    private getTypeContentFromUrl(url: UrlSegment[]): string {
-        return url.length >= 2 && url[0].path == 'content' ? url[1].path : '';
     }
 
     ngAfterViewInit() {
@@ -109,6 +76,10 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
                 this.changeDetectionRef.detectChanges();
             }
         });
+    }
+
+    private getTypeContentFromUrl(url: UrlSegment[]): TypeOfContent {
+        return url.length >= 2 && url[0].path === 'content' ? url[1].path : '';
     }
 
     private bindDataForContentForm(contentData: Page | Block | Media) {
@@ -123,32 +94,12 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
     private getPopulatedContentData(contentData: Page | Block | Media, propertiesMetadata: ContentTypeProperty[]): Partial<Page> & Content {
         propertiesMetadata.forEach(propertyMeta => {
             if (contentData.properties) {
-                contentData.properties[propertyMeta.name] = this.getPopulatedReferenceProperty(contentData, propertyMeta);
+                const propertyFactory = this.propertyFactoryResolver.resolvePropertyFactory(propertyMeta.metadata.displayType);
+                contentData.properties[propertyMeta.name] = propertyFactory.getPopulatedReferenceProperty(contentData, propertyMeta);
             }
         });
 
         return contentData;
-    }
-
-    private getPopulatedReferenceProperty(contentData: Page | Block | Media, property: ContentTypeProperty): any {
-        const childItems = contentData.childItems;
-        const displayType = property.metadata.displayType;
-
-        switch (displayType) {
-            case UIHint.ContentArea:
-                const contentAreaItems: ContentAreaItem[] = contentData.properties[property.name];
-                if (Array.isArray(contentAreaItems)) {
-                    contentAreaItems.forEach(areaItem => {
-                        const matchItem = childItems.find(x => x.content._id == areaItem._id);
-                        if (matchItem) {
-                            Object.assign(areaItem, { name: matchItem.content.name, isPublished: matchItem.content.isPublished });
-                        }
-                    });
-                }
-                return contentAreaItems;
-            default:
-                return contentData.properties[property.name];
-        }
     }
 
     private extractFormTabsFromProperties(properties: ContentTypeProperty[]): CmsTab[] {
@@ -197,13 +148,13 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
     private createPropertyComponents(properties: ContentTypeProperty[]): ComponentRef<any>[] {
         const propertyControls: ComponentRef<any>[] = [];
 
-        if (!this.formTabs || this.formTabs.length == 0) { return propertyControls; }
+        if (!this.formTabs || this.formTabs.length === 0) { return propertyControls; }
 
         this.formTabs.forEach(tab => {
-            const viewContainerRef = this.insertPoints.find(x => x.name == tab.name).viewContainerRef;
+            const viewContainerRef = this.insertPoints.find(x => x.name === tab.name).viewContainerRef;
             viewContainerRef.clear();
 
-            properties.filter(x => (x.metadata.groupName == tab.title || (!x.metadata.groupName && tab.title == this.defaultGroup)))
+            properties.filter(x => (x.metadata.groupName === tab.title || (!x.metadata.groupName && tab.title === this.defaultGroup)))
                 .forEach(property => {
                     const propertyFactory = this.propertyFactoryResolver.resolvePropertyFactory(property.metadata.displayType);
                     const propertyComponent = propertyFactory.createPropertyComponent(property, this.contentFormGroup);
@@ -218,80 +169,61 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
     updateContent(isPublished: boolean, formId: any) {
         if (this.contentFormGroup.valid) {
             if (this.currentContent) {
-                const properties = {};
-                Object.keys(this.contentFormGroup.value).forEach(key => {
-                    if (this.currentContent.hasOwnProperty(key)) {
-                        this.currentContent[key] = this.contentFormGroup.value[key];
-                    } else {
-                        properties[key] = this.contentFormGroup.value[key];
-                    }
-                });
-                this.currentContent.properties = properties;
+                Object.assign(this.currentContent, this.extractOwnPropertyValuesOfContent(this.contentFormGroup));
+                this.currentContent.properties = this.extractPropertiesPropertyOfContent(this.contentFormGroup);
+                this.currentContent.childItems = this.extractChildItemsRefs();
                 this.currentContent.isDirty = formId.dirty;
                 this.currentContent.isPublished = isPublished;
-                this.currentContent.childItems = this.getChildItems();
 
-                switch (this.typeOfContent) {
-                    case PAGE_TYPE:
-                        if (this.currentContent.isDirty || this.currentContent.isPublished) {
-                            this.pageService.editContent(this.currentContent).subscribe(res => {
-                                formId.control.markAsPristine();
-                            });
-                        }
-                        break;
-                    case BLOCK_TYPE:
-                        if (this.currentContent.isDirty || this.currentContent.isPublished) {
-                            this.blockService.editContent(this.currentContent).subscribe(res => {
-                                formId.control.markAsPristine();
-                            });
-                        }
-                        break;
+                if (this.currentContent.isDirty || this.currentContent.isPublished) {
+                    this.contentService.editContent(this.currentContent).subscribe(res => {
+                        formId.control.markAsPristine();
+                    });
                 }
-
             }
         }
     }
 
+    private extractPropertiesPropertyOfContent(formGroup: FormGroup): CmsObject {
+        const properties = {};
+        Object.keys(formGroup.value).forEach(key => {
+            if (!this.currentContent.hasOwnProperty(key)) {
+                properties[key] = formGroup.value[key];
+            }
+        });
+        return properties;
+    }
+
+    private extractOwnPropertyValuesOfContent(formGroup: FormGroup): CmsObject {
+        const properties = {};
+        Object.keys(formGroup.value).forEach(key => {
+            if (this.currentContent.hasOwnProperty(key)) {
+                properties[key] = formGroup.value[key];
+            }
+        });
+        return properties;
+    }
+
     // get all reference id of blocks in all content area
-    private getChildItems(): ChildItemRef[] {
+    private extractChildItemsRefs(): ChildItemRef[] {
         const childItems: ChildItemRef[] = [];
 
-        Object.keys(this.currentContent.properties).forEach(fieldName => {
-            const fieldMeta = this.contentTypeProperties.find(x => x.name == fieldName);
-            if (fieldMeta) {
-                const fieldType = fieldMeta.metadata.displayType;
-
-                switch (fieldType) {
-                    case UIHint.ContentArea:
-                        const contentAreaItems: ContentAreaItem[] = this.currentContent.properties[fieldName];
-                        if (Array.isArray(contentAreaItems)) {
-                            contentAreaItems.forEach(areaItem => {
-                                if (childItems.findIndex(x => x.content && x.content == areaItem._id) == -1) {
-                                    const refPath = this.getRefPathFromContentType(areaItem.type);
-                                    if (refPath) { childItems.push({ refPath, content: areaItem._id }); }
-                                }
-                            });
-                        }
-                        break;
+        Object.keys(this.currentContent.properties).forEach(propertyName => {
+            const property = this.contentTypeProperties.find(x => x.name === propertyName);
+            if (property) {
+                const propertyType = property.metadata.displayType;
+                const propertyFactory = this.propertyFactoryResolver.resolvePropertyFactory(propertyType);
+                const propertyChildItems = propertyFactory.getChildItemsRef(this.currentContent, property);
+                if (propertyChildItems.length > 0) {
+                    childItems.push(...propertyChildItems);
                 }
             }
         });
         return childItems;
     }
 
-    private getRefPathFromContentType(contentAreaItemType: ContentAreaItemType): 'cms_Block' | 'cms_Page' | 'cms_Media' {
-        switch (contentAreaItemType) {
-            case PAGE_TYPE: return 'cms_Page';
-            case BLOCK_TYPE: return 'cms_Block';
-            case FOLDER_BLOCK: return 'cms_Block';
-            case MEDIA_TYPE: return 'cms_Media';
-            case FOLDER_MEDIA: return 'cms_Media';
-            default: return null;
-        }
-    }
-
     ngOnDestroy() {
-        this.onUnsubscribe();
+        super.ngOnDestroy();
         if (this.insertPoints) {
             this.insertPoints.map(x => x.viewContainerRef).forEach(containerRef => containerRef.clear());
         }

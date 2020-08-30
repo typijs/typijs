@@ -52,9 +52,6 @@ const mediaRoutes: Routes = [
     ],
     entryComponents: [
         MediaTreeComponent
-    ],
-    exports: [
-        MediaTreeComponent
     ]
 })
 export class MediaModule {
