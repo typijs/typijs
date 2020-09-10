@@ -1,6 +1,6 @@
 import { Media, MediaService, MEDIA_TYPE } from '@angular-cms/core';
 import { Component, ViewChild, OnInit } from '@angular/core';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, switchMap, map, tap, distinctUntilKeyChanged } from 'rxjs/operators';
 
 import { SubjectService } from '../shared/services/subject.service';
 import { SubscriptionDestroy } from '../shared/subscription-destroy';
@@ -12,6 +12,7 @@ import { MediaTreeService } from './media-tree.service';
 import { FileModalComponent } from './upload/file-modal.component';
 import { UploadService } from './upload/upload.service';
 import { TreeService } from '../shared/tree/interfaces/tree-service';
+import { BehaviorSubject, Observable, Subject, merge } from 'rxjs';
 
 const MEDIA_MENU_ACTION = {
     DeleteFolder: 'DeleteFolder',
@@ -30,7 +31,7 @@ const MEDIA_MENU_ACTION = {
                         class="tree-root pl-1 pt-2 d-block"
                         [root]="root"
                         [config]="treeConfig"
-                        (nodeSelected)="folderSelected($event)"
+                        (nodeSelected)="folderSelected$.next($event)"
                         (nodeInlineCreated)="createMediaFolder($event)"
                         (nodeInlineUpdated)="updateMediaFolder($event)"
                         (menuItemSelected)="menuItemSelected($event)">
@@ -49,7 +50,7 @@ const MEDIA_MENU_ACTION = {
                     </cms-tree>
                 </as-split-area>
                 <as-split-area size="50">
-                    <div class="list-group list-media"  *ngIf="medias" #mediaItem>
+                    <div class="list-group list-media"  *ngIf="medias$ |async as medias" #mediaItem>
                         <a *ngFor="let media of medias"
                             [draggable]
                             [dragData]="media"
@@ -75,7 +76,9 @@ export class MediaTreeComponent extends SubscriptionDestroy implements OnInit {
     @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
     @ViewChild(FileModalComponent, { static: false }) fileModal: FileModalComponent;
 
-    medias: Media[];
+    folderSelected$: BehaviorSubject<Partial<TreeNode>>;
+    refreshFolder$: Subject<Partial<TreeNode>>;
+    medias$: Observable<Media[]>;
     root: TreeNode;
     treeConfig: TreeConfig;
     selectedFolder: Partial<TreeNode>;
@@ -86,6 +89,9 @@ export class MediaTreeComponent extends SubscriptionDestroy implements OnInit {
         private uploadService: UploadService) {
         super();
         this.root = new TreeNode({ id: '0', name: 'Media', hasChildren: true });
+        this.selectedFolder = this.root;
+        this.folderSelected$ = new BehaviorSubject<Partial<TreeNode>>(this.root);
+        this.refreshFolder$ = new Subject<Partial<TreeNode>>();
         this.treeConfig = this.initTreeConfiguration();
     }
 
@@ -101,27 +107,21 @@ export class MediaTreeComponent extends SubscriptionDestroy implements OnInit {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(nodeId => {
                 // Reload current node
-                if (this.selectedFolder.id == nodeId) { this.reloadSelectedFolder(nodeId); }
+                if (this.selectedFolder.id === nodeId) { this.refreshFolder$.next(this.selectedFolder); }
             });
 
-        this.folderSelected(this.root);
-    }
-
-    folderSelected(node: Partial<TreeNode>) {
-        this.selectedFolder = node;
-        this.reloadSelectedFolder(node.id);
-    }
-
-    private reloadSelectedFolder(folderId: string) {
-        // load child block in folder
-        this.mediaService.getContentInFolder(folderId).subscribe(childMedias => {
-            childMedias.forEach(media => Object.assign(media, {
+        const setFolderSelected$ = this.folderSelected$.pipe(
+            distinctUntilKeyChanged('id'),
+            tap(node => this.selectedFolder = node)
+        );
+        this.medias$ = merge(setFolderSelected$, this.refreshFolder$).pipe(
+            switchMap(node => this.mediaService.getContentInFolder(node.id)),
+            map((medias: Media[]) => medias.map(media => Object.assign(media, {
                 type: MEDIA_TYPE,
                 contentType: media.contentType,
                 isPublished: media.isPublished
-            }));
-            this.medias = childMedias;
-        });
+            })))
+        );
     }
 
     clickToCreateFolder(node: TreeNode) {

@@ -1,6 +1,6 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, map, switchMap, distinctUntilKeyChanged } from 'rxjs/operators';
 
 import { Block, BlockService, BLOCK_TYPE } from '@angular-cms/core';
 // import { TreeNode, TreeComponent, TreeConfig, NodeMenuItemAction, TreeMenuActionEvent } from '../shared/tree';
@@ -13,6 +13,7 @@ import { BlockTreeService } from './block-tree.service';
 import { SubscriptionDestroy } from '../shared/subscription-destroy';
 import { SubjectService } from '../shared/services/subject.service';
 import { TreeService } from '../shared/tree/interfaces/tree-service';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
 
 const BLOCK_MENU_ACTION = {
     DeleteFolder: 'DeleteFolder',
@@ -27,7 +28,7 @@ const BLOCK_MENU_ACTION = {
                 class="tree-root pl-1 pt-2 d-block"
                 [root]="root"
                 [config]="treeConfig"
-                (nodeSelected)="folderSelected($event)"
+                (nodeSelected)="folderSelected$.next($event)"
                 (nodeInlineCreated)="createBlockFolder($event)"
                 (nodeInlineUpdated)="updateBlockFolder($event)"
                 (menuItemSelected)="menuItemSelected($event)">
@@ -54,7 +55,7 @@ const BLOCK_MENU_ACTION = {
             </cms-tree>
         </as-split-area>
         <as-split-area size="50">
-            <div class="list-group list-block" *ngIf="blocks">
+            <div class="list-group list-block" *ngIf="blocks$ |async as blocks">
                 <a *ngFor="let block of blocks"
                     [draggable]
                     [dragData]="block"
@@ -87,8 +88,9 @@ const BLOCK_MENU_ACTION = {
 })
 export class BlockTreeComponent extends SubscriptionDestroy implements OnInit {
     @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
-    blocks: Block[];
 
+    folderSelected$: BehaviorSubject<Partial<TreeNode>>;
+    blocks$: Observable<Block[]>;
     root: TreeNode;
     treeConfig: TreeConfig;
 
@@ -99,6 +101,7 @@ export class BlockTreeComponent extends SubscriptionDestroy implements OnInit {
         private subjectService: SubjectService) {
         super();
         this.root = new TreeNode({ id: '0', name: 'Block', hasChildren: true });
+        this.folderSelected$ = new BehaviorSubject<Partial<TreeNode>>(this.root);
         this.treeConfig = this.initTreeConfiguration();
     }
 
@@ -116,23 +119,19 @@ export class BlockTreeComponent extends SubscriptionDestroy implements OnInit {
                 this.cmsTree.selectNode({ id: createdBlock.parentId });
             });
 
-        this.folderSelected({ id: '0' });
+        this.blocks$ = this.folderSelected$.pipe(
+            distinctUntilKeyChanged('id'),
+            switchMap(node => this.blockService.getContentInFolder(node.id)),
+            map((blocks: Block[]) => blocks.map(block => Object.assign(block, {
+                type: BLOCK_TYPE,
+                contentType: block.contentType,
+                isPublished: block.isPublished
+            })))
+        );
     }
 
     clickToCreateFolder(node: TreeNode) {
         this.cmsTree.handleNodeMenuItemSelected({ action: NodeMenuItemAction.NewNodeInline, node });
-    }
-
-    folderSelected(node) {
-        // load child block in folder
-        this.blockService.getContentInFolder(node.id).subscribe((childBlocks: Block[]) => {
-            childBlocks.forEach(block => Object.assign(block, {
-                type: BLOCK_TYPE,
-                contentType: block.contentType,
-                isPublished: block.isPublished
-            }));
-            this.blocks = childBlocks;
-        });
     }
 
     createBlockFolder(node: TreeNode) {
@@ -164,7 +163,7 @@ export class BlockTreeComponent extends SubscriptionDestroy implements OnInit {
     }
 
     private folderDelete(nodeToDelete: TreeNode) {
-        if (nodeToDelete.id == '0') { return; }
+        if (nodeToDelete.id === '0') { return; }
         this.blockService.softDeleteContent(nodeToDelete.id).subscribe(([, deleteResult]: [Block, any]) => {
             console.log(deleteResult);
             this.cmsTree.reloadSubTree(nodeToDelete.parentId);
