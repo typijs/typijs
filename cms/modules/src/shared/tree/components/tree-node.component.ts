@@ -86,7 +86,7 @@ export class TreeNodeComponent extends TreeBaseComponent implements OnInit {
     }
 
     onMenuItemSelected(action: NodeMenuItemAction, node: TreeNode) {
-        this.menuItemSelected({ action: action, node: node });
+        this.menuItemSelected({ action, node });
     }
 
     onMenuOpenChange(isOpened: boolean, node: TreeNode): void {

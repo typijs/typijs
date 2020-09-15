@@ -31,9 +31,9 @@ export * from './block/block-tree.component';
 export * from './media/media.module';
 export * from './media/media-tree.component';
 
-export * from './site-manage/site-manage.module';
-export * from './site-manage/site-manage.component';
+export * from './site-definition/site-definition.module';
+export * from './site-definition/site-definition.component';
 
 export * from './content-type/content-type.module';
-export * from './content-type/content-type-list';
-export * from './content-type/content-type-properties';
+export * from './content-type/content-type-list.component';
+export * from './content-type/content-type-detail.component';

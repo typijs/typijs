@@ -112,7 +112,7 @@ export class TreeStore {
             return from(parentIds).pipe(
                 concatMap((nodeId: string, index: number) =>
                     (this.treeNodes[nodeId] ? of(this.treeNodes[nodeId]) : this.treeService.loadChildren(nodeId))
-                        .pipe(map((nodes: TreeNode[]) => [nodeId, index, nodes]))
+                        .pipe(map((nodes: TreeNode[]) => [nodeId, index, nodes])) // TODO: need to refactor this
                 ),
                 map(([nodeId, index, nodes]: [string, number, TreeNode[]]) => {
                     if (!this.treeNodes[nodeId]) { this.treeNodes[nodeId] = nodes; }
