@@ -7,6 +7,7 @@ import { Column } from '../decorators/column.decorator';
     description: 'Configuration for site'
 })
 export class SiteDefinition {
+    _id: string;
     @Column({
         displayName: 'Start Page',
         displayType: UIHint.ContentReference

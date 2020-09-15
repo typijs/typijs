@@ -1,10 +1,9 @@
+import { ContentType, ContentTypeProperty, ContentTypeService, TypeOfContent } from '@angular-cms/core';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, UrlSegment } from '@angular/router';
-import { switchMap, takeUntil } from 'rxjs/operators';
-import { ContentPropertyModel } from './content-property.model';
-import { SubscriptionDestroy } from '../shared/subscription-destroy';
-import { ContentTypeService, TypeOfContent, ContentType, ContentTypeProperty } from '@angular-cms/core';
 import { Observable, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { ContentPropertyModel } from './content-property.model';
 
 @Component({
     template: `
@@ -22,11 +21,11 @@ import { Observable, of } from 'rxjs';
     </div>
   `
 })
-export class ContentTypePropertiesComponent extends SubscriptionDestroy implements OnInit {
+export class ContentTypeDetailComponent implements OnInit {
     modelType: new () => ContentPropertyModel = ContentPropertyModel;
 
     contentType$: Observable<ContentType>;
-    constructor(private route: ActivatedRoute, private contentTypeService: ContentTypeService) { super(); }
+    constructor(private route: ActivatedRoute, private contentTypeService: ContentTypeService) { }
 
     ngOnInit() {
         this.contentType$ = this.route.params
@@ -42,8 +41,7 @@ export class ContentTypePropertiesComponent extends SubscriptionDestroy implemen
                             return of(this.contentTypeService.getMediaType(params.name));
                     }
                     return of(undefined);
-                }),
-                takeUntil(this.unsubscribe$)
+                })
             );
     }
 

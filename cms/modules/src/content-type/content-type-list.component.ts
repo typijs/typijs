@@ -19,7 +19,7 @@ import { ContentTypeService, ContentType } from '@angular-cms/core';
         </div>
     `
 })
-export class ContentTypeListMenu implements OnInit {
+export class ContentTypeListComponent implements OnInit {
     pageTypes: ContentType[];
     blockTypes: ContentType[];
     mediaTypes: ContentType[];

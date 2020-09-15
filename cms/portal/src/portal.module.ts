@@ -20,7 +20,7 @@ import {
     BlockModule,
     PropertiesModule,
     ContentModule,
-    SiteManageModule,
+    SiteDefinitionModule,
     ContentTypeModule
 } from '@angular-cms/modules';
 
@@ -57,7 +57,7 @@ import { QuillModule } from 'ngx-quill';
         PageModule.forRoot(),
         MediaModule.forRoot(),
         BlockModule.forRoot(),
-        SiteManageModule.forRoot(),
+        SiteDefinitionModule.forRoot(),
         ContentTypeModule.forRoot(),
         PortalRoutingModule
     ],

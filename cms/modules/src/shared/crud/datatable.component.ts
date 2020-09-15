@@ -1,5 +1,5 @@
-import { ContentTypeService } from '@angular-cms/core';
-import { Component, Input, OnInit } from '@angular/core';
+import { ContentTypeService, CmsObject } from '@angular-cms/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { ColumnMetadata } from '../../decorators/column.decorator';
 
 export interface ColumnSettings extends ColumnMetadata {
@@ -12,8 +12,9 @@ export interface ColumnSettings extends ColumnMetadata {
 })
 export class DataTableComponent implements OnInit {
     @Input() modelType: new () => any;
-    @Input() rows: any[];
+    @Input() rows: CmsObject[];
 
+    @Output() rowClick: EventEmitter<CmsObject> = new EventEmitter<CmsObject>();
     columns: ColumnSettings[];
     constructor(private contentTypeService: ContentTypeService) { }
 

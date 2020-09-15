@@ -4,14 +4,18 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 
 import { CmsWidgetPosition, ADMIN_ROUTES, ADMIN_WIDGETS } from '@angular-cms/core';
-import { SiteManageComponent, SiteManageMenuComponent } from './site-manage.component';
-import { SiteManageService } from './site-manage.service';
+import { SiteDefinitionListComponent, SiteDefinitionMenuComponent, SiteDefinitionDetailComponent } from './site-definition.component';
+import { SiteDefinitionService } from './site-definition.service';
 import { CrudModule } from '../shared/crud/crud.module';
 
 const siteRoutes: Routes = [
     {
         path: 'site-manage',
-        component: SiteManageComponent
+        component: SiteDefinitionListComponent
+    },
+    {
+        path: 'site-manage/:id',
+        component: SiteDefinitionDetailComponent
     }
 ];
 
@@ -25,25 +29,27 @@ const siteRoutes: Routes = [
         CrudModule
     ],
     declarations: [
-        SiteManageComponent,
-        SiteManageMenuComponent
+        SiteDefinitionListComponent,
+        SiteDefinitionMenuComponent,
+        SiteDefinitionDetailComponent
     ],
     entryComponents: [
-        SiteManageComponent,
-        SiteManageMenuComponent
+        SiteDefinitionListComponent,
+        SiteDefinitionMenuComponent,
+        SiteDefinitionDetailComponent
     ]
 })
-export class SiteManageModule {
-    static forRoot(): ModuleWithProviders<SiteManageModule> {
+export class SiteDefinitionModule {
+    static forRoot(): ModuleWithProviders<SiteDefinitionModule> {
         return {
-            ngModule: SiteManageModule,
+            ngModule: SiteDefinitionModule,
             providers: [
-                SiteManageService,
+                SiteDefinitionService,
                 { provide: ADMIN_ROUTES, useValue: siteRoutes, multi: true },
                 {
                     provide: ADMIN_WIDGETS, useValue: [
                         {
-                            component: SiteManageMenuComponent,
+                            component: SiteDefinitionMenuComponent,
                             position: CmsWidgetPosition.Left,
                             group: 'Config'
                         }

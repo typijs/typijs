@@ -6,7 +6,7 @@
   </thead>
   <tbody>
     <ng-container *ngIf="rows">
-      <tr *ngFor="let row of rows">
+      <tr *ngFor="let row of rows" (click)="rowClick.emit(row)">
         <td *ngFor="let col of columns" scope="col">{{row[col.name]}}</td>
       </tr>
     </ng-container>
