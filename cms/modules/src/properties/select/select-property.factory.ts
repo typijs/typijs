@@ -14,9 +14,13 @@ export abstract class SelectPropertyFactory extends CmsPropertyFactory {
     createPropertyComponent(property: ContentTypeProperty, formGroup: FormGroup): ComponentRef<any> {
         const propertyComponent = this.createDefaultCmsPropertyComponent(property, formGroup);
 
-        if (propertyComponent.instance instanceof SelectProperty) {
+        if (!property.metadata.selectionFactory) {
+            // tslint:disable-next-line: no-console
+            console.warn(`The selectionFactory of property ${property.name} is not defined`);
+        }
+        if (propertyComponent.instance instanceof SelectProperty && property.metadata.selectionFactory) {
             const selectFactory = <ISelectionFactory>(this.injector.get(property.metadata.selectionFactory));
-            (<SelectProperty>propertyComponent.instance).selectItems = selectFactory.GetSelections();
+            (<SelectProperty>propertyComponent.instance).selectItems$ = selectFactory.getSelectItems();
         }
 
         return propertyComponent;

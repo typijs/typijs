@@ -7,7 +7,7 @@ import { SelectProperty } from '../select-property';
         <div class="form-group row" [formGroup]="formGroup">
             <label [attr.for]="id" class="col-3 col-form-label">{{label}}</label>
             <div class="col-5">
-                <select *ngIf="selectItems" class="form-control" [id]="id" [formControlName]="propertyName" [name]="propertyName">
+                <select *ngIf="selectItems$ |async as selectItems" class="form-control" [id]="id" [formControlName]="propertyName" [name]="propertyName">
                     <option *ngFor="let selectItem of selectItems" [value]="selectItem.value">{{selectItem.text}}</option>
                 </select>
             </div>

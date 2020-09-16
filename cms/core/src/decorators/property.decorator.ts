@@ -1,7 +1,9 @@
 import 'reflect-metadata';
 import { Validators } from '@angular/forms';
 
+import { ClassOf } from '../types';
 import { PROPERTIES_METADATA_KEY, PROPERTY_METADATA_KEY } from './metadata-key';
+import { ISelectionFactory } from '../bases/selection-factory';
 
 export type ValidateMetadata = {
     validateFn: Function;
@@ -12,8 +14,8 @@ export interface PropertyMetadata {
     displayName?: string;
     description?: string;
     displayType?: string;
-    selectionFactory?: any;
-    objectListItemType?: any,
+    selectionFactory?: ClassOf<ISelectionFactory>;
+    objectListItemType?: any;
     order?: number;
     groupName?: string;
     validates?: ValidateMetadata[];

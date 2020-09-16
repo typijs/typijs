@@ -1,3 +1,4 @@
+import { SelectItem } from '@angular-cms/core';
 import { Component, forwardRef, Input } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CmsControl } from '../../cms-control';
@@ -11,71 +12,65 @@ const CHECKBOX_GROUP_VALUE_ACCESSOR = {
 @Component({
     selector: 'checkbox-group',
     template: `
-    <div class="checkbox" *ngFor="let selectItem of selectItems;">
-        <label>
-            <input type="checkbox" [checked]="selectItem.selected" (change)="toggleCheck(selectItem)">{{selectItem.text}}
-        </label>
-    </div>
+        <div class="checkbox" *ngFor="let selectItem of selectItems;">
+            <label>
+                <input type="checkbox" [checked]="selectItem.isSelected" (change)="toggleCheck(selectItem)">{{selectItem.text}}
+            </label>
+        </div>
 `,
     providers: [CHECKBOX_GROUP_VALUE_ACCESSOR]
 })
 export class CheckboxGroupControl extends CmsControl {
 
-    @Input() selectItems: any[];
+    @Input() selectItems: SelectItem[];
 
-    // Typescript uses getter/setter syntax that is like ActionScript3.
-    // used to store internal value
-    private _model: any;
-    get model() {
-        return this._model;
-    }
+    model: any[];
 
-    // Implement of the ControlValueAccessor interface
     writeValue(value: any): void {
         if (this.selectItems && value instanceof Array) {
             this.selectItems.forEach(item => {
                 if (value.indexOf(item.value) > -1) {
-                    item.selected = true;
+                    item.isSelected = true;
                 } else {
-                    item.selected = false;
+                    item.isSelected = false;
                 }
             });
         }
-        this._model = value;
+        this.model = value;
     }
 
-    // methods depend on control business
-    addOrRemove(value: any) {
+    toggleCheck(selectItem: SelectItem) {
+        selectItem.isSelected = !selectItem.isSelected
+        const { value } = selectItem;
         if (this.contains(value)) {
             this.remove(value);
         } else {
-            this._model = this.selectItems.filter(item => item.selected).map(item => item.value);
-            this.onChange(this._model);
+            this.add(value);
         }
     }
 
-    contains(value: any): boolean {
-        if (this._model instanceof Array) {
-            return this._model.indexOf(value) > -1;
-        } else if (!!this._model) {
-            return this._model === value;
+    private contains(value: any): boolean {
+        if (this.model instanceof Array) {
+            return this.model.indexOf(value) > -1;
+        } else if (!!this.model) {
+            return this.model === value;
         }
 
         return false;
     }
 
-    toggleCheck(selectItem) {
-        selectItem.selected = !selectItem.selected;
-        this.addOrRemove(selectItem.value);
+    private add(value: any) {
+        this.model = this.selectItems.filter(item => item.isSelected).map(item => item.value);
+        this.onChange(this.model);
     }
 
     private remove(value: any) {
-        const index = this._model.indexOf(value);
-        if (!this._model || index < 0) {
+        const index = this.model.indexOf(value);
+        if (!this.model || index < 0) {
             return;
         }
 
-        this._model.splice(index, 1);
-        this.onChange(this._model);
+        this.model.splice(index, 1);
+        this.onChange(this.model);
     }
 }
