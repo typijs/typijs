@@ -156,10 +156,14 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
 
             properties.filter(x => (x.metadata.groupName === tab.title || (!x.metadata.groupName && tab.title === this.defaultGroup)))
                 .forEach(property => {
-                    const propertyFactory = this.propertyFactoryResolver.resolvePropertyFactory(property.metadata.displayType);
-                    const propertyComponent = propertyFactory.createPropertyComponent(property, this.contentFormGroup);
-                    viewContainerRef.insert(propertyComponent.hostView);
-                    propertyControls.push(propertyComponent);
+                    try {
+                        const propertyFactory = this.propertyFactoryResolver.resolvePropertyFactory(property.metadata.displayType);
+                        const propertyComponent = propertyFactory.createPropertyComponent(property, this.contentFormGroup);
+                        viewContainerRef.insert(propertyComponent.hostView);
+                        propertyControls.push(propertyComponent);
+                    } catch (error) {
+                        console.error(error);
+                    }
                 });
         });
 

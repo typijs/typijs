@@ -28,59 +28,51 @@ export const PIPES = [
     MapPipe,
     SafePipe
 ];
+
+export const PROPERTY_DIRECTIVES = [
+    ContentAreaRenderDirective,
+    ImageRenderDirective,
+    TextRenderDirective,
+    XHtmlRenderDirective,
+    UrlRenderDirective,
+    UrlListRenderDirective
+];
+
+export const CORE_PROPERTY_RENDERS = [
+    ContentAreaPropertyRender,
+    ImagePropertyRender,
+    ObjectListPropertyRender,
+
+    TextPropertyRender,
+    XHtmlPropertyRender,
+    UrlPropertyRender,
+    UrlListPropertyRender
+];
+
 @NgModule({
     imports: [
         CommonModule
     ],
     declarations: [
         ...PIPES,
-        InsertPointDirective,
+        ...PROPERTY_DIRECTIVES,
+        ...CORE_PROPERTY_RENDERS,
         CmsPageRender,
+        InsertPointDirective,
         CmsPropertyDirective,
 
-        ContentAreaDirective,
-        ContentAreaRenderDirective,
-        ContentAreaPropertyRender,
-
-        ImageRenderDirective,
-        ImagePropertyRender,
-
-        ObjectListPropertyRender,
-
-        TextRenderDirective,
-        TextPropertyRender,
-
-        XHtmlRenderDirective,
-        XHtmlPropertyRender,
-
-        UrlPropertyRender,
-        UrlRenderDirective,
-
-        UrlListPropertyRender,
-        UrlListRenderDirective,
+        ContentAreaDirective
     ],
     exports: [
         ...PIPES,
-        ContentAreaRenderDirective,
-        ImageRenderDirective,
-        TextRenderDirective,
-        XHtmlRenderDirective,
-        UrlRenderDirective,
-        UrlListRenderDirective,
+        ...PROPERTY_DIRECTIVES,
 
         CmsPageRender,
         InsertPointDirective,
         CmsPropertyDirective
     ],
     entryComponents: [
-        ContentAreaPropertyRender,
-        ImagePropertyRender,
-        ObjectListPropertyRender,
-
-        TextPropertyRender,
-        XHtmlPropertyRender,
-        UrlPropertyRender,
-        UrlListPropertyRender,
+        ...CORE_PROPERTY_RENDERS
     ]
 })
 export class CoreModule {

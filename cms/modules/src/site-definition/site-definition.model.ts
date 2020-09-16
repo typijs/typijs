@@ -1,6 +1,18 @@
-import { UIHint } from '@angular-cms/core';
-import { Table } from '../decorators/table.decorator';
+import { ISelectionFactory, SelectItem, UIHint } from '@angular-cms/core';
+import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
 import { Column } from '../decorators/column.decorator';
+import { Table } from '../decorators/table.decorator';
+
+@Injectable()
+export class SiteDefinitionSelectionFactory implements ISelectionFactory {
+    getSelectItems(): Observable<SelectItem[]> {
+        return of([{
+            text: 'Is Primary Host',
+            value: true
+        }]);
+    }
+}
 
 @Table({
     displayName: 'Site Management',
@@ -25,7 +37,8 @@ export class SiteDefinition {
     language: string;
     @Column({
         displayName: 'Is Primary',
-        displayType: UIHint.Checkbox
+        displayType: UIHint.Checkbox,
+        selectionFactory: SiteDefinitionSelectionFactory
     })
     isPrimary: boolean;
 }

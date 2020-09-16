@@ -10,13 +10,13 @@ export abstract class CmsProperty {
     @Input() formGroup: FormGroup;
 
     @Input()
+    get property(): ContentTypeProperty {
+        return this._property;
+    }
     set property(value: ContentTypeProperty) {
         this._property = value;
         this.label = value ? value.metadata.displayName : '';
         this.propertyName = value ? value.name : '';
-    }
-    get property(): ContentTypeProperty {
-        return this._property;
     }
     private _property: ContentTypeProperty;
 

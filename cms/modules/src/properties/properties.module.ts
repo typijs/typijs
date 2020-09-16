@@ -42,7 +42,25 @@ import { TextareaPropertyFactory } from './textarea/textarea.factory';
 import { TextPropertyFactory } from './text/text.factory';
 import { ImagePropertyFactory } from './image-reference/image-reference.factory';
 
+export const PROPERTIES = [
+    TextProperty,
+    TextareaProperty,
+    DropdownProperty,
+    CheckboxProperty,
+    ObjectListProperty,
+    XHtmlProperty,
+    ContentAreaProperty,
+    ContentReferenceProperty,
+    ImageReferenceProperty
+];
 
+export const CONTROLS = [
+    ContentAreaControl,
+    ContentReferenceControl,
+    ImageReferenceControl,
+    CheckboxGroupControl,
+    ObjectListControl
+];
 @NgModule({
     imports: [
         CommonModule,
@@ -56,47 +74,14 @@ import { ImagePropertyFactory } from './image-reference/image-reference.factory'
         DndModule
     ],
     declarations: [
-        TextProperty,
-        TextareaProperty,
-        DropdownProperty,
-        CheckboxGroupControl,
-        CheckboxProperty,
-        ObjectListProperty,
-        ObjectListControl,
-        XHtmlProperty,
-
-        ContentAreaProperty,
-        ContentAreaControl,
-
-        ContentReferenceControl,
-        ContentReferenceProperty,
-
-        ImageReferenceControl,
-        ImageReferenceProperty
+        ...PROPERTIES,
+        ...CONTROLS
     ],
     entryComponents: [
-        TextProperty,
-        TextareaProperty,
-        DropdownProperty,
-        CheckboxProperty,
-        ObjectListProperty,
-        XHtmlProperty,
-        ContentAreaProperty,
-        ContentReferenceProperty,
-        ImageReferenceProperty
+        ...PROPERTIES
     ],
     exports: [
-        TextProperty,
-        TextareaProperty,
-        DropdownProperty,
-        CheckboxProperty,
-        ObjectListProperty,
-        XHtmlProperty,
-        ContentAreaProperty,
-
-        ContentReferenceControl,
-        ContentReferenceProperty,
-        ImageReferenceProperty
+        ...PROPERTIES
     ]
 })
 export class PropertiesModule {
