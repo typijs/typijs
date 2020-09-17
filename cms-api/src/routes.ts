@@ -3,6 +3,7 @@ import { Injectable } from 'injection-js';
 
 import { AuthRouter } from './modules/auth/auth.route';
 import { BlockRouter } from './modules/block/block.route';
+import { LanguageRouter } from './modules/language';
 import { MediaRouter } from './modules/media/media.route';
 import { PageRouter } from './modules/page/page.route';
 import { SideDefinitionRouter } from './modules/site-definition/site-definition.route';
@@ -16,7 +17,8 @@ export class CmsApiRouter {
         private mediaRouter: MediaRouter,
         private userRouter: UserRouter,
         private authRouter: AuthRouter,
-        private siteRouter: SideDefinitionRouter) { }
+        private siteRouter: SideDefinitionRouter,
+        private langRouter: LanguageRouter) { }
 
     get router(): Router {
         const appRouter: Router = Router();
@@ -30,9 +32,11 @@ export class CmsApiRouter {
         // Site Definition
         appRouter.use('/site-definition', this.siteRouter.router);
         // User
-        appRouter.use('/user', this.userRouter.router)
+        appRouter.use('/user', this.userRouter.router);
         // Auth
-        appRouter.use('/auth', this.authRouter.router)
+        appRouter.use('/auth', this.authRouter.router);
+        // Language
+        appRouter.use('/language', this.langRouter.router);
         return appRouter;
     }
 }

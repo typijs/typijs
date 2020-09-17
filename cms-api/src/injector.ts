@@ -3,6 +3,7 @@ import { ReflectiveInjector, Provider } from "injection-js";
 import { CacheProviders } from "./caching";
 import { AuthProviders } from "./modules/auth";
 import { BlockProviders } from './modules/block';
+import { LanguageProviders } from "./modules/language";
 import { MediaProviders, StorageProviders } from './modules/media';
 import { PageProviders } from './modules/page';
 import { SiteDefinitionProviders } from "./modules/site-definition";
@@ -22,6 +23,7 @@ export class CmsInjector {
             ...PageProviders,
             ...SiteDefinitionProviders,
             ...UserProviders,
+            ...LanguageProviders,
             CmsApiRouter
         ];
         if (this.providers) {

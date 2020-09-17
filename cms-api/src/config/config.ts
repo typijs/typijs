@@ -15,11 +15,11 @@ export const config = {
         origin: process.env.ORIGIN || 'http://localhost:4200,http://localhost:4202'
     },
     mongdb: {
-        protocol: process.env.MONGO_DB_PROTOCOL || 'mongodb',
-        host: process.env.MONGO_DB_HOST || 'localhost:27017',
+        protocol: process.env.MONGO_DB_PROTOCOL || 'mongodb+srv', //'mongodb',
+        host: process.env.MONGO_DB_HOST || 'cluster0.6s8ha.azure.mongodb.net',//'localhost:27017',
         name: process.env.MONGO_DB_NAME || 'angularcms',
-        user: process.env.MONGO_DB_USER || '',
-        password: process.env.MONGO_DB_PASSWORD || ''
+        user: process.env.MONGO_DB_USER || 'dbAdmin',
+        password: process.env.MONGO_DB_PASSWORD || '02091945m@'
     },
     jwt: {
         secret: process.env.JWT_SECRET || '1878B83DE0384DE08D3F69FE1C308D55',
@@ -34,9 +34,9 @@ export const config = {
     },
     imgur: {
         baseUrl: 'https://api.imgur.com',
-        clientId: 'your client id',
-        clientSecret: 'your client secret',
-        refreshToken: 'your refresh token',
-        accessToken: 'your access token'
+        clientId: 'e9e87987fffa558',
+        clientSecret: '2ad7eda7e3e0134f69e9a0ea44e456c3ba3fe563',
+        refreshToken: '8cab8bd0b815cef6f224e031dcfaff4c49722c00',
+        accessToken: '7e9f1e55c1c62af4bfc0a0933932cdb80391f4aa'
     }
 };
