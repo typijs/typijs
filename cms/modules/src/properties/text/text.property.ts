@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { CmsProperty } from '@angular-cms/core';
 
 @Component({
-  selector: '[textProperty]',
-  template: `
+    selector: '[textProperty]',
+    template: `
     <div class="form-group row" [formGroup]="formGroup">
         <label [attr.for]="id" class="col-3 col-form-label">{{label}}</label>
         <div class="col-5">
@@ -11,7 +11,7 @@ import { CmsProperty } from '@angular-cms/core';
                     [id]="id"
                     [placeholder]="label"
                     [name]="propertyName"
-                    [formControlName]="propertyName">
+                    [formControlName]="propertyName"/>
         </div>
     </div>
   `

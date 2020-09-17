@@ -30,8 +30,8 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
     showIframeHider = false;
     previewUrl: string;
 
-    private contentService: ContentFormService;
     private readonly defaultGroup: string = 'Content';
+    private contentService: ContentFormService;
     private contentTypeProperties: ContentTypeProperty[] = [];
     private componentRefs: ComponentRef<any>[] = [];
 
