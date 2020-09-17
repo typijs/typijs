@@ -1,52 +1,44 @@
-import { NgModule, ModuleWithProviders } from '@angular/core';
+import { CoreModule, DEFAULT_PROPERTY_FACTORIES } from '@angular-cms/core';
 import { CommonModule } from '@angular/common';
+import { ModuleWithProviders, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faFile, faFolder, faCube, faImage, faBars, faHashtag, faList, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faCube, faFile, faFolder, faHashtag, faImage, faList, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { QuillModule } from 'ngx-quill';
-
-import { CoreModule, DEFAULT_PROPERTY_FACTORIES } from '@angular-cms/core';
-
-import { CmsBsDropdownModule } from '../shared/libs/ngx-bootstrap/bs-dropdown.module';
 import { DndModule } from '../shared/drag-drop/dnd.module';
-
-import { TextProperty } from './text/text.property';
-
-import { TextareaProperty } from './textarea/textarea.property';
-
-import { ObjectListProperty } from './object-list/object-list.property';
-import { ObjectListControl } from './object-list/object-list.control';
-
-import { XHtmlProperty } from './xhtml/xhtml.property';
-import { DropdownProperty } from './select/dropdown/dropdown.property';
-
-import { CheckboxProperty } from './select/checkbox/checkbox.property';
-import { CheckboxGroupControl } from './select/checkbox/checkbox-group.control';
-
+import { CmsBsDropdownModule } from '../shared/libs/ngx-bootstrap/bs-dropdown.module';
+import { CheckboxPropertyFactory } from './checkbox/checkbox.factory';
+import { CheckboxProperty } from './checkbox/checkbox.property';
 import { ContentAreaControl } from './content-area/content-area.control';
-import { ContentAreaProperty } from './content-area/content-area.property';
-
-import { ContentReferenceControl } from './content-reference/content-reference.control';
-import { ContentReferenceProperty } from './content-reference/content-reference.property';
-
-import { ImageReferenceProperty } from './image-reference/image-reference.property';
-import { ImageReferenceControl } from './image-reference/image-reference.control';
-import { ObjectListFactory } from './object-list/object-list.factory';
-import { DropdownPropertyFactory, CheckboxPropertyFactory } from './select/select-property.factory';
 import { ContentAreaFactory } from './content-area/content-area.factory';
+import { ContentAreaProperty } from './content-area/content-area.property';
+import { ContentReferenceControl } from './content-reference/content-reference.control';
 import { ContentReferenceFactory } from './content-reference/content-reference.factory';
-import { XHtmlPropertyFactory } from './xhtml/xhtml.factory';
-import { TextareaPropertyFactory } from './textarea/textarea.factory';
-import { TextPropertyFactory } from './text/text.factory';
+import { ContentReferenceProperty } from './content-reference/content-reference.property';
+import { ImageReferenceControl } from './image-reference/image-reference.control';
 import { ImagePropertyFactory } from './image-reference/image-reference.factory';
+import { ImageReferenceProperty } from './image-reference/image-reference.property';
+import { ObjectListControl } from './object-list/object-list.control';
+import { ObjectListFactory } from './object-list/object-list.factory';
+import { ObjectListProperty } from './object-list/object-list.property';
+import { CheckboxListControl } from './select/checkbox-list/checkbox-list.control';
+import { CheckboxListProperty } from './select/checkbox-list/checkbox-list.property';
+import { DropdownProperty } from './select/dropdown/dropdown.property';
+import { CheckboxListPropertyFactory, DropdownPropertyFactory } from './select/select-property.factory';
+import { TextPropertyFactory } from './text/text.factory';
+import { TextProperty } from './text/text.property';
+import { TextareaPropertyFactory } from './textarea/textarea.factory';
+import { TextareaProperty } from './textarea/textarea.property';
+import { XHtmlPropertyFactory } from './xhtml/xhtml.factory';
+import { XHtmlProperty } from './xhtml/xhtml.property';
 
 export const PROPERTIES = [
     TextProperty,
     TextareaProperty,
-    DropdownProperty,
     CheckboxProperty,
+    DropdownProperty,
+    CheckboxListProperty,
     ObjectListProperty,
     XHtmlProperty,
     ContentAreaProperty,
@@ -58,7 +50,7 @@ export const CONTROLS = [
     ContentAreaControl,
     ContentReferenceControl,
     ImageReferenceControl,
-    CheckboxGroupControl,
+    CheckboxListControl,
     ObjectListControl
 ];
 @NgModule({
@@ -93,15 +85,16 @@ export class PropertiesModule {
         return {
             ngModule: PropertiesModule,
             providers: [
-                { provide: DEFAULT_PROPERTY_FACTORIES, useClass: ImagePropertyFactory, multi: true },
                 { provide: DEFAULT_PROPERTY_FACTORIES, useClass: TextPropertyFactory, multi: true },
                 { provide: DEFAULT_PROPERTY_FACTORIES, useClass: TextareaPropertyFactory, multi: true },
-                { provide: DEFAULT_PROPERTY_FACTORIES, useClass: XHtmlPropertyFactory, multi: true },
-                { provide: DEFAULT_PROPERTY_FACTORIES, useClass: ContentReferenceFactory, multi: true },
-                { provide: DEFAULT_PROPERTY_FACTORIES, useClass: ContentAreaFactory, multi: true },
                 { provide: DEFAULT_PROPERTY_FACTORIES, useClass: CheckboxPropertyFactory, multi: true },
+                { provide: DEFAULT_PROPERTY_FACTORIES, useClass: CheckboxListPropertyFactory, multi: true },
                 { provide: DEFAULT_PROPERTY_FACTORIES, useClass: DropdownPropertyFactory, multi: true },
-                { provide: DEFAULT_PROPERTY_FACTORIES, useClass: ObjectListFactory, multi: true }
+                { provide: DEFAULT_PROPERTY_FACTORIES, useClass: ObjectListFactory, multi: true },
+                { provide: DEFAULT_PROPERTY_FACTORIES, useClass: XHtmlPropertyFactory, multi: true },
+                { provide: DEFAULT_PROPERTY_FACTORIES, useClass: ContentAreaFactory, multi: true },
+                { provide: DEFAULT_PROPERTY_FACTORIES, useClass: ContentReferenceFactory, multi: true },
+                { provide: DEFAULT_PROPERTY_FACTORIES, useClass: ImagePropertyFactory, multi: true }
             ]
         };
     }

@@ -7,6 +7,7 @@ export type CmsPropertyUIType = {
     ObjectList: string;
     XHtml: string;
     Checkbox: string;
+    CheckboxList: string;
     RadioButtons: string;
     ContentArea: string;
     ContentReference: string;
@@ -30,6 +31,7 @@ export const UIHint: CmsPropertyUIType = {
     ObjectList: 'ObjectList',
     XHtml: 'XHtml',
     Checkbox: 'Checkbox',
+    CheckboxList: 'CheckboxList',
     RadioButtons: 'RadioButtons',
     ContentArea: 'ContentArea',
     ContentReference: 'ContentReference',

@@ -4,7 +4,7 @@ import { FormGroup } from '@angular/forms';
 import { CmsPropertyFactory, UIHint, ContentTypeProperty, ISelectionFactory, ClassOf } from '@angular-cms/core';
 import { SelectProperty } from './select-property';
 import { DropdownProperty } from './dropdown/dropdown.property';
-import { CheckboxProperty } from './checkbox/checkbox.property';
+import { CheckboxListProperty } from './checkbox-list/checkbox-list.property';
 
 export abstract class SelectPropertyFactory extends CmsPropertyFactory {
     constructor(injector: Injector, propertyUIHint: string, propertyCtor: ClassOf<SelectProperty>) {
@@ -35,8 +35,8 @@ export class DropdownPropertyFactory extends SelectPropertyFactory {
 }
 
 @Injectable()
-export class CheckboxPropertyFactory extends SelectPropertyFactory {
+export class CheckboxListPropertyFactory extends SelectPropertyFactory {
     constructor(injector: Injector) {
-        super(injector, UIHint.Checkbox, CheckboxProperty);
+        super(injector, UIHint.CheckboxList, CheckboxListProperty);
     }
 }
