@@ -7,7 +7,7 @@ import { CmsWidgetPosition, ADMIN_ROUTES, ADMIN_WIDGETS } from '@angular-cms/cor
 import { SiteDefinitionListComponent, SiteDefinitionMenuComponent, SiteDefinitionDetailComponent } from './site-definition.component';
 import { SiteDefinitionService } from './site-definition.service';
 import { CrudModule } from '../shared/crud/crud.module';
-import { SiteDefinitionSelectionFactory } from './site-definition.model';
+import { LanguageSelectionFactory } from './site-definition.model';
 
 const siteRoutes: Routes = [
     {
@@ -46,7 +46,7 @@ export class SiteDefinitionModule {
             ngModule: SiteDefinitionModule,
             providers: [
                 SiteDefinitionService,
-                SiteDefinitionSelectionFactory,
+                LanguageSelectionFactory,
                 { provide: ADMIN_ROUTES, useValue: siteRoutes, multi: true },
                 {
                     provide: ADMIN_WIDGETS, useValue: [

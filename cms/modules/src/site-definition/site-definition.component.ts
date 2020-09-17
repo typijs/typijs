@@ -43,7 +43,8 @@ export class SiteDefinitionListComponent implements OnInit {
     <div class="row">
         <div class="col-12">
             <cms-form [modelType]="modelType"
-                    [formData]="siteDefinition$ | async"></cms-form>
+                    [formData]="siteDefinition$ | async"
+                    (submit)="onSubmit($event)"></cms-form>
         </div>
     </div>
   `
@@ -58,6 +59,10 @@ export class SiteDefinitionDetailComponent implements OnInit {
             .pipe(
                 switchMap((params: Params) => this.service.getSiteDefinition(params.id))
             );
+    }
+
+    onSubmit(value: SiteDefinition) {
+        console.log(value);
     }
 }
 

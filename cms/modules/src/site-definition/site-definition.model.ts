@@ -1,16 +1,28 @@
-import { ISelectionFactory, SelectItem, UIHint } from '@angular-cms/core';
+import { BaseService, ISelectionFactory, SelectItem, UIHint } from '@angular-cms/core';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Column } from '../decorators/column.decorator';
 import { Table } from '../decorators/table.decorator';
 
+export type Language = {
+    code: string;
+    name: string;
+    nativeName: string;
+};
+
 @Injectable()
-export class SiteDefinitionSelectionFactory implements ISelectionFactory {
+export class LanguageSelectionFactory extends BaseService implements ISelectionFactory {
+    protected apiUrl: string = `${this.baseApiUrl}/language`;
+    constructor(httpClient: HttpClient) {
+        super(httpClient);
+    }
+
     getSelectItems(): Observable<SelectItem[]> {
-        return of([{
-            text: 'Is Primary Host',
-            value: true
-        }]);
+        return this.httpClient.get<Language[]>(`${this.apiUrl}/getAll`).pipe(
+            map((languages: Language[]) => languages.map(lang => <SelectItem>{ value: lang.code, text: `${lang.name} (${lang.nativeName})` }))
+        );
     }
 }
 
@@ -26,19 +38,15 @@ export class SiteDefinition {
     })
     startPage: string;
     @Column({
-        displayName: 'Site Hostname',
-        displayType: UIHint.Text
+        displayName: 'Hostname'
     })
     siteUrl: string;
     @Column({
         displayName: 'Default Language',
-        displayType: UIHint.Text
+        displayType: UIHint.Dropdown,
+        selectionFactory: LanguageSelectionFactory
     })
     language: string;
-    @Column({
-        displayName: 'Is Primary',
-        displayType: UIHint.Checkbox,
-        selectionFactory: SiteDefinitionSelectionFactory
-    })
+    @Column()
     isPrimary: boolean;
 }

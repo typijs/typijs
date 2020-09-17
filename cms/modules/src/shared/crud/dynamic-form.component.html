@@ -1,5 +1,7 @@
-<form class="m-0" [formGroup]="contentFormGroup" #formId="ngForm">
+<form class="m-0" [formGroup]="contentFormGroup" (ngSubmit)="onSubmit(cmsFormId.value)" #cmsFormId="ngForm">
   <div>
     <ng-template cmsInsertPoint></ng-template>
   </div>
+  <button type="button" class="btn btn-primary" [disabled]="!cmsFormId.dirty"
+    (click)="cmsFormId.ngSubmit.emit()">Submit</button>
 </form>

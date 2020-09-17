@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit, ChangeDetectorRef, Input, ComponentRef } from '@angular/core';
-import { InsertPointDirective, CmsPropertyFactoryResolver, ContentTypeService, ContentTypeProperty } from '@angular-cms/core';
+import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit, ChangeDetectorRef, Input, ComponentRef, Output, EventEmitter } from '@angular/core';
+import { InsertPointDirective, CmsPropertyFactoryResolver, ContentTypeService, ContentTypeProperty, CmsObject } from '@angular-cms/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({
@@ -25,6 +25,8 @@ export class DynamicFormComponent implements OnInit, OnDestroy, AfterViewInit {
         }
     }
     private _formData: any;
+
+    @Output() submit: EventEmitter<CmsObject> = new EventEmitter<CmsObject>();
 
     contentFormGroup: FormGroup = new FormGroup({});
     private componentRefs: ComponentRef<any>[] = [];
@@ -60,6 +62,11 @@ export class DynamicFormComponent implements OnInit, OnDestroy, AfterViewInit {
         }
     }
 
+    onSubmit(formValue: any): void {
+        const submittedValue = Object.assign(this._formData, formValue);
+        this.submit.emit(submittedValue);
+    }
+
     private createFormGroup(properties: ContentTypeProperty[]): FormGroup {
         if (properties) {
             const formModel = this.formData ? this.formData : {};
@@ -92,7 +99,7 @@ export class DynamicFormComponent implements OnInit, OnDestroy, AfterViewInit {
                 viewContainerRef.insert(propertyComponent.hostView);
                 propertyControls.push(propertyComponent);
             } catch (error) {
-                console.log(error);
+                console.error(error);
             }
         });
 
