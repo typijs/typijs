@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { SiteDefinitionService } from './site-definition.service';
-import { SiteDefinition } from './site-definition.model';
-import { Observable } from 'rxjs';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
-
+import { Observable } from 'rxjs';
+import { switchMap, tap } from 'rxjs/operators';
+import { SiteDefinition } from './site-definition.model';
+import { SiteDefinitionService } from './site-definition.service';
 
 @Component({
     template: `
@@ -19,7 +18,21 @@ export class SiteDefinitionMenuComponent { }
         <div class="col-12">
             <cms-table [modelType]="modelType"
                     [rows]="siteDefinitions$ | async"
-                    (rowClick)="editSiteDefinition($event)"></cms-table>
+                    (rowClick)="editSiteDefinition($event)">
+                <cms-table-column name="siteUrl">
+                    <ng-template #headerTemplate let-column="column">
+                        <span>{{column.displayName | uppercase}}</span>
+                    </ng-template>
+                    <ng-template #cellTemplate let-value="value">
+                        <a [href]="value" target="_blank">{{value}}</a>
+                    </ng-template>
+                </cms-table-column>
+                <cms-table-column name="isPrimary">
+                    <ng-template #cellTemplate let-row="row" let-column="column" let-value="value">
+                        <input type="checkbox" [checked]="value" disabled/>
+                    </ng-template>
+                </cms-table-column>
+            </cms-table>
         </div>
     </div>
   `
@@ -30,7 +43,9 @@ export class SiteDefinitionListComponent implements OnInit {
 
     constructor(private service: SiteDefinitionService, private router: Router, private route: ActivatedRoute) { }
     ngOnInit(): void {
-        this.siteDefinitions$ = this.service.getAllSiteDefinitions();
+        this.siteDefinitions$ = this.service.findAll().pipe(
+            tap(sites => sites.forEach(x => x.startPage = x.startPage.name))
+        );
     }
 
     editSiteDefinition(site: SiteDefinition) {
@@ -53,16 +68,27 @@ export class SiteDefinitionDetailComponent implements OnInit {
     modelType: new () => any = SiteDefinition;
     siteDefinition$: Observable<SiteDefinition>;
 
-    constructor(private service: SiteDefinitionService, private route: ActivatedRoute) { }
+    constructor(private service: SiteDefinitionService, private router: Router, private route: ActivatedRoute) { }
     ngOnInit(): void {
         this.siteDefinition$ = this.route.params
             .pipe(
-                switchMap((params: Params) => this.service.getSiteDefinition(params.id))
+                switchMap((params: Params) => this.service.findOne(params.id)),
+                tap(site => site.startPage = {
+                    id: site.startPage._id,
+                    type: 'page',
+                    name: site.startPage.name,
+                    contentType: site.startPage.contentType
+                })
             );
     }
 
     onSubmit(value: SiteDefinition) {
-        console.log(value);
+        if (value.startPage) {
+            value.startPage = value.startPage.id;
+        }
+        this.service.update(value._id, value).subscribe(() => {
+            this.router.navigate(['../'], { relativeTo: this.route });
+        });
     }
 }
 
