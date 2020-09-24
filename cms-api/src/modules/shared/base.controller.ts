@@ -13,7 +13,7 @@ export abstract class BaseController<T extends IBaseDocument> {
   }
 
   getAll = async (req: express.Request, res: express.Response) => {
-    const items = await this.baseService.getAll();
+    const items = await this.baseService.getAll().exec();
     res.status(httpStatus.OK).json(items)
   }
 

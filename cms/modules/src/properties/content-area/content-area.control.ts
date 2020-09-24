@@ -77,7 +77,7 @@ export class ContentAreaControl extends CmsControl {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe((item: ContentAreaItem) => {
                 // Handle swap item between content area by drag and drop
-                if (item.owner == this.propertyName) {
+                if (item.owner === this.propertyName) {
                     this.removeItem(item);
                 }
             });
@@ -114,7 +114,7 @@ export class ContentAreaControl extends CmsControl {
             isPublished: isPublished
         };
 
-        if (item.owner == this.propertyName) {
+        if (item.owner === this.propertyName) {
             // Sort item in content area by dnd
             const itemGuid = item.guid;
             // Insert new item
@@ -139,7 +139,7 @@ export class ContentAreaControl extends CmsControl {
 
     private removeItemFromModel(itemGuid: string): boolean {
         const existIndex = this._model.findIndex(x => x.guid == itemGuid);
-        if (existIndex == -1) { return false; }
+        if (existIndex === -1) { return false; }
 
         this._model.splice(existIndex, 1);
         return true;

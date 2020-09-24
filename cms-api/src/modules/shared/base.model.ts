@@ -3,6 +3,14 @@ import { Document, Model, FilterQuery, DocumentQuery } from 'mongoose';
 import { PaginateOptions, PaginateResult } from '../../db/plugins/paginate';
 
 export type QueryOptions = {
+    /**
+     * The lean option tells Mongoose to skip hydrating the result documents. 
+     * 
+     * If `lean = true`, this makes queries faster and less memory intensive, but the result documents are plain old JavaScript objects (POJOs), 
+     * not Mongoose documents.
+     * 
+     * Default = false
+     */
     lean?: boolean;
 }
 

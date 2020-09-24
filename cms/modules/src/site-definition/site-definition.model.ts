@@ -1,7 +1,7 @@
 import { BaseService, ISelectionFactory, SelectItem, UIHint } from '@angular-cms/core';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Column } from '../decorators/column.decorator';
 import { Table } from '../decorators/table.decorator';
@@ -36,7 +36,7 @@ export class SiteDefinition {
         displayName: 'Start Page',
         displayType: UIHint.ContentReference
     })
-    startPage: string;
+    startPage: any;
     @Column({
         displayName: 'Hostname'
     })

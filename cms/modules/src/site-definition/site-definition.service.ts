@@ -1,22 +1,13 @@
-import { Injectable, Injector } from '@angular/core';
-import { SiteDefinition } from './site-definition.model';
-import { BaseService } from '@angular-cms/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { CrudService } from '../shared/crud/crud.service';
+import { SiteDefinition } from './site-definition.model';
 
 @Injectable()
-export class SiteDefinitionService extends BaseService {
+export class SiteDefinitionService extends CrudService<SiteDefinition, string> {
     protected apiUrl: string = `${this.baseApiUrl}/site-definition`;
 
     constructor(httpClient: HttpClient) {
         super(httpClient);
-    }
-
-    getAllSiteDefinitions(): Observable<SiteDefinition[]> {
-        return this.httpClient.get<SiteDefinition[]>(this.apiUrl);
-    }
-
-    getSiteDefinition(id: string): Observable<SiteDefinition> {
-        return this.httpClient.get<SiteDefinition>(`${this.apiUrl}/${id}`);
     }
 }

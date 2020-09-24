@@ -1,5 +1,4 @@
-import { FilterQuery, Document, Types, UpdateQuery, Query } from 'mongoose';
-
+import { FilterQuery, Query, UpdateQuery } from 'mongoose';
 import { PaginateOptions, PaginateResult } from '../../db/plugins/paginate';
 import { DocumentNotFoundException } from '../../error';
 import { IBaseDocument, IBaseModel, QueryItem, QueryList, QueryOptions } from './base.model';
