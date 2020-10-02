@@ -2,6 +2,8 @@ import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
+import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faCheck, faLanguage } from '@fortawesome/free-solid-svg-icons';
 
 import { CmsWidgetPosition, ADMIN_ROUTES, ADMIN_WIDGETS } from '@angular-cms/core';
 import { SiteDefinitionListComponent, SiteDefinitionMenuComponent, SiteDefinitionDetailComponent } from './site-definition.component';
@@ -26,6 +28,7 @@ const siteRoutes: Routes = [
         FormsModule,
         ReactiveFormsModule,
         RouterModule,
+        FontAwesomeModule,
 
         CrudModule
     ],
@@ -41,6 +44,9 @@ const siteRoutes: Routes = [
     ]
 })
 export class SiteDefinitionModule {
+    constructor(library: FaIconLibrary) {
+        library.addIcons(faCheck, faLanguage);
+    }
     static forRoot(): ModuleWithProviders<SiteDefinitionModule> {
         return {
             ngModule: SiteDefinitionModule,

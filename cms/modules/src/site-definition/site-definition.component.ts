@@ -19,17 +19,26 @@ export class SiteDefinitionMenuComponent { }
             <cms-table [modelType]="modelType"
                     [rows]="siteDefinitions$ | async"
                     (rowClick)="editSiteDefinition($event)">
-                <cms-table-column name="siteUrl">
-                    <ng-template #headerTemplate let-column="column">
-                        <span>{{column.displayName | uppercase}}</span>
+                <cms-table-toolbar>
+                    <ng-template #toolbarTemplate let-rows="rows">
+                        <button type="button" class="btn btn-primary">Add</button>
                     </ng-template>
+                </cms-table-toolbar>
+                <!-- Column Template -->
+                <cms-table-column name="siteUrl">
                     <ng-template #cellTemplate let-value="value">
                         <a [href]="value" target="_blank">{{value}}</a>
                     </ng-template>
                 </cms-table-column>
+                <cms-table-column name="language">
+                    <ng-template #headerTemplate let-column="column">
+                        <fa-icon [icon]="['fas', 'language']"></fa-icon>
+                        {{column.displayName}}
+                    </ng-template>
+                </cms-table-column>
                 <cms-table-column name="isPrimary">
                     <ng-template #cellTemplate let-row="row" let-column="column" let-value="value">
-                        <input type="checkbox" [checked]="value" disabled/>
+                        <fa-icon *ngIf="value" [icon]="['fas', 'check']"></fa-icon>
                     </ng-template>
                 </cms-table-column>
             </cms-table>
