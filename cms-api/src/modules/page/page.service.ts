@@ -6,14 +6,15 @@ import { slugify } from '../../utils/slugify';
 import { ContentService } from '../content/content.service';
 import { SiteDefinitionService } from '../site-definition/site-definition.service';
 import { IPageVersionDocument, PageVersionModel } from "./models/page-version.model";
-import { IPage, IPageDocument, PageModel } from "./models/page.model";
-import { IPublishedPage, IPublishedPageDocument, PublishedPageModel } from './models/published-page.model';
+import { IPageDocument, PageModel } from "./models/page.model";
+import { IPageLanguageDocument, PageLanguageModel } from './models/page-language.model';
+import { VersionStatus } from '../content/content.model';
 
 @Injectable()
-export class PageService extends ContentService<IPageDocument, IPageVersionDocument, IPublishedPageDocument> {
+export class PageService extends ContentService<IPageDocument, IPageLanguageDocument, IPageVersionDocument> {
 
     constructor(private siteDefinitionService: SiteDefinitionService) {
-        super(PageModel, PageVersionModel, PublishedPageModel);
+        super(PageModel, PageLanguageModel, PageVersionModel);
     }
 
     public getPopulatedContentById = async (id: string): Promise<IPageDocument> => {
@@ -56,16 +57,11 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
         return null;
     }
 
-    public getPageChildren = async (parentId: string): Promise<IPage[]> => {
-        if (parentId == '0') parentId = null;
-        return this.find({ parentId: parentId, isDeleted: false }, { lean: true }).exec()
-    }
-
-    public getPublishedPageChildren = async (parentId: string): Promise<IPublishedPage[]> => {
+    public getPublishedPageChildren = async (parentId: string, languageId: string): Promise<IPageDocument[]> => {
         if (parentId == '0') parentId = null;
 
         //TODO: Temporary get first site definition
-        const publishedPages = await this.publishedContentModel.find({ parentId: parentId, isDeleted: false }).lean().exec()
+        const publishedPages = (await this.getContentChildren(parentId, languageId)).filter(x => x.status == VersionStatus.Published);
         if (publishedPages.length == 0) return [];
 
         const startPageLinkUrl = await this.getStartPageLinkUrl(null);
@@ -127,7 +123,7 @@ export class PageService extends ContentService<IPageDocument, IPageVersionDocum
         //remove '/' in end of link Url
         if (linkUrl.endsWith('/')) linkUrl = linkUrl.substring(0, linkUrl.length - 1);
 
-        return this.publishedContentModel.findOne({ linkUrl: linkUrl })
+        return this.contentLanguageModel.findOne({ linkUrl: linkUrl })
             .populate({
                 path: 'publishedChildItems.content',
                 match: { isDeleted: false }
