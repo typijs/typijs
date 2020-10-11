@@ -13,11 +13,11 @@ import {
     IMediaDocument,
     VideoContent
 } from './models/media.model';
-import { IPublishedMediaDocument } from './models/published-media.model';
 import { Multer } from './multer';
+import { IMediaLanguageDocument } from './models/media-language.model';
 
 @Injectable()
-export class MediaController extends ContentController<IMediaDocument, IMediaVersionDocument, IPublishedMediaDocument> {
+export class MediaController extends ContentController<IMediaDocument, IMediaLanguageDocument, IMediaVersionDocument> {
 
     constructor(private mediaService: MediaService, private multer: Multer) {
         super(mediaService);
@@ -50,7 +50,8 @@ export class MediaController extends ContentController<IMediaDocument, IMediaVer
         const file: Express.Multer.File = req.file;
         const contentType: string = this.getMediaContentType(file.originalname);
         const { parentId, fileId, link, thumbnail } = req.params;
-        const mediaObj: Partial<IMediaDocument> = {
+        const user = req['user'];
+        const mediaObj: Partial<IMediaDocument & IMediaVersionDocument> = {
             _id: fileId,
             name: file.originalname,
             parentId,
@@ -60,11 +61,12 @@ export class MediaController extends ContentController<IMediaDocument, IMediaVer
             cloudId: file['id'],
             deleteHash: file['deleteHash'],
             link: link,
-            thumbnail: thumbnail
+            thumbnail: thumbnail,
+            languageId: req.query.language
         }
 
-        const savedMedia = await this.mediaService.executeCreateContentFlow(mediaObj);
-        const publishedMedia = await this.mediaService.executePublishContentFlow(savedMedia);
+        const savedMedia = await this.mediaService.executeCreateContentFlow(mediaObj, user.id);
+        const publishedMedia = await this.mediaService.executePublishContentFlow(savedMedia._id, req.query.language, user.id);
         res.status(httpStatus.OK).json(publishedMedia)
     }
 

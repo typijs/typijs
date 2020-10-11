@@ -1,81 +1,110 @@
-import * as mongoose from 'mongoose';
-
-import { DocumentNotFoundException } from '../../error';
-import { cmsBlock } from '../block/models/block.model';
-import { cmsPublishedBlock } from '../block/models/published-block.model';
-import { cmsMedia } from '../media/models/media.model';
-import { cmsPublishedMedia } from '../media/models/published-media.model';
-import { cmsPage } from '../page/models/page.model';
-import { cmsPublishedPage } from '../page/models/published-page.model';
-import {
-    IContent,
-    IContentDocument,
-    IContentVersion,
-    IContentVersionDocument,
-    IPublishedContent,
-    IPublishedContentDocument,
-    RefContent,
-    IContentModel,
-    IContentVersionModel,
-    IPublishedContentModel
-} from './content.model';
+import { DocumentNotFoundException, Exception } from '../../error';
 import { FolderService } from '../folder/folder.service';
+import { BaseService } from '../shared';
+import {
+    IContentDocument,
+    IContentLanguageDocument,
+    IContentVersionDocument,
+    IContentModel,
+    IContentLanguageModel,
+    IContentVersionModel,
+    VersionStatus
+} from './content.model';
 
-export class ContentService<T extends IContentDocument, V extends IContentVersionDocument & T, P extends IPublishedContentDocument & V> extends FolderService<T> {
-    protected contentModel: IContentModel<T>;
-    protected contentVersionModel: IContentVersionModel<V>;
-    protected publishedContentModel: IPublishedContentModel<P>;
+export class ContentVersionService<V extends IContentVersionDocument> extends BaseService<V> {
+    public createNewVersion(version: Partial<V>, contentId: string, userId: string, masterVersionId?: string): Promise<V> {
+        const contentVersionDoc = this.createModel(version);
+        contentVersionDoc._id = undefined;
+        contentVersionDoc.contentId = contentId;
+        contentVersionDoc.createdBy = userId;
+        contentVersionDoc.masterVersionId = masterVersionId;
+        contentVersionDoc.status = VersionStatus.CheckedOut;
+        return contentVersionDoc.save();
+    }
+}
 
-    constructor(contentModel: IContentModel<T>, contentVersionModel: IContentVersionModel<V>, publishedContentModel: IPublishedContentModel<P>) {
-        super(contentModel);
-        this.contentModel = contentModel;
-        this.contentVersionModel = contentVersionModel;
-        this.publishedContentModel = publishedContentModel;
+export class ContentLanguageService<P extends IContentLanguageDocument> extends BaseService<P> {
+    public async createContentLanguage(content: any, contentId: string, versionId: string, userId: string): Promise<P> {
+        const contentLangDoc = this.createModel(content);
+        contentLangDoc._id = undefined;
+        contentLangDoc.contentId = contentId;
+        contentLangDoc.versionId = versionId;
+        contentLangDoc.createdBy = userId;
+        contentLangDoc.status = VersionStatus.CheckedOut;
+        const savedResult = await (await contentLangDoc.save()).populate('contentId').execPopulate();
+
+        //update content languages array in main content
+        const currentContent = savedResult.contentId as IContentDocument;
+        if (!Array.isArray(currentContent.contentLanguages)) {
+            currentContent.contentLanguages = [];
+        }
+        currentContent.contentLanguages.push(savedResult._id);
+        await currentContent.save()
+        return savedResult;
+    }
+}
+
+export class ContentService<T extends IContentDocument, P extends IContentLanguageDocument, V extends IContentVersionDocument> extends FolderService<T, P> {
+    private contentLanguageService: ContentLanguageService<P>;
+    private contentVersionService: ContentVersionService<V>;
+
+    constructor(contentModel: IContentModel<T>, contentLanguageModel: IContentLanguageModel<P>, contentVersionModel: IContentVersionModel<V>) {
+        super(contentModel, contentLanguageModel);
+        this.contentLanguageService = new ContentLanguageService<P>(contentLanguageModel);
+        this.contentVersionService = new ContentVersionService<V>(contentVersionModel);
     }
 
-    public getContentModel = (): mongoose.Model<T> => this.contentModel;
-
     //return plain json object instead of mongoose document
-    public getPopulatedContentById = (id: string): Promise<T> => {
-        if (!id) id = null;
+    public getPopulatedContentById = async (id: string, languageId: string): Promise<V> => {
+        if (!id) throw new Exception(400, "Bad Request");
 
-        return this.findById(id, { lean: true })
+        const currentContent = await this.findOne({ _id: id, isDeleted: false } as any, { lean: true }).exec();
+        if (!currentContent) throw new DocumentNotFoundException(id);
+
+        const currentVersion = await this.contentVersionService.findOne({ contentId: id, languageId: languageId } as any, { lean: true })
+            .sort({ createdAt: -1 })
             .populate({
                 path: 'childItems.content',
-                match: { isDeleted: false }
-            })
-            .exec();
+                match: { isDeleted: false },
+                populate: {
+                    path: 'contentLanguages',
+                    match: { languageId: languageId },
+                    populate: {
+                        path: 'childItems.content',
+                        match: { isDeleted: false },
+                        populate: {
+                            path: 'contentLanguages',
+                            match: { languageId: languageId }
+                        }
+                    }
+                }
+            }).exec();
+
+        currentVersion.childItems.forEach(item => {
+            Object.assign(item.content, item.content.contentLanguages.find(contentLanguage => contentLanguage.languageId === languageId))
+        })
+        return currentVersion;
     }
 
-    //return plain json object instead of mongoose document
-    public getPopulatedPublishedContentById = (id: string): Promise<P> => {
-        if (!id) id = null;
-
-        return this.publishedContentModel.findById(id)
-            .setOptions({ lean: true })
-            .populate({
-                path: 'publishedChildItems.content',
-                match: { isDeleted: false }
-            })
-            .exec();
-    }
-
-    public executeCreateContentFlow = async (content: Partial<T>): Promise<T> => {
+    /**
+     * Create block or media content
+     * @param content 
+     */
+    public executeCreateContentFlow = async (content: Partial<T & V>, userId: string): Promise<T & V> => {
+        //Step1: Create content
         const contentDoc = this.createModel(content);
-        //get page's parent
-        //generate url segment
-        //create new page
-        //update parent page's has children property
         const parentContent = await this.findById(contentDoc.parentId).exec();
-        const savedContent = await this.createContent(contentDoc, parentContent);
-        return savedContent;
+        const savedContent = await this.createContent(contentDoc, parentContent, userId);
+        //Step2: Create content version
+        const savedContentVersionDoc = await this.contentVersionService.createNewVersion(content, savedContent._id, userId);
+        //Step3: Create content in language 
+        const savedContentLangDoc = await this.contentLanguageService.createContentLanguage(content, savedContent._id, savedContentVersionDoc._id, userId);
+
+        return Object.assign(savedContent, savedContentVersionDoc);
     }
 
-    public createContent = (newContent: T, parentContent: T): Promise<T> => {
-        newContent.createdAt = new Date();
-        //TODO: pageObj.createdBy = userId;
-        newContent.updatedAt = new Date();
-        //TODO: pageObj.changedBy = userId;
+    protected createContent = (newContent: T, parentContent: T, userId: string): Promise<T> => {
+        newContent.createdBy = userId;
         newContent.parentId = parentContent ? parentContent._id : null;
 
         //create parent path ids
@@ -93,142 +122,176 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
         return newContent.save();
     }
 
-    public updateHasChildren = async (content: IContentDocument): Promise<boolean> => {
+    protected updateHasChildren = async (content: IContentDocument): Promise<boolean> => {
         if (!content) return false;
         if (content && content.hasChildren) return true;
 
-        content.updatedAt = new Date();
         content.hasChildren = true;
         const savedContent = await content.save();
         return savedContent.hasChildren;
     }
 
-    public updateAndPublishContent = async (id: string, contentObj: T): Promise<T> => {
-        let currentContent = await this.findById(id).exec();
-        if (contentObj.isDirty) {
-            currentContent = await this.updateContent(currentContent, contentObj);
-        }
+    /**
+     * Execute update content flow of content service
+     * @returns the newest version in current language
+     */
+    public executeUpdateContentFlow = async (id: string, contentObj: T & V, userId: string): Promise<T & V> => {
+        const { name, properties, childItems } = contentObj;
 
-        if (contentObj.isPublished && (!currentContent.publishedAt || currentContent.updatedAt > currentContent.publishedAt)) {
-            currentContent = await this.executePublishContentFlow(currentContent);
-        }
-        return currentContent;
-    }
+        const currentContent = await this.findById(id);
+        //Step1: Get current version
+        const currentVersion = await this.contentVersionService.findOne({ contentId: id, languageId: contentObj.languageId } as any).sort({ createdAt: -1 }).exec();
+        if (currentVersion.status != VersionStatus.Published) {
+            Object.assign(currentVersion, { name, properties, childItems });
+            currentVersion.updatedBy = userId;
+            const saveContentVersion = await currentVersion.save();
 
-    public executePublishContentFlow = async (currentContent: T): Promise<P> => {
-        //set property isPublished = true
-        const updatedContent = await this.publishContent(currentContent);
-        //create page version
-        const pageVersion = await this.createPageVersion(updatedContent);
-        //create published content
-        const publishedContent = await this.createPublishedContent(updatedContent, pageVersion._id);
-        return publishedContent;
-    }
+            //Step2: update corresponding draft content language version
+            const contentLanguage = await this.contentLanguageService.findOne({ contentId: id, languageId: contentObj.languageId } as any).exec();
+            if (contentLanguage.status == VersionStatus.CheckedOut) {
+                Object.assign(contentLanguage, { name, properties, childItems });
+                contentLanguage.updatedBy = userId;
+                await contentLanguage.save();
+            }
+            return Object.assign(currentContent, saveContentVersion);
+        } else {
+            //Create new version
+            const savedContentVersionDoc = await this.contentVersionService.createNewVersion(contentObj, id, userId, currentVersion._id);
 
-    private publishContent = (currentContent: T): Promise<T> => {
-        currentContent.isPublished = true;
-        currentContent.publishedAt = new Date();
-        //TODO: currentContent.publishedBy = userId;
-        return currentContent.save()
-    }
-
-    private createPageVersion = (currentContent: T): Promise<V> => {
-        const newContentVersion: IContentVersion = {
-            ...currentContent.toObject(),
-            contentId: currentContent._id,
-            _id: new mongoose.Types.ObjectId()
-        }
-        const contentVersionDocument = new this.contentVersionModel(newContentVersion);
-        return contentVersionDocument.save();
-    }
-
-    private createPublishedContent = async (currentContent: T, contentVersionId: string): Promise<P> => {
-        //find the existing published page
-        const deletedContent = await this.publishedContentModel.findOneAndDelete({ _id: currentContent._id } as any);
-
-        const newPublishedPage: IPublishedContent = {
-            ...currentContent.toObject(),
-            contentId: currentContent._id,
-            contentVersionId: contentVersionId
-        }
-
-        const publishedPageDocument = new this.publishedContentModel(newPublishedPage);
-        return publishedPageDocument.save();
-    }
-
-    private updateContent = (currentContent: T, pageObj: T): Promise<T> => {
-        currentContent.updatedAt = new Date();
-        //TODO: currentContent.changedBy = userId
-        currentContent.name = pageObj.name;
-        currentContent.properties = pageObj.properties;
-        currentContent.childItems = pageObj.childItems;
-        currentContent.publishedChildItems = this.getPublishedChildItems(pageObj.childItems);
-
-        return currentContent.save();
-    }
-
-    private getPublishedChildItems = (currentItems: RefContent[]): RefContent[] => {
-        return currentItems.map((item: RefContent) => <RefContent>{
-            content: item.content,
-            refPath: this.getPublishedRefPath(item.refPath)
-        })
-    }
-
-    private getPublishedRefPath = (refPath: string): string => {
-        switch (refPath) {
-            case cmsPage: return cmsPublishedPage;
-            case cmsBlock: return cmsPublishedBlock;
-            case cmsMedia: return cmsPublishedMedia;
-            default: return refPath;
+            return Object.assign(currentContent, savedContentVersionDoc);
         }
     }
 
-    public executeDeleteContentFlow = async (id: string): Promise<[T, any]> => {
+    /**
+     * Execute publish content flow of content service
+     * @returns the published version in current language
+     */
+    public executePublishContentFlow = async (id: string, languageId: string, userId: string): Promise<T & V> => {
+        const currentContent = await this.findById(id);
+        //Step1: Get current version
+        const currentVersion = await this.contentVersionService.findOne({ contentId: id, languageId: languageId } as any).sort({ createdAt: -1 }).exec();
+        if (currentVersion.status < VersionStatus.Published) {
+            //Step2: publish the current version
+            currentVersion.status = VersionStatus.Published;
+            currentVersion.startPublish = new Date();
+            currentVersion.publishedBy = userId;
+            await currentVersion.save();
+
+            //Step3: update previous versions to PreviewPublished
+            await this.contentVersionService.updateMany(
+                { _id: { $ne: currentVersion._id }, contentId: id, languageId: languageId, status: VersionStatus.Published } as any,
+                { status: VersionStatus.PreviouslyPublished } as any).exec();
+
+            //Step4: publish the current content language
+            const contentLanguage = await this.contentLanguageService.findOne({ contentId: id, languageId: languageId } as any).exec();
+            const { status, startPublish, publishedBy, name, properties, childItems } = currentVersion;
+            Object.assign(contentLanguage, { status, startPublish, publishedBy, name, properties, childItems });
+            contentLanguage.versionId = currentVersion._id;
+            await contentLanguage.save();
+        }
+
+        return Object.assign(currentContent, currentVersion);
+    }
+
+    /**
+     * Execute delete content flow of content service
+     */
+    public executeDeleteContentFlow = async (id: string, userId: string): Promise<T> => {
         //find page
         const currentContent = await this.findById(id).exec();
+        if (!currentContent) throw new DocumentNotFoundException(id);
         //soft delete page
-        //soft delete published page
         //soft delete page's children
         //TODO: update the 'HasChildren' field of page's parent
-        const result: [T, T, any] = await Promise.all([
-            this.softDeleteContent(currentContent),
-            this.softDeletePublishedContent(currentContent),
-            this.softDeleteContentChildren(currentContent)
+        const result: [T, any] = await Promise.all([
+            this.softDeleteContent(currentContent, userId),
+            this.softDeleteContentChildren(currentContent, userId)
         ]);
 
         const childCount = await this.countChildrenOfContent(currentContent.parentId);
         if (childCount == 0) await this.updateById(currentContent.parentId, { hasChildren: false } as any)
 
-        console.log(result[2]);
-        return [result[0], result[2]];
+        return result[0];
     }
 
     private countChildrenOfContent = (parentId: string): Promise<number> => {
         return this.count({ parentId: parentId, isDeleted: false } as any)
     }
 
-    private softDeleteContent = async (currentContent: T): Promise<T> => {
-        if (!currentContent) return null;
-        //TODO: currentContent.deletedBy = userId
+    private softDeleteContent = async (currentContent: T, userId: string): Promise<T> => {
         currentContent.isDeleted = true;
+        currentContent.deletedBy = userId;
+        currentContent.deletedAt = new Date();
         return currentContent.save();
     }
 
-    private softDeletePublishedContent = async (currentContent: T): Promise<T> => {
-        const publishedPage = await this.publishedContentModel.findOne({ _id: currentContent._id } as any).exec()
-        return await this.softDeleteContent(publishedPage);
-    }
-
-    private softDeleteContentChildren = (currentContent: T): Promise<any> => {
+    private softDeleteContentChildren = (currentContent: T, userId: string): Promise<any> => {
         if (!currentContent.parentPath) currentContent.parentPath = ',';
 
         const startWithParentPathRegExp = new RegExp("^" + `${currentContent.parentPath}${currentContent._id},`);
         const conditions = { parentPath: { $regex: startWithParentPathRegExp } };
-        const updateFields: Partial<IContentDocument> = { isDeleted: true, updatedAt: new Date() };
-        return this.contentModel.updateMany(conditions as any, updateFields as any).exec()
+        const updateFields: Partial<IContentDocument> = { isDeleted: true, deletedBy: userId, deletedAt: new Date() };
+        return this.updateMany(conditions as any, updateFields as any).exec()
     }
 
-    private getDescendants = async <K extends T>(mongooseModel: mongoose.Model<K>, parentId: string): Promise<K[]> => {
+    /**
+     * Execute the copy content flow
+     * @param sourceContentId 
+     * @param targetParentId 
+     */
+    public executeCopyContentFlow = async (sourceContentId: string, targetParentId: string, userId: string): Promise<T> => {
+        const copiedContent = await this.createCopiedContent(sourceContentId, targetParentId, userId);
+        await this.createCopiedChildrenContent(sourceContentId, copiedContent, userId);
+
+        return copiedContent;
+    }
+
+    //Can be override in the inherited class
+    protected createCopiedContent = async (sourceContentId: string, targetParentId: string, userId: string): Promise<T> => {
+        //get source content 
+        const sourceContent = await this.findById(sourceContentId, { lean: true }).exec();
+        if (!sourceContent) throw new DocumentNotFoundException(sourceContentId);
+
+        //get source latest version content in each language
+        const sourceVersions = await this.contentVersionService.find({ contentId: sourceContent._id }, { lean: true }).exec();
+
+        const latestVersion: { [key: string]: V } = {};
+        sourceVersions.forEach(version => {
+            const previousVer = latestVersion[version.languageId]
+            if (!previousVer) {
+                latestVersion[version.languageId] = version;
+                return;
+            }
+            if (previousVer.languageId === version.languageId && previousVer.createdAt < version.createdAt)
+                latestVersion[version.languageId] = version;
+        })
+        const copyVersions = Object.entries(latestVersion).map(([languageId, version]: [string, V]) => version);
+
+        //create copy content
+        const newContent = sourceContent.toObject();
+        newContent._id = undefined;
+        newContent.parentId = targetParentId;
+        const parentContent = await this.findById(targetParentId).exec();
+        const copiedContent = await this.createContent(newContent, parentContent, userId);
+
+        //create copy version
+        copyVersions.forEach(async version => {
+            const savedVersion = await this.contentVersionService.createNewVersion(version.toObject(), copiedContent._id, userId);
+            await this.contentLanguageService.createContentLanguage(version.toObject(), copiedContent._id, savedVersion._id, userId)
+        })
+
+        return copiedContent;
+    }
+
+    private createCopiedChildrenContent = async (sourceContentId: string, copiedContent: T, userId: string): Promise<any> => {
+        //get children
+        const children = await this.find({ parentId: sourceContentId } as any, { lean: true }).exec();
+        children.forEach(async childContent => {
+            await this.executeCopyContentFlow(childContent._id, copiedContent._id, userId)
+        })
+    }
+
+    private getDescendants = async (parentId: string): Promise<T[]> => {
         //get source content 
         const parentContent = await this.findById(parentId).exec();
         if (!parentContent) throw new DocumentNotFoundException(parentId);
@@ -236,66 +299,22 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
 
         const startWithParentPathRegExp = new RegExp("^" + `${parentContent.parentPath}${parentContent._id},`);
         const conditions = { parentPath: { $regex: startWithParentPathRegExp } };
-        return mongooseModel.find(conditions as any).exec();
+        return this.find(conditions as any).exec();
     }
 
-    public executeCopyContentFlow = async (sourceContentId: string, targetParentId: string): Promise<T> => {
-        const copiedContent = await this.createCopiedContent(sourceContentId, targetParentId);
-        const copiedResult = await this.createCopiedDescendantsContent(sourceContentId, copiedContent);
+    /**
+     * Execute Cut content flow
+     * @param sourceContentId 
+     * @param targetParentId 
+     */
+    public executeCutContentFlow = async (sourceContentId: string, targetParentId: string, userId: string): Promise<T> => {
+        const cutContent = await this.createCutContent(sourceContentId, targetParentId, userId);
 
-        return copiedContent;
-    }
-
-    //Can be override in the inherited class
-    protected createCopiedContent = async (sourceContentId: string, targetParentId: string): Promise<T> => {
-        //get source content 
-        const sourceContent = await this.findById(sourceContentId).exec();
-        if (!sourceContent) throw new DocumentNotFoundException(sourceContentId);
-
-        //create copy content
-        const newContent = this.createModel(sourceContent.toObject());
-        newContent._id = null;
-        newContent.isPublished = false;
-        newContent.parentId = targetParentId;
-
-        const copiedContent = await this.executeCreateContentFlow(newContent);
-        return copiedContent;
-    }
-
-    private createCopiedDescendantsContent = async (sourceContentId: string, copiedContent: T): Promise<any> => {
-        //get descendants of sourceContent
-        const descendants = await this.getDescendants(this.contentModel, sourceContentId);
-        if (descendants.length == 0) return {};
-
-        const newDescendants: T[] = [];
-        //update parentPath, ancestor
-        descendants.forEach((childContent: T) => {
-            const newChildContent = this.updateParentPathAndAncestorAndLinkUrl(copiedContent, this.createModel(childContent.toObject()));
-            newChildContent._id = null;
-            newDescendants.push(newChildContent);
-        })
-
-        const insertOperators = newDescendants.map(x => ({
-            insertOne: {
-                document: x.toObject()
-            }
-        }))
-        const bulkWriteResult = await this.contentModel.bulkWrite([insertOperators], { ordered: false });
-        return bulkWriteResult;
-    }
-
-    public executeCutContentFlow = async (sourceContentId: string, targetParentId: string): Promise<T> => {
-        const cutContent = await this.createCutContent(sourceContentId, targetParentId);
-        //update published cut content
-        if (cutContent.contentType != null && cutContent.isPublished) {
-            const publishedContent = await this.updatePublishedCutContent(cutContent);
-        }
         const cutResult = await this.createCutDescendantsContent(sourceContentId, cutContent);
-        const publishedCutResult = await this.updatePublishedCutDescendantsContent(cutResult[0]);
         return cutContent;
     }
 
-    protected createCutContent = async (sourceContentId: string, targetParentId: string): Promise<T> => {
+    protected createCutContent = async (sourceContentId: string, targetParentId: string, userId: string): Promise<T> => {
         //get source content 
         const sourceContent = await this.findById(sourceContentId).exec();
         if (!sourceContent) throw new DocumentNotFoundException(sourceContentId);
@@ -303,27 +322,19 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
         const targetParent = await this.findById(targetParentId).exec();
 
         this.updateParentPathAndAncestorAndLinkUrl(targetParent, sourceContent);
+        sourceContent.updatedBy = userId;
         const updatedContent = await sourceContent.save();
         return updatedContent;
     }
 
-    protected updatePublishedCutContent = async (cutContent: T): Promise<T> => {
-        const publishContent = {
-            parentId: cutContent.parentId,
-            parentPath: cutContent.parentPath,
-            ancestors: cutContent.ancestors,
-            linkUrl: cutContent["linkUrl"]
-        }
-        return this.publishedContentModel.findOneAndUpdate({ _id: cutContent._id } as any, publishContent as any).exec()
-    }
-
     private createCutDescendantsContent = async (sourceContentId: string, cutContent: T): Promise<[T[], any]> => {
         //get descendants of sourceContent
-        const descendants = await this.getDescendants<T>(this.contentModel, cutContent._id);
+        const descendants = await this.getDescendants(sourceContentId);
         if (descendants.length == 0) return [descendants, null];
 
         descendants.forEach(childContent => {
-            const updateChildContent = this.updateParentPathAndAncestorAndLinkUrl(cutContent, childContent);
+            this.updateParentPathAndAncestorAndLinkUrl(cutContent, childContent);
+            childContent.updatedBy = cutContent.updatedBy;
         })
 
         const updateOperators = descendants.map(x => ({
@@ -333,28 +344,8 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
             }
         }));
 
-        const bulkWriteResult = await this.contentModel.bulkWrite([updateOperators], { ordered: false });
+        const bulkWriteResult = await this.Model.bulkWrite([updateOperators], { ordered: false });
         return [descendants, bulkWriteResult];
-    }
-
-    private updatePublishedCutDescendantsContent = async (descendants: T[]): Promise<[T[], any]> => {
-        const publishedDescendants = descendants.filter(x => x.isPublished && x.contentType != null);
-        if (publishedDescendants.length == 0) return null;
-
-        const updateOperators = publishedDescendants.map(x => ({
-            updateOne: {
-                filter: { _id: x._id },
-                update: {
-                    parentId: x.parentId,
-                    parentPath: x.parentPath,
-                    ancestors: x.ancestors,
-                    linkUrl: x["linkUrl"]
-                }
-            }
-        }));
-
-        const bulkWriteResult = await this.publishedContentModel.bulkWrite([updateOperators], { ordered: false });
-        return [publishedDescendants, bulkWriteResult];
     }
 
     protected updateParentPathAndAncestorAndLinkUrl = (newParentContent: T, currentContent: T): T => {
@@ -380,6 +371,7 @@ export class ContentService<T extends IContentDocument, V extends IContentVersio
 
         currentContent.parentPath = newPath;
         currentContent.ancestors = newAncestors;
+        currentContent.parentId = parentId;
         return currentContent;
     }
 

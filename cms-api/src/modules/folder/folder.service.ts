@@ -1,48 +1,85 @@
-import { IContentDocument, IFolderDocument, IContentModel } from "../content/content.model";
-import { BaseService } from '../shared/base.service';
 import { DocumentNotFoundException } from '../../error';
+import { IContentDocument, IContentLanguageDocument, IContentLanguageModel, IContentModel, VersionStatus } from "../content/content.model";
+import { BaseService } from '../shared/base.service';
 
-export abstract class FolderService<T extends IContentDocument> extends BaseService<T>{
+export abstract class FolderService<T extends IContentDocument, P extends IContentLanguageDocument> extends BaseService<T>{
 
-    constructor(folderModel: IContentModel<T>) {
+    private folderLanguageService: BaseService<P>;
+
+    constructor(folderModel: IContentModel<T>, folderLanguageModel: IContentLanguageModel<P>) {
         super(folderModel);
+        this.folderLanguageService = new BaseService<P>(folderLanguageModel);
     }
 
-    public createContentFolder = async (contentFolder: T): Promise<IFolderDocument> => {
+    /**
+     * Create block or media folder
+     */
+    public createContentFolder = async (contentFolder: T & P, userId: string): Promise<IContentDocument & IContentLanguageDocument> => {
+        //Step1: Create content folder
         contentFolder.contentType = null;
         contentFolder.properties = null;
+        contentFolder.masterLanguageId = '0';
+        contentFolder.createdBy = userId;
         const parentFolder = await this.findById(contentFolder.parentId).exec();
-        const savedContent = await this.createContent(contentFolder, parentFolder);
-        if (savedContent) await this.updateHasChildren(parentFolder);
+        const savedFolder = await this.createContent(contentFolder, parentFolder, userId);
+        if (savedFolder) await this.updateHasChildren(parentFolder);
 
-        return savedContent;
+        //Step2: Create folder in default language
+        const folderLang = this.folderLanguageService.createModel(contentFolder);
+        folderLang.contentId = savedFolder._id;
+        folderLang.languageId = '0';
+        folderLang.status = VersionStatus.Published;
+        folderLang.startPublish = new Date();
+        folderLang.createdBy = userId;
+        const savedFolderLang = await folderLang.save();
+
+        //Step3: Update content language array
+        savedFolder.contentLanguages = [];
+        savedFolder.contentLanguages.push(savedFolderLang._id);
+        await savedFolder.save();
+
+        return Object.assign(savedFolder, savedFolderLang);
     }
 
-    public updateFolderName = async (id: string, name: string): Promise<IFolderDocument> => {
-        const currentFolder = await this.findById(id).exec();
-        if (!currentFolder) throw new DocumentNotFoundException(id);
+    /**
+     * Update folder name of block or media folder
+     */
+    public updateFolderName = async (id: string, name: string, userId: string): Promise<IContentLanguageDocument> => {
+        const currentFolderLang = await this.folderLanguageService.findOne({ contentId: id } as any).exec();
+        if (!currentFolderLang) throw new DocumentNotFoundException(id);
 
-        currentFolder.updatedAt = new Date();
-        //TODO: currentPage.changedBy = userId
-        currentFolder.contentType = null;
-        currentFolder.properties = null;
-        currentFolder.name = name;
-        return currentFolder.save();
+        //TODO: currentFolderLang.changedBy = userId
+        currentFolderLang.name = name;
+        currentFolderLang.updatedBy = userId;
+        return currentFolderLang.save();
     }
 
-    public getFolderChildren = (parentId: string): Promise<IFolderDocument[]> => {
+    public getFolderChildren = async (parentId: string): Promise<T[]> => {
         if (parentId == '0') parentId = null;
 
-        return this.find({ parentId: parentId, isDeleted: false, contentType: null, mimeType: null } as any, { lean: true }).exec()
+        const folderChildren = await this.find({ parentId: parentId, isDeleted: false, contentType: null } as any, { lean: true })
+            .populate({
+                path: 'contentLanguages',
+                match: { languageId: '0' }
+            })
+            .exec();
+
+        return folderChildren.map(x => Object.assign(x, x.contentLanguages.find(lang => lang === '0')));
     }
 
-    public getContentsByFolder = (parentId: string): Promise<T[]> => {
+    public getContentChildren = async (parentId: string, languageId: string): Promise<T[]> => {
         if (parentId == '0') parentId = null;
 
-        return this.find({ parentId: parentId, isDeleted: false, contentType: { $ne: null } } as any, { lean: true }).exec()
+        const contentChildren = await this.find({ parentId: parentId, isDeleted: false, contentType: { $ne: null } } as any, { lean: true })
+            .populate({
+                path: 'contentLanguages',
+                match: { languageId: languageId }
+            })
+            .exec();
+        return contentChildren.map(x => Object.assign(x, x.contentLanguages.find(lang => lang === languageId)));
     }
 
-    public abstract createContent(newContent: T, parentContent: T): Promise<T>
+    protected abstract createContent(newContent: T, parentContent: T, userId: string): Promise<T>
 
-    public abstract updateHasChildren(content: IContentDocument): Promise<boolean>
+    protected abstract updateHasChildren(content: IContentDocument): Promise<boolean>
 }

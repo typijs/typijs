@@ -6,11 +6,6 @@ import { IBaseDocument, IBaseModel, QueryItem, QueryList, QueryOptions } from '.
 export class BaseService<T extends IBaseDocument> {
 
     protected mongooseModel: IBaseModel<T>;
-
-    constructor(mongooseModel: IBaseModel<T>) {
-        this.mongooseModel = mongooseModel;
-    }
-
     private static get defaultOptions(): QueryOptions {
         return { lean: false };
     }
@@ -19,11 +14,18 @@ export class BaseService<T extends IBaseDocument> {
         return { limit: 10, page: 1 }
     }
 
-    protected getQueryOptions(options?: QueryOptions) {
-        const mergedOptions = { ...BaseService.defaultOptions, ...(options || {}), };
-        return mergedOptions;
+    constructor(mongooseModel: IBaseModel<T>) {
+        this.mongooseModel = mongooseModel;
     }
 
+    public get Model(): IBaseModel<T> {
+        return this.mongooseModel;
+    }
+
+    /**
+     * Create an instance of mongoose Model. When you use this method, you create a new document.
+     * @returns the new document which is an instance of mongoose Model
+     */
     public createModel = (doc: Partial<T>): T => {
         const modelInstance = new this.mongooseModel(doc);
         return Object.assign(modelInstance, doc);
@@ -86,6 +88,13 @@ export class BaseService<T extends IBaseDocument> {
         return await document.save();
     }
 
+    /**
+     * Update many
+     * 
+     * @param filter
+     * @param updateQuery
+     * @returns 
+     */
     public updateMany = (filter: FilterQuery<T>, updateQuery: UpdateQuery<T>): Query<any> => {
         return this.mongooseModel.updateMany(filter, updateQuery)
     }
@@ -104,5 +113,10 @@ export class BaseService<T extends IBaseDocument> {
 
     public deleteMany = (filter: FilterQuery<T>): Query<any> => {
         return this.mongooseModel.deleteMany(filter)
+    }
+
+    protected getQueryOptions(options?: QueryOptions) {
+        const mergedOptions = { ...BaseService.defaultOptions, ...(options || {}), };
+        return mergedOptions;
     }
 }

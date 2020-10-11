@@ -1,22 +1,21 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as sharp from "sharp";
-
 import { ContentService } from "../content/content.service";
+import { IMediaLanguageDocument, MediaLanguageModel } from './models/media-language.model';
 import { IMediaVersionDocument, MediaVersionModel } from "./models/media-version.model";
 import { ImageContent, IMediaDocument, MediaModel } from "./models/media.model";
-import { IPublishedMediaDocument, PublishedMediaModel } from "./models/published-media.model";
 import { UPLOAD_PATH } from './storage';
 
-export class MediaService extends ContentService<IMediaDocument, IMediaVersionDocument, IPublishedMediaDocument> {
+export class MediaService extends ContentService<IMediaDocument, IMediaLanguageDocument, IMediaVersionDocument> {
 
     constructor() {
-        super(MediaModel, MediaVersionModel, PublishedMediaModel);
+        super(MediaModel, MediaLanguageModel, MediaVersionModel);
     }
 
     public createReadMediaStream = async (fileId: string, fileName: string, width?: number, height?: number): Promise<fs.ReadStream> => {
         const fileExt = path.extname(fileName);
-        const publishedMedia = await this.getPopulatedPublishedContentById(fileId);
+        const publishedMedia = await this.findById(fileId);
         if (!publishedMedia) return null;
 
         if (publishedMedia.contentType == ImageContent) return await this.getResizedImageStream(fileId, fileExt, width, height);
