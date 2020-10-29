@@ -3,7 +3,7 @@ import * as NodeCache from 'node-cache';
 export interface ICacheManager {
     get(key: string): any;
     set(key: string, value: any, ttl?: number);
-    del(keys: string | string[]);
+    delete(keys: string | string[]);
     keys(): string[];
     flushAll();
 }
@@ -19,7 +19,7 @@ export class CacheManager implements ICacheManager {
         this.cache.set(key, value, ttl);
     }
 
-    del(keys: string | string[]) {
+    delete(keys: string | string[]) {
         this.cache.del(keys);
     }
 
