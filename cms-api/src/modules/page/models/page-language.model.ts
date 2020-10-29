@@ -5,6 +5,7 @@ import { cmsPage, cmsPageLanguage } from './page.model';
 
 export interface IPageLanguage extends IContentLanguage {
     urlSegment: string;
+    simpleAddress: string;
     linkUrl: string;
 }
 export interface IPageLanguageDocument extends IPageLanguage, IContentDocument { }
@@ -14,7 +15,7 @@ export const PageLanguageSchema = new mongoose.Schema({
     contentId: { type: mongoose.Schema.Types.ObjectId, ref: cmsPage },
     versionId: { type: mongoose.Schema.Types.ObjectId, ref: cmsPageVersion },
     urlSegment: { type: String, required: true },
-    linkUrl: { type: String, required: true }
+    simpleAddress: { type: String, required: false, unique: true, lowercase: true, trim: true }
 }, { timestamps: true });
 
 export const PageLanguageModel: IPageLanguageModel = mongoose.model<IPageLanguageDocument, IPageLanguageModel>(cmsPageLanguage, PageLanguageSchema);

@@ -14,15 +14,26 @@ export abstract class ContentController<T extends IContentDocument, P extends IC
   }
 
   get = async (req: express.Request, res: express.Response) => {
-    const item = await this.contentService.getPopulatedContentById(req.params.id, req.query.language)
-    res.status(httpStatus.OK).json(item)
+    const content = await this.contentService.getCurrentVersionOfContentById(req.params.id, req.query.language)
+    res.status(httpStatus.OK).json(content)
   }
 
   create = async (req: express.Request, res: express.Response) => {
-    const content = Object.assign({ languageId: req.query.language }, req.body);
     const user = req['user'];
-    const item = await this.contentService.executeCreateContentFlow(content, user.id);
-    res.status(httpStatus.OK).json(item)
+    const createdContent = await this.contentService.executeCreateContentFlow(req.body, user.id, req.query.language);
+    res.status(httpStatus.OK).json(createdContent)
+  }
+
+  update = async (req: express.Request, res: express.Response) => {
+    const user = req['user'];
+    const savedContent = await this.contentService.executeUpdateContentFlow(req.params.id, req.body, user.id, req.query.language)
+    res.status(httpStatus.OK).json(savedContent)
+  }
+
+  publish = async (req: express.Request, res: express.Response) => {
+    const user = req['user'];
+    const publishedContent = await this.contentService.executePublishContentFlow(req.params.id, user.id, req.query.language)
+    res.status(httpStatus.OK).json(publishedContent)
   }
 
   delete = async (req: express.Request, res: express.Response) => {

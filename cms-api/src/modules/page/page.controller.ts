@@ -8,15 +8,29 @@ import { PageService } from './page.service';
 
 import { IPageDocument } from './models/page.model';
 import { IPageVersionDocument } from './models/page-version.model';
-import { IPublishedPageDocument } from './models/published-page.model';
+import { IPageLanguageDocument } from './models/page-language.model';
 
 @Injectable()
-export class PageController extends ContentController<IPageDocument, IPageVersionDocument, IPublishedPageDocument> {
+export class PageController extends ContentController<IPageDocument, IPageLanguageDocument, IPageVersionDocument> {
 
   private pageService: PageService;
   constructor(pageService: PageService) {
     super(pageService);
     this.pageService = pageService;
+  }
+
+  //Override insert base
+  create = async (req: express.Request, res: express.Response) => {
+    const user = req['user'];
+    const item = await this.pageService.executeCreatePageFlow(req.body, user.id, req.query.language)
+    res.status(httpStatus.OK).json(item)
+  }
+
+  publish = async (req: express.Request, res: express.Response) => {
+    const user = req['user'];
+    const validUrlSegment = await this.pageService.validateUrlSegment(req.params.id, req.query.language);
+    const publishedContent = await this.pageService.executePublishContentFlow(req.params.id, user.id, req.query.language)
+    res.status(httpStatus.OK).json(publishedContent)
   }
 
   getByUrl = async (req: express.Request, res: express.Response) => {
@@ -25,24 +39,12 @@ export class PageController extends ContentController<IPageDocument, IPageVersio
   }
 
   getPublishedPageChildren = async (req: express.Request, res: express.Response) => {
-    const items = await this.pageService.getPublishedPageChildren(req.params.parentId)
+    const items = await this.pageService.getPublishedPageChildren(req.params.parentId, req.query.language);
     res.status(httpStatus.OK).json(items);
   }
 
-  getPageChildren = async (req: express.Request, res: express.Response, ) => {
-    const items = await this.pageService.getPageChildren(req.params.parentId)
+  getPageChildren = async (req: express.Request, res: express.Response,) => {
+    const items = await this.pageService.getContentChildren(req.params.parentId, req.query.language);
     res.status(httpStatus.OK).json(items);
-  }
-
-  //Override insert base
-  create = async (req: express.Request, res: express.Response) => {
-    const item = await this.pageService.executeCreatePageFlow(req.body)
-    res.status(httpStatus.OK).json(item)
-  }
-
-  update = async (req: express.Request, res: express.Response) => {
-    const pageDocument = this.pageService.createModel(req.body);
-    const savedPage = await this.pageService.updateAndPublishContent(req.params.id, pageDocument)
-    res.status(httpStatus.OK).json(savedPage)
   }
 }

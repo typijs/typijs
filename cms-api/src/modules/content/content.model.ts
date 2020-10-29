@@ -79,10 +79,12 @@ export interface IContent extends ISoftDeletedContent, IHierarchyContent {
     isDirty: boolean;
     [key: string]: any;
 }
+export interface IContentDocument extends IContent, IBaseDocument { }
+export interface IContentModel<T extends IContentDocument> extends IBaseModel<T> { }
 
 export interface IContentLanguage extends IPublishContent, IContentHasChildItems {
-    contentId: string | IContent;
-    languageId: string;
+    contentId: string | IContentDocument;
+    language: string;
     versionId: string;
     name: string;
     properties: any;
@@ -92,11 +94,13 @@ export interface IContentLanguage extends IPublishContent, IContentHasChildItems
     status: number;
     [key: string]: any;
 }
+export interface IContentLanguageDocument extends IContentLanguage, IBaseDocument { }
+export interface IContentVersionModel<T extends IContentVersionDocument> extends IBaseModel<T> { }
 
 export interface IContentVersion extends IPublishContent, IContentHasChildItems {
-    contentId: string;
+    contentId: string | IContentDocument;
     masterVersionId: string;
-    languageId: string;
+    language: string;
     childOrderRule: number;
     peerOrder: number;
     name: string;
@@ -108,16 +112,7 @@ export interface IContentVersion extends IPublishContent, IContentHasChildItems 
     [key: string]: any;
 }
 
-export interface IContentDocument extends IContent, IBaseDocument { }
-
-export interface IContentLanguageDocument extends IContentLanguage, IBaseDocument { }
-
 export interface IContentVersionDocument extends IContentVersion, IBaseDocument { }
-
-export interface IContentModel<T extends IContentDocument> extends IBaseModel<T> { }
-
-export interface IContentVersionModel<T extends IContentVersionDocument> extends IBaseModel<T> { }
-
 export interface IContentLanguageModel<T extends IContentLanguageDocument> extends IBaseModel<T> { }
 
 export const PublishContentSchema = new mongoose.Schema({
@@ -161,7 +156,7 @@ export const ContentLanguageSchema = new mongoose.Schema({
     ...BaseSchema.obj,
     ...PublishContentSchema.obj,
     ...ContentHasChildItemsSchema.obj,
-    languageId: { type: String, required: true },
+    language: { type: String, required: true },
     name: { type: String, required: true },
     properties: mongoose.Schema.Types.Mixed,
     status: { type: Number, required: true, default: 2 }

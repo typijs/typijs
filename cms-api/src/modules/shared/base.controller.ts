@@ -7,7 +7,7 @@ import { BaseService } from './base.service';
 import { PaginateOptions } from '../../db/plugins/paginate';
 
 export abstract class BaseController<T extends IBaseDocument> {
-  private baseService: BaseService<T>;
+  protected baseService: BaseService<T>;
   constructor(baseService: BaseService<T>) {
     this.baseService = baseService;
   }
@@ -22,19 +22,23 @@ export abstract class BaseController<T extends IBaseDocument> {
     res.status(httpStatus.OK).json(item)
   }
 
-  public paginate = async (req: express.Request, res: express.Response) => {
+  paginate = async (req: express.Request, res: express.Response) => {
     const options = pick(req.query, ['sortBy', 'limit', 'page']) as PaginateOptions;
     const result = await this.baseService.paginate({}, options);
     res.status(httpStatus.OK).json(result);
   };
 
   create = async (req: express.Request, res: express.Response) => {
-    const item = await this.baseService.create(req.body)
+    const { id } = req['user'];
+    const newDoc: Partial<T> = Object.assign({ createdBy: id }, req.body);
+    const item = await this.baseService.create(newDoc)
     res.status(httpStatus.OK).json(item)
   }
 
   update = async (req: express.Request, res: express.Response) => {
-    const item = await this.baseService.updateById(req.params.id, req.body)
+    const { id } = req['user'];
+    const doc: Partial<T> = Object.assign({ updatedBy: id }, req.body);
+    const item = await this.baseService.updateById(req.params.id, doc)
     res.status(httpStatus.OK).json(item)
   }
 

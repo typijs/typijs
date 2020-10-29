@@ -27,7 +27,7 @@ export abstract class FolderService<T extends IContentDocument, P extends IConte
         //Step2: Create folder in default language
         const folderLang = this.folderLanguageService.createModel(contentFolder);
         folderLang.contentId = savedFolder._id;
-        folderLang.languageId = '0';
+        folderLang.language = '0';
         folderLang.status = VersionStatus.Published;
         folderLang.startPublish = new Date();
         folderLang.createdBy = userId;
@@ -48,10 +48,9 @@ export abstract class FolderService<T extends IContentDocument, P extends IConte
         const currentFolderLang = await this.folderLanguageService.findOne({ contentId: id } as any).exec();
         if (!currentFolderLang) throw new DocumentNotFoundException(id);
 
-        //TODO: currentFolderLang.changedBy = userId
         currentFolderLang.name = name;
         currentFolderLang.updatedBy = userId;
-        return currentFolderLang.save();
+        return this.folderLanguageService.updateById(currentFolderLang._id, currentFolderLang);
     }
 
     public getFolderChildren = async (parentId: string): Promise<T[]> => {
@@ -60,26 +59,27 @@ export abstract class FolderService<T extends IContentDocument, P extends IConte
         const folderChildren = await this.find({ parentId: parentId, isDeleted: false, contentType: null } as any, { lean: true })
             .populate({
                 path: 'contentLanguages',
-                match: { languageId: '0' }
+                match: { language: '0' }
             })
             .exec();
 
         return folderChildren.map(x => Object.assign(x, x.contentLanguages.find(lang => lang === '0')));
     }
 
-    public getContentChildren = async (parentId: string, languageId: string): Promise<T[]> => {
+    public getContentChildren = async (parentId: string, language: string): Promise<Array<T & P>> => {
         if (parentId == '0') parentId = null;
 
         const contentChildren = await this.find({ parentId: parentId, isDeleted: false, contentType: { $ne: null } } as any, { lean: true })
             .populate({
                 path: 'contentLanguages',
-                match: { languageId: languageId }
+                match: { language: language },
+                select: '-_id'
             })
             .exec();
-        return contentChildren.map(x => Object.assign(x, x.contentLanguages.find(lang => lang === languageId)));
+        return contentChildren.map(x => Object.assign(x, x.contentLanguages.find(contentLang => contentLang.language === language)));
     }
 
     protected abstract createContent(newContent: T, parentContent: T, userId: string): Promise<T>
 
-    protected abstract updateHasChildren(content: IContentDocument): Promise<boolean>
+    protected abstract updateHasChildren(content: T): Promise<boolean>
 }

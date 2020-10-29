@@ -51,7 +51,7 @@ export class MediaController extends ContentController<IMediaDocument, IMediaLan
         const contentType: string = this.getMediaContentType(file.originalname);
         const { parentId, fileId, link, thumbnail } = req.params;
         const user = req['user'];
-        const mediaObj: Partial<IMediaDocument & IMediaVersionDocument> = {
+        const mediaObj: Partial<IMediaDocument & IMediaLanguageDocument> = {
             _id: fileId,
             name: file.originalname,
             parentId,
@@ -62,11 +62,11 @@ export class MediaController extends ContentController<IMediaDocument, IMediaLan
             deleteHash: file['deleteHash'],
             link: link,
             thumbnail: thumbnail,
-            languageId: req.query.language
+            language: req.query.language
         }
 
-        const savedMedia = await this.mediaService.executeCreateContentFlow(mediaObj, user.id);
-        const publishedMedia = await this.mediaService.executePublishContentFlow(savedMedia._id, req.query.language, user.id);
+        const savedMedia = await this.mediaService.executeCreateContentFlow(mediaObj as any, user.id, req.query.language);
+        const publishedMedia = await this.mediaService.executePublishContentFlow(savedMedia._id, user.id, req.query.language);
         res.status(httpStatus.OK).json(publishedMedia)
     }
 
