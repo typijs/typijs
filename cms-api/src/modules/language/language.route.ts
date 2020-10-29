@@ -13,8 +13,14 @@ export class LanguageRouter {
     get router(): Router {
         const langRouter: Router = asyncRouterErrorHandler(Router());
 
-        langRouter.get('/getAll', authGuard.checkRoles([Roles.Admin]), this.langController.getAll);
+        langRouter.get('/getAvailableLanguages', this.langController.getAvailableLanguages);
+        langRouter.get('/getSystemLanguageCodes', authGuard.checkRoles([Roles.Admin]), this.langController.getAllLanguageCodes);
 
+        langRouter.get('/', authGuard.checkRoles([Roles.Admin]), this.langController.getAll);
+        langRouter.get('/paginate', authGuard.checkRoles([Roles.Admin]), this.langController.paginate);
+        langRouter.get('/:id', authGuard.checkRoles([Roles.Admin]), this.langController.get);
+        langRouter.post('/', authGuard.checkRoles([Roles.Admin]), this.langController.create);
+        langRouter.put('/:id', authGuard.checkRoles([Roles.Admin]), this.langController.update);
         return langRouter;
     }
 }

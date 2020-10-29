@@ -3,11 +3,18 @@ import * as httpStatus from 'http-status';
 import { Injectable } from 'injection-js';
 import 'reflect-metadata';
 import { languages } from '../../config/languages';
-import { Language } from './language.model';
+import { BaseController } from '../shared/base.controller';
+import { ILanguageBranchDocument, Language } from './language.model';
 
 @Injectable()
-export class LanguageController {
-    getAll = async (req: express.Request, res: express.Response) => {
+export class LanguageController extends BaseController<ILanguageBranchDocument> {
+
+    getAvailableLanguages = async (req: express.Request, res: express.Response) => {
+        const languageBranches: ILanguageBranchDocument[] = await this.baseService.find({ enabled: true }, { lean: true }).exec();
+        res.status(httpStatus.OK).json(languageBranches)
+    }
+
+    getAllLanguageCodes = async (req: express.Request, res: express.Response) => {
         const languageCodes: Language[] = languages;
         res.status(httpStatus.OK).json(languageCodes)
     }
