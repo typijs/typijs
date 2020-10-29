@@ -39,6 +39,11 @@ export class BaseService<T extends IBaseDocument> {
         return this.mongooseModel.findById(id).setOptions(this.getQueryOptions(options));
     }
 
+    /**
+     * Finds one document
+     * @param filter 
+     * @param options 
+     */
     public findOne = (filter: FilterQuery<T>, options?: QueryOptions): QueryItem<T> => {
         return this.mongooseModel.findOne(filter).setOptions(this.getQueryOptions(options));
     }
@@ -73,7 +78,7 @@ export class BaseService<T extends IBaseDocument> {
 
     public create = (doc: Partial<T>): Promise<T> => {
         const mongooseDoc = this.createModel(doc);
-        return mongooseDoc.save()
+        return mongooseDoc.save();
     }
 
     public insertMany = (docs: Partial<T>[]): Promise<T[]> => {

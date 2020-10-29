@@ -15,10 +15,11 @@ export type TokenType = 'refresh' | 'resetPassword';
  * @property `exp` The standard for JWT defines an exp claim for expiration. The expiration is represented as a `NumericDate`
  */
 export type TokenPayload = {
-    roles?: string[]
     sub: string
     iat: number
     exp: number
+    username?: string
+    roles?: string[]
     [key: string]: any
 }
 

@@ -5,6 +5,7 @@ declare module 'axios' {
     interface AxiosResponse<T = any> extends Promise<T> { }
 }
 
+// TODO Should not abstract class. Should use same pattern as Angular HttpClient (with get, post, put, delete methods)
 export abstract class HttpClient {
     protected readonly instance: AxiosInstance;
 

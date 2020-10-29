@@ -1,11 +1,14 @@
 import { NextFunction, Request, Response } from "express";
+import { Injectable } from "injection-js";
 import * as jwt from 'jsonwebtoken';
 
 import { config } from '../../config/config';
 import { ForbiddenException, UnauthorizedException } from "../../error";
 import { TokenPayload } from './token.model';
 
-class AuthGuard {
+// TODO should use DI in here
+@Injectable()
+export class AuthGuard {
 
     /**
      * The middleware to check authenticated of auth guard
@@ -13,7 +16,7 @@ class AuthGuard {
     public checkAuthenticated = () => async (req: Request, res: Response, next: NextFunction) => {
         try {
             const isAuthenticated = this.verifyAuthenticated(req);
-            if (!isAuthenticated) throw new UnauthorizedException('Unauthenticated!')
+            if (!isAuthenticated) throw new UnauthorizedException('Unauthorized!')
         } catch (err) {
             next(err);
         }
@@ -37,8 +40,9 @@ class AuthGuard {
     public checkRoles = (requiredRoles?: string[][] | string[]) => async (req: Request, res: Response, next: NextFunction) => {
         try {
             const isAuthenticated = this.verifyAuthenticated(req);
+            if (!isAuthenticated) throw new UnauthorizedException('Unauthorized!')
 
-            const { roles } = req['user']
+            const { roles } = req['user'];
             const checkResult = this.checkHasRoles(roles, requiredRoles);
             if (!checkResult) throw new ForbiddenException('Forbidden');
         } catch (err) {
@@ -47,10 +51,13 @@ class AuthGuard {
         next()
     }
 
+    /**
+     * Check permissions of auth guard (Not used anywhere)
+     */
     public checkPermissions = (requiredPermissions?: string[][] | string[]) => async (req: Request, res: Response, next: NextFunction) => {
         try {
             const isAuthenticated = this.verifyAuthenticated(req);
-            if (!isAuthenticated) throw new UnauthorizedException('Unauthenticated!')
+            if (!isAuthenticated) throw new UnauthorizedException('Unauthorized!')
 
             //TODO: check has permission here
         } catch (err) {
@@ -66,9 +73,9 @@ class AuthGuard {
         }
 
         try {
-            const tokenPayload = jwt.verify(token, config.jwt.secret) as TokenPayload
-            const { sub, roles } = tokenPayload
-            req['user'] = { id: sub, roles };
+            const tokenPayload = jwt.verify(token, config.jwt.secret) as TokenPayload;
+            const { sub, username, roles } = tokenPayload;
+            req['user'] = { id: sub, username, roles };
             return true;
         } catch (err) {
             throw new UnauthorizedException(err.message)
