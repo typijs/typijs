@@ -30,7 +30,7 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         if (!currentSiteDefinition) return null;
         //get start page, host, lang from site definition
         const startPage = currentSiteDefinition.startPage as IPageDocument;
-        const currentHost = currentSiteDefinition.hosts.find(x => x.name = host);
+        const currentHost = currentSiteDefinition.hosts.find(x => x.name == host);
         // get language from url, fallback to default language of current host
         const defaultLanguage = await this.getLanguageFromUrl(urlObj, currentHost.language);
 
@@ -54,17 +54,17 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         return await this.recursiveResolvePageByUrlSegment(startPage, segments, language, 0);
     }
 
-    private recursiveResolvePageByUrlSegment = async (parentPage: IPageDocument, segment: string[], language: string, level: number): Promise<IPageDocument & IPageLanguageDocument> => {
+    private recursiveResolvePageByUrlSegment = async (parentPage: IPageDocument, segments: string[], language: string, index: number): Promise<IPageDocument & IPageLanguageDocument> => {
         // get page children
         const childrenPage = (await this.getContentChildren(parentPage._id, language)).filter(x => x.status == VersionStatus.Published);
         if (!childrenPage || childrenPage.length == 0) return null;
 
-        const matchPage = childrenPage.find(page => page.urlSegment == segment[level]);
+        const matchPage = childrenPage.find(page => page.urlSegment == segments[index]);
         if (!matchPage) return null;
 
-        if (level == segment.length - 1) return await this.getPublishedContentById(matchPage._id, language);
+        if (index == segments.length - 1) return await this.getPublishedContentById(matchPage._id, language);
 
-        return await this.recursiveResolvePageByUrlSegment(matchPage, segment, language, level + 1);
+        return await this.recursiveResolvePageByUrlSegment(matchPage, segments, language, index + 1);
     }
 
     private getLanguageFromUrl = async (url: URL, defaultLanguage: string): Promise<string> => {
