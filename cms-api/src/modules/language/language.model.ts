@@ -4,7 +4,7 @@ import { IBaseDocument, IBaseModel, BaseSchema } from '../shared/base.model';
 export type Language = {
     code: string;
     name: string;
-    nativeName: string;
+    registered?: boolean;
 }
 export interface ILanguageBranch {
     language: string;
