@@ -6,11 +6,9 @@ import { FolderService } from './folder.service';
 import { BaseController } from '../shared/base.controller';
 
 export abstract class FolderController<T extends IContentDocument, P extends IContentLanguageDocument> extends BaseController<T> {
-    private folderService: FolderService<T, P>;
 
-    constructor(folderService: FolderService<T, P>) {
+    constructor(private folderService: FolderService<T, P>) {
         super(folderService);
-        this.folderService = folderService;
     }
 
     //Create new folder
