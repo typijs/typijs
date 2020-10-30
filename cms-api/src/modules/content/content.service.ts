@@ -57,11 +57,11 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
     }
 
     /**
-     * Get current version of content  by id and language code
+     * Get primary version of content  by id and language code
      * @param id The content's id
      * @param language The language code (ex 'en', 'de'...)
      */
-    public getCurrentVersionOfContentById = async (id: string, language: string): Promise<V> => {
+    public getPrimaryVersionOfContentById = async (id: string, language: string): Promise<T & V> => {
         if (!id) throw new Exception(400, "Bad Request");
 
         const currentContent = await this.findOne({ _id: id, isDeleted: false } as any, { lean: true }).exec();
@@ -89,7 +89,7 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         currentVersion.childItems.forEach(item => {
             Object.assign(item.content, item.content.contentLanguages.find(contentLanguage => contentLanguage.language === language))
         })
-        return currentVersion;
+        return Object.assign(currentContent, currentVersion);
     }
 
     /**
@@ -233,18 +233,18 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
     /**
      * Execute delete content flow of content service
      */
-    public executeDeleteContentFlow = async (id: string, userId: string): Promise<T> => {
+    public executeMoveContentToTrashFlow = async (id: string, userId: string): Promise<T> => {
         //find page
         const currentContent = await this.findById(id).exec();
         if (!currentContent) throw new DocumentNotFoundException(id);
-        //soft delete page
-        //soft delete page's children
-        //TODO: update the 'HasChildren' field of page's parent
         const result: [T, any] = await Promise.all([
+            //soft delete page
             this.softDeleteContent(currentContent, userId),
+            //soft delete page's children
             this.softDeleteContentChildren(currentContent, userId)
         ]);
 
+        //update the 'HasChildren' field of page's parent
         const childCount = await this.countChildrenOfContent(currentContent.parentId);
         if (childCount == 0) await this.updateById(currentContent.parentId, { hasChildren: false } as any)
 
@@ -357,7 +357,7 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
 
         const targetParent = await this.findById(targetParentId).exec();
 
-        this.updateParentPathAndAncestorAndLinkUrl(targetParent, sourceContent);
+        Object.assign(sourceContent, this.getNewParentPathAndAncestor(targetParent, sourceContent));
         sourceContent.updatedBy = userId;
         const updatedContent = await sourceContent.save();
         return updatedContent;
@@ -369,7 +369,7 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         if (descendants.length == 0) return [descendants, null];
 
         descendants.forEach(childContent => {
-            this.updateParentPathAndAncestorAndLinkUrl(cutContent, childContent);
+            Object.assign(childContent, this.getNewParentPathAndAncestor(cutContent, childContent));
             childContent.updatedBy = cutContent.updatedBy;
         })
 
@@ -384,13 +384,7 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         return [descendants, bulkWriteResult];
     }
 
-    protected updateParentPathAndAncestorAndLinkUrl = (newParentContent: T, currentContent: T): T => {
-        this.updateParentPathAndAncestor(newParentContent, currentContent);
-
-        return currentContent;
-    }
-
-    private updateParentPathAndAncestor = (newParentContent: T, currentContent: T): T => {
+    private getNewParentPathAndAncestor = (newParentContent: T, currentContent: T): { parentId: string, parentPath: string, ancestors: string[] } => {
         const parentId = newParentContent ? newParentContent._id : null;
         const index = parentId ? currentContent.ancestors.findIndex(p => p == parentId) : 0;
 
@@ -404,9 +398,10 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
             newAncestors.push(currentContent.ancestors[i]);
         }
 
-        currentContent.parentPath = newPath;
-        currentContent.ancestors = newAncestors;
-        currentContent.parentId = parentId;
-        return currentContent;
+        return {
+            parentPath: newPath,
+            ancestors: newAncestors,
+            parentId: parentId
+        };
     }
 }

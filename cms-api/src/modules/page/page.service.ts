@@ -18,6 +18,47 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         super(PageModel, PageLanguageModel, PageVersionModel);
     }
 
+    /**
+     * Get primary version of page by id
+     * @param id Page Object Id
+     * @param language The current language
+     * @param host The host name
+     */
+    public getPrimaryVersionOfPageById = async (id: string, language: string, host: string): Promise<IPageDocument & IPageVersionDocument> => {
+        const primaryVersion = await this.getPrimaryVersionOfContentById(id, language);
+        primaryVersion.linkUrl = await this.buildLinkUrl(primaryVersion.parentPath, language, host);
+        return primaryVersion;
+    }
+
+    private buildLinkUrl = async (parentPath: string, language: string, host: string): Promise<string> => {
+        const parentIds = parentPath ? parentPath.split(',') : [];
+        const currentSiteDefinition = await this.siteDefinitionService.getSiteDefinitionByHostname(host);
+        const defaultLang = currentSiteDefinition.hosts.find(x => x.name == host).language;
+
+        const startPage = currentSiteDefinition.startPage as IPageDocument;
+        const matchStartIndex = parentIds.indexOf(startPage._id);
+
+        let linkUrl = defaultLang == language ? '/' : `/${language}`;
+        for (let i = 0; matchStartIndex < i && i < parentIds.length; i++) {
+            const urlSegment = await this.getUrlSegmentByPageId(parentIds[i], language);
+            linkUrl = `${linkUrl}/${urlSegment}`;
+        }
+        return linkUrl;
+    }
+
+    private getUrlSegmentByPageId = async (id: string, language: string): Promise<string> => {
+        const currentContent = await this.contentLanguageService.findOne({ contentId: id, language } as any, { lean: true })
+            .select('contentId urlSegment')
+            .populate({
+                path: 'contentId',
+                match: { isDeleted: false },
+                select: 'urlSegment'
+            })
+            .exec();
+
+        return currentContent.urlSegment;
+    }
+
     public getPublishedPageByUrl = async (encodedUrl: string): Promise<IPageDocument & IPageLanguageDocument> => {
         //get domain from url
         const url = Buffer.from(encodedUrl, 'base64').toString();
@@ -34,11 +75,11 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         // get language from url, fallback to default language of current host
         const defaultLanguage = await this.getLanguageFromUrl(urlObj, currentHost.language);
 
-        const urlSegments = this.getUrlSegments(pathName, defaultLanguage);
+        const urlSegments = this.splitPathNameToUrlSegments(pathName, defaultLanguage);
         return await this.resolvePageContentFromUrlSegments(startPage, urlSegments, defaultLanguage);
     }
 
-    private getUrlSegments = (pathname: string, language: string): string[] => {
+    private splitPathNameToUrlSegments = (pathname: string, language: string): string[] => {
         if (!pathname) return [];
 
         const paths = pathname.split('/');
@@ -80,20 +121,16 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         return defaultLanguage;
     }
 
-    public getPublishedPageChildren = async (parentId: string, language: string): Promise<IPageDocument[]> => {
+    public getPublishedPageChildren = async (parentId: string, language: string, host: string): Promise<IPageDocument[]> => {
         if (parentId == '0') parentId = null;
 
         const publishedPages = (await this.getContentChildren(parentId, language)).filter(x => x.status == VersionStatus.Published);
         if (publishedPages.length == 0) return [];
 
         //TODO: Temporary get first site definition
-        publishedPages.forEach(async page => page.linkUrl = await this.getLinkUrlByPageId(page._id));
+        publishedPages.forEach(async page => page.linkUrl = await this.buildLinkUrl(page.parentPath, language, host));
 
         return publishedPages
-    }
-
-    private getLinkUrlByPageId = async (pageId: string): Promise<string> => {
-        return '';
     }
 
     public executeCreatePageFlow = async (pageObj: IPageDocument & IPageLanguageDocument, userId: string, language: string): Promise<IPageDocument> => {

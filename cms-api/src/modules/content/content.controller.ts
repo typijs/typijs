@@ -6,15 +6,13 @@ import { IContentDocument, IContentVersionDocument, IContentLanguageDocument } f
 import { ContentService } from './content.service';
 
 export abstract class ContentController<T extends IContentDocument, P extends IContentLanguageDocument, V extends IContentVersionDocument> extends FolderController<T, P> {
-  private contentService: ContentService<T, P, V>;
 
-  constructor(contentService: ContentService<T, P, V>) {
+  constructor(private contentService: ContentService<T, P, V>) {
     super(contentService);
-    this.contentService = contentService;
   }
 
   get = async (req: express.Request, res: express.Response) => {
-    const content = await this.contentService.getCurrentVersionOfContentById(req.params.id, req.query.language)
+    const content = await this.contentService.getPrimaryVersionOfContentById(req.params.id, req.query.language)
     res.status(httpStatus.OK).json(content)
   }
 
@@ -38,7 +36,13 @@ export abstract class ContentController<T extends IContentDocument, P extends IC
 
   delete = async (req: express.Request, res: express.Response) => {
     const user = req['user'];
-    const deleteResult = await this.contentService.executeDeleteContentFlow(req.params.id, user.id);
+    const deleteResult = await this.contentService.executeMoveContentToTrashFlow(req.params.id, user.id);
+    res.status(httpStatus.OK).json(deleteResult)
+  }
+
+  moveToTrash = async (req: express.Request, res: express.Response) => {
+    const user = req['user'];
+    const deleteResult = await this.contentService.executeMoveContentToTrashFlow(req.params.id, user.id);
     res.status(httpStatus.OK).json(deleteResult)
   }
 

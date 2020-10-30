@@ -13,24 +13,32 @@ import { IPageLanguageDocument } from './models/page-language.model';
 @Injectable()
 export class PageController extends ContentController<IPageDocument, IPageLanguageDocument, IPageVersionDocument> {
 
-  private pageService: PageService;
-  constructor(pageService: PageService) {
+  constructor(private pageService: PageService) {
     super(pageService);
-    this.pageService = pageService;
+  }
+
+  get = async (req: express.Request, res: express.Response) => {
+    const content = await this.pageService.getPrimaryVersionOfPageById(req.params.id, req.query.language, req.query.host)
+    res.status(httpStatus.OK).json(content)
   }
 
   //Override insert base
   create = async (req: express.Request, res: express.Response) => {
     const user = req['user'];
-    const item = await this.pageService.executeCreatePageFlow(req.body, user.id, req.query.language)
-    res.status(httpStatus.OK).json(item)
+    const savedContent = await this.pageService.executeCreatePageFlow(req.body, user.id, req.query.language)
+    res.status(httpStatus.OK).json(savedContent)
   }
 
   publish = async (req: express.Request, res: express.Response) => {
     const user = req['user'];
+
     const validUrlSegment = await this.pageService.validateUrlSegment(req.params.id, req.query.language);
-    const publishedContent = await this.pageService.executePublishContentFlow(req.params.id, user.id, req.query.language)
-    res.status(httpStatus.OK).json(publishedContent)
+    if (validUrlSegment) {
+      const publishedContent = await this.pageService.executePublishContentFlow(req.params.id, user.id, req.query.language)
+      res.status(httpStatus.OK).json(publishedContent)
+    } else {
+      res.status(httpStatus.INTERNAL_SERVER_ERROR).send('The url must be unique, consider change url segment please');
+    }
   }
 
   getByUrl = async (req: express.Request, res: express.Response) => {
@@ -39,7 +47,7 @@ export class PageController extends ContentController<IPageDocument, IPageLangua
   }
 
   getPublishedPageChildren = async (req: express.Request, res: express.Response) => {
-    const items = await this.pageService.getPublishedPageChildren(req.params.parentId, req.query.language);
+    const items = await this.pageService.getPublishedPageChildren(req.params.parentId, req.query.language, req.query.host);
     res.status(httpStatus.OK).json(items);
   }
 
