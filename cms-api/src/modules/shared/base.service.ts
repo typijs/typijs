@@ -1,7 +1,6 @@
 import { FilterQuery, Query, UpdateQuery } from 'mongoose';
-import { PaginateOptions, PaginateResult } from '../../db/plugins/paginate';
 import { DocumentNotFoundException } from '../../error';
-import { IBaseDocument, IBaseModel, QueryItem, QueryList, QueryOptions } from './base.model';
+import { IBaseDocument, IBaseModel, QueryItem, QueryList, QueryOptions, PaginateOptions, PaginateResult } from './base.model';
 
 export class BaseService<T extends IBaseDocument> {
 
@@ -32,7 +31,10 @@ export class BaseService<T extends IBaseDocument> {
     }
 
     /**
-     * Find by id of base service
+     * Get document by _id
+     * @param id The mongodb Object id
+     * @param options query option ex `{ lean: true }`
+     * @returns return the `QueryItem<T>` then need to call `exec()` to convert to `Promise<T>`
      */
     public findById = (id: string, options?: QueryOptions): QueryItem<T> => {
         if (!id) id = null;
@@ -40,40 +42,77 @@ export class BaseService<T extends IBaseDocument> {
     }
 
     /**
-     * Finds one document
-     * @param filter 
-     * @param options 
+     * Get the first of match document
+     * @param filter Mongo Query - https://docs.mongodb.com/manual/tutorial/query-documents/
+     * @param options query option ex `{ lean: true }`
+     * @returns return the `QueryItem<T>` then need to call `exec()` to convert to `Promise<T>`
      */
     public findOne = (filter: FilterQuery<T>, options?: QueryOptions): QueryItem<T> => {
         return this.mongooseModel.findOne(filter).setOptions(this.getQueryOptions(options));
     }
 
+    /**
+     * Find documents which match the filter conditions
+     * @param filter Mongo Query - https://docs.mongodb.com/manual/tutorial/query-documents/
+     * @param options query option ex `{ lean: true }`
+     * @returns return the `QueryList<T>` then need to call `exec()` to convert to `Promise<T[]>`
+     */
     public find = (filter: FilterQuery<T>, options?: QueryOptions): QueryList<T> => {
         return this.mongooseModel.find(filter).setOptions(this.getQueryOptions(options));
     }
 
+    /**
+     * Get all documents. Should only use for collection which has less document
+     * @param options query option ex `{ lean: true }`
+     */
     public getAll = (options?: QueryOptions): QueryList<T> => {
         return this.find({}, options);
     }
 
+    /**
+     * Get all documents. Should only use for collection which has less document
+     * @param options query option ex `{ lean: true }`
+     */
     public count = (filter: FilterQuery<T>): Promise<number> => {
         return this.mongooseModel.count(filter).exec()
     }
 
+    /**
+     * Get all documents. Should only use for collection which has less document
+     * @param options query option ex `{ lean: true }`
+     */
     public exists = (filter: FilterQuery<T>): Promise<boolean> => {
         return this.mongooseModel.exists(filter)
     }
 
     /**
      * Query for document support paging
-     * @param {Object} filter - Mongo Query - https://docs.mongodb.com/manual/tutorial/query-documents/
+     * @param {FilterQuery<T>} filter - Mongo Query - https://docs.mongodb.com/manual/tutorial/query-documents/
      * @param {Object} paginateOptions - Paginate options
-     * @param {Object} queryOptions - Query options
+     * @param {Object} queryOptions - query option ex `{ lean: true }`
      * @returns {Promise<PaginateResult>}
      */
     public paginate = (filter: FilterQuery<T>, paginateOptions?: PaginateOptions, queryOptions?: QueryOptions): Promise<PaginateResult> => {
-        const mergedPaginateOptions = { ...BaseService.defaultPaginateOptions, ... (paginateOptions || {}) }
-        return this.mongooseModel.paginate(filter, mergedPaginateOptions, this.getQueryOptions(queryOptions));
+        //query.sort('firstName -lastName');  query.sort({ firstName: 'asc', lastName: -1 });
+        const { sortBy, page, limit } = this.getPaginateOptions(paginateOptions);
+        const skip = (page - 1) * limit;
+
+        const countPromise = this.count(filter);
+        const docsQuery = this.find(filter).sort(sortBy).skip(skip).limit(limit);
+        const docsPromise = queryOptions ? docsQuery.setOptions(queryOptions).exec() : docsQuery.exec();
+
+        return Promise.all([countPromise, docsPromise]).then((values) => {
+            const [totalResults, results] = values;
+            const totalPages = Math.ceil(totalResults / limit);
+            const result: PaginateResult = {
+                results,
+                page,
+                limit,
+                totalPages,
+                totalResults,
+            };
+            return Promise.resolve(result);
+        });
     };
 
     public create = (doc: Partial<T>): Promise<T> => {
@@ -120,8 +159,11 @@ export class BaseService<T extends IBaseDocument> {
         return this.mongooseModel.deleteMany(filter)
     }
 
-    protected getQueryOptions(options?: QueryOptions) {
-        const mergedOptions = { ...BaseService.defaultOptions, ...(options || {}), };
-        return mergedOptions;
+    private getQueryOptions = (options?: QueryOptions): QueryOptions => {
+        return { ...BaseService.defaultOptions, ...(options || {}), };
+    }
+
+    private getPaginateOptions = (paginateOptions?: PaginateOptions): PaginateOptions => {
+        return { ...BaseService.defaultPaginateOptions, ... (paginateOptions || {}) }
     }
 }
