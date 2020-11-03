@@ -130,9 +130,10 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
      * @param content 
      */
     public executeCreateContentFlow = async (content: T & P, userId: string, language: string): Promise<T & V> => {
-        //Step1: Create content
+
         const parentContent = await this.findById(content.parentId).exec();
-        //generate url segment
+        //Step1: Create content
+        content.masterLanguageId = language;
         const savedContent = await this.createContent(content, parentContent, userId);
         //Step2: Create content version
         const savedContentVersionDoc = await this.contentVersionService.createNewVersion(content as any, savedContent._id, userId, language);

@@ -145,6 +145,7 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         const parentPage = await this.findById(pageObj.parentId).exec();
         //generate url segment
         pageObj.urlSegment = await this.generateUrlSegment(0, slugify(pageObj.name), parentPage ? parentPage._id : null, language);
+        //Step3: create new page
         const savedPage = await this.executeCreateContentFlow(pageObj, userId, language);
         //Step4: update parent page's has children property
         if (savedPage) await this.updateHasChildren(parentPage);

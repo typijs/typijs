@@ -9,7 +9,7 @@ export class LanguageGuard {
     constructor(private languageService: LanguageService) { }
 
     /**
-     * The middleware to check authenticated of auth guard
+     * The middleware to check if the language is enabled
      */
     public checkEnabled = () => async (req: Request, res: Response, next: NextFunction) => {
         try {
