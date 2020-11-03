@@ -10,23 +10,24 @@ import { cutOrCopyContent, requiredContentId } from '../content/content.validati
 import { createFolder, requiredParentId, updateFolderName } from '../folder/folder.validation';
 import { MediaController } from './media.controller';
 import { getMediaById } from './media.validation';
+import { LanguageGuard } from '../language';
 
 @Injectable()
 export class MediaRouter {
-    constructor(private mediaController: MediaController, private authGuard: AuthGuard) { }
+    constructor(private mediaController: MediaController, private authGuard: AuthGuard, private langGuard: LanguageGuard) { }
 
     get router(): Router {
         const media: Router = asyncRouterErrorHandler(Router());
 
         media.get('/folders/:parentId?', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredParentId), this.mediaController.getFoldersByParentId);
 
-        media.get('/children/:parentId?', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredParentId), this.mediaController.getContentsByFolder);
+        media.get('/children/:parentId?', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredParentId), this.langGuard.checkEnabled(), this.mediaController.getContentsByFolder);
 
         media.post('/folder', this.authGuard.checkRoles(requiredAdminOrEditor), validate(createFolder), this.mediaController.createFolderContent);
 
         media.put('/folder/:id', this.authGuard.checkRoles(requiredAdminOrEditor), validate(updateFolderName), this.mediaController.updateFolderName);
 
-        media.post('/upload/:parentId?', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredParentId), this.mediaController.handleFormData('file'), this.mediaController.processMedia)
+        media.post('/upload/:parentId?', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredParentId), this.mediaController.handleFormData('file'), this.langGuard.checkEnabled(), this.mediaController.processMedia)
 
         media.post('/cut', this.authGuard.checkRoles(requiredAdminOrEditor), validate(cutOrCopyContent), this.mediaController.cut);
 

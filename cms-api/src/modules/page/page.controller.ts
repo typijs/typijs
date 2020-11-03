@@ -18,21 +18,22 @@ export class PageController extends ContentController<IPageDocument, IPageLangua
   }
 
   get = async (req: express.Request, res: express.Response) => {
-    const content = await this.pageService.getPrimaryVersionOfPageById(req.params.id, req.query.language, req.query.host)
+    const { language } = req as any;
+    const content = await this.pageService.getPrimaryVersionOfPageById(req.params.id, language, req.query.host)
     res.status(httpStatus.OK).json(content)
   }
 
   //Override insert base
   create = async (req: express.Request, res: express.Response) => {
-    const user = req['user'];
-    const savedContent = await this.pageService.executeCreatePageFlow(req.body, user.id, req.query.language)
+    const { user, language } = req as any;
+    const savedContent = await this.pageService.executeCreatePageFlow(req.body, user.id, language)
     res.status(httpStatus.OK).json(savedContent)
   }
 
   publish = async (req: express.Request, res: express.Response) => {
-    const user = req['user'];
+    const { user, language } = req as any;
 
-    const validUrlSegment = await this.pageService.validateUrlSegment(req.params.id, req.query.language);
+    const validUrlSegment = await this.pageService.validateUrlSegment(req.params.id, language);
     if (validUrlSegment) {
       const publishedContent = await this.pageService.executePublishContentFlow(req.params.id, user.id, req.query.language)
       res.status(httpStatus.OK).json(publishedContent)
@@ -47,12 +48,14 @@ export class PageController extends ContentController<IPageDocument, IPageLangua
   }
 
   getPublishedPageChildren = async (req: express.Request, res: express.Response) => {
-    const items = await this.pageService.getPublishedPageChildren(req.params.parentId, req.query.language, req.query.host);
+    const { language } = req as any;
+    const items = await this.pageService.getPublishedPageChildren(req.params.parentId, language, req.query.host);
     res.status(httpStatus.OK).json(items);
   }
 
   getPageChildren = async (req: express.Request, res: express.Response,) => {
-    const items = await this.pageService.getContentChildren(req.params.parentId, req.query.language);
+    const { language } = req as any;
+    const items = await this.pageService.getContentChildren(req.params.parentId, language);
     res.status(httpStatus.OK).json(items);
   }
 }
