@@ -11,12 +11,34 @@ export class LanguageService extends BaseService<ILanguageBranchDocument> {
         super(LanguageBranchModel);
     }
 
-    public getAvailableLanguages = async (): Promise<ILanguageBranchDocument[]> => {
-        return await this.find({ enabled: true }, { lean: true }).exec();
+    /**
+     * Get all enabled languages
+     */
+    public getEnabledLanguages = async (): Promise<ILanguageBranchDocument[]> => {
+        const cacheKey = `${this.PrefixCacheKey}:getEnabledLanguages`;
+        return this.cacheService.get(cacheKey, () => this.find({ enabled: true }, { lean: true }).sort('sortIndex').exec());
     }
 
+    /**
+     * Get enabled language document by language code
+     * @param language 
+     */
     public getLanguageByCode = async (language: string): Promise<ILanguageBranchDocument> => {
-        return await this.findOne({ language: language, enabled: true }, { lean: true }).exec();
+        const languages = await this.getEnabledLanguages();
+        return languages.find(x => x.language == language);
     }
 
+    public getDefaultLanguage
+
+    public addLanguage = (doc: Partial<ILanguageBranchDocument>, userId: string): Promise<ILanguageBranchDocument> => {
+        this.cacheService.deleteStartWith(this.PrefixCacheKey);
+        doc.createdBy = userId;
+        return this.create(doc);
+    }
+
+    public updateLanguage = (id: string, doc: Partial<ILanguageBranchDocument>, userId: string): Promise<ILanguageBranchDocument> => {
+        this.cacheService.deleteStartWith(this.PrefixCacheKey);
+        doc.updatedBy = userId;
+        return this.updateById(id, doc);
+    }
 }

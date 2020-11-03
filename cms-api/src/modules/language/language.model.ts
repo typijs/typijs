@@ -7,7 +7,13 @@ export type Language = {
     registered?: boolean;
 }
 export interface ILanguageBranch {
+    /**
+     * the language code such as en, en-gb...
+     */
     language: string;
+    /**
+     * the language name such as English, French...
+     */
     name: string;
     sortIndex: number;
     iconPath: string;

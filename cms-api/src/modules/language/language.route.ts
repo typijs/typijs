@@ -13,7 +13,7 @@ export class LanguageRouter {
     get router(): Router {
         const langRouter: Router = asyncRouterErrorHandler(Router());
 
-        langRouter.get('/getAvailableLanguages', this.langController.getAvailableLanguages);
+        langRouter.get('/getAvailableLanguages', this.langController.getEnabledLanguages);
         langRouter.get('/getSystemLanguageCodes', this.authGuard.checkRoles([Roles.Admin]), this.langController.getAllLanguageCodes);
 
         langRouter.get('/', this.authGuard.checkRoles([Roles.Admin]), this.langController.getAll);
