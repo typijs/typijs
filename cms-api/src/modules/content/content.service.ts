@@ -62,7 +62,6 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
      * @param language The language code (ex 'en', 'de'...)
      */
     public getPrimaryVersionOfContentById = async (id: string, language: string): Promise<T & V> => {
-        if (!id) throw new Exception(400, "Bad Request");
 
         const currentContent = await this.findOne({ _id: id, isDeleted: false } as any, { lean: true }).exec();
         if (!currentContent) throw new DocumentNotFoundException(id);
@@ -86,10 +85,14 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
                 }
             }).exec();
 
-        currentVersion.childItems.forEach(item => {
-            Object.assign(item.content, item.content.contentLanguages.find(contentLanguage => contentLanguage.language === language))
-        })
-        return Object.assign(currentContent, currentVersion);
+        if (currentVersion.childItems) {
+            currentVersion.childItems.forEach(item => {
+                const childContentLang = item.content.contentLanguages.find(contentLanguage => contentLanguage.language === language);
+                item.content = this.mergeToContentLanguage(item.content, childContentLang)
+            })
+        }
+
+        return this.mergeToContentVersion(currentContent, currentVersion);
     }
 
     /**
@@ -98,7 +101,6 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
      * @param language The language code (ex 'en', 'de'...)
      */
     public getPublishedContentById = async (id: string, language: string): Promise<T & P> => {
-        if (!id) throw new Exception(400, "Bad Request");
 
         const currentContent = await this.findOne({ _id: id, isDeleted: false } as any, { lean: true })
             .populate({
@@ -120,7 +122,7 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         const publishedLang = currentContent.contentLanguages.find((lang: P) => lang.language === language && lang.status == VersionStatus.Published);
         if (!publishedLang) return null;
 
-        return Object.assign(currentContent, publishedLang);
+        return this.mergeToContentLanguage(currentContent, publishedLang);
     }
 
     /**
@@ -137,7 +139,7 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         //Step3: Create content in language 
         const savedContentLangDoc = await this.contentLanguageService.createContentLanguage(content, savedContent._id, savedContentVersionDoc._id, userId, language);
 
-        return Object.assign(savedContent, savedContentVersionDoc);
+        return this.mergeToContentVersion(savedContent, savedContentVersionDoc);
     }
 
     protected createContent = (newContent: T, parentContent: T, userId: string): Promise<T> => {
@@ -179,23 +181,21 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         //Step1: Get current version
         const currentVersion = await this.contentVersionService.findOne({ contentId: id, language } as any).sort({ createdAt: -1 }).exec();
         if (currentVersion.status != VersionStatus.Published) {
-            Object.assign(currentVersion, { name, properties, childItems });
-            currentVersion.updatedBy = userId;
+            Object.assign(currentVersion, { name, properties, childItems, updatedBy: userId });
             const saveContentVersion = await currentVersion.save();
 
             //Step2: update corresponding draft content language version
             const contentLanguage = await this.contentLanguageService.findOne({ contentId: id, language } as any).exec();
             if (contentLanguage.status == VersionStatus.CheckedOut) {
-                Object.assign(contentLanguage, { name, properties, childItems });
-                contentLanguage.updatedBy = userId;
+                Object.assign(contentLanguage, { name, properties, childItems, updatedBy: userId });
                 await contentLanguage.save();
             }
-            return Object.assign(currentContent, saveContentVersion);
+            return this.mergeToContentVersion(currentContent, saveContentVersion);
         } else {
             //Create new version
             const savedContentVersionDoc = await this.contentVersionService.createNewVersion(contentObj, id, userId, language, currentVersion._id);
 
-            return Object.assign(currentContent, savedContentVersionDoc);
+            return this.mergeToContentVersion(currentContent, savedContentVersionDoc);
         }
     }
 
@@ -221,13 +221,12 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
 
             //Step4: publish the current content language
             const contentLanguage = await this.contentLanguageService.findOne({ contentId: id, language: language } as any).exec();
-            const { status, startPublish, publishedBy, name, properties, childItems } = currentVersion;
-            Object.assign(contentLanguage, { status, startPublish, publishedBy, name, properties, childItems });
-            contentLanguage.versionId = currentVersion._id;
+            const { status, startPublish, publishedBy, name, properties, childItems, _id } = currentVersion;
+            Object.assign(contentLanguage, { status, startPublish, publishedBy, name, properties, childItems, versionId: _id });
             await contentLanguage.save();
         }
 
-        return Object.assign(currentContent, currentVersion);
+        return this.mergeToContentVersion(currentContent, currentVersion);
     }
 
     /**
@@ -289,7 +288,7 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         if (!sourceContent) throw new DocumentNotFoundException(sourceContentId);
 
         //get source latest version content in each language
-        const sourceVersions = await this.contentVersionService.find({ contentId: sourceContent._id }, { lean: true }).exec();
+        const sourceVersions = await this.contentVersionService.find({ contentId: sourceContent._id } as any, { lean: true }).exec();
 
         const latestVersion: { [key: string]: V } = {};
         sourceVersions.forEach(version => {
@@ -403,5 +402,13 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
             ancestors: newAncestors,
             parentId: parentId
         };
+    }
+
+    protected mergeToContentVersion(content: T, contentVersion: V): T & V {
+        delete contentVersion._id;
+        const contentVersionData: T & V = Object.assign(content, contentVersion);
+        delete contentVersionData.contentLanguages;
+        delete contentVersionData.contentId;
+        return contentVersionData;
     }
 }

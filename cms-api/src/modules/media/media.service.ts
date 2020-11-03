@@ -15,7 +15,7 @@ export class MediaService extends ContentService<IMediaDocument, IMediaLanguageD
 
     public createReadMediaStream = async (fileId: string, fileName: string, width?: number, height?: number): Promise<fs.ReadStream> => {
         const fileExt = path.extname(fileName);
-        const publishedMedia = await this.findById(fileId);
+        const publishedMedia = await this.findOne({ _id: fileId, isDeleted: false } as any, { lean: true }).exec();
         if (!publishedMedia) return null;
 
         if (publishedMedia.contentType == ImageContent) return await this.getResizedImageStream(fileId, fileExt, width, height);

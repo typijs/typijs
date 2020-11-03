@@ -32,11 +32,10 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
 
     private buildLinkUrl = async (parentPath: string, language: string, host: string): Promise<string> => {
         const parentIds = parentPath ? parentPath.split(',') : [];
-        const currentSiteDefinition = await this.siteDefinitionService.getSiteDefinitionByHostname(host);
-        const defaultLang = currentSiteDefinition.hosts.find(x => x.name == host).language;
 
-        const startPage = currentSiteDefinition.startPage as IPageDocument;
-        const matchStartIndex = parentIds.indexOf(startPage._id);
+        const currentSiteDefinition = await this.siteDefinitionService.getSiteDefinitionByHostname(host);
+        const defaultLang = currentSiteDefinition ? currentSiteDefinition.hosts.find(x => x.name == host).language : '';
+        const matchStartIndex = currentSiteDefinition ? parentIds.indexOf((currentSiteDefinition.startPage as IPageDocument)._id) : -1;
 
         let linkUrl = defaultLang == language ? '/' : `/${language}`;
         for (let i = 0; matchStartIndex < i && i < parentIds.length; i++) {
@@ -75,6 +74,7 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         // get language from url, fallback to default language of current host
         const defaultLanguage = await this.getLanguageFromUrl(urlObj, currentHost.language);
 
+        if (!defaultLanguage) throw new DocumentNotFoundException(url, 'The language is not found')
         const urlSegments = this.splitPathNameToUrlSegments(pathName, defaultLanguage);
         return await this.resolvePageContentFromUrlSegments(startPage, urlSegments, defaultLanguage);
     }
@@ -108,6 +108,11 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         return await this.recursiveResolvePageByUrlSegment(matchPage, segments, language, index + 1);
     }
 
+    /**
+     * Extract language code from url
+     * @param url 
+     * @param defaultLanguage 
+     */
     private getLanguageFromUrl = async (url: URL, defaultLanguage: string): Promise<string> => {
         const pathUrl = url.pathname; // --> /abc/xyz
         const paths = pathUrl.split('/');
@@ -116,9 +121,11 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
             const languageCode = paths[0];
             //TODO should get languages from cache then find one
             const language = await this.languageService.getLanguageByCode(languageCode);
-            if (language) return languageCode;
+            if (language) return language.language;
         }
-        return defaultLanguage;
+
+        const langDoc = await this.languageService.getLanguageByCode(defaultLanguage);
+        return langDoc ? langDoc.language : undefined;
     }
 
     public getPublishedPageChildren = async (parentId: string, language: string, host: string): Promise<IPageDocument[]> => {
@@ -130,10 +137,10 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         //TODO: Temporary get first site definition
         publishedPages.forEach(async page => page.linkUrl = await this.buildLinkUrl(page.parentPath, language, host));
 
-        return publishedPages
+        return publishedPages;
     }
 
-    public executeCreatePageFlow = async (pageObj: IPageDocument & IPageLanguageDocument, userId: string, language: string): Promise<IPageDocument> => {
+    public executeCreatePageFlow = async (pageObj: IPageDocument & IPageLanguageDocument, userId: string, language: string): Promise<IPageDocument & IPageVersionDocument> => {
         //get page's parent
         const parentPage = await this.findById(pageObj.parentId).exec();
         //generate url segment

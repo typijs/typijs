@@ -5,6 +5,7 @@ import { cmsPage } from './page.model';
 export const cmsPageVersion = 'cms_PageVersion';
 export interface IPageVersion extends IContentVersion {
     urlSegment: string;
+    simpleAddress: string;
     linkUrl: string;
     visibleInMenu: boolean;
 }
@@ -15,7 +16,7 @@ export const PageVersionSchema = new mongoose.Schema({
     contentId: { type: mongoose.Schema.Types.ObjectId, ref: cmsPage, required: true },
     masterVersionId: { type: mongoose.Schema.Types.ObjectId, ref: cmsPageVersion },
     urlSegment: { type: String, required: true },
-    linkUrl: { type: String, required: true },
+    simpleAddress: { type: String, required: false, unique: true, lowercase: true, trim: true },
     visibleInMenu: { type: Boolean, required: true, default: false },
 }, { timestamps: true });
 

@@ -135,7 +135,7 @@ export const ContentHasChildItemsSchema = new mongoose.Schema({
 export const ContentSchema = new mongoose.Schema({
     ...BaseSchema.obj,
     contentType: { type: String, required: false },
-    masterLanguageId: { type: String, required: true },
+    masterLanguageId: { type: String },
     //IHierarchyContent Implements
     parentId: { type: String, default: null },
     //https://docs.mongodb.com/manual/tutorial/model-tree-structures-with-materialized-paths/
