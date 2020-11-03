@@ -2,9 +2,8 @@ import * as express from 'express';
 import * as httpStatus from 'http-status';
 
 import { pick } from '../../utils/pick';
-import { IBaseDocument } from './base.model';
+import { IBaseDocument, PaginateOptions } from './base.model';
 import { BaseService } from './base.service';
-import { PaginateOptions } from '../../db/plugins/paginate';
 
 export abstract class BaseController<T extends IBaseDocument> {
   protected baseService: BaseService<T>;
