@@ -41,7 +41,6 @@ export type PaginateOptions = {
     page?: number
 }
 
-
 export interface ICommonMetadata {
     createdAt: Date;
     createdBy: any;

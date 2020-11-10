@@ -1,3 +1,4 @@
-import { Content } from './content.model';
+import { Content, ContentVersion } from './content.model';
 
-export class Block extends Content { }
+export interface Block extends Content { }
+export interface BlockVersion extends ContentVersion { }

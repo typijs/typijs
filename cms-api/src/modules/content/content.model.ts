@@ -87,7 +87,7 @@ export interface IContentLanguage extends IPublishContent, IContentHasChildItems
     language: string;
     versionId: string;
     name: string;
-    properties: any;
+    properties: { [key: string]: any };
     /**
      * Ref to @VersionStatus
      */
@@ -120,8 +120,7 @@ export const PublishContentSchema = new mongoose.Schema({
     startPublish: { type: Date },
     stopPublish: { type: Date },
     delayPublishUntil: { type: Date },
-    publishedBy: { type: mongoose.Schema.Types.ObjectId, ref: cmsUser },
-    isPublished: { type: Boolean, required: true, default: false },
+    publishedBy: { type: mongoose.Schema.Types.ObjectId, ref: cmsUser }
 });
 
 export const ContentHasChildItemsSchema = new mongoose.Schema({
