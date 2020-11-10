@@ -6,7 +6,7 @@ import { cmsMedia, cmsMediaLanguage } from './media.model';
 export interface IMediaLanguage extends IContentLanguage {
     urlSegment: string;
     linkUrl: string;
-    thumbnailUrl: string;
+    thumbnail: string;
 
     mimeType: string;
     size: number;
@@ -21,7 +21,7 @@ export const MediaLanguageSchema = new mongoose.Schema({
     versionId: { type: mongoose.Schema.Types.ObjectId, ref: cmsMediaVersion },
     urlSegment: { type: String, required: true },
     linkUrl: { type: String, required: true },
-    thumbnailUrl: { type: String, required: false },
+    thumbnail: { type: String, required: false },
 
     mimeType: { type: String, required: false },
     size: { type: Number, required: false },

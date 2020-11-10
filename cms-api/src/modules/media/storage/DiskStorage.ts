@@ -19,13 +19,13 @@ const generateFolder = (req: express.Request, file: Express.Multer.File): string
 const generateFileName = (req: express.Request, file: Express.Multer.File): string => {
     const fileId = req.params.fileId;
     const fileExt = path.extname(file.originalname);
-    const link = getLink(fileId, file.originalname);
-    const thumbnail = `${link}?w=50&h=50`;
-    Object.assign(req.params, { link, thumbnail })
+    const linkUrl = getLinkUrl(fileId, file.originalname);
+    const thumbnail = `${linkUrl}?w=50&h=50`;
+    Object.assign(req.params, { linkUrl, thumbnail })
     return `${fileId}${fileExt}`;
 }
 
-const getLink = (fileId: string, fileName: string): string => {
+const getLinkUrl = (fileId: string, fileName: string): string => {
     return `/assets/${fileId}/${fileName}`;
 }
 

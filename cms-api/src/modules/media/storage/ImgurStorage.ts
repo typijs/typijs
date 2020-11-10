@@ -17,7 +17,7 @@ export interface MulterOutFile extends Express.Multer.File {
     type: string;
     deleteHash: string;
     name: string;
-    link: string;
+    linkUrl: string;
     fileId: string;
     thumbnail: string;
 }
@@ -39,8 +39,8 @@ export class ImgurStorageEngine extends CmsStorageEngine {
                     const { id, title, description, type, deletehash, name, link } = response.data;
                     const fileId = mongoose.Types.ObjectId().toHexString();
                     const thumbnail = getImgurThumbnail(link);
-                    Object.assign(req.params, { fileId, thumbnail, link })
-                    callback(null, { id, title, description, type, deleteHash: deletehash, name, link, fileId, thumbnail })
+                    Object.assign(req.params, { fileId, thumbnail, linkUrl: link })
+                    callback(null, { id, title, description, type, deleteHash: deletehash, name, linkUrl: link, fileId, thumbnail })
                 })
                 .catch(function (error) {
                     callback(error);

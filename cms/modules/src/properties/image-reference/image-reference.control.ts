@@ -43,10 +43,10 @@ export class ImageReferenceControl extends CmsControl {
     }
 
     onDropImage(e: DropEvent) {
-        const { name, link, thumbnail } = e.dragData;
+        const { name, linkUrl, thumbnail } = e.dragData;
         this.model = <CmsImage>{
             alt: name,
-            src: link,
+            src: linkUrl,
             thumbnail
         };
         this.onChange(this.model);
