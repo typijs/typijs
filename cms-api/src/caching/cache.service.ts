@@ -1,16 +1,19 @@
 import 'reflect-metadata';
 import { Injectable } from "injection-js";
-import { CacheManager } from "./cache.manager";
+import { CacheProvider } from "./cache.provider";
 
 @Injectable()
 export class CacheService {
-    constructor(private readonly cache: CacheManager) { }
+    constructor(private readonly cache: CacheProvider) { }
 
+    public createCacheKey = (prefix: string, ...args: string[]): string => {
+        return args.length > 0 ? `${prefix}:${args.join(':')}` : prefix;
+    }
     /**
      * Async get item from cache
      * @param cacheKey 
-     * @param cacheMissCallback the function will be called to fill the cache in case cache missing
-     * @param ttl Time to live in second
+     * @param cacheMissCallback the `Promise` function will be called to fill the cache in case cache missing
+     * @param [ttl] (default: `0`) The time to live in second. `0` = unlimited
      * @returns return `Promise` of item's value. Need use with `then()` or `await` to get value
      */
     public get = async <T = unknown>(cacheKey: string, cacheMissCallback?: () => Promise<T>, ttl?: number): Promise<T> => {
@@ -28,6 +31,9 @@ export class CacheService {
 
     /**
      * Sync get item from cache
+     * @param cacheKey 
+     * @param cacheMissCallback the function will be called to fill the cache in case cache missing
+     * @param [ttl] (default: `0`) The time to live in second. `0` = unlimited
      * @returns Return the item's value
      */
     public getSync = <T = unknown>(cacheKey: string, cacheMissCallback?: () => T, ttl?: number): T => {
@@ -43,6 +49,12 @@ export class CacheService {
         return value;
     }
 
+    /**
+     * Insert the item to cache with provided key
+     * @param key 
+     * @param value 
+     * @param [ttl] (default: `0`) The time to live in second. `0` = unlimited
+     */
     public set = (cacheKey: string, value: any, ttl?: number) => {
         this.cache.set(cacheKey, value, ttl);
     }
@@ -62,8 +74,8 @@ export class CacheService {
         }
     }
 
-    public flushAll = () => {
-        this.cache.flushAll();
+    public clearAll = () => {
+        this.cache.clearAll();
     }
 
 }

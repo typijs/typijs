@@ -1,6 +1,6 @@
 import { ReflectiveInjector, Provider } from "injection-js";
 
-import { CacheProviders } from "./caching";
+import { CacheInjectorProviders } from "./caching";
 import { LoggerProviders } from "./logging";
 import { AuthProviders } from "./modules/auth";
 import { BlockProviders } from './modules/block';
@@ -17,7 +17,7 @@ export class CmsInjector {
     get instance(): ReflectiveInjector {
         let appProviders = [
             ...LoggerProviders,
-            ...CacheProviders,
+            ...CacheInjectorProviders,
             ...AuthProviders,
             ...BlockProviders,
             ...MediaProviders,
