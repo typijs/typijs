@@ -15,10 +15,12 @@ export enum VersionStatus {
     Rejected,
     /**
      * The version is currently in progress.
+     * Draft
      */
     CheckedOut,
     /**
      * A writer has checked in the version and waits for the version to be approved and published.
+     * Ready to publish
      */
     CheckedIn,
     /**
@@ -76,7 +78,7 @@ export interface IContent extends ISoftDeletedContent, IHierarchyContent {
     masterLanguageId: string;
     contentLanguages: any[];
     //not map to db
-    isDirty: boolean;
+    versionId: string; //contain corresponding version id
     [key: string]: any;
 }
 export interface IContentDocument extends IContent, IBaseDocument { }
@@ -105,6 +107,7 @@ export interface IContentVersion extends IPublishContent, IContentHasChildItems 
     peerOrder: number;
     name: string;
     properties: any;
+    isPrimary: boolean;
     /**
      * Ref to @VersionStatus
      */
@@ -164,5 +167,6 @@ export const ContentLanguageSchema = new mongoose.Schema({
 export const ContentVersionSchema = new mongoose.Schema({
     ...ContentLanguageSchema.obj,
     childOrderRule: { type: Number, required: true, default: 1 },
-    peerOrder: { type: Number, required: true, default: 100 }
+    peerOrder: { type: Number, required: true, default: 100 },
+    isPrimary: { type: Boolean, required: true, default: false }
 });

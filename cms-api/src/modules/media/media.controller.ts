@@ -65,7 +65,8 @@ export class MediaController extends ContentController<IMediaDocument, IMediaLan
         }
 
         const savedMedia = await this.mediaService.executeCreateContentFlow(mediaObj as any, user.id, language);
-        const publishedMedia = await this.mediaService.executePublishContentFlow(savedMedia._id, user.id, language);
+
+        const publishedMedia = await this.mediaService.executePublishContentFlow(savedMedia._id, savedMedia.versionId, user.id, language);
         res.status(httpStatus.OK).json(publishedMedia)
     }
 

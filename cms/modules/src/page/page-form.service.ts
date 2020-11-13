@@ -37,8 +37,8 @@ export class PageFormService extends ContentFormService {
         return this.pageService.editContent(content);
     }
 
-    publishContent(contentId: string): Observable<Page> {
-        return this.pageService.publishContent(contentId);
+    publishContent(contentId: string, versionId: string): Observable<Page> {
+        return this.pageService.publishContent(contentId, versionId);
     }
 
     getAllContentTypes(): ContentType[] {

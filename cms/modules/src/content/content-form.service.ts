@@ -19,7 +19,7 @@ export abstract class ContentFormService {
     abstract getContent(contentId: string): Observable<ContentInfo>;
     abstract createContent(content: Content): Observable<Content>;
     abstract editContent(content: Content): Observable<Content>;
-    abstract publishContent(contentId: string): Observable<Content>;
+    abstract publishContent(contentId: string, versionId: string): Observable<Content>;
     abstract getAllContentTypes(): ContentType[];
 }
 

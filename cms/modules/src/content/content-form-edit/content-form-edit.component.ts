@@ -181,11 +181,11 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
                     this.contentService.editContent(this.currentContent).subscribe(res => {
                         formId.control.markAsPristine();
                         if (isPublished) {
-                            this.contentService.publishContent(this.currentContent._id).subscribe();
+                            this.contentService.publishContent(this.currentContent._id, this.currentContent.versionId).subscribe();
                         }
                     });
                 } else if (isPublished) {
-                    this.contentService.publishContent(this.currentContent._id).subscribe();
+                    this.contentService.publishContent(this.currentContent._id, this.currentContent.versionId).subscribe();
                 }
             }
         }

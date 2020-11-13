@@ -15,11 +15,11 @@ export abstract class ContentService<T extends Content> extends FolderService<T>
     }
 
     editContent(content: Partial<T>): Observable<T> {
-        return this.httpClient.put<T>(`${this.apiUrl}/${content._id}`, content);
+        return this.httpClient.put<T>(`${this.apiUrl}/${content._id}?versionId=${content.versionId}`, content);
     }
 
-    publishContent(contentId: string): Observable<T> {
-        return this.httpClient.put<T>(`${this.apiUrl}/publish/${contentId}`, {});
+    publishContent(contentId: string, versionId: string): Observable<T> {
+        return this.httpClient.put<T>(`${this.apiUrl}/publish/${contentId}?versionId=${versionId}`, {});
     }
 
     getContentChildren(parentId: string): Observable<T[]> {

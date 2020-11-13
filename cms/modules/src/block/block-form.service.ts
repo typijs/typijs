@@ -40,8 +40,8 @@ export class BlockFormService extends ContentFormService {
         return this.blockService.editContent(content);
     }
 
-    publishContent(contentId: string): Observable<Content> {
-        return this.blockService.publishContent(contentId);
+    publishContent(contentId: string, versionId: string): Observable<Content> {
+        return this.blockService.publishContent(contentId, versionId);
     }
 
     getAllContentTypes(): ContentType[] {

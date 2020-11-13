@@ -13,7 +13,7 @@ export abstract class ContentController<T extends IContentDocument, P extends IC
 
   get = async (req: express.Request, res: express.Response) => {
     const { language } = req as any;
-    const content = await this.contentService.getPrimaryVersionOfContentById(req.params.id, language)
+    const content = await this.contentService.getPrimaryVersionOfContentById(req.params.id, language, req.query.versionId)
     res.status(httpStatus.OK).json(content)
   }
 
@@ -25,13 +25,13 @@ export abstract class ContentController<T extends IContentDocument, P extends IC
 
   update = async (req: express.Request, res: express.Response) => {
     const { user, language } = req as any;
-    const savedContent = await this.contentService.executeUpdateContentFlow(req.params.id, req.body, user.id, language)
+    const savedContent = await this.contentService.executeUpdateContentFlow(req.params.id, req.query.versionId, req.body, user.id, language)
     res.status(httpStatus.OK).json(savedContent)
   }
 
   publish = async (req: express.Request, res: express.Response) => {
     const { user, language } = req as any;
-    const publishedContent = await this.contentService.executePublishContentFlow(req.params.id, user.id, language)
+    const publishedContent = await this.contentService.executePublishContentFlow(req.params.id, req.query.versionId, user.id, language)
     res.status(httpStatus.OK).json(publishedContent)
   }
 
