@@ -406,8 +406,7 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
     }
 
     protected mergeToContentVersion(content: T, contentVersion: V): T & V {
-        delete contentVersion._id;
-        const contentVersionData: T & V = Object.assign(content, contentVersion);
+        const contentVersionData: T & V = Object.assign(contentVersion, content);
         delete contentVersionData.contentLanguages;
         delete contentVersionData.contentId;
         return contentVersionData;

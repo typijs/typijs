@@ -41,9 +41,8 @@ export interface Content extends BaseModel {
     childItems: ChildItemRef[];
 
     // Extension properties
-    isPublished: boolean; //VersionStatus status == Published
-    isDirty: boolean;
-    [propName: string]: any;
+    isPublished: boolean; // VersionStatus status == Published
+    // [propName: string]: any;
 }
 
 export interface ContentVersion extends Content {

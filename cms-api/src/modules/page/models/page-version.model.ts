@@ -16,7 +16,7 @@ export const PageVersionSchema = new mongoose.Schema({
     contentId: { type: mongoose.Schema.Types.ObjectId, ref: cmsPage, required: true },
     masterVersionId: { type: mongoose.Schema.Types.ObjectId, ref: cmsPageVersion },
     urlSegment: { type: String, required: true },
-    simpleAddress: { type: String, required: false, unique: true, lowercase: true, trim: true },
+    simpleAddress: { type: String, required: false, lowercase: true, trim: true },
     visibleInMenu: { type: Boolean, required: true, default: false },
 }, { timestamps: true });
 

@@ -37,6 +37,6 @@ TreeNode.createInstanceFromContent = (content: Content, type: TypeOfContent): Tr
         type: type,
         contentType: content.contentType,
         isPublished: content.isPublished,
-        linkUrl: content.linkUrl
+        linkUrl: content['linkUrl']
     });
 };

@@ -34,7 +34,7 @@ export class PageData extends ContentData {
         const pageData = {
             ...page.properties,
             id: page._id,
-            linkUrl: page.publishedLinkUrl,
+            linkUrl: page.linkUrl,
             parentId: page.parentId,
             urlSegment: page.urlSegment,
             contentType: page.contentType,

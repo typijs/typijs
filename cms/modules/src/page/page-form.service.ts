@@ -37,11 +37,15 @@ export class PageFormService extends ContentFormService {
         return this.pageService.editContent(content);
     }
 
+    publishContent(contentId: string): Observable<Page> {
+        return this.pageService.publishContent(contentId);
+    }
+
     getAllContentTypes(): ContentType[] {
         return this.contentTypeService.getAllPageTypes();
     }
 
     private getPublishedUrlOfContent(contentData: Page): string {
-        return `http://localhost:4200${contentData.publishedLinkUrl}?${ngEditMode}=True&${ngId}=${contentData._id}`;
+        return `http://localhost:4200${contentData.linkUrl}?${ngEditMode}=True&${ngId}=${contentData._id}`;
     }
 }

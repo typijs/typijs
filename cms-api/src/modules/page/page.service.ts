@@ -26,12 +26,12 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
      */
     public getPrimaryVersionOfPageById = async (id: string, language: string, host: string): Promise<IPageDocument & IPageVersionDocument> => {
         const primaryVersion = await this.getPrimaryVersionOfContentById(id, language);
-        primaryVersion.linkUrl = await this.buildLinkUrl(primaryVersion.parentPath, language, host);
+        primaryVersion.linkUrl = await this.buildLinkUrl(primaryVersion.parentPath, primaryVersion.urlSegment, language, host);
         return primaryVersion;
     }
 
-    private buildLinkUrl = async (parentPath: string, language: string, host: string): Promise<string> => {
-        const parentIds = parentPath ? parentPath.split(',') : [];
+    private buildLinkUrl = async (parentPath: string, currentUrlSegment: string, language: string, host: string): Promise<string> => {
+        const parentIds = parentPath ? parentPath.split(',').filter(id => id && id.trim() !== '') : [];
 
         const currentSiteDefinition = await this.siteDefinitionService.getSiteDefinitionByHostname(host);
         const defaultLang = currentSiteDefinition ? currentSiteDefinition.hosts.find(x => x.name == host).language : '';
@@ -42,7 +42,7 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
             const urlSegment = await this.getUrlSegmentByPageId(parentIds[i], language);
             linkUrl = `${linkUrl}/${urlSegment}`;
         }
-        return linkUrl;
+        return `${linkUrl}/${currentUrlSegment}`;
     }
 
     private getUrlSegmentByPageId = async (id: string, language: string): Promise<string> => {
@@ -135,7 +135,7 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         if (publishedPages.length == 0) return [];
 
         //TODO: Temporary get first site definition
-        publishedPages.forEach(async page => page.linkUrl = await this.buildLinkUrl(page.parentPath, language, host));
+        publishedPages.forEach(async page => page.linkUrl = await this.buildLinkUrl(page.parentPath, page.urlSegment, language, host));
 
         return publishedPages;
     }
@@ -144,7 +144,7 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         //get page's parent
         const parentPage = await this.findById(pageObj.parentId).exec();
         //generate url segment
-        pageObj.urlSegment = await this.generateUrlSegment(0, slugify(pageObj.name), parentPage ? parentPage._id : null, language);
+        pageObj.urlSegment = await this.generateUrlSegment(0, slugify(pageObj.name), parentPage ? parentPage._id.toString() : null, language);
         //Step3: create new page
         const savedPage = await this.executeCreateContentFlow(pageObj, userId, language);
         //Step4: update parent page's has children property
@@ -153,7 +153,6 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
     }
 
     private generateUrlSegment = async (seed: number, originalUrl: string, parentId: string, language: string, generatedNameInUrl?: string): Promise<string> => {
-        if (!parentId) parentId = null;
 
         const urlSegment = generatedNameInUrl ? generatedNameInUrl : originalUrl;
         //Find existing page has the same url segment
@@ -165,7 +164,9 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
                 select: 'parentId'
             }).exec();
 
-        const count = existPages.filter(x => (x.contentId as IPageDocument).parentId == parentId).length;
+        const count = existPages.map(x => x.contentId as IPageDocument)
+            .filter(x => x)
+            .filter(x => (!x.parentId && !parentId) || (x.parentId && x.parentId!.toString() == parentId)).length;
         if (count <= 0) return generatedNameInUrl ? generatedNameInUrl : originalUrl;
 
         return await this.generateUrlSegment(seed + 1, originalUrl, parentId, language, `${originalUrl}${seed + 1}`);

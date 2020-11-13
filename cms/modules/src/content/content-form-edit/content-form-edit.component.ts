@@ -176,13 +176,16 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
                 Object.assign(this.currentContent, this.extractOwnPropertyValuesOfContent(this.contentFormGroup));
                 this.currentContent.properties = this.extractPropertiesPropertyOfContent(this.contentFormGroup);
                 this.currentContent.childItems = this.extractChildItemsRefs();
-                this.currentContent.isDirty = formId.dirty;
-                this.currentContent.isPublished = isPublished;
 
-                if (this.currentContent.isDirty || this.currentContent.isPublished) {
+                if (formId.dirty) {
                     this.contentService.editContent(this.currentContent).subscribe(res => {
                         formId.control.markAsPristine();
+                        if (isPublished) {
+                            this.contentService.publishContent(this.currentContent._id).subscribe();
+                        }
                     });
+                } else if (isPublished) {
+                    this.contentService.publishContent(this.currentContent._id).subscribe();
                 }
             }
         }

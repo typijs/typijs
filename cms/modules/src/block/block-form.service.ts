@@ -1,4 +1,4 @@
-import { Block, BlockService, BLOCK_TYPE, ContentTypeService, ContentType } from '@angular-cms/core';
+import { Block, BlockService, BLOCK_TYPE, ContentTypeService, ContentType, Content } from '@angular-cms/core';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -8,7 +8,6 @@ import { SubjectService } from '../shared/services/subject.service';
 
 @Injectable()
 export class BlockFormService extends ContentFormService {
-
     constructor(
         private router: Router,
         private contentTypeService: ContentTypeService,
@@ -39,6 +38,10 @@ export class BlockFormService extends ContentFormService {
 
     editContent(content: Block): Observable<Block> {
         return this.blockService.editContent(content);
+    }
+
+    publishContent(contentId: string): Observable<Content> {
+        return this.blockService.publishContent(contentId);
     }
 
     getAllContentTypes(): ContentType[] {

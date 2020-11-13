@@ -35,7 +35,7 @@ export class PageController extends ContentController<IPageDocument, IPageLangua
 
     const validUrlSegment = await this.pageService.validateUrlSegment(req.params.id, language);
     if (validUrlSegment) {
-      const publishedContent = await this.pageService.executePublishContentFlow(req.params.id, user.id, req.query.language)
+      const publishedContent = await this.pageService.executePublishContentFlow(req.params.id, user.id, language)
       res.status(httpStatus.OK).json(publishedContent)
     } else {
       res.status(httpStatus.INTERNAL_SERVER_ERROR).send('The url must be unique, consider change url segment please');

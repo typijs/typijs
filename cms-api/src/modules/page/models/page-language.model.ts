@@ -15,7 +15,7 @@ export const PageLanguageSchema = new mongoose.Schema({
     contentId: { type: mongoose.Schema.Types.ObjectId, ref: cmsPage },
     versionId: { type: mongoose.Schema.Types.ObjectId, ref: cmsPageVersion },
     urlSegment: { type: String, required: true },
-    simpleAddress: { type: String, required: false, unique: true, lowercase: true, trim: true }
+    simpleAddress: { type: String, required: false, lowercase: true, trim: true }
 }, { timestamps: true });
 
 export const PageLanguageModel: IPageLanguageModel = mongoose.model<IPageLanguageDocument, IPageLanguageModel>(cmsPageLanguage, PageLanguageSchema);

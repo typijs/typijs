@@ -74,7 +74,7 @@ export class CmsPageRender implements OnInit, OnDestroy {
     private populateReferenceProperty(currentPage: Page, property: ContentTypeProperty): void {
         if (!currentPage.properties) { return; }
 
-        const childItems = currentPage.publishedChildItems;
+        const childItems = currentPage.childItems;
         const fieldType = property.metadata.displayType;
         switch (fieldType) {
             case UIHint.ContentArea:
