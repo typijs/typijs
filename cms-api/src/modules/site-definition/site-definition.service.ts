@@ -16,7 +16,7 @@ export class SiteDefinitionService extends BaseService<ISiteDefinitionDocument> 
     public getSiteDefinitionByHostname = (hostName: string): Promise<ISiteDefinitionDocument> => {
         const cacheKey = this.cacheService.createCacheKey(this.PrefixCacheKey, 'getSiteDefinitionByHostname', hostName);
         return this.cacheService.get(cacheKey, () =>
-            this.findOne({ 'hosts.name': hostName })
+            this.findOne({ 'hosts.name': hostName }, {lean: true})
                 .populate({
                     path: 'startPage',
                     match: { isDeleted: false },
