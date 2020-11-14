@@ -13,7 +13,7 @@ export class PageTreeService implements TreeService {
     constructor(private pageService: PageService) { }
 
     getNode(nodeId: string): any {
-        return this.pageService.getContent(nodeId).pipe(
+        return this.pageService.getContent(nodeId, null, null, null).pipe(
             map(page => TreeNode.createInstanceFromContent(page, PAGE_TYPE)));
     }
 

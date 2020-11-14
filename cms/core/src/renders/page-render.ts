@@ -35,9 +35,10 @@ export class CmsPageRender implements OnInit, OnDestroy {
         // Step 3: Check if has 'ngeditmode=True' and 'ngid=xxxx'
         // Step 4: Get data by those params
         // Step 5: Else get data by url
+        const host = this.locationService.getLocation().host;
         const params = this.locationService.getURLSearchParams();
         if (params.get(ngEditMode) && params.get(ngId)) {
-            this.resolveContentDataById(params.get(ngId));
+            this.resolveContentDataById(params.get(ngId), params.get('versionId'), params.get('language'), host);
         } else {
             this.resolveContentDataByUrl();
         }
@@ -49,8 +50,8 @@ export class CmsPageRender implements OnInit, OnDestroy {
         }
     }
 
-    private resolveContentDataById(id: string) {
-        this.pageService.getContent(id).subscribe((currentPage: Page) => {
+    private resolveContentDataById(id: string, versionId: string, language: string, host: string) {
+        this.pageService.getContent(id, versionId, language, host).subscribe((currentPage: Page) => {
             if (currentPage) {
                 const pageType = this.contentTypeService.getPageType(currentPage.contentType);
                 pageType.properties.forEach(property => this.populateReferenceProperty(currentPage, property));

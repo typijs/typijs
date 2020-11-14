@@ -3,13 +3,13 @@ import {
     CmsObject, CmsPropertyFactoryResolver, CmsTab,
     Content,
     ContentTypeProperty, InsertPointDirective,
-    Media, Page, sortTabByTitle, TypeOfContent
+    Media, Page, sortTabByTitle, TypeOfContent, BrowserLocationService
 } from '@angular-cms/core';
 import { AfterViewInit, ChangeDetectorRef, Component, ComponentRef, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, UrlSegment } from '@angular/router';
-import { of } from 'rxjs';
-import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { of, combineLatest } from 'rxjs';
+import { map, switchMap, takeUntil, tap, catchError } from 'rxjs/operators';
 import { SubjectService } from '../../shared/services/subject.service';
 import { SubscriptionDestroy } from '../../shared/subscription-destroy';
 import { ContentFormService, ContentFormServiceResolver, ContentInfo } from '../content-form.service';
@@ -38,27 +38,35 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
     constructor(
         private contentServiceResolver: ContentFormServiceResolver,
         private propertyFactoryResolver: CmsPropertyFactoryResolver,
+        private locationService: BrowserLocationService,
+        private subjectService: SubjectService,
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
-        private subjectService: SubjectService,
         private changeDetectionRef: ChangeDetectorRef
     ) { super(); }
 
     ngOnInit() {
-        this.route.params
+        const host = this.locationService.getLocation().host;
+        combineLatest([this.route.paramMap, this.route.queryParamMap])
             .pipe(
-                switchMap(params => {
-                    const contentId = params.id;
+                switchMap(([params, query]) => {
+                    const contentId = params.get('id');
+                    const versionId = query.get('versionId');
+                    const language = query.get('language');
                     const typeOfContent = this.getTypeContentFromUrl(this.route.snapshot.url);
                     this.contentService = this.contentServiceResolver.resolveContentFormService(typeOfContent);
 
-                    return contentId ? this.contentService.getContent(contentId) : of({});
+                    return contentId ? this.contentService.getContent(contentId, versionId, language, host) : of({});
                 }),
                 tap((result: ContentInfo) => {
                     this.contentTypeProperties = result.contentTypeProperties;
                     this.previewUrl = result.previewUrl;
                 }),
                 map((result: ContentInfo) => result.contentData),
+                catchError(error => {
+                    console.error(error);
+                    return of({});
+                }),
                 takeUntil(this.unsubscribe$))
             .subscribe((contentData: Content) => this.bindDataForContentForm(contentData));
 

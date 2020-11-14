@@ -35,10 +35,10 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
 
         const currentSiteDefinition = await this.siteDefinitionService.getSiteDefinitionByHostname(host);
         const defaultLang = currentSiteDefinition ? currentSiteDefinition.hosts.find(x => x.name == host).language : '';
-        const matchStartIndex = currentSiteDefinition ? parentIds.indexOf((currentSiteDefinition.startPage as IPageDocument)._id) : -1;
+        const matchStartIndex = currentSiteDefinition ? parentIds.indexOf((currentSiteDefinition.startPage as IPageDocument)._id.toString()) : -1;
 
-        let linkUrl = defaultLang == language ? '/' : `/${language}`;
-        for (let i = 0; matchStartIndex < i && i < parentIds.length; i++) {
+        let linkUrl = defaultLang == language ? '' : `/${language}`;
+        for (let i = matchStartIndex + 1; i < parentIds.length; i++) {
             const urlSegment = await this.getUrlSegmentByPageId(parentIds[i], language);
             linkUrl = `${linkUrl}/${urlSegment}`;
         }
@@ -82,7 +82,7 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
     private splitPathNameToUrlSegments = (pathname: string, language: string): string[] => {
         if (!pathname) return [];
 
-        const paths = pathname.split('/');
+        const paths = pathname.split('/').filter(id => id && id.trim() !== '');
         if (paths.length == 0) return [];
 
         if (paths[0] == language) paths.splice(0, 1);

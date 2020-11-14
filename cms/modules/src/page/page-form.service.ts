@@ -14,8 +14,8 @@ export class PageFormService extends ContentFormService {
         super(PAGE_TYPE);
     }
 
-    getContent(contentId): Observable<ContentInfo> {
-        return this.pageService.getContent(contentId)
+    getContent(contentId: string, versionId: string, language: string, host: string): Observable<ContentInfo> {
+        return this.pageService.getContent(contentId, versionId, language, host)
             .pipe(
                 // fire page selected event to inform to page tree locate to right node
                 tap(contentData => this.subjectService.firePageSelected(contentData)),

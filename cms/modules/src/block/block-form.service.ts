@@ -16,8 +16,8 @@ export class BlockFormService extends ContentFormService {
         super(BLOCK_TYPE);
     }
 
-    getContent(contentId: string): Observable<ContentInfo> {
-        return this.blockService.getContent(contentId)
+    getContent(contentId: string, versionId: string, language: string, host: string): Observable<ContentInfo> {
+        return this.blockService.getContent(contentId, versionId, language, host)
             .pipe(
                 map(contentData => ({
                     contentTypeProperties: this.contentTypeService.getBlockTypeProperties(contentData.contentType),

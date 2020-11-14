@@ -13,7 +13,7 @@ export class MediaTreeService implements TreeService {
     constructor(private mediaService: MediaService) { }
 
     getNode(nodeId: string): Observable<TreeNode> {
-        return this.mediaService.getContent(nodeId).pipe(
+        return this.mediaService.getContent(nodeId, null, null, null).pipe(
             map(media => TreeNode.createInstanceFromContent(media, FOLDER_MEDIA)));
     }
 

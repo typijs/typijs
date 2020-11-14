@@ -14,7 +14,7 @@ export class BlockTreeService implements TreeService {
     constructor(private blockService: BlockService) { }
 
     getNode(nodeId: string): Observable<TreeNode> {
-        return this.blockService.getContent(nodeId).pipe(
+        return this.blockService.getContent(nodeId, null, null, null).pipe(
             map(block => TreeNode.createInstanceFromContent(block, FOLDER_BLOCK)));
     }
 

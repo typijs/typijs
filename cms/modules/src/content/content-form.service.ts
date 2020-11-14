@@ -16,7 +16,7 @@ export abstract class ContentFormService {
         return this.typeOfContent === typeOfContent;
     }
 
-    abstract getContent(contentId: string): Observable<ContentInfo>;
+    abstract getContent(contentId: string, versionId: string, language: string, host: string): Observable<ContentInfo>;
     abstract createContent(content: Content): Observable<Content>;
     abstract editContent(content: Content): Observable<Content>;
     abstract publishContent(contentId: string, versionId: string): Observable<Content>;

@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 
 import { Content } from './models/content.model';
 import { FolderService } from './folder.service';
+import { convertObjectToUrlQueryString } from '../../helpers/common';
 
 export abstract class ContentService<T extends Content> extends FolderService<T> {
 
@@ -26,8 +27,17 @@ export abstract class ContentService<T extends Content> extends FolderService<T>
         return this.httpClient.get<T[]>(`${this.apiUrl}/children/${parentId}`);
     }
 
-    getContent(contentId: string): Observable<T> {
-        return this.httpClient.get<T>(`${this.apiUrl}/${contentId}`);
+    getContent(contentId: string, versionId: string, language?: string, host?: string): Observable<T> {
+        const query = convertObjectToUrlQueryString({ versionId, language });
+        return this.httpClient.get<T>(`${this.apiUrl}/${contentId}?${query}`);
+    }
+
+    getContentVersions(contentId: string): Observable<T[]> {
+        return this.httpClient.get<T[]>(`${this.apiUrl}/version/${contentId}`);
+    }
+
+    setPrimaryVersion(versionId: string): Observable<T> {
+        return this.httpClient.put<T>(`${this.apiUrl}/version/${versionId}`, {});
     }
 
     softDeleteContent(contentId: string): Observable<[T, any]> {
