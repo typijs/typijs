@@ -53,9 +53,11 @@ export class BlockModule {
                 { provide: CONTENT_FORM_SERVICES, useClass: BlockFormService, multi: true },
                 { provide: EDITOR_ROUTES, useValue: blockRoutes, multi: true },
                 {
-                    provide: EDITOR_WIDGETS, useValue: [
-                        { group: 'Blocks', position: CmsWidgetPosition.Right, component: BlockTreeComponent }
-                    ],
+                    provide: EDITOR_WIDGETS, useValue: { group: 'Blocks', position: CmsWidgetPosition.Right, component: BlockTreeComponent },
+                    multi: true
+                },
+                {
+                    provide: EDITOR_WIDGETS, useValue: { group: 'Pages', position: CmsWidgetPosition.Left, component: BlockTreeComponent, order: 1, isSplit: true },
                     multi: true
                 }
             ]

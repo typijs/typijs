@@ -55,13 +55,11 @@ export class SiteDefinitionModule {
                 LanguageSelectionFactory,
                 { provide: ADMIN_ROUTES, useValue: siteRoutes, multi: true },
                 {
-                    provide: ADMIN_WIDGETS, useValue: [
-                        {
+                    provide: ADMIN_WIDGETS, useValue: {
                             component: SiteDefinitionMenuComponent,
                             position: CmsWidgetPosition.Left,
                             group: 'Config'
-                        }
-                    ],
+                        },
                     multi: true
                 }
             ]

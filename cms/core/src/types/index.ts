@@ -8,8 +8,18 @@ export type ClassOf<T> = new (...args: any[]) => T;
 export type CmsObject = { [key: string]: any };
 
 export type CmsTab = {
+    /**
+     * The tab name
+     */
     name: string,
-    title: string
+    /**
+     * The title of each tab
+     */
+    title: string,
+    /**
+     * The number of area in each tab
+     */
+    areas: number
 };
 
 export type CmsImage = {

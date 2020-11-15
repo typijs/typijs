@@ -81,10 +81,10 @@ export class CmsPortalModule {
             ngModule: CmsPortalModule,
             providers: [
                 WidgetService,
-                { provide: EDITOR_ROUTES, useValue: [], multi: true },
-                { provide: ADMIN_ROUTES, useValue: [], multi: true },
-                { provide: ADMIN_WIDGETS, useValue: [], multi: true },
-                { provide: EDITOR_WIDGETS, useValue: [], multi: true }
+                // { provide: EDITOR_ROUTES, useValue: [], multi: true },
+                // { provide: ADMIN_ROUTES, useValue: [], multi: true },
+                // { provide: ADMIN_WIDGETS, useValue: [], multi: true },
+                // { provide: EDITOR_WIDGETS, useValue: [], multi: true }
             ]
         };
     }

@@ -10,7 +10,7 @@ import { WidgetService } from '../services/widget.service';
 export class AdminComponent extends BaseLayoutComponent {
 
     constructor(
-        @Inject(ADMIN_WIDGETS) private adminWidgets: CmsComponentConfig[][],
+        @Inject(ADMIN_WIDGETS) private adminWidgets: CmsComponentConfig[],
         _changeDetectionRef: ChangeDetectorRef,
         widgetService: WidgetService) {
         super(_changeDetectionRef, widgetService);
@@ -18,6 +18,10 @@ export class AdminComponent extends BaseLayoutComponent {
     }
 
     protected getCmsWidgets(): CmsComponentConfig[] {
-        return this.adminWidgets.reduce((a, b) => a.concat(b), []);
+        return this.adminWidgets.sort(function (a, b) {
+            if (!a.order) a.order = 0;
+            if (!b.order) b.order = 0;
+            return a.order - b.order
+        });
     }
 }

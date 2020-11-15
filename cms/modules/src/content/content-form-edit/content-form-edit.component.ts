@@ -23,7 +23,7 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
     @ViewChildren(InsertPointDirective) insertPoints: QueryList<InsertPointDirective>;
 
     contentFormGroup: FormGroup = new FormGroup({});
-    formTabs: CmsTab[] = [];
+    formTabs: Partial<CmsTab>[] = [];
     currentContent: Partial<Page> & Content;
     editMode: 'AllProperties' | 'OnPageEdit' = 'AllProperties';
 
@@ -110,8 +110,8 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
         return contentData;
     }
 
-    private extractFormTabsFromProperties(properties: ContentTypeProperty[]): CmsTab[] {
-        const tabs: CmsTab[] = [];
+    private extractFormTabsFromProperties(properties: ContentTypeProperty[]): Partial<CmsTab>[] {
+        const tabs: Partial<CmsTab>[] = [];
 
         properties.forEach((property: ContentTypeProperty) => {
             if (property.metadata.hasOwnProperty('groupName')) {

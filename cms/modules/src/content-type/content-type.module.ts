@@ -29,13 +29,11 @@ export class ContentTypeModule {
             providers: [
                 { provide: ADMIN_ROUTES, useValue: contentTypeRoutes, multi: true },
                 {
-                    provide: ADMIN_WIDGETS, useValue: [
-                        {
+                    provide: ADMIN_WIDGETS, useValue: {
                             component: ContentTypeListComponent,
                             position: CmsWidgetPosition.Left,
                             group: 'Content Type'
-                        }
-                    ],
+                        },
                     multi: true
                 }
             ]

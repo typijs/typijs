@@ -10,7 +10,7 @@ import { WidgetService } from '../services/widget.service';
 export class EditorComponent extends BaseLayoutComponent {
 
     constructor(
-        @Inject(EDITOR_WIDGETS) private editorWidgets: CmsComponentConfig[][],
+        @Inject(EDITOR_WIDGETS) private editorWidgets: CmsComponentConfig[],
         _changeDetectionRef: ChangeDetectorRef,
         widgetService: WidgetService) {
         super(_changeDetectionRef, widgetService);
@@ -18,6 +18,10 @@ export class EditorComponent extends BaseLayoutComponent {
     }
 
     protected getCmsWidgets(): CmsComponentConfig[] {
-        return this.editorWidgets.reduce((a, b) => a.concat(b), []);
+        return this.editorWidgets.sort(function (a, b) {
+            if(!a.order) a.order = 0;
+            if(!b.order) b.order = 0;
+            return a.order - b.order
+        });
     }
 }
