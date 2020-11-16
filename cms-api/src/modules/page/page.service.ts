@@ -26,23 +26,29 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
      */
     public getPrimaryVersionOfPageById = async (id: string, language: string, versionId: string, host: string): Promise<IPageDocument & IPageVersionDocument> => {
         const primaryVersion = await this.getPrimaryVersionOfContentById(id, language, versionId);
-        primaryVersion.linkUrl = await this.buildLinkUrl(primaryVersion.parentPath, primaryVersion.urlSegment, language, host);
+        primaryVersion.linkUrl = await this.buildLinkUrl(primaryVersion._id, primaryVersion.parentPath, primaryVersion.urlSegment, language, host);
         return primaryVersion;
     }
 
-    private buildLinkUrl = async (parentPath: string, currentUrlSegment: string, language: string, host: string): Promise<string> => {
+    private buildLinkUrl = async (currentId: string, parentPath: string, currentUrlSegment: string, language: string, host: string): Promise<string> => {
         const parentIds = parentPath ? parentPath.split(',').filter(id => id && id.trim() !== '') : [];
 
         const currentSiteDefinition = await this.siteDefinitionService.getSiteDefinitionByHostname(host);
-        const defaultLang = currentSiteDefinition ? currentSiteDefinition.hosts.find(x => x.name == host).language : '';
-        const matchStartIndex = currentSiteDefinition ? parentIds.indexOf((currentSiteDefinition.startPage as IPageDocument)._id.toString()) : -1;
+        const startPageId = (currentSiteDefinition.startPage as IPageDocument)._id.toString();
+        const matchStartIndex = currentSiteDefinition ? parentIds.indexOf(startPageId) : -1;
 
-        let linkUrl = defaultLang == language ? '' : `/${language}`;
+        const defaultLang = currentSiteDefinition ? currentSiteDefinition.hosts.find(x => x.name == host).language : '';
+
+        const urlSegments: string[] = [];
+        if (defaultLang !== language) { urlSegments.push(language); }
+
         for (let i = matchStartIndex + 1; i < parentIds.length; i++) {
             const urlSegment = await this.getUrlSegmentByPageId(parentIds[i], language);
-            linkUrl = `${linkUrl}/${urlSegment}`;
+            urlSegments.push(urlSegment);
         }
-        return `${linkUrl}/${currentUrlSegment}`;
+
+        if (currentId != startPageId) { urlSegments.push(currentUrlSegment); }
+        return `/${urlSegments.filter(segment => segment && segment.trim() !== '').join('/')}`;
     }
 
     private getUrlSegmentByPageId = async (id: string, language: string): Promise<string> => {
@@ -135,7 +141,7 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         if (publishedPages.length == 0) return [];
 
         //TODO: Temporary get first site definition
-        publishedPages.forEach(async page => page.linkUrl = await this.buildLinkUrl(page.parentPath, page.urlSegment, language, host));
+        publishedPages.forEach(async page => page.linkUrl = await this.buildLinkUrl(page._id.toString(), page.parentPath, page.urlSegment, language, host));
 
         return publishedPages;
     }
