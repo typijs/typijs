@@ -32,19 +32,20 @@ export class WidgetService {
                     .filter(x => x.group == tab.title || (!x.group && tab.title == this.GLOBAL_GROUP));
 
                 const nonSplitWidgets = registeredWidgetsInTab.filter(x => !x.isSplit);
-                //all not split widget will be put to the first area in tab
+                // all not split widget will be put to the first area in tab
                 for (let index = 0; index < nonSplitWidgets.length; index++) {
                     const widget = nonSplitWidgets[index];
                     componentRefs.push(this.createWidget(viewContainerRefs[0], widget));
                 }
                 const splitWidgets = registeredWidgetsInTab.filter(x => x.isSplit);
-                //the remaining widget will be put to the remaining areas
+                // the remaining widget will be put to the remaining areas
                 for (let index = 0; index < splitWidgets.length; index++) {
                     const widget = splitWidgets[index];
-                    //in case there is not any non split widget, the index area will start from 0
+                    // in case there is not any non split widget, the index area will start from 0
                     const areaIndex = nonSplitWidgets.length > 0 ? index + 1 : index;
-                    if (areaIndex < viewContainerRefs.length)
+                    if (areaIndex < viewContainerRefs.length) {
                         componentRefs.push(this.createWidget(viewContainerRefs[areaIndex], widget));
+                    }
                 }
             });
         }

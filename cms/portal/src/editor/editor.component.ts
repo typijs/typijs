@@ -1,5 +1,5 @@
 import { Component, ChangeDetectorRef, Inject } from '@angular/core';
-import { EDITOR_WIDGETS, CmsComponentConfig } from '@angular-cms/core';
+import { EDITOR_WIDGETS, CmsComponentConfig, sortWidgetByOrder } from '@angular-cms/core';
 
 import { BaseLayoutComponent } from '../shared/base-layout.component';
 import { WidgetService } from '../services/widget.service';
@@ -18,10 +18,6 @@ export class EditorComponent extends BaseLayoutComponent {
     }
 
     protected getCmsWidgets(): CmsComponentConfig[] {
-        return this.editorWidgets.sort(function (a, b) {
-            if(!a.order) a.order = 0;
-            if(!b.order) b.order = 0;
-            return a.order - b.order
-        });
+        return this.editorWidgets.sort(sortWidgetByOrder);
     }
 }

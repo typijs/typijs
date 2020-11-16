@@ -66,7 +66,12 @@ export class MediaModule {
                 UploadService,
                 { provide: EDITOR_ROUTES, useValue: mediaRoutes, multi: true },
                 {
-                    provide: EDITOR_WIDGETS, useValue: { group: 'Medias', position: CmsWidgetPosition.Right, component: MediaTreeComponent },
+                    provide: EDITOR_WIDGETS, useValue: {
+                        group: 'Medias',
+                        position: CmsWidgetPosition.Right,
+                        component: MediaTreeComponent,
+                        order: 10
+                    },
                     multi: true
                 }
             ]

@@ -1,4 +1,5 @@
 import { CmsTab } from '../types';
+import { CmsComponentConfig } from '../types/module-config';
 
 export function sortTabByTitle(tabOne: CmsTab, tabTwo: CmsTab): number {
     const titleOne = tabOne.title ? tabOne.title.toUpperCase() : ''; // ignore upper and lowercase
@@ -10,6 +11,16 @@ export function sortTabByTitle(tabOne: CmsTab, tabTwo: CmsTab): number {
         return 1;
     }
     return 0;
+}
+
+export function sortWidgetByOrder(widget1: CmsComponentConfig, widget2: CmsComponentConfig): number {
+    if (!widget1.order) {
+        widget1.order = 0;
+    }
+    if (!widget2.order) {
+        widget2.order = 0;
+    }
+    return widget1.order - widget2.order;
 }
 
 export function generateUUID(): string {
@@ -31,6 +42,10 @@ export function generateUUID(): string {
     });
 }
 
+/**
+ * Deep clone object
+ * @param obj Source Object
+ */
 export function clone(obj: any) {
     let copy: any;
 
@@ -61,6 +76,10 @@ export function clone(obj: any) {
     throw new Error('Unable to copy obj! Its type isn\'t supported.');
 }
 
+/**
+ * Check if the url is absolute
+ * @param url
+ */
 export function isUrlAbsolute(url: string): boolean {
     if (!url) { return true; }
     if (url.indexOf('//') === 0) { return true; } // URL is protocol-relative (= absolute)
@@ -79,13 +98,15 @@ export function isUrlAbsolute(url: string): boolean {
  * @returns return url query string ex `param1=value1&param2=value2`
  */
 export function convertObjectToUrlQueryString(query: { [param: string]: string | number }): string {
-    for (let param in query) /* You can get copy by spreading {...query} */
+    for (const param in query) { /* You can get copy by spreading {...query} */
 
         if (query[param] === undefined /* In case of undefined assignment */
             || query[param] === null
-            || query[param] === "")
+            || query[param] === '') {
 
             delete query[param];
+        }
+    }
 
     return new URLSearchParams(query as any).toString();
 }

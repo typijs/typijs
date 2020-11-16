@@ -53,11 +53,11 @@ export class PageModule {
                 { provide: CONTENT_FORM_SERVICES, useClass: PageFormService, multi: true },
                 { provide: EDITOR_ROUTES, useValue: pageRoutes, multi: true },
                 {
-                    provide: EDITOR_WIDGETS, useValue: { group: 'Pages', position: CmsWidgetPosition.Left, component: PageTreeComponent, order: 2 },
+                    provide: EDITOR_WIDGETS, useValue: { group: 'Pages', position: CmsWidgetPosition.Left, component: PageTreeComponent, order: 10 },
                     multi: true
                 },
                 {
-                    provide: ADMIN_WIDGETS, useValue: { group: 'Pages', position: CmsWidgetPosition.Right, component: PageTreeReadonlyComponent },
+                    provide: ADMIN_WIDGETS, useValue: { group: 'Pages', position: CmsWidgetPosition.Right, component: PageTreeReadonlyComponent, order: 10 },
                     multi: true
                 }
             ]

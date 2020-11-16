@@ -30,10 +30,11 @@ export class ContentTypeModule {
                 { provide: ADMIN_ROUTES, useValue: contentTypeRoutes, multi: true },
                 {
                     provide: ADMIN_WIDGETS, useValue: {
-                            component: ContentTypeListComponent,
-                            position: CmsWidgetPosition.Left,
-                            group: 'Content Type'
-                        },
+                        component: ContentTypeListComponent,
+                        position: CmsWidgetPosition.Left,
+                        group: 'Content Type',
+                        order: 10
+                    },
                     multi: true
                 }
             ]

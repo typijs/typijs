@@ -56,10 +56,11 @@ export class SiteDefinitionModule {
                 { provide: ADMIN_ROUTES, useValue: siteRoutes, multi: true },
                 {
                     provide: ADMIN_WIDGETS, useValue: {
-                            component: SiteDefinitionMenuComponent,
-                            position: CmsWidgetPosition.Left,
-                            group: 'Config'
-                        },
+                        component: SiteDefinitionMenuComponent,
+                        position: CmsWidgetPosition.Left,
+                        group: 'Config',
+                        order: 10
+                    },
                     multi: true
                 }
             ]
