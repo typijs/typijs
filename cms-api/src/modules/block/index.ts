@@ -1,7 +1,7 @@
-import { Provider, ReflectiveInjector, ResolvedReflectiveProvider } from 'injection-js';
-import { BlockService } from './block.service';
+import { Provider } from 'injection-js';
+import { BlockService, BlockVersionService } from './block.service';
 import { BlockController } from './block.controller';
 import { BlockRouter } from './block.route';
 
-const BlockProviders: Provider[] = [BlockService, BlockController, BlockRouter]
-export { BlockService, BlockController, BlockRouter, BlockProviders }
+const BlockProviders: Provider[] = [BlockService, BlockVersionService, BlockController, BlockRouter]
+export { BlockService, BlockVersionService, BlockController, BlockRouter, BlockProviders }

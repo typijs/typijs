@@ -10,6 +10,13 @@ import { IPageDocument, PageModel } from "./models/page.model";
 import { IPageLanguageDocument, PageLanguageModel } from './models/page-language.model';
 import { VersionStatus } from '../content/content.model';
 import { LanguageService } from '../language';
+import { ContentVersionService } from '../content/content-version.service';
+
+export class PageVersionService extends ContentVersionService<IPageVersionDocument> {
+    constructor() {
+        super(PageVersionModel);
+    }
+}
 
 @Injectable()
 export class PageService extends ContentService<IPageDocument, IPageLanguageDocument, IPageVersionDocument> {

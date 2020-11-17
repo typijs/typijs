@@ -127,7 +127,7 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         //Step2: Create content version
         const savedContentVersionDoc = await this.contentVersionService.createNewVersion(content as any, savedContent._id, userId, language);
         //Step3: update primary version
-        await this.contentVersionService.setPrimaryVersion(savedContent._id, savedContentVersionDoc._id, language);
+        await this.contentVersionService.setPrimaryVersion(savedContentVersionDoc._id);
         //Step3: Create content in language 
         const savedContentLangDoc = await this.contentLanguageService.createContentLanguage(content, savedContent._id, savedContentVersionDoc._id, userId, language);
 
@@ -174,7 +174,7 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         const currentVersion = await this.contentVersionService.findOne({ _id: versionId } as any).exec();
         const isDraftVersion = this.contentVersionService.isDraftVersion(currentVersion.status);
         if (isDraftVersion) {
-            Object.assign(currentVersion, { name, properties, childItems, updatedBy: userId });
+            Object.assign(currentVersion, { name, properties, childItems, savedAt: new Date(), updatedBy: userId, savedBy: userId });
             const saveContentVersion = await currentVersion.save();
 
             //Step2: update corresponding content language if this language is not publish yet
@@ -191,7 +191,7 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
             const primaryDraftVersion = await this.contentVersionService.getPrimaryDraftVersion(id, language);
             //If there is not any primary draft version --> update primary version 
             if (!primaryDraftVersion) {
-                await this.contentVersionService.setPrimaryVersion(id, savedContentVersionDoc._id, language);
+                await this.contentVersionService.setPrimaryVersion(savedContentVersionDoc._id);
             }
             return this.mergeToContentVersion(currentContent, savedContentVersionDoc);
         }
@@ -211,18 +211,21 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
             currentVersion.status = VersionStatus.Published;
             currentVersion.startPublish = new Date();
             currentVersion.publishedBy = userId;
+            currentVersion.savedAt = new Date();
+            currentVersion.savedBy = userId;
             currentVersion.masterVersionId = null;
+
             await currentVersion.save();
 
             //Step3: publish the current content language
             const contentLanguage = await this.contentLanguageService.findOne({ contentId: id, language: language } as any).exec();
             const previousVersionId = contentLanguage.versionId;
             const { status, startPublish, publishedBy, name, properties, childItems, _id } = currentVersion;
-            Object.assign(contentLanguage, { status, startPublish, publishedBy, name, properties, childItems, versionId: _id });
+            Object.assign(contentLanguage, { status, startPublish, publishedBy, name, properties, childItems, versionId: _id.toString() });
             await contentLanguage.save();
 
             //Step3: update previous version to PreviewPublished
-            await this.contentVersionService.updateById(previousVersionId, { status: VersionStatus.PreviouslyPublished } as any);
+            if (previousVersionId != currentVersion._id.toString()) await this.contentVersionService.updateById(previousVersionId, { status: VersionStatus.PreviouslyPublished } as any);
         }
 
         return this.mergeToContentVersion(currentContent, currentVersion);

@@ -1,3 +1,4 @@
+import { DocumentNotFoundException } from '../../error';
 import { BaseService } from '../shared';
 import {
     IContentVersionDocument,
@@ -11,13 +12,20 @@ export class ContentVersionService<V extends IContentVersionDocument> extends Ba
         contentVersionDoc.contentId = contentId;
         contentVersionDoc.language = language;
         contentVersionDoc.createdBy = userId;
+        contentVersionDoc.savedAt = new Date();
+        contentVersionDoc.savedBy = userId;
         contentVersionDoc.isPrimary = false;
         contentVersionDoc.masterVersionId = masterVersionId;
         contentVersionDoc.status = VersionStatus.CheckedOut;
         return this.create(contentVersionDoc)
     }
 
-    setPrimaryVersion = async (contentId: string, versionId: string, language: string): Promise<V> => {
+    setPrimaryVersion = async (versionId: string): Promise<V> => {
+        const matchVersion = await this.findById(versionId).exec();
+        if (!matchVersion) throw new DocumentNotFoundException(versionId, `The version with id ${versionId} is not found`);
+
+        const { contentId, language } = matchVersion;
+
         // Step 1: Get old primary versions by language
         const oldPrimaryVersions = await this.find({ contentId, language, isPrimary: true } as any, { lean: true }).exec();
         const versionIds = oldPrimaryVersions.map(x => x._id.toString());
@@ -27,7 +35,8 @@ export class ContentVersionService<V extends IContentVersionDocument> extends Ba
             { isPrimary: false } as any).exec();
 
         // Step3: set primary for version
-        return this.updateById(versionId, { isPrimary: true } as any);
+        matchVersion.isPrimary = true;
+        return await matchVersion.save();
     }
 
     //get draft version which marked as Primary
@@ -37,5 +46,11 @@ export class ContentVersionService<V extends IContentVersionDocument> extends Ba
 
     isDraftVersion = (status: number): boolean => {
         return status == VersionStatus.CheckedOut || status == VersionStatus.Rejected
+    }
+
+    getAllVersionsOfContent = (contentId: string): Promise<V[]> => {
+        return this.find({ contentId } as any, { lean: true })
+            .sort('-savedAt')
+            .populate('savedBy').exec()
     }
 }

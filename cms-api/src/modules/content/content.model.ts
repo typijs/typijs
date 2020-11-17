@@ -97,7 +97,7 @@ export interface IContentLanguage extends IPublishContent, IContentHasChildItems
     [key: string]: any;
 }
 export interface IContentLanguageDocument extends IContentLanguage, IBaseDocument { }
-export interface IContentVersionModel<T extends IContentVersionDocument> extends IBaseModel<T> { }
+export interface IContentLanguageModel<T extends IContentLanguageDocument> extends IBaseModel<T> { }
 
 export interface IContentVersion extends IPublishContent, IContentHasChildItems {
     contentId: string | IContentDocument;
@@ -108,6 +108,8 @@ export interface IContentVersion extends IPublishContent, IContentHasChildItems 
     name: string;
     properties: any;
     isPrimary: boolean;
+    savedAt: Date;
+    savedBy: string;
     /**
      * Ref to @VersionStatus
      */
@@ -116,7 +118,7 @@ export interface IContentVersion extends IPublishContent, IContentHasChildItems 
 }
 
 export interface IContentVersionDocument extends IContentVersion, IBaseDocument { }
-export interface IContentLanguageModel<T extends IContentLanguageDocument> extends IBaseModel<T> { }
+export interface IContentVersionModel<T extends IContentVersionDocument> extends IBaseModel<T> { }
 
 export const PublishContentSchema = new mongoose.Schema({
     //IPublishContent Implements
@@ -168,5 +170,7 @@ export const ContentVersionSchema = new mongoose.Schema({
     ...ContentLanguageSchema.obj,
     childOrderRule: { type: Number, required: true, default: 1 },
     peerOrder: { type: Number, required: true, default: 100 },
-    isPrimary: { type: Boolean, required: true, default: false }
+    isPrimary: { type: Boolean, required: true, default: false },
+    savedAt: { type: Date },
+    savedBy: { type: mongoose.Schema.Types.ObjectId, ref: cmsUser }
 });

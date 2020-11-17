@@ -25,6 +25,10 @@ export class BlockRouter {
         block.post('/folder', this.authGuard.checkRoles(requiredAdminOrEditor), validate(createFolder), this.blockController.createFolderContent);
 
         block.put('/folder/:id', this.authGuard.checkRoles(requiredAdminOrEditor), validate(updateFolderName), this.blockController.updateFolderName);
+        //get all versions of content
+        block.get('/version/:id', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.blockController.getAllVersionsOfContent);
+        //set version is primary
+        block.put('/version/:versionId', this.authGuard.checkRoles(requiredAdminOrEditor), this.blockController.setVersionIsPrimary);
 
         block.get('/:id', validate(requiredContentId), this.langGuard.checkEnabled(), this.blockController.get);
 

@@ -6,7 +6,7 @@ import * as httpStatus from 'http-status';
 
 import { ContentController } from '../content/content.controller';
 import { MediaService } from './media.service';
-import { IMediaVersionDocument } from './models/media-version.model';
+import { IMediaVersionDocument, MediaVersionModel } from './models/media-version.model';
 import {
     FileContent,
     ImageContent,
@@ -15,12 +15,13 @@ import {
 } from './models/media.model';
 import { Multer } from './multer';
 import { IMediaLanguageDocument } from './models/media-language.model';
+import { ContentVersionService } from '../content/content-version.service';
 
 @Injectable()
 export class MediaController extends ContentController<IMediaDocument, IMediaLanguageDocument, IMediaVersionDocument> {
 
     constructor(private mediaService: MediaService, private multer: Multer) {
-        super(mediaService);
+        super(mediaService, new ContentVersionService<IMediaVersionDocument>(MediaVersionModel));
     }
 
     getMediaById = async (req: express.Request, res: express.Response) => {

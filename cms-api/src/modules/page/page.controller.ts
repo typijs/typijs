@@ -4,7 +4,7 @@ import * as httpStatus from 'http-status';
 import { Injectable } from 'injection-js';
 
 import { ContentController } from '../content/content.controller';
-import { PageService } from './page.service';
+import { PageService, PageVersionService } from './page.service';
 
 import { IPageDocument } from './models/page.model';
 import { IPageVersionDocument } from './models/page-version.model';
@@ -13,8 +13,8 @@ import { IPageLanguageDocument } from './models/page-language.model';
 @Injectable()
 export class PageController extends ContentController<IPageDocument, IPageLanguageDocument, IPageVersionDocument> {
 
-  constructor(private pageService: PageService) {
-    super(pageService);
+  constructor(private pageService: PageService, private pageVersionService: PageVersionService) {
+    super(pageService, pageVersionService);
   }
 
   get = async (req: express.Request, res: express.Response) => {

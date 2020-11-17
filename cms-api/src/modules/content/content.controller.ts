@@ -2,18 +2,29 @@ import * as express from 'express';
 import * as httpStatus from 'http-status';
 
 import { FolderController } from '../folder/folder.controller';
+import { ContentVersionService } from './content-version.service';
 import { IContentDocument, IContentVersionDocument, IContentLanguageDocument } from './content.model';
 import { ContentService } from './content.service';
 
 export abstract class ContentController<T extends IContentDocument, P extends IContentLanguageDocument, V extends IContentVersionDocument> extends FolderController<T, P> {
 
-  constructor(private contentService: ContentService<T, P, V>) {
+  constructor(private contentService: ContentService<T, P, V>, private versionService: ContentVersionService<V>) {
     super(contentService);
   }
 
   get = async (req: express.Request, res: express.Response) => {
     const { language } = req as any;
     const content = await this.contentService.getPrimaryVersionOfContentById(req.params.id, language, req.query.versionId)
+    res.status(httpStatus.OK).json(content)
+  }
+
+  getAllVersionsOfContent = async (req: express.Request, res: express.Response) => {
+    const content = await this.versionService.getAllVersionsOfContent(req.params.id)
+    res.status(httpStatus.OK).json(content)
+  }
+
+  setVersionIsPrimary = async (req: express.Request, res: express.Response) => {
+    const content = await this.versionService.setPrimaryVersion(req.params.versionId)
     res.status(httpStatus.OK).json(content)
   }
 

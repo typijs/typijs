@@ -25,6 +25,8 @@ export class PageRouter {
         page.get('/published/:url', validate(requiredUrl), this.pageController.getByUrl);
         //get children of page
         page.get('/children/:parentId', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredParentId), this.langGuard.checkEnabled(), this.pageController.getPageChildren);
+        //get all versions of content
+        page.get('/version/:id', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.pageController.getAllVersionsOfContent);
         //get page details
         page.get('/:id', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.langGuard.checkEnabled(), this.pageController.get);
         //move page from parent to another one
@@ -33,6 +35,8 @@ export class PageRouter {
         page.post('/copy', this.authGuard.checkRoles(requiredAdminOrEditor), validate(cutOrCopyContent), this.pageController.copy);
         //create the page
         page.post('/', this.authGuard.checkRoles(requiredAdminOrEditor), validate(insertContent), this.langGuard.checkEnabled(), this.pageController.create);
+        //set version is primary
+        page.put('/version/:versionId', this.authGuard.checkRoles(requiredAdminOrEditor), this.pageController.setVersionIsPrimary);
         //update pate
         page.put('/:id', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.langGuard.checkEnabled(), this.pageController.update);
         //publish page

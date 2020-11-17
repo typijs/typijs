@@ -56,7 +56,7 @@ export interface IBaseModel<T extends IBaseDocument> extends Model<T> { }
 
 export const BaseSchema = new mongoose.Schema({
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'cms_User', required: false },
-    changedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'cms_User', required: false }
+    updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'cms_User', required: false }
 })
 
 export type QueryList<T extends IBaseDocument> = DocumentQuery<T[], T>;
