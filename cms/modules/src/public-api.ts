@@ -37,3 +37,6 @@ export * from './site-definition/site-definition.component';
 export * from './content-type/content-type.module';
 export * from './content-type/content-type-list.component';
 export * from './content-type/content-type-detail.component';
+
+export * from './content-version/content-version.module';
+export * from './content-version/content-version.component';

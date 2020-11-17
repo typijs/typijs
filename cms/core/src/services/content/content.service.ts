@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { Content } from './models/content.model';
+import { Content, ContentVersion } from './models/content.model';
 import { FolderService } from './folder.service';
 import { convertObjectToUrlQueryString } from '../../helpers/common';
 
@@ -32,14 +32,6 @@ export abstract class ContentService<T extends Content> extends FolderService<T>
         return this.httpClient.get<T>(`${this.apiUrl}/${contentId}?${query}`);
     }
 
-    getContentVersions(contentId: string): Observable<T[]> {
-        return this.httpClient.get<T[]>(`${this.apiUrl}/version/${contentId}`);
-    }
-
-    setPrimaryVersion(versionId: string): Observable<T> {
-        return this.httpClient.put<T>(`${this.apiUrl}/version/${versionId}`, {});
-    }
-
     softDeleteContent(contentId: string): Observable<[T, any]> {
         return this.httpClient.delete<[T, any]>(`${this.apiUrl}/${contentId}`);
     }
@@ -50,5 +42,14 @@ export abstract class ContentService<T extends Content> extends FolderService<T>
 
     copyContent(actionParams: { sourceContentId: string, targetParentId: string }): Observable<T> {
         return this.httpClient.post<T>(`${this.apiUrl}/cut`, actionParams);
+    }
+
+    /*--------------Version-----------------*/
+    getContentVersions(contentId: string): Observable<ContentVersion[]> {
+        return this.httpClient.get<ContentVersion[]>(`${this.apiUrl}/version/${contentId}`);
+    }
+
+    setPrimaryVersion(versionId: string): Observable<ContentVersion> {
+        return this.httpClient.put<ContentVersion>(`${this.apiUrl}/version/${versionId}`, {});
     }
 }

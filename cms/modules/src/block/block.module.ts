@@ -14,6 +14,8 @@ import { CmsBsDropdownModule } from '../shared/libs/ngx-bootstrap/bs-dropdown.mo
 import { TreeModule } from '../shared/tree/tree.module';
 import { BlockCrudService } from './block-crud.service';
 import { BlockTreeComponent } from './block-tree.component';
+import { CONTENT_VERSION_SERVICES } from '../content-version/content-version.service';
+import { BlockVersionService } from './block-version.service';
 
 
 const blockRoutes: Routes = [
@@ -51,6 +53,7 @@ export class BlockModule {
             ngModule: BlockModule,
             providers: [
                 { provide: CONTENT_CRUD_SERVICES, useClass: BlockCrudService, multi: true },
+                { provide: CONTENT_VERSION_SERVICES, useClass: BlockVersionService, multi: true },
                 { provide: EDITOR_ROUTES, useValue: blockRoutes, multi: true },
                 {
                     provide: EDITOR_WIDGETS, useValue: {

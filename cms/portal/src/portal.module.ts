@@ -21,7 +21,8 @@ import {
     PropertiesModule,
     ContentModule,
     SiteDefinitionModule,
-    ContentTypeModule
+    ContentTypeModule,
+    ContentVersionModule
 } from '@angular-cms/modules';
 
 import { CmsHeaderComponent } from './shared/components/cms-header/cms-header.component';
@@ -59,6 +60,7 @@ import { QuillModule } from 'ngx-quill';
         BlockModule.forRoot(),
         SiteDefinitionModule.forRoot(),
         ContentTypeModule.forRoot(),
+        ContentVersionModule.forRoot(),
         PortalRoutingModule
     ],
     declarations: [

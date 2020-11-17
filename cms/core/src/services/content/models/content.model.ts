@@ -48,4 +48,6 @@ export interface Content extends BaseModel {
 export interface ContentVersion extends Content {
     contentId: string | Content;
     masterVersionId: string;
+    savedAt: Date;
+    savedBy: string;
 }

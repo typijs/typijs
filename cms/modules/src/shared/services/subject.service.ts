@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject, BehaviorSubject, Observable } from 'rxjs';
-import { Page, Block, Media } from '@angular-cms/core';
+import { Page, Block, Media, TypeOfContent } from '@angular-cms/core';
 import { ContentAreaItem } from '../../properties/content-area/content-area.model';
 
 @Injectable({
@@ -18,6 +18,7 @@ export class SubjectService {
     pageSelected$: Observable<Page>;
     contentDropFinished$: Observable<Partial<ContentAreaItem>>;
     portalLayoutChanged$: Observable<boolean>;
+    contentSelected$: Observable<[TypeOfContent, Page | Block | Media]>;
 
     private _blockFolderCreated$: Subject<Block> = new Subject<Block>();
     private _blockCreated$: Subject<Block> = new Subject<Block>();
@@ -25,6 +26,7 @@ export class SubjectService {
     private _mediaCreated$: Subject<Media> = new Subject<Media>();
     private _pageCreated$: Subject<Page> = new Subject<Page>();
     private _pageSelected$: Subject<Page> = new Subject<Page>();
+    private _contentSelected$: Subject<[TypeOfContent, Page | Block | Media]> = new Subject<[TypeOfContent, Page | Block | Media]>();
     private _contentDropFinished$: Subject<Partial<ContentAreaItem>> = new Subject<Partial<ContentAreaItem>>();
     private _portalLayoutChanged$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
@@ -35,6 +37,7 @@ export class SubjectService {
         this.mediaCreated$ = this._mediaCreated$.asObservable();
         this.pageCreated$ = this._pageCreated$.asObservable();
         this.pageSelected$ = this._pageSelected$.asObservable();
+        this.contentSelected$ = this._contentSelected$.asObservable();
         this.contentDropFinished$ = this._contentDropFinished$.asObservable();
         this.portalLayoutChanged$ = this._portalLayoutChanged$.asObservable();
     }
@@ -61,6 +64,10 @@ export class SubjectService {
 
     firePageSelected(selectedPage: Page) {
         this._pageSelected$.next(selectedPage);
+    }
+
+    fireContentSelected(type: TypeOfContent, selectedContent: Page | Block | Media) {
+        this._contentSelected$.next([type, selectedContent]);
     }
 
     fireContentDropFinished(contentAreaItem: Partial<ContentAreaItem>) {

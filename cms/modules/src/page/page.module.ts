@@ -13,6 +13,8 @@ import { TreeModule } from '../shared/tree/tree.module';
 import { PageCrudService } from './page-crud.service';
 import { PageTreeReadonlyComponent } from './page-tree-readonly.component';
 import { PageTreeComponent } from './page-tree.component';
+import { CONTENT_VERSION_SERVICES } from '../content-version/content-version.service';
+import { PageVersionService } from './page-version.service';
 
 const pageRoutes: Routes = [
     { path: `new/page`, component: ContentCreateComponent },
@@ -51,6 +53,7 @@ export class PageModule {
             ngModule: PageModule,
             providers: [
                 { provide: CONTENT_CRUD_SERVICES, useClass: PageCrudService, multi: true },
+                { provide: CONTENT_VERSION_SERVICES, useClass: PageVersionService, multi: true },
                 { provide: EDITOR_ROUTES, useValue: pageRoutes, multi: true },
                 {
                     provide: EDITOR_WIDGETS, useValue: { group: 'Pages', position: CmsWidgetPosition.Left, component: PageTreeComponent, order: 10 },
