@@ -12,13 +12,13 @@ import { of, combineLatest } from 'rxjs';
 import { map, switchMap, takeUntil, tap, catchError } from 'rxjs/operators';
 import { SubjectService } from '../../shared/services/subject.service';
 import { SubscriptionDestroy } from '../../shared/subscription-destroy';
-import { ContentFormService, ContentFormServiceResolver, ContentInfo } from '../content-form.service';
+import { ContentCrudService, ContentCrudServiceResolver, ContentInfo } from '../content-crud.service';
 
 @Component({
-    templateUrl: './content-form-edit.component.html',
-    styleUrls: ['./content-form-edit.scss']
+    templateUrl: './content-update.component.html',
+    styleUrls: ['./content-update.scss']
 })
-export class ContentFormEditComponent extends SubscriptionDestroy implements OnInit, OnDestroy, AfterViewInit {
+export class ContentUpdateComponent extends SubscriptionDestroy implements OnInit, OnDestroy, AfterViewInit {
 
     @ViewChildren(InsertPointDirective) insertPoints: QueryList<InsertPointDirective>;
 
@@ -26,17 +26,18 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
     formTabs: Partial<CmsTab>[] = [];
     currentContent: Partial<Page> & Content;
     editMode: 'AllProperties' | 'OnPageEdit' = 'AllProperties';
+    typeOfContent: TypeOfContent;
 
     showIframeHider = false;
     previewUrl: string;
 
     private readonly defaultGroup: string = 'Content';
-    private contentService: ContentFormService;
+    private contentService: ContentCrudService;
     private contentTypeProperties: ContentTypeProperty[] = [];
     private componentRefs: ComponentRef<any>[] = [];
 
     constructor(
-        private contentServiceResolver: ContentFormServiceResolver,
+        private contentServiceResolver: ContentCrudServiceResolver,
         private propertyFactoryResolver: CmsPropertyFactoryResolver,
         private locationService: BrowserLocationService,
         private subjectService: SubjectService,
@@ -53,9 +54,8 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
                     const contentId = params.get('id');
                     const versionId = query.get('versionId');
                     const language = query.get('language');
-                    const typeOfContent = this.getTypeContentFromUrl(this.route.snapshot.url);
-                    this.contentService = this.contentServiceResolver.resolveContentFormService(typeOfContent);
-
+                    this.typeOfContent = this.getTypeContentFromUrl(this.route.snapshot.url);
+                    this.contentService = this.contentServiceResolver.resolveCrudFormService(this.typeOfContent);
                     return contentId ? this.contentService.getContent(contentId, versionId, language, host) : of({});
                 }),
                 tap((result: ContentInfo) => {
@@ -64,11 +64,13 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
                 }),
                 map((result: ContentInfo) => result.contentData),
                 catchError(error => {
-                    console.error(error);
                     return of({});
                 }),
                 takeUntil(this.unsubscribe$))
-            .subscribe((contentData: Content) => this.bindDataForContentForm(contentData));
+            .subscribe((contentData: Content) => {
+                this.subjectService.fireContentSelected(this.typeOfContent, contentData);
+                this.bindDataForContentForm(contentData);
+            });
 
         this.subjectService.portalLayoutChanged$
             .pipe(takeUntil(this.unsubscribe$))
@@ -186,10 +188,11 @@ export class ContentFormEditComponent extends SubscriptionDestroy implements OnI
                 this.currentContent.childItems = this.extractChildItemsRefs();
 
                 if (formId.dirty) {
-                    this.contentService.editContent(this.currentContent).subscribe(res => {
+                    this.contentService.editContent(this.currentContent).subscribe((savedContent: Content) => {
                         formId.control.markAsPristine();
+                        this.currentContent.versionId = savedContent.versionId;
                         if (isPublished) {
-                            this.contentService.publishContent(this.currentContent._id, this.currentContent.versionId).subscribe();
+                            this.contentService.publishContent(this.currentContent._id, savedContent.versionId).subscribe();
                         }
                     });
                 } else if (isPublished) {

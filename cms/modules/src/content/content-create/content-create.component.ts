@@ -3,21 +3,21 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, UrlSegment } from '@angular/router';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { SubscriptionDestroy } from '../../shared/subscription-destroy';
-import { ContentFormService, ContentFormServiceResolver } from '../content-form.service';
+import { ContentCrudService, ContentCrudServiceResolver } from '../content-crud.service';
 
 @Component({
-    templateUrl: './content-type-list.component.html',
-    styleUrls: ['./content-type-list.scss']
+    templateUrl: './content-create.component.html',
+    styleUrls: ['./content-create.scss']
 })
-export class ContentTypeListComponent extends SubscriptionDestroy implements OnInit, OnDestroy {
+export class ContentCreateComponent extends SubscriptionDestroy implements OnInit, OnDestroy {
     contentName: string;
     contentTypes: ContentType[] = [];
-    private contentService: ContentFormService;
+    private contentService: ContentCrudService;
     private parentId: string;
 
     constructor(
         private route: ActivatedRoute,
-        private contentServiceResolver: ContentFormServiceResolver
+        private contentServiceResolver: ContentCrudServiceResolver
     ) { super(); }
 
     ngOnInit() {
@@ -28,7 +28,7 @@ export class ContentTypeListComponent extends SubscriptionDestroy implements OnI
 
                     const typeOfContent = this.getTypeContentFromUrl(this.route.snapshot.url);
                     this.contentName = `New ${typeOfContent}`;
-                    this.contentService = this.contentServiceResolver.resolveContentFormService(typeOfContent);
+                    this.contentService = this.contentServiceResolver.resolveCrudFormService(typeOfContent);
                     this.contentTypes = this.contentService.getAllContentTypes();
                     return this.contentTypes;
                 }),

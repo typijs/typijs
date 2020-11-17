@@ -2,11 +2,11 @@ import { ContentTypeService, ngEditMode, ngId, Page, PageService, PAGE_TYPE, Con
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { ContentFormService, ContentInfo } from '../content/content-form.service';
+import { ContentCrudService, ContentInfo } from '../content/content-crud.service';
 import { SubjectService } from '../shared/services/subject.service';
 
 @Injectable()
-export class PageFormService extends ContentFormService {
+export class PageCrudService extends ContentCrudService {
     constructor(
         private contentTypeService: ContentTypeService,
         private pageService: PageService,

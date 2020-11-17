@@ -3,11 +3,11 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { ContentFormService, ContentInfo } from '../content/content-form.service';
+import { ContentCrudService, ContentInfo } from '../content/content-crud.service';
 import { SubjectService } from '../shared/services/subject.service';
 
 @Injectable()
-export class BlockFormService extends ContentFormService {
+export class BlockCrudService extends ContentCrudService {
     constructor(
         private router: Router,
         private contentTypeService: ContentTypeService,

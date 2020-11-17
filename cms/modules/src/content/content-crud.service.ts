@@ -8,26 +8,25 @@ export type ContentInfo = {
     previewUrl: string
 };
 
-export const CONTENT_FORM_SERVICES: InjectionToken<ContentFormService[]> = new InjectionToken<ContentFormService[]>('CONTENT_FORM_SERVICES');
+export const CONTENT_CRUD_SERVICES: InjectionToken<ContentCrudService[]> = new InjectionToken<ContentCrudService[]>('CONTENT_CRUD_SERVICES');
 
-export abstract class ContentFormService {
+export abstract class ContentCrudService {
     constructor(public typeOfContent: TypeOfContent) { }
     isMatching(typeOfContent: TypeOfContent): boolean {
         return this.typeOfContent === typeOfContent;
     }
-
+    abstract getAllContentTypes(): ContentType[];
     abstract getContent(contentId: string, versionId: string, language: string, host: string): Observable<ContentInfo>;
     abstract createContent(content: Content): Observable<Content>;
     abstract editContent(content: Content): Observable<Content>;
     abstract publishContent(contentId: string, versionId: string): Observable<Content>;
-    abstract getAllContentTypes(): ContentType[];
 }
 
 @Injectable()
-export class ContentFormServiceResolver {
-    constructor(@Inject(CONTENT_FORM_SERVICES) private contentFormServices: ContentFormService[]) { }
+export class ContentCrudServiceResolver {
+    constructor(@Inject(CONTENT_CRUD_SERVICES) private contentFormServices: ContentCrudService[]) { }
 
-    resolveContentFormService(typeOfContent: string): ContentFormService {
+    resolveCrudFormService(typeOfContent: string): ContentCrudService {
         return this.contentFormServices.find(x => x.isMatching(typeOfContent));
     }
 }
