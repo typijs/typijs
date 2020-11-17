@@ -5,15 +5,14 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faDesktop, faExternalLinkAlt, faFileExport, faList, faSave } from '@fortawesome/free-solid-svg-icons';
-import 'reflect-metadata';
 import { PropertiesModule } from '../properties/properties.module';
 // import { CmsAngularSplitModule, CmsTabsModule } from '../shared/libs';
 import { CmsAngularSplitModule } from '../shared/libs/angular-split/module';
 import { CmsButtonsModule } from '../shared/libs/ngx-bootstrap/buttons.module';
 import { CmsTabsModule } from '../shared/libs/ngx-bootstrap/tabs.module';
-import { ContentFormEditComponent } from './content-form-edit/content-form-edit.component';
-import { ContentFormServiceResolver } from './content-form.service';
-import { ContentTypeListComponent } from './content-type-list/content-type-list.component';
+import { ContentUpdateComponent } from './content-update/content-update.component';
+import { ContentCrudServiceResolver } from './content-crud.service';
+import { ContentCreateComponent } from './content-create/content-create.component';
 
 @NgModule({
     imports: [
@@ -31,16 +30,16 @@ import { ContentTypeListComponent } from './content-type-list/content-type-list.
         PropertiesModule,
     ],
     declarations: [
-        ContentFormEditComponent,
-        ContentTypeListComponent
+        ContentUpdateComponent,
+        ContentCreateComponent
     ],
     exports: [
-        ContentFormEditComponent,
-        ContentTypeListComponent
+        ContentUpdateComponent,
+        ContentCreateComponent
     ],
     entryComponents: [
-        ContentTypeListComponent,
-        ContentFormEditComponent
+        ContentCreateComponent,
+        ContentUpdateComponent
     ]
 })
 export class ContentModule {
@@ -51,7 +50,7 @@ export class ContentModule {
     static forRoot(): ModuleWithProviders<ContentModule> {
         return {
             ngModule: ContentModule,
-            providers: [ContentFormServiceResolver]
+            providers: [ContentCrudServiceResolver]
         };
     }
 }

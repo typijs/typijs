@@ -6,7 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faChevronRight, faChevronLeft, faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 
-import { CoreModule, EDITOR_ROUTES, ADMIN_ROUTES, ADMIN_WIDGETS, EDITOR_WIDGETS } from '@angular-cms/core';
+import { CoreModule } from '@angular-cms/core';
 import {
     CmsAngularSplitModule,
     CmsBsDropdownModule,
@@ -79,13 +79,7 @@ export class CmsPortalModule {
     static forRoot(): ModuleWithProviders<CmsPortalModule> {
         return {
             ngModule: CmsPortalModule,
-            providers: [
-                WidgetService,
-                // { provide: EDITOR_ROUTES, useValue: [], multi: true },
-                // { provide: ADMIN_ROUTES, useValue: [], multi: true },
-                // { provide: ADMIN_WIDGETS, useValue: [], multi: true },
-                // { provide: EDITOR_WIDGETS, useValue: [], multi: true }
-            ]
+            providers: [WidgetService]
         };
     }
 }

@@ -5,21 +5,21 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faBars, faCube, faCubes, faFolder, faFolderPlus, faPlus, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
-import { ContentFormEditComponent } from '../content/content-form-edit/content-form-edit.component';
-import { CONTENT_FORM_SERVICES } from '../content/content-form.service';
-import { ContentTypeListComponent } from '../content/content-type-list/content-type-list.component';
+import { ContentUpdateComponent } from '../content/content-update/content-update.component';
+import { CONTENT_CRUD_SERVICES } from '../content/content-crud.service';
+import { ContentCreateComponent } from '../content/content-create/content-create.component';
 import { DndModule } from '../shared/drag-drop/dnd.module';
 import { CmsAngularSplitModule } from '../shared/libs/angular-split/module';
 import { CmsBsDropdownModule } from '../shared/libs/ngx-bootstrap/bs-dropdown.module';
 import { TreeModule } from '../shared/tree/tree.module';
-import { BlockFormService } from './block-form.service';
+import { BlockCrudService } from './block-crud.service';
 import { BlockTreeComponent } from './block-tree.component';
 
 
 const blockRoutes: Routes = [
-    { path: `new/block`, component: ContentTypeListComponent },
-    { path: `new/block/:parentId`, component: ContentTypeListComponent },
-    { path: `content/block/:id`, component: ContentFormEditComponent }
+    { path: `new/block`, component: ContentCreateComponent },
+    { path: `new/block/:parentId`, component: ContentCreateComponent },
+    { path: `content/block/:id`, component: ContentUpdateComponent }
 ];
 
 @NgModule({
@@ -50,7 +50,7 @@ export class BlockModule {
         return {
             ngModule: BlockModule,
             providers: [
-                { provide: CONTENT_FORM_SERVICES, useClass: BlockFormService, multi: true },
+                { provide: CONTENT_CRUD_SERVICES, useClass: BlockCrudService, multi: true },
                 { provide: EDITOR_ROUTES, useValue: blockRoutes, multi: true },
                 {
                     provide: EDITOR_WIDGETS, useValue: {

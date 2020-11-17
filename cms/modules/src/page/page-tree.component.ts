@@ -1,6 +1,6 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, distinctUntilKeyChanged } from 'rxjs/operators';
 
 import { Page, PageService } from '@angular-cms/core';
 import { TreeNode } from '../shared/tree/interfaces/tree-node';
@@ -71,7 +71,10 @@ export class PageTreeComponent extends SubscriptionDestroy implements OnInit {
             });
 
         this.subjectService.pageSelected$
-            .pipe(takeUntil(this.unsubscribe$))
+            .pipe(
+                distinctUntilKeyChanged('_id'),
+                takeUntil(this.unsubscribe$)
+            )
             .subscribe((selectedPage: Page) => {
                 this.cmsTree.locateToSelectedNode(new TreeNode({
                     id: selectedPage._id,

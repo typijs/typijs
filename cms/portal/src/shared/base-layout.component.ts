@@ -26,18 +26,27 @@ export abstract class BaseLayoutComponent implements OnInit, AfterViewInit, OnDe
         this.leftTabs = this.getTabsForLeftPanel();
     }
 
+    ngAfterViewInit() {
+        this.insertPoints = this.cmsLayout.insertPoints;
+        this.componentRefs = this.creatingWidgets();
+        this._changeDetectionRef.detectChanges();
+    }
+
+    ngOnDestroy() {
+        if (this.componentRefs) {
+            this.componentRefs.forEach(cmpRef => {
+                cmpRef.destroy();
+            });
+            this.componentRefs = [];
+        }
+    }
+
     private getTabsForRightPanel(): CmsTab[] {
         return this.widgetService.extractCmsTabsFromRegisteredWidgets(this.cmsWidgets, CmsWidgetPosition.Right);
     }
 
     private getTabsForLeftPanel(): CmsTab[] {
         return this.widgetService.extractCmsTabsFromRegisteredWidgets(this.cmsWidgets, CmsWidgetPosition.Left);
-    }
-
-    ngAfterViewInit() {
-        this.insertPoints = this.cmsLayout.insertPoints;
-        this.componentRefs = this.creatingWidgets();
-        this._changeDetectionRef.detectChanges();
     }
 
     private creatingWidgets(): ComponentRef<any>[] {
@@ -55,14 +64,5 @@ export abstract class BaseLayoutComponent implements OnInit, AfterViewInit, OnDe
     private createWidgetsForLeftPanel(): ComponentRef<any>[] {
         const leftRegisteredWidgets = this.cmsWidgets.filter(widget => widget.position == CmsWidgetPosition.Left);
         return this.widgetService.createWidgetComponents(leftRegisteredWidgets, this.insertPoints, this.leftTabs);
-    }
-
-    ngOnDestroy() {
-        if (this.componentRefs) {
-            this.componentRefs.forEach(cmpRef => {
-                cmpRef.destroy();
-            });
-            this.componentRefs = [];
-        }
     }
 }

@@ -7,7 +7,7 @@ import { faFolder, faFolderPlus, faPhotoVideo } from '@fortawesome/free-solid-sv
 
 import { CmsWidgetPosition, CoreModule, EDITOR_ROUTES, EDITOR_WIDGETS } from '@angular-cms/core';
 
-import { ContentFormEditComponent } from '../content/content-form-edit/content-form-edit.component';
+import { ContentUpdateComponent } from '../content/content-update/content-update.component';
 import { DndModule } from '../shared/drag-drop/dnd.module';
 // import { CmsProgressbarModule, CmsModalModule, CmsAngularSplitModule } from '../shared/libs';
 import { CmsAngularSplitModule } from '../shared/libs/angular-split/module';
@@ -23,7 +23,7 @@ import { FileSelectDirective } from './upload/file-select.directive';
 import { UploadService } from './upload/upload.service';
 
 const mediaRoutes: Routes = [
-    { path: 'content/media/:id', component: ContentFormEditComponent }
+    { path: 'content/media/:id', component: ContentUpdateComponent }
 ];
 
 @NgModule({
