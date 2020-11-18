@@ -13,33 +13,16 @@ import { IPageLanguageDocument } from './models/page-language.model';
 @Injectable()
 export class PageController extends ContentController<IPageDocument, IPageLanguageDocument, IPageVersionDocument> {
 
-  constructor(private pageService: PageService, private pageVersionService: PageVersionService) {
+  constructor(private pageService: PageService, pageVersionService: PageVersionService) {
     super(pageService, pageVersionService);
   }
 
-  get = async (req: express.Request, res: express.Response) => {
-    const { language } = req as any;
-    const content = await this.pageService.getPrimaryVersionOfPageById(req.params.id, language, req.query.versionId, req.query.host)
-    res.status(httpStatus.OK).json(content)
-  }
+  /*------------------------PAGE-----------------------*/
 
-  //Override insert base
   create = async (req: express.Request, res: express.Response) => {
     const { user, language } = req as any;
-    const savedContent = await this.pageService.executeCreatePageFlow(req.body, user.id, language)
+    const savedContent = await this.pageService.executeCreatePageFlow(req.body, language, user.id)
     res.status(httpStatus.OK).json(savedContent)
-  }
-
-  publish = async (req: express.Request, res: express.Response) => {
-    const { user, language } = req as any;
-
-    const validUrlSegment = await this.pageService.validateUrlSegment(req.params.id, language);
-    if (validUrlSegment) {
-      const publishedContent = await this.pageService.executePublishContentFlow(req.params.id, req.query.versionId, user.id, language)
-      res.status(httpStatus.OK).json(publishedContent)
-    } else {
-      res.status(httpStatus.INTERNAL_SERVER_ERROR).send('The url must be unique, consider change url segment please');
-    }
   }
 
   getByUrl = async (req: express.Request, res: express.Response) => {
@@ -58,4 +41,18 @@ export class PageController extends ContentController<IPageDocument, IPageLangua
     const items = await this.pageService.getContentChildren(req.params.parentId, language);
     res.status(httpStatus.OK).json(items);
   }
+
+  /*------------------------VERSION-----------------------*/
+  getVersion = async (req: express.Request, res: express.Response) => {
+    const { language } = req as any;
+    const content = await this.pageService.getPageVersion(req.params.id, req.query.versionId, language, req.query.host)
+    res.status(httpStatus.OK).json(content)
+  }
+
+  publishVersion = async (req: express.Request, res: express.Response) => {
+    const { user } = req as any;
+    const publishedContent = await this.pageService.executePublishPageFlow(req.params.id, req.query.versionId, user.id)
+    res.status(httpStatus.OK).json(publishedContent)
+  }
+
 }

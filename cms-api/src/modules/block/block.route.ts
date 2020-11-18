@@ -25,12 +25,8 @@ export class BlockRouter {
         block.post('/folder', this.authGuard.checkRoles(requiredAdminOrEditor), validate(createFolder), this.blockController.createFolderContent);
 
         block.put('/folder/:id', this.authGuard.checkRoles(requiredAdminOrEditor), validate(updateFolderName), this.blockController.updateFolderName);
-        //get all versions of content
-        block.get('/version/:id', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.blockController.getAllVersionsOfContent);
-        //set version is primary
-        block.put('/version/:versionId', this.authGuard.checkRoles(requiredAdminOrEditor), this.blockController.setVersionIsPrimary);
 
-        block.get('/:id', validate(requiredContentId), this.langGuard.checkEnabled(), this.blockController.get);
+        block.get('/simple/:id', validate(requiredContentId), this.langGuard.checkEnabled(), this.blockController.getSimpleContent);
 
         block.post('/cut', this.authGuard.checkRoles(requiredAdminOrEditor), validate(cutOrCopyContent), this.blockController.cut);
 
@@ -38,13 +34,27 @@ export class BlockRouter {
 
         block.post('/', this.authGuard.checkRoles(requiredAdminOrEditor), validate(insertContent), this.langGuard.checkEnabled(), this.blockController.create);
 
-        block.put('/:id', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.langGuard.checkEnabled(), this.blockController.update);
-        //publish page
-        block.put('/publish/:id', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.langGuard.checkEnabled(), this.blockController.publish);
         //move to trash
         block.put('/trash/:id', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.blockController.moveToTrash);
 
         block.delete('/:id', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.blockController.delete);
         return block
+    }
+
+    get versionRouter(): Router {
+        const blockVersion: Router = asyncRouterErrorHandler(Router());
+        //get all versions of content
+        blockVersion.get('/list/:id', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.blockController.getAllVersionsOfContent);
+        //get version detail
+        blockVersion.get('/:id', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.langGuard.checkEnabled(), this.blockController.getVersion);
+        //update version
+        blockVersion.put('/:id', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.blockController.updateVersion);
+        //set version is primary
+        blockVersion.put('/set-primary/:versionId', this.authGuard.checkRoles(requiredAdminOrEditor), this.blockController.setVersionIsPrimary);
+        //publish version
+        blockVersion.put('/publish/:id', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.blockController.publishVersion);
+        //delete version
+        blockVersion.delete('/:versionId', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.blockController.delete)
+        return blockVersion;
     }
 }

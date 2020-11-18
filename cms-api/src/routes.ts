@@ -24,8 +24,10 @@ export class CmsApiRouter {
         const appRouter: Router = Router();
         // Page
         appRouter.use('/page', this.pageRouter.router);
+        appRouter.use('/page/version', this.pageRouter.versionRouter);
         // Blocks
         appRouter.use('/block', this.blockRouter.router);
+        appRouter.use('/block/version', this.blockRouter.versionRouter);
         // Media
         appRouter.use('/assets', this.mediaRouter.assetRouter);
         appRouter.use('/media', this.mediaRouter.router);

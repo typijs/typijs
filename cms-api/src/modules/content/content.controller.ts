@@ -12,38 +12,18 @@ export abstract class ContentController<T extends IContentDocument, P extends IC
     super(contentService);
   }
 
-  get = async (req: express.Request, res: express.Response) => {
+  /*------------------------CONTENT-----------------------*/
+
+  getSimpleContent = async (req: express.Request, res: express.Response) => {
     const { language } = req as any;
-    const content = await this.contentService.getPrimaryVersionOfContentById(req.params.id, language, req.query.versionId)
-    res.status(httpStatus.OK).json(content)
-  }
-
-  getAllVersionsOfContent = async (req: express.Request, res: express.Response) => {
-    const content = await this.versionService.getAllVersionsOfContent(req.params.id)
-    res.status(httpStatus.OK).json(content)
-  }
-
-  setVersionIsPrimary = async (req: express.Request, res: express.Response) => {
-    const content = await this.versionService.setPrimaryVersion(req.params.versionId)
-    res.status(httpStatus.OK).json(content)
+    const createdContent = await this.contentService.getContentWithoutPopulateProperties(req.params.id, language);
+    res.status(httpStatus.OK).json(createdContent)
   }
 
   create = async (req: express.Request, res: express.Response) => {
     const { user, language } = req as any;
-    const createdContent = await this.contentService.executeCreateContentFlow(req.body, user.id, language);
+    const createdContent = await this.contentService.executeCreateContentFlow(req.body, language, user.id);
     res.status(httpStatus.OK).json(createdContent)
-  }
-
-  update = async (req: express.Request, res: express.Response) => {
-    const { user, language } = req as any;
-    const savedContent = await this.contentService.executeUpdateContentFlow(req.params.id, req.query.versionId, req.body, user.id, language)
-    res.status(httpStatus.OK).json(savedContent)
-  }
-
-  publish = async (req: express.Request, res: express.Response) => {
-    const { user, language } = req as any;
-    const publishedContent = await this.contentService.executePublishContentFlow(req.params.id, req.query.versionId, user.id, language)
-    res.status(httpStatus.OK).json(publishedContent)
   }
 
   delete = async (req: express.Request, res: express.Response) => {
@@ -70,5 +50,40 @@ export abstract class ContentController<T extends IContentDocument, P extends IC
     const user = req['user'];
     const item = await this.contentService.executeCopyContentFlow(sourceContentId, targetParentId, user.id)
     res.status(httpStatus.OK).json(item)
+  }
+
+  /*------------------------VERSION-----------------------*/
+  getVersion = async (req: express.Request, res: express.Response) => {
+    const { language } = req as any;
+    const content = await this.contentService.getContentVersion(req.params.id, req.query.versionId, language)
+    res.status(httpStatus.OK).json(content)
+  }
+
+  updateVersion = async (req: express.Request, res: express.Response) => {
+    const { user } = req as any;
+    const savedContent = await this.contentService.executeUpdateContentFlow(req.params.id, req.query.versionId, user.id, req.body)
+    res.status(httpStatus.OK).json(savedContent)
+  }
+
+  publishVersion = async (req: express.Request, res: express.Response) => {
+    const { user } = req as any;
+    const publishedContent = await this.contentService.executePublishContentFlow(req.params.id, req.query.versionId, user.id)
+    res.status(httpStatus.OK).json(publishedContent)
+  }
+
+  getAllVersionsOfContent = async (req: express.Request, res: express.Response) => {
+    const content = await this.versionService.getAllVersionsOfContent(req.params.id)
+    res.status(httpStatus.OK).json(content)
+  }
+
+  setVersionIsPrimary = async (req: express.Request, res: express.Response) => {
+    const content = await this.versionService.setPrimaryVersion(req.params.versionId)
+    res.status(httpStatus.OK).json(content)
+  }
+
+  deleteVersion = async (req: express.Request, res: express.Response) => {
+    const user = req['user'];
+    const deleteResult = await this.contentService.executeMoveContentToTrashFlow(req.params.versionId, user.id);
+    res.status(httpStatus.OK).json(deleteResult)
   }
 }

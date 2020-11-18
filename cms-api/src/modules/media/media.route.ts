@@ -33,7 +33,7 @@ export class MediaRouter {
 
         media.post('/copy', this.authGuard.checkRoles(requiredAdminOrEditor), validate(cutOrCopyContent), this.mediaController.copy);
 
-        media.get('/:id', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.mediaController.get);
+        media.get('/:id', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.mediaController.getSimpleContent);
 
         media.delete('/:id', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.mediaController.delete);
         return media

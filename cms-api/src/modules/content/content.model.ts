@@ -79,7 +79,6 @@ export interface IContent extends ISoftDeletedContent, IHierarchyContent {
     contentLanguages: any[];
     //not map to db
     versionId: string; //contain corresponding version id
-    [key: string]: any;
 }
 export interface IContentDocument extends IContent, IBaseDocument { }
 export interface IContentModel<T extends IContentDocument> extends IBaseModel<T> { }

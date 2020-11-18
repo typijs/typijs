@@ -1,4 +1,3 @@
-import { Injectable } from "injection-js";
 import { ContentVersionService } from "../content/content-version.service";
 import { ContentService } from "../content/content.service";
 import { BlockLanguageModel, IBlockLanguageDocument } from "./models/block-language.model";

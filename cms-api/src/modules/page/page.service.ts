@@ -1,7 +1,8 @@
 import 'reflect-metadata';
+import * as httpStatus from 'http-status';
 import { Injectable } from 'injection-js';
 
-import { DocumentNotFoundException } from '../../error';
+import { DocumentNotFoundException, Exception } from '../../error';
 import { slugify } from '../../utils/slugify';
 import { ContentService } from '../content/content.service';
 import { SiteDefinitionService } from '../site-definition/site-definition.service';
@@ -31,8 +32,8 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
      * @param language The current language
      * @param host The host name
      */
-    public getPrimaryVersionOfPageById = async (id: string, language: string, versionId: string, host: string): Promise<IPageDocument & IPageVersionDocument> => {
-        const primaryVersion = await this.getPrimaryVersionOfContentById(id, language, versionId);
+    public getPageVersion = async (id: string, versionId: string, language: string, host: string): Promise<IPageDocument & IPageVersionDocument> => {
+        const primaryVersion = await this.getContentVersion(id, versionId, language);
         primaryVersion.linkUrl = await this.buildLinkUrl(primaryVersion._id, primaryVersion.parentPath, primaryVersion.urlSegment, language, host);
         return primaryVersion;
     }
@@ -153,16 +154,21 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         return publishedPages;
     }
 
-    public executeCreatePageFlow = async (pageObj: IPageDocument & IPageLanguageDocument, userId: string, language: string): Promise<IPageDocument & IPageVersionDocument> => {
+    public executeCreatePageFlow = async (pageObj: IPageDocument & IPageLanguageDocument, language: string, userId: string): Promise<IPageDocument & IPageVersionDocument> => {
         //get page's parent
         const parentPage = await this.findById(pageObj.parentId).exec();
         //generate url segment
         pageObj.urlSegment = await this.generateUrlSegment(0, slugify(pageObj.name), parentPage ? parentPage._id.toString() : null, language);
         //Step3: create new page
-        const savedPage = await this.executeCreateContentFlow(pageObj, userId, language);
+        const savedPage = await this.executeCreateContentFlow(pageObj, language, userId);
         //Step4: update parent page's has children property
         if (savedPage) await this.updateHasChildren(parentPage);
         return savedPage;
+    }
+
+    public executePublishPageFlow = async (id: string, versionId: string, userId: string): Promise<IPageDocument & IPageVersionDocument> => {
+        await this.throwIfUrlSegmentDuplicated(id, versionId);
+        return this.executePublishContentFlow(id, versionId, userId);
     }
 
     private generateUrlSegment = async (seed: number, originalUrl: string, parentId: string, language: string, generatedNameInUrl?: string): Promise<string> => {
@@ -185,14 +191,12 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         return await this.generateUrlSegment(seed + 1, originalUrl, parentId, language, `${originalUrl}${seed + 1}`);
     }
 
-    public validateUrlSegment = async (pageId: string, language: string): Promise<boolean> => {
-        const pageContent = await this.contentLanguageService.findOne({ contentId: pageId, language }, { lean: true })
-            .populate('contentId').exec();
+    private throwIfUrlSegmentDuplicated = async (pageId: string, versionId: string): Promise<void> => {
+        const pageVersion = await this.contentVersionService.getVersionById(versionId);
+        const pageContent = pageVersion.contentId as IPageDocument;
+        const { language, urlSegment } = pageVersion;
 
-        if (!pageContent) throw new DocumentNotFoundException(pageId);
-
-        const parentId = (pageContent.contentId as IPageDocument).parentId;
-        const urlSegment = pageContent.urlSegment;
+        const parentId = pageContent.parentId;
 
         //Find published page has the same url segment
         const existPages = await this.contentLanguageService.find({ contentId: { $ne: pageId }, urlSegment, language, status: VersionStatus.Published }, { lean: true })
@@ -203,7 +207,11 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
                 select: 'parentId'
             }).exec();
 
-        const count = existPages.filter(x => (x.contentId as IPageDocument).parentId == parentId).length;
-        return count <= 0;
+        const duplicatedUrlSegmentPages = existPages.filter(x => (x.contentId as IPageDocument).parentId == parentId);
+        if (duplicatedUrlSegmentPages.length > 0) {
+            const pageInfo = JSON.stringify(duplicatedUrlSegmentPages.map(x => ({ _id: x.contentId, name: x.name })));
+            const message = `The url segment ${urlSegment} has been used in pages ${pageInfo}`;
+            throw new Exception(httpStatus.BAD_REQUEST, message);
+        }
     }
 }

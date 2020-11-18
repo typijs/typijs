@@ -1,4 +1,5 @@
 import { DocumentNotFoundException } from '../../error';
+import { Validator } from '../../validation/validator';
 import { BaseService } from '../shared';
 import {
     IContentVersionDocument,
@@ -37,6 +38,22 @@ export class ContentVersionService<V extends IContentVersionDocument> extends Ba
         // Step3: set primary for version
         matchVersion.isPrimary = true;
         return await matchVersion.save();
+    }
+
+    getVersionById = async (versionId: string): Promise<V> => {
+        //Step1: Get current version
+        const currentVersion = await this.findOne({ _id: versionId } as any)
+            .populate({
+                path: 'contentId',
+                match: { isDeleted: false }
+            }).exec();
+        Validator.ThrowIfDocumentNotFound('ContentVersion', currentVersion, { _id: versionId });
+
+        Validator.ThrowIfDocumentNotFound('Content', currentVersion.contentId, { contentId: currentVersion.contentId });
+
+        const { language } = currentVersion;
+        Validator.ThrowIfNullOrEmpty('language', language);
+        return currentVersion;
     }
 
     //get draft version which marked as Primary

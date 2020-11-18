@@ -1,4 +1,6 @@
 import { DocumentNotFoundException, Exception } from '../../error';
+import { pick } from '../../utils';
+import { Validator } from '../../validation/validator';
 import { FolderService } from '../folder/folder.service';
 import { BaseService } from '../shared';
 import { ContentVersionService } from './content-version.service';
@@ -49,10 +51,10 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
      * @param id The content's id
      * @param language The language code (ex 'en', 'de'...)
      */
-    public getPrimaryVersionOfContentById = async (id: string, language: string, versionId: string): Promise<T & V> => {
+    public getContentVersion = async (id: string, versionId: string, language: string): Promise<T & V> => {
 
         const currentContent = await this.findOne({ _id: id, isDeleted: false } as any, { lean: true }).exec();
-        if (!currentContent) throw new DocumentNotFoundException(id);
+        Validator.ThrowIfDocumentNotFound('Content', currentContent, { _id: id, isDeleted: false });
 
         const query: any = versionId ? { _id: versionId } : { isPrimary: true, contentId: id, language };
 
@@ -114,11 +116,29 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         return this.mergeToContentLanguage(currentContent, publishedLang);
     }
 
+
+    public getContentWithoutPopulateProperties = async (id: string, language: string): Promise<T & P> => {
+
+        const currentContent = await this.findOne({ _id: id, isDeleted: false } as any, { lean: true })
+            .populate({
+                path: 'contentLanguages',
+                match: { language: language },
+                select: '-_id'
+            })
+            .exec();
+        if (!currentContent) return null;
+
+        const contentLanguage = currentContent.contentLanguages.find((contentLang: P) => contentLang.language === language);
+        if (!contentLanguage) return null;
+
+        return this.mergeToContentLanguage(currentContent, contentLanguage);
+    }
+
     /**
      * Create block or media content
      * @param content 
      */
-    public executeCreateContentFlow = async (content: T & P, userId: string, language: string): Promise<T & V> => {
+    public executeCreateContentFlow = async (content: T & P, language: string, userId: string): Promise<T & V> => {
 
         const parentContent = await this.findById(content.parentId).exec();
         //Step1: Create content
@@ -166,27 +186,31 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
      * Execute update content flow of content service
      * @returns the newest version in current language
      */
-    public executeUpdateContentFlow = async (id: string, versionId: string, contentObj: T & V, userId: string, language: string): Promise<T & V> => {
-        const { name, properties, childItems } = contentObj;
-
-        const currentContent = await this.findById(id);
+    public executeUpdateContentFlow = async (id: string, versionId: string, userId: string, contentObj: T & V): Promise<T & V> => {
         //Step1: Get current version
-        const currentVersion = await this.contentVersionService.findOne({ _id: versionId } as any).exec();
+        const currentVersion = await this.contentVersionService.getVersionById(versionId);
+        const currentContent = currentVersion.contentId as T;
+        const { language } = currentVersion;
+
         const isDraftVersion = this.contentVersionService.isDraftVersion(currentVersion.status);
         if (isDraftVersion) {
-            Object.assign(currentVersion, { name, properties, childItems, savedAt: new Date(), updatedBy: userId, savedBy: userId });
-            const saveContentVersion = await currentVersion.save();
-
-            //Step2: update corresponding content language if this language is not publish yet
+            //Step1: update corresponding content language if this language is not publish yet
             const contentLanguage = await this.contentLanguageService.findOne({ contentId: id, language } as any).exec();
+            Validator.ThrowIfDocumentNotFound('ContentLanguage', contentLanguage, { contentId: id, language });
+
             if (this.contentVersionService.isDraftVersion(contentLanguage.status)) {
-                Object.assign(contentLanguage, { name, properties, childItems, updatedBy: userId });
+                Object.assign(contentLanguage, contentObj, { updatedBy: userId });
                 await contentLanguage.save();
             }
+            //Step2: update current version
+            Object.assign(currentVersion, contentObj, { savedAt: new Date(), updatedBy: userId, savedBy: userId });
+            const saveContentVersion = await currentVersion.save();
+
             return this.mergeToContentVersion(currentContent, saveContentVersion);
         } else {
-            //Create new version
-            const savedContentVersionDoc = await this.contentVersionService.createNewVersion(contentObj, id, userId, language, currentVersion._id);
+            //Create new version from current version
+            const newContentVersion = Object.assign(currentVersion.toJSON(), contentObj)
+            const savedContentVersionDoc = await this.contentVersionService.createNewVersion(newContentVersion, id, userId, language, currentVersion._id);
             //Check if there is any draft version which marked as primary
             const primaryDraftVersion = await this.contentVersionService.getPrimaryDraftVersion(id, language);
             //If there is not any primary draft version --> update primary version 
@@ -201,10 +225,12 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
      * Execute publish content flow of content service
      * @returns the published version in current language
      */
-    public executePublishContentFlow = async (id: string, versionId: string, userId: string, language: string): Promise<T & V> => {
-        const currentContent = await this.findById(id);
+    public executePublishContentFlow = async (id: string, versionId: string, userId: string): Promise<T & V> => {
         //Step1: Get current version
-        const currentVersion = await this.contentVersionService.findOne({ _id: versionId } as any).exec();
+        const currentVersion = await this.contentVersionService.getVersionById(versionId);
+        const currentContent = currentVersion.contentId as T;
+        const { language } = currentVersion;
+
         const isDraftVersion = this.contentVersionService.isDraftVersion(currentVersion.status);
         if (isDraftVersion) {
             //Step2: publish the current version
@@ -217,11 +243,13 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
 
             await currentVersion.save();
 
-            //Step3: publish the current content language
+            //Step3: override the content language by publish version
             const contentLanguage = await this.contentLanguageService.findOne({ contentId: id, language: language } as any).exec();
             const previousVersionId = contentLanguage.versionId;
+
             const { status, startPublish, publishedBy, name, properties, childItems, _id } = currentVersion;
-            Object.assign(contentLanguage, { status, startPublish, publishedBy, name, properties, childItems, versionId: _id.toString() });
+            const pageObject = pick(currentVersion, ['urlSegment', 'simpleAddress', 'visibleInMenu']);
+            Object.assign(contentLanguage, pageObject, { status, startPublish, publishedBy, name, properties, childItems, versionId: _id.toString() });
             await contentLanguage.save();
 
             //Step3: update previous version to PreviewPublished
