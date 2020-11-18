@@ -1,16 +1,16 @@
-import 'reflect-metadata';
 import { Router } from 'express';
 import { Injectable } from 'injection-js';
-
+import 'reflect-metadata';
 import { requiredAdminOrEditor } from '../../constants/roles';
 import { asyncRouterErrorHandler } from '../../error';
 import { validate } from '../../validation/validate.middleware';
 import { AuthGuard } from '../auth/auth.middleware';
 import { cutOrCopyContent, insertContent, requiredContentId } from '../content/content.validation';
 import { requiredParentId } from '../folder/folder.validation';
+import { LanguageGuard } from '../language';
 import { PageController } from './page.controller';
 import { requiredUrl } from './page.validation';
-import { LanguageGuard } from '../language';
+
 
 @Injectable()
 export class PageRouter {

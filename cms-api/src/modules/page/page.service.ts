@@ -1,17 +1,17 @@
-import 'reflect-metadata';
 import * as httpStatus from 'http-status';
 import { Injectable } from 'injection-js';
-
+import 'reflect-metadata';
 import { DocumentNotFoundException, Exception } from '../../error';
 import { slugify } from '../../utils/slugify';
+import { ContentVersionService } from '../content/content-version.service';
+import { VersionStatus } from '../content/content.model';
 import { ContentService } from '../content/content.service';
+import { LanguageService } from '../language';
 import { SiteDefinitionService } from '../site-definition/site-definition.service';
+import { IPageLanguageDocument, PageLanguageModel } from './models/page-language.model';
 import { IPageVersionDocument, PageVersionModel } from "./models/page-version.model";
 import { IPageDocument, PageModel } from "./models/page.model";
-import { IPageLanguageDocument, PageLanguageModel } from './models/page-language.model';
-import { VersionStatus } from '../content/content.model';
-import { LanguageService } from '../language';
-import { ContentVersionService } from '../content/content-version.service';
+
 
 export class PageVersionService extends ContentVersionService<IPageVersionDocument> {
     constructor() {
@@ -166,11 +166,6 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         return savedPage;
     }
 
-    public executePublishPageFlow = async (id: string, versionId: string, userId: string): Promise<IPageDocument & IPageVersionDocument> => {
-        await this.throwIfUrlSegmentDuplicated(id, versionId);
-        return this.executePublishContentFlow(id, versionId, userId);
-    }
-
     private generateUrlSegment = async (seed: number, originalUrl: string, parentId: string, language: string, generatedNameInUrl?: string): Promise<string> => {
 
         const urlSegment = generatedNameInUrl ? generatedNameInUrl : originalUrl;
@@ -189,6 +184,11 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         if (count <= 0) return generatedNameInUrl ? generatedNameInUrl : originalUrl;
 
         return await this.generateUrlSegment(seed + 1, originalUrl, parentId, language, `${originalUrl}${seed + 1}`);
+    }
+
+    public executePublishPageFlow = async (id: string, versionId: string, userId: string): Promise<IPageDocument & IPageVersionDocument> => {
+        await this.throwIfUrlSegmentDuplicated(id, versionId);
+        return this.executePublishContentFlow(id, versionId, userId);
     }
 
     private throwIfUrlSegmentDuplicated = async (pageId: string, versionId: string): Promise<void> => {
