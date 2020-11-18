@@ -1,4 +1,4 @@
-import { Media, MediaService, FOLDER_MEDIA } from '@angular-cms/core';
+import { Media, MediaService, LanguageService, FOLDER_MEDIA } from '@angular-cms/core';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -10,10 +10,11 @@ import '../types/tree-node-extension';
 @Injectable()
 export class MediaTreeService implements TreeService {
 
-    constructor(private mediaService: MediaService) { }
+    constructor(private mediaService: MediaService, private languageService: LanguageService) { }
 
     getNode(nodeId: string): Observable<TreeNode> {
-        return this.mediaService.getContent(nodeId, null, null, null).pipe(
+        const language = this.languageService.getLanguageParam();
+        return this.mediaService.getContentVersion(nodeId, language).pipe(
             map(media => TreeNode.createInstanceFromContent(media, FOLDER_MEDIA)));
     }
 

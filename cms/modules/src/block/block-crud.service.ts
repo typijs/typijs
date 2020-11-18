@@ -16,8 +16,8 @@ export class BlockCrudService extends ContentCrudService {
         super(BLOCK_TYPE);
     }
 
-    getContent(contentId: string, versionId: string, language: string, host: string): Observable<ContentInfo> {
-        return this.blockService.getContent(contentId, versionId, language, host)
+    getContentVersion(contentId: string, versionId: string, language: string, host: string): Observable<ContentInfo> {
+        return this.blockService.getContentVersion(contentId, versionId, language, host)
             .pipe(
                 map(contentData => ({
                     contentTypeProperties: this.contentTypeService.getBlockTypeProperties(contentData.contentType),
@@ -27,8 +27,8 @@ export class BlockCrudService extends ContentCrudService {
             );
     }
 
-    createContent(content: Block): Observable<Block> {
-        return this.blockService.createContent(content).pipe(
+    createContent(content: Partial<Block>, language?: string): Observable<Block> {
+        return this.blockService.createContent(content, language).pipe(
             tap(createdBlock => {
                 this.subjectService.fireBlockCreated(createdBlock);
                 this.router.navigate(['/cms/editor/content/', BLOCK_TYPE, createdBlock._id]);
@@ -36,12 +36,12 @@ export class BlockCrudService extends ContentCrudService {
         );
     }
 
-    editContent(content: Block): Observable<Block> {
-        return this.blockService.editContent(content);
+    editContentVersion(contentId: string, versionId: string, content: Partial<Block>): Observable<Block> {
+        return this.blockService.editContentVersion(contentId, versionId, content);
     }
 
-    publishContent(contentId: string, versionId: string): Observable<Content> {
-        return this.blockService.publishContent(contentId, versionId);
+    publishContentVersion(contentId: string, versionId: string): Observable<Content> {
+        return this.blockService.publishContentVersion(contentId, versionId);
     }
 
     getAllContentTypes(): ContentType[] {

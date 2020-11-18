@@ -1,4 +1,4 @@
-import { ContentVersion, TypeOfContent } from '@angular-cms/core';
+import { Content, TypeOfContent } from '@angular-cms/core';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -18,7 +18,7 @@ import { ContentVersionService, ContentVersionServiceResolver } from './content-
 })
 export class ContentVersionComponent extends SubscriptionDestroy implements OnInit {
     modelType: new () => ContentVersionModel = ContentVersionModel;
-    versions$: Observable<ContentVersion[]>;
+    versions$: Observable<Content[]>;
     private versionService: ContentVersionService;
     private typeOfContent: TypeOfContent;
 

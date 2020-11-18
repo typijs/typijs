@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 
-import { PageService, Page, PAGE_TYPE } from '@angular-cms/core';
+import { PageService, LanguageService, Page, PAGE_TYPE } from '@angular-cms/core';
 
 import { TreeService } from '../shared/tree/interfaces/tree-service';
 import { TreeNode } from '../shared/tree/interfaces/tree-node';
@@ -10,10 +10,11 @@ import '../types/tree-node-extension';
 @Injectable()
 export class PageTreeService implements TreeService {
 
-    constructor(private pageService: PageService) { }
+    constructor(private pageService: PageService, private languageService: LanguageService) { }
 
     getNode(nodeId: string): any {
-        return this.pageService.getContent(nodeId, null, null, null).pipe(
+        const language = this.languageService.getLanguageParam();
+        return this.pageService.getSimpleContent(nodeId, language).pipe(
             map(page => TreeNode.createInstanceFromContent(page, PAGE_TYPE)));
     }
 

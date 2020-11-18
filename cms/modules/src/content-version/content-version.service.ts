@@ -1,4 +1,4 @@
-import { ContentVersion, TypeOfContent } from '@angular-cms/core';
+import { Content, TypeOfContent } from '@angular-cms/core';
 import { Inject, Injectable, InjectionToken } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -10,10 +10,10 @@ export abstract class ContentVersionService {
         return this.typeOfContent === typeOfContent;
     }
 
-    abstract getAllVersions(contentId: string): Observable<ContentVersion[]>;
-    abstract createNewVersion(masterVersionId: string): Observable<ContentVersion>;
-    abstract setVersionIsPrimary(versionId: string): Observable<ContentVersion>;
-    abstract deleteVersion(versionId: string): Observable<ContentVersion>;
+    abstract getAllVersions(contentId: string): Observable<Content[]>;
+    abstract createNewVersion(masterVersionId: string): Observable<Content>;
+    abstract setVersionIsPrimary(versionId: string): Observable<Content>;
+    abstract deleteVersion(versionId: string): Observable<Content>;
 }
 
 @Injectable()

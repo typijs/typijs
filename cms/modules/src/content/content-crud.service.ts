@@ -16,10 +16,10 @@ export abstract class ContentCrudService {
         return this.typeOfContent === typeOfContent;
     }
     abstract getAllContentTypes(): ContentType[];
-    abstract getContent(contentId: string, versionId: string, language: string, host: string): Observable<ContentInfo>;
-    abstract createContent(content: Content): Observable<Content>;
-    abstract editContent(content: Content): Observable<Content>;
-    abstract publishContent(contentId: string, versionId: string): Observable<Content>;
+    abstract getContentVersion(contentId: string, versionId: string, language: string, host: string): Observable<ContentInfo>;
+    abstract createContent(content: Partial<Content>, language?: string): Observable<Content>;
+    abstract editContentVersion(contentId: string, versionId: string, content: Partial<Content>): Observable<Content>;
+    abstract publishContentVersion(contentId: string, versionId: string): Observable<Content>;
 }
 
 @Injectable()

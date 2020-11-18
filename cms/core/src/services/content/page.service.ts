@@ -32,10 +32,4 @@ export class PageService extends ContentService<Page> {
     getPublishedPageChildren(parentId: string): Observable<Page[]> {
         return this.httpClient.get<Page[]>(`${this.apiUrl}/published/children/${parentId}`);
     }
-
-    getContent(contentId: string, versionId: string, language: string, host: string): Observable<Page> {
-        const query = convertObjectToUrlQueryString({ versionId, language, host });
-        return this.httpClient.get<Page>(`${this.apiUrl}/${contentId}?${query}`);
-    }
-
 }

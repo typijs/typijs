@@ -43,6 +43,7 @@ export * from './renders/cms-property.directive';
 export * from './renders/property-render.factory';
 
 export * from './services/base.service';
+export * from './services/language.service';
 export * from './services/content-type.service';
 export * from './services/content/block.service';
 export * from './services/content/media.service';

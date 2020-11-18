@@ -51,7 +51,7 @@ export class CmsPageRender implements OnInit, OnDestroy {
     }
 
     private resolveContentDataById(id: string, versionId: string, language: string, host: string) {
-        this.pageService.getContent(id, versionId, language, host).subscribe((currentPage: Page) => {
+        this.pageService.getContentVersion(id, versionId, language, host).subscribe((currentPage: Page) => {
             if (currentPage) {
                 const pageType = this.contentTypeService.getPageType(currentPage.contentType);
                 pageType.properties.forEach(property => this.populateReferenceProperty(currentPage, property));

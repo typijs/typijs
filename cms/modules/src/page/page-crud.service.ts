@@ -14,8 +14,8 @@ export class PageCrudService extends ContentCrudService {
         super(PAGE_TYPE);
     }
 
-    getContent(contentId: string, versionId: string, language: string, host: string): Observable<ContentInfo> {
-        return this.pageService.getContent(contentId, versionId, language, host)
+    getContentVersion(contentId: string, versionId: string, language: string, host: string): Observable<ContentInfo> {
+        return this.pageService.getContentVersion(contentId, versionId, language, host)
             .pipe(
                 // fire page selected event to inform to page tree locate to right node
                 tap(contentData => this.subjectService.firePageSelected(contentData)),
@@ -27,18 +27,18 @@ export class PageCrudService extends ContentCrudService {
             );
     }
 
-    createContent(content: Page): Observable<Page> {
-        return this.pageService.createContent(content).pipe(
+    createContent(content: Partial<Page>, language?: string): Observable<Page> {
+        return this.pageService.createContent(content, language).pipe(
             tap(createdPage => this.subjectService.firePageCreated(createdPage))
         );
     }
 
-    editContent(content: Page): Observable<Page> {
-        return this.pageService.editContent(content);
+    editContentVersion(contentId: string, versionId: string, content: Partial<Page>): Observable<Page> {
+        return this.pageService.editContentVersion(contentId, versionId, content);
     }
 
-    publishContent(contentId: string, versionId: string): Observable<Page> {
-        return this.pageService.publishContent(contentId, versionId);
+    publishContentVersion(contentId: string, versionId: string): Observable<Page> {
+        return this.pageService.publishContentVersion(contentId, versionId);
     }
 
     getAllContentTypes(): ContentType[] {

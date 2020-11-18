@@ -56,7 +56,7 @@ export class ContentUpdateComponent extends SubscriptionDestroy implements OnIni
                     const language = query.get('language');
                     this.typeOfContent = this.getTypeContentFromUrl(this.route.snapshot.url);
                     this.contentService = this.contentServiceResolver.resolveCrudFormService(this.typeOfContent);
-                    return contentId ? this.contentService.getContent(contentId, versionId, language, host) : of({});
+                    return contentId ? this.contentService.getContentVersion(contentId, versionId, language, host) : of({});
                 }),
                 tap((result: ContentInfo) => {
                     this.contentTypeProperties = result.contentTypeProperties;
@@ -183,20 +183,28 @@ export class ContentUpdateComponent extends SubscriptionDestroy implements OnIni
     updateContent(isPublished: boolean, formId: any) {
         if (this.contentFormGroup.valid) {
             if (this.currentContent) {
-                Object.assign(this.currentContent, this.extractOwnPropertyValuesOfContent(this.contentFormGroup));
+
+                // Extract the field's values such as name, url segment. These fields don't belong properties
+                const contentDto: Partial<Content> = this.extractOwnPropertyValuesOfContent(this.contentFormGroup);
+                Object.assign(this.currentContent, contentDto);
+                // Extract the properties's values
                 this.currentContent.properties = this.extractPropertiesPropertyOfContent(this.contentFormGroup);
                 this.currentContent.childItems = this.extractChildItemsRefs();
 
+                const { _id, versionId, properties, childItems } = this.currentContent;
+                Object.assign(contentDto, { properties, childItems });
+
                 if (formId.dirty) {
-                    this.contentService.editContent(this.currentContent).subscribe((savedContent: Content) => {
+                    this.contentService.editContentVersion(_id, versionId, contentDto).subscribe((savedContent: Content) => {
                         formId.control.markAsPristine();
+                        // update versionId for current content
                         this.currentContent.versionId = savedContent.versionId;
                         if (isPublished) {
-                            this.contentService.publishContent(this.currentContent._id, savedContent.versionId).subscribe();
+                            this.contentService.publishContentVersion(_id, savedContent.versionId).subscribe();
                         }
                     });
                 } else if (isPublished) {
-                    this.contentService.publishContent(this.currentContent._id, this.currentContent.versionId).subscribe();
+                    this.contentService.publishContentVersion(_id, versionId).subscribe();
                 }
             }
         }

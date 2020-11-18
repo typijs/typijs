@@ -1,4 +1,4 @@
-import { Content, ContentVersion } from './content.model';
+import { Content } from './content.model';
 
 export interface Page extends Content {
     // IPage
@@ -8,12 +8,4 @@ export interface Page extends Content {
     simpleAddress: string;
 
     linkUrl: string;
-}
-
-export interface PageVersion extends ContentVersion {
-    // IPage
-    visibleInMenu: boolean;
-    // IPageLanguage
-    urlSegment: string;
-    simpleAddress: string;
 }

@@ -1,4 +1,4 @@
-import { ContentType, TypeOfContent } from '@angular-cms/core';
+import { ContentType, TypeOfContent, LanguageService } from '@angular-cms/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, UrlSegment } from '@angular/router';
 import { switchMap, takeUntil } from 'rxjs/operators';
@@ -17,6 +17,7 @@ export class ContentCreateComponent extends SubscriptionDestroy implements OnIni
 
     constructor(
         private route: ActivatedRoute,
+        private languageService: LanguageService,
         private contentServiceResolver: ContentCrudServiceResolver
     ) { super(); }
 
@@ -44,8 +45,8 @@ export class ContentCreateComponent extends SubscriptionDestroy implements OnIni
                 contentType: contentType.name,
                 parentId: this.parentId
             };
-
-            this.contentService.createContent(content).subscribe();
+            const language = this.languageService.getLanguageParam();
+            this.contentService.createContent(content, language).subscribe();
         }
     }
 

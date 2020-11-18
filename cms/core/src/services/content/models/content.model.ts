@@ -37,17 +37,15 @@ export interface Content extends BaseModel {
     delayPublishUntil: Date;
     publishedBy: string;
 
+    // IContentVersion
+    contentId: string | Content;
+    masterVersionId: string;
+    savedAt: Date;
+    savedBy: string;
     // IContentHasChildItems
     childItems: ChildItemRef[];
 
     // Extension properties
     isPublished: boolean; // VersionStatus status == Published
     // [propName: string]: any;
-}
-
-export interface ContentVersion extends Content {
-    contentId: string | Content;
-    masterVersionId: string;
-    savedAt: Date;
-    savedBy: string;
 }
