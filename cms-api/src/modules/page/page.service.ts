@@ -4,7 +4,7 @@ import 'reflect-metadata';
 import { DocumentNotFoundException, Exception } from '../../error';
 import { slugify } from '../../utils/slugify';
 import { ContentVersionService } from '../content/content-version.service';
-import { VersionStatus } from '../content/content.model';
+import { VersionStatus } from "../content/version-status";
 import { ContentService } from '../content/content.service';
 import { LanguageService } from '../language';
 import { SiteDefinitionService } from '../site-definition/site-definition.service';

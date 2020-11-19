@@ -2,9 +2,9 @@ import { DocumentNotFoundException } from '../../error';
 import { Validator } from '../../validation/validator';
 import { BaseService } from '../shared';
 import {
-    IContentVersionDocument,
-    VersionStatus
+    IContentVersionDocument
 } from './content.model';
+import { VersionStatus } from "./version-status";
 
 export class ContentVersionService<V extends IContentVersionDocument> extends BaseService<V> {
     createNewVersion = (version: V, contentId: string, userId: string, language: string, masterVersionId?: string): Promise<V> => {
@@ -59,10 +59,6 @@ export class ContentVersionService<V extends IContentVersionDocument> extends Ba
     //get draft version which marked as Primary
     getPrimaryDraftVersion = async (contentId: string, language: string): Promise<V> => {
         return await this.findOne({ contentId, language, isPrimary: true, $or: [{ status: VersionStatus.CheckedOut }, { status: VersionStatus.Rejected }] } as any).exec();
-    }
-
-    isDraftVersion = (status: number): boolean => {
-        return status == VersionStatus.CheckedOut || status == VersionStatus.Rejected
     }
 
     getAllVersionsOfContent = (contentId: string): Promise<V[]> => {

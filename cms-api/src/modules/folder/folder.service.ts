@@ -1,5 +1,6 @@
 import { DocumentNotFoundException } from '../../error';
-import { IContentDocument, IContentLanguageDocument, IContentLanguageModel, IContentModel, VersionStatus } from "../content/content.model";
+import { IContentDocument, IContentLanguageDocument, IContentLanguageModel, IContentModel } from "../content/content.model";
+import { VersionStatus } from "../content/version-status";
 import { BaseService } from '../shared/base.service';
 
 export abstract class FolderService<T extends IContentDocument, P extends IContentLanguageDocument> extends BaseService<T>{

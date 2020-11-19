@@ -10,9 +10,9 @@ import {
     IContentVersionDocument,
     IContentModel,
     IContentLanguageModel,
-    IContentVersionModel,
-    VersionStatus
+    IContentVersionModel
 } from './content.model';
+import { VersionStatus } from "./version-status";
 
 export class ContentLanguageService<P extends IContentLanguageDocument> extends BaseService<P> {
     public async createContentLanguage(content: P, contentId: string, versionId: string, userId: string, language: string): Promise<P> {
@@ -192,13 +192,13 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         const currentContent = currentVersion.contentId as T;
         const { language } = currentVersion;
 
-        const isDraftVersion = this.contentVersionService.isDraftVersion(currentVersion.status);
+        const isDraftVersion = VersionStatus.isDraftVersion(currentVersion.status);
         if (isDraftVersion) {
             //Step1: update corresponding content language if this language is not publish yet
             const contentLanguage = await this.contentLanguageService.findOne({ contentId: id, language } as any).exec();
             Validator.ThrowIfDocumentNotFound('ContentLanguage', contentLanguage, { contentId: id, language });
 
-            if (this.contentVersionService.isDraftVersion(contentLanguage.status)) {
+            if (VersionStatus.isDraftVersion(contentLanguage.status)) {
                 Object.assign(contentLanguage, contentObj, { updatedBy: userId });
                 await contentLanguage.save();
             }
@@ -231,7 +231,7 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         const currentContent = currentVersion.contentId as T;
         const { language } = currentVersion;
 
-        const isDraftVersion = this.contentVersionService.isDraftVersion(currentVersion.status);
+        const isDraftVersion = VersionStatus.isDraftVersion(currentVersion.status);
         if (isDraftVersion) {
             //Step2: publish the current version
             currentVersion.status = VersionStatus.Published;

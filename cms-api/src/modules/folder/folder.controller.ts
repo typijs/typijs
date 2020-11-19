@@ -30,7 +30,8 @@ export abstract class FolderController<T extends IContentDocument, P extends ICo
     }
 
     getContentsByFolder = async (req: express.Request, res: express.Response) => {
-        const items = await this.folderService.getContentChildren(req.params.parentId, req.query.language)
+        const { language } = req as any;
+        const items = await this.folderService.getContentChildren(req.params.parentId, language);
         res.status(httpStatus.OK).json(items)
     }
 }
