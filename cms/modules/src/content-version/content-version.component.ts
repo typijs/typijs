@@ -1,8 +1,8 @@
 import { Content, TypeOfContent } from '@angular-cms/core';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { merge, Observable } from 'rxjs';
+import { distinctUntilChanged, map, switchMap } from 'rxjs/operators';
 import { SubjectService } from '../shared/services/subject.service';
 import { SubscriptionDestroy } from '../shared/subscription-destroy';
 import { ContentVersionModel } from './content-version.model';
@@ -27,18 +27,23 @@ export class ContentVersionComponent extends SubscriptionDestroy implements OnIn
         private subjectService: SubjectService,
         private versionServiceResolver: ContentVersionServiceResolver) { super(); }
     ngOnInit(): void {
-        this.versions$ = this.subjectService.contentSelected$
-            .pipe(
-                distinctUntilChanged((a, b) => a[1]._id === b[1]._id && a[0] === b[0]),
-                switchMap(([type, content]) => {
-                    this.typeOfContent = type;
-                    this.versionService = this.versionServiceResolver.resolveContentVersionService(this.typeOfContent);
-                    return this.versionService.getAllVersions(content._id);
-                }),
-            );
+        this.versions$ = merge(
+            this.subjectService.contentSelected$
+                .pipe(distinctUntilChanged((a: [TypeOfContent, Content], b: [TypeOfContent, Content]) => a[0] === b[0] && a[1]._id === b[1]._id)
+                ),
+            this.subjectService.contentStatusChanged$
+        ).pipe(
+            switchMap(([type, content]) => {
+                this.typeOfContent = type;
+                this.versionService = this.versionServiceResolver.resolveContentVersionService(this.typeOfContent);
+                return this.versionService.getAllVersions(content._id);
+            }),
+        );
     }
 
     gotoVersion(version: ContentVersionModel) {
-        this.router.navigate(['/cms/editor/content/', this.typeOfContent, version._id]);
+        this.router.navigate(
+            ['/cms/editor/content/', this.typeOfContent, version.contentId],
+            { queryParams: { versionId: version._id, language: version.language } });
     }
 }

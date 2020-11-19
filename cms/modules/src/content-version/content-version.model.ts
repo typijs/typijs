@@ -3,7 +3,7 @@ import { Column } from '../decorators/column.decorator';
 
 export class ContentVersionModel {
     _id: string;
-    versionId: string;
+    contentId: string;
     @Column({
         displayName: 'Language'
     })

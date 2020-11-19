@@ -19,6 +19,7 @@ export class SubjectService {
     contentDropFinished$: Observable<Partial<ContentAreaItem>>;
     portalLayoutChanged$: Observable<boolean>;
     contentSelected$: Observable<[TypeOfContent, Page | Block | Media]>;
+    contentStatusChanged$: Observable<[TypeOfContent, Page | Block | Media]>;
 
     private _blockFolderCreated$: Subject<Block> = new Subject<Block>();
     private _blockCreated$: Subject<Block> = new Subject<Block>();
@@ -27,6 +28,7 @@ export class SubjectService {
     private _pageCreated$: Subject<Page> = new Subject<Page>();
     private _pageSelected$: Subject<Page> = new Subject<Page>();
     private _contentSelected$: Subject<[TypeOfContent, Page | Block | Media]> = new Subject<[TypeOfContent, Page | Block | Media]>();
+    private _contentStatusChanged$: Subject<[TypeOfContent, Page | Block | Media]> = new Subject<[TypeOfContent, Page | Block | Media]>();
     private _contentDropFinished$: Subject<Partial<ContentAreaItem>> = new Subject<Partial<ContentAreaItem>>();
     private _portalLayoutChanged$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
@@ -38,6 +40,7 @@ export class SubjectService {
         this.pageCreated$ = this._pageCreated$.asObservable();
         this.pageSelected$ = this._pageSelected$.asObservable();
         this.contentSelected$ = this._contentSelected$.asObservable();
+        this.contentStatusChanged$ = this._contentStatusChanged$.asObservable();
         this.contentDropFinished$ = this._contentDropFinished$.asObservable();
         this.portalLayoutChanged$ = this._portalLayoutChanged$.asObservable();
     }
@@ -68,6 +71,10 @@ export class SubjectService {
 
     fireContentSelected(type: TypeOfContent, selectedContent: Page | Block | Media) {
         this._contentSelected$.next([type, selectedContent]);
+    }
+
+    fireContentStatusChanged(type: TypeOfContent, selectedContent: Page | Block | Media) {
+        this._contentStatusChanged$.next([type, selectedContent]);
     }
 
     fireContentDropFinished(contentAreaItem: Partial<ContentAreaItem>) {

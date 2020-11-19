@@ -191,23 +191,36 @@ export class ContentUpdateComponent extends SubscriptionDestroy implements OnIni
                 this.currentContent.properties = this.extractPropertiesPropertyOfContent(this.contentFormGroup);
                 this.currentContent.childItems = this.extractChildItemsRefs();
 
-                const { _id, versionId, properties, childItems } = this.currentContent;
+                const { _id, versionId, properties, childItems, status } = this.currentContent;
                 Object.assign(contentDto, { properties, childItems });
 
                 if (formId.dirty) {
                     this.contentService.editContentVersion(_id, versionId, contentDto).subscribe((savedContent: Content) => {
                         formId.control.markAsPristine();
-                        // update versionId for current content
-                        this.currentContent.versionId = savedContent.versionId;
+                        // update current content
+                        Object.assign(this.currentContent, savedContent);
                         if (isPublished) {
-                            this.contentService.publishContentVersion(_id, savedContent.versionId).subscribe();
+                            this.publishContent(_id, savedContent.versionId);
+                        } else {
+                            if (versionId !== savedContent.versionId || status !== savedContent.status) {
+                                this.subjectService.fireContentStatusChanged(this.typeOfContent, savedContent);
+                            }
                         }
                     });
                 } else if (isPublished) {
-                    this.contentService.publishContentVersion(_id, versionId).subscribe();
+                    this.publishContent(_id, versionId);
                 }
             }
         }
+    }
+
+    private publishContent(contentId: string, versionId: string) {
+        this.contentService.publishContentVersion(contentId, versionId).subscribe(publishedContent => {
+            if (publishedContent.status !== this.currentContent.status) {
+                this.currentContent.status = publishedContent.status;
+                this.subjectService.fireContentStatusChanged(this.typeOfContent, publishedContent);
+            }
+        });
     }
 
     private extractPropertiesPropertyOfContent(formGroup: FormGroup): CmsObject {
