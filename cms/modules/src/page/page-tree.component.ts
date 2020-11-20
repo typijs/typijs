@@ -110,10 +110,11 @@ export class PageTreeComponent extends SubscriptionDestroy implements OnInit {
 
     private pageDelete(nodeToDelete: TreeNode) {
         if (nodeToDelete.id == '0') { return; }
-        this.pageService.softDeleteContent(nodeToDelete.id).subscribe(([pageToDelete, deleteResult]: [Page, any]) => {
-            console.log(deleteResult);
-            this.cmsTree.selectNode({ id: pageToDelete.parentId, isNeedToScroll: true });
-            this.cmsTree.reloadSubTree(pageToDelete.parentId);
+        this.pageService.moveContentToTrash(nodeToDelete.id).subscribe((pageToDelete: Page) => {
+            if (pageToDelete.isDeleted) {
+                this.cmsTree.selectNode({ id: pageToDelete.parentId, isNeedToScroll: true });
+                this.cmsTree.reloadSubTree(pageToDelete.parentId);
+            }
         });
     }
 

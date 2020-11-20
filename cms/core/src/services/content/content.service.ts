@@ -31,8 +31,12 @@ export abstract class ContentService<T extends Content> extends FolderService<T>
         return this.httpClient.get<T[]>(`${this.apiUrl}/children/${parentId}`);
     }
 
-    softDeleteContent(contentId: string): Observable<[T, any]> {
-        return this.httpClient.delete<[T, any]>(`${this.apiUrl}/${contentId}`);
+    moveContentToTrash(contentId: string): Observable<T> {
+        return this.httpClient.put<T>(`${this.apiUrl}/trash/${contentId}`, {});
+    }
+
+    deleteContent(contentId: string): Observable<T> {
+        return this.httpClient.delete<T>(`${this.apiUrl}/trash/${contentId}`);
     }
 
     cutContent(actionParams: { sourceContentId: string, targetParentId: string }): Observable<T> {

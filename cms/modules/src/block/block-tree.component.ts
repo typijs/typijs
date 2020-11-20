@@ -164,9 +164,10 @@ export class BlockTreeComponent extends SubscriptionDestroy implements OnInit {
 
     private folderDelete(nodeToDelete: TreeNode) {
         if (nodeToDelete.id === '0') { return; }
-        this.blockService.softDeleteContent(nodeToDelete.id).subscribe(([, deleteResult]: [Block, any]) => {
-            console.log(deleteResult);
-            this.cmsTree.reloadSubTree(nodeToDelete.parentId);
+        this.blockService.moveContentToTrash(nodeToDelete.id).subscribe(folderToDelete => {
+            if (folderToDelete.isDeleted) {
+                this.cmsTree.reloadSubTree(folderToDelete.parentId);
+            }
         });
     }
 

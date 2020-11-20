@@ -1,18 +1,18 @@
-import { Media, MediaService, MEDIA_TYPE } from '@angular-cms/core';
-import { Component, ViewChild, OnInit } from '@angular/core';
-import { takeUntil, switchMap, map, tap, distinctUntilKeyChanged } from 'rxjs/operators';
-
+import { Media, MediaService, MEDIA_TYPE, VersionStatus } from '@angular-cms/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { BehaviorSubject, merge, Observable, Subject } from 'rxjs';
+import { distinctUntilKeyChanged, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { SubjectService } from '../shared/services/subject.service';
 import { SubscriptionDestroy } from '../shared/subscription-destroy';
 import { TreeComponent } from '../shared/tree/components/tree.component';
 import { TreeConfig } from '../shared/tree/interfaces/tree-config';
 import { NodeMenuItemAction, TreeMenuActionEvent } from '../shared/tree/interfaces/tree-menu';
 import { TreeNode } from '../shared/tree/interfaces/tree-node';
+import { TreeService } from '../shared/tree/interfaces/tree-service';
 import { MediaTreeService } from './media-tree.service';
 import { FileModalComponent } from './upload/file-modal.component';
 import { UploadService } from './upload/upload.service';
-import { TreeService } from '../shared/tree/interfaces/tree-service';
-import { BehaviorSubject, Observable, Subject, merge } from 'rxjs';
+
 
 const MEDIA_MENU_ACTION = {
     DeleteFolder: 'DeleteFolder',
@@ -119,7 +119,7 @@ export class MediaTreeComponent extends SubscriptionDestroy implements OnInit {
             map((medias: Media[]) => medias.map(media => Object.assign(media, {
                 type: MEDIA_TYPE,
                 contentType: media.contentType,
-                isPublished: media.isPublished
+                isPublished: media.status === VersionStatus.Published
             })))
         );
     }
@@ -154,9 +154,10 @@ export class MediaTreeComponent extends SubscriptionDestroy implements OnInit {
 
     private folderDelete(nodeToDelete: TreeNode) {
         if (nodeToDelete.id == '0') { return; }
-        this.mediaService.softDeleteContent(nodeToDelete.id).subscribe(([folderToDelete, deleteResult]: [Media, any]) => {
-            console.log(deleteResult);
-            this.cmsTree.reloadSubTree(nodeToDelete.parentId);
+        this.mediaService.moveContentToTrash(nodeToDelete.id).subscribe(folderToDelete => {
+            if (folderToDelete.isDeleted) {
+                this.cmsTree.reloadSubTree(folderToDelete.parentId);
+            }
         });
     }
 
