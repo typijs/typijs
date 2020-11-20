@@ -16,6 +16,7 @@ import {
 import { Multer } from './multer';
 import { IMediaLanguageDocument } from './models/media-language.model';
 import { ContentVersionService } from '../content/content-version.service';
+import { slugify } from '../../utils';
 
 @Injectable()
 export class MediaController extends ContentController<IMediaDocument, IMediaLanguageDocument, IMediaVersionDocument> {
@@ -55,14 +56,15 @@ export class MediaController extends ContentController<IMediaDocument, IMediaLan
         const mediaObj: Partial<IMediaDocument & IMediaLanguageDocument> = {
             _id: fileId,
             name: file.originalname,
-            parentId,
+            parentId: parentId === '0' ? null : parentId,
             mimeType: file.mimetype,
             size: file.size,
             contentType,
             cloudId: file['id'],
             deleteHash: file['deleteHash'],
             linkUrl,
-            thumbnail
+            thumbnail,
+            urlSegment: slugify(file.originalname)
         }
 
         const savedMedia = await this.mediaService.executeCreateContentFlow(mediaObj as any, language, user.id);

@@ -27,13 +27,18 @@ export class MediaRouter {
 
         media.put('/folder/:id', this.authGuard.checkRoles(requiredAdminOrEditor), validate(updateFolderName), this.mediaController.updateFolderName);
 
+        media.get('/simple/:id', validate(requiredContentId), this.langGuard.checkEnabled(), this.mediaController.getSimpleContent);
+
         media.post('/upload/:parentId?', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredParentId), this.mediaController.handleFormData('file'), this.langGuard.checkEnabled(), this.mediaController.processMedia)
 
         media.post('/cut', this.authGuard.checkRoles(requiredAdminOrEditor), validate(cutOrCopyContent), this.mediaController.cut);
 
         media.post('/copy', this.authGuard.checkRoles(requiredAdminOrEditor), validate(cutOrCopyContent), this.mediaController.copy);
 
-        media.get('/:id', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.mediaController.getSimpleContent);
+        //TODO need to revisit
+        media.get('/:id', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.mediaController.getVersion);
+        //move to trash
+        media.put('/trash/:id', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.mediaController.moveToTrash);
 
         media.delete('/:id', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.mediaController.delete);
         return media

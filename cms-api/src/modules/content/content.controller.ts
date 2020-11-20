@@ -16,7 +16,7 @@ export abstract class ContentController<T extends IContentDocument, P extends IC
 
   getSimpleContent = async (req: express.Request, res: express.Response) => {
     const { language } = req as any;
-    const createdContent = await this.contentService.getContentWithoutPopulateProperties(req.params.id, language);
+    const createdContent = await this.contentService.getSimpleContent(req.params.id, language);
     res.status(httpStatus.OK).json(createdContent)
   }
 

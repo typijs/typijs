@@ -54,7 +54,7 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
     public getContentVersion = async (id: string, versionId: string, language: string): Promise<T & V> => {
 
         const currentContent = await this.findOne({ _id: id, isDeleted: false } as any, { lean: true }).exec();
-        Validator.ThrowIfDocumentNotFound('Content', currentContent, { _id: id, isDeleted: false });
+        Validator.throwIfDocumentNotFound('Content', currentContent, { _id: id, isDeleted: false });
 
         const query: any = versionId ? { _id: versionId } : { isPrimary: true, contentId: id, language };
 
@@ -97,7 +97,6 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
             .populate({
                 path: 'contentLanguages',
                 match: { language: language },
-                select: '-_id',
                 populate: {
                     path: 'childItems.content',
                     match: { isDeleted: false },
@@ -117,19 +116,24 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
     }
 
 
-    public getContentWithoutPopulateProperties = async (id: string, language: string): Promise<T & P> => {
+    /**
+     * Get simple content without deep populate
+     * @param id 
+     * @param language 
+     */
+    public getSimpleContent = async (id: string, language: string): Promise<T & P> => {
 
         const currentContent = await this.findOne({ _id: id, isDeleted: false } as any, { lean: true })
             .populate({
                 path: 'contentLanguages',
-                match: { language: language },
-                select: '-_id'
+                match: { $or: [{ language: language }, { language: this.EMPTY_LANGUAGE }] }
             })
             .exec();
-        if (!currentContent) return null;
+        Validator.throwIfDocumentNotFound('Simple Content', currentContent, { _id: id, isDeleted: false });
 
-        const contentLanguage = currentContent.contentLanguages.find((contentLang: P) => contentLang.language === language);
-        if (!contentLanguage) return null;
+        const contentLanguage = currentContent.contentLanguages.find((contentLang: P) =>
+            contentLang.language === language || contentLang.language === this.EMPTY_LANGUAGE);
+        Validator.throwIfDocumentNotFound('Simple Content Language', contentLanguage, { _id: id, isDeleted: false });
 
         return this.mergeToContentLanguage(currentContent, contentLanguage);
     }
@@ -196,7 +200,7 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         if (isDraftVersion) {
             //Step1: update corresponding content language if this language is not publish yet
             const contentLanguage = await this.contentLanguageService.findOne({ contentId: id, language } as any).exec();
-            Validator.ThrowIfDocumentNotFound('ContentLanguage', contentLanguage, { contentId: id, language });
+            Validator.throwIfDocumentNotFound('ContentLanguage', contentLanguage, { contentId: id, language });
 
             if (VersionStatus.isDraftVersion(contentLanguage.status)) {
                 Object.assign(contentLanguage, contentObj, { updatedBy: userId });
@@ -435,9 +439,9 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
     }
 
     protected mergeToContentVersion(content: T, contentVersion: V): T & V {
-        const contentJson = typeof content.toJSON === 'function' ? content.toJSON() : content;
-        const contentVersionJson = typeof contentVersion.toJSON === 'function' ? contentVersion.toJSON() : contentVersion;
-        const contentVersionData: T & V = Object.assign(contentVersionJson, contentJson, { versionId: contentVersionJson._id });
+        const contentJson = content && typeof content.toJSON === 'function' ? content.toJSON() : content;
+        const contentVersionJson = contentVersion && typeof contentVersion.toJSON === 'function' ? contentVersion.toJSON() : contentVersion;
+        const contentVersionData: T & V = Object.assign(contentVersionJson ? contentVersionJson : {}, contentJson, { versionId: contentVersionJson._id });
         delete contentVersionData.contentLanguages;
         delete contentVersionData.contentId;
         return contentVersionData;

@@ -1,11 +1,12 @@
 import { DocumentNotFoundException } from '../../error';
+import { slugify } from '../../utils';
 import { IContentDocument, IContentLanguageDocument, IContentLanguageModel, IContentModel } from "../content/content.model";
 import { VersionStatus } from "../content/version-status";
 import { BaseService } from '../shared/base.service';
 
 export abstract class FolderService<T extends IContentDocument, P extends IContentLanguageDocument> extends BaseService<T>{
 
-    private readonly DefaultLanguageId: string = '0';
+    protected readonly EMPTY_LANGUAGE: string = '0';
     private folderLanguageService: BaseService<P>;
 
     constructor(folderModel: IContentModel<T>, folderLanguageModel: IContentLanguageModel<P>) {
@@ -18,10 +19,15 @@ export abstract class FolderService<T extends IContentDocument, P extends IConte
      */
     public createContentFolder = async (contentFolder: T & P, userId: string): Promise<T & P> => {
         //Step1: Create content folder
-        contentFolder.contentType = null;
-        contentFolder.properties = null;
-        contentFolder.masterLanguageId = this.DefaultLanguageId;
-        contentFolder.createdBy = userId;
+        Object.assign(contentFolder, {
+            urlSegment: slugify(contentFolder.name),
+            linkUrl: slugify(contentFolder.name),
+            contentType: null,
+            properties: null,
+            masterLanguageId: this.EMPTY_LANGUAGE,
+            createdBy: userId
+        });
+
         const parentFolder = await this.findById(contentFolder.parentId).exec();
         const savedFolder = await this.createContent(contentFolder, parentFolder, userId);
         if (savedFolder) await this.updateHasChildren(parentFolder);
@@ -29,7 +35,7 @@ export abstract class FolderService<T extends IContentDocument, P extends IConte
         //Step2: Create folder in default language
         const folderLang = this.folderLanguageService.createModel(contentFolder);
         folderLang.contentId = savedFolder._id;
-        folderLang.language = this.DefaultLanguageId;
+        folderLang.language = this.EMPTY_LANGUAGE;
         folderLang.status = VersionStatus.Published;
         folderLang.startPublish = new Date();
         folderLang.createdBy = userId;
@@ -55,18 +61,18 @@ export abstract class FolderService<T extends IContentDocument, P extends IConte
         return this.folderLanguageService.updateById(currentFolderLang._id, currentFolderLang);
     }
 
-    public getFolderChildren = async (parentId: string): Promise<T[]> => {
+    public getFolderChildren = async (parentId: string): Promise<Array<T & P>> => {
         if (parentId == '0') parentId = null;
 
         const folderChildren = await this.find({ parentId: parentId, isDeleted: false, contentType: null } as any, { lean: true })
             .populate({
                 path: 'contentLanguages',
-                match: { language: this.DefaultLanguageId }
+                match: { language: this.EMPTY_LANGUAGE }
             })
             .exec();
 
         return folderChildren.map(x => {
-            const contentLanguage = x.contentLanguages.find(contentLang => contentLang.language === this.DefaultLanguageId);
+            const contentLanguage = x.contentLanguages.find(contentLang => contentLang.language === this.EMPTY_LANGUAGE);
             return this.mergeToContentLanguage(x, contentLanguage);
         })
     }
@@ -88,9 +94,9 @@ export abstract class FolderService<T extends IContentDocument, P extends IConte
     }
 
     protected mergeToContentLanguage(content: T, contentLang: P): T & P {
-        const contentJson = typeof content.toJSON === 'function' ? content.toJSON() : content;
-        const contentLangJson = typeof contentLang.toJSON === 'function' ? contentLang.toJSON() : contentLang;
-        const contentLanguageData: T & P = Object.assign(contentLangJson, contentJson);
+        const contentJson = content && typeof content.toJSON === 'function' ? content.toJSON() : content;
+        const contentLangJson = contentLang && typeof contentLang.toJSON === 'function' ? contentLang.toJSON() : contentLang;
+        const contentLanguageData: T & P = Object.assign(contentLangJson ? contentLangJson : {}, contentJson);
         delete contentLanguageData.contentLanguages;
         delete contentLanguageData.contentId;
         return contentLanguageData;
