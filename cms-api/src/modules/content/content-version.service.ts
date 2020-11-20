@@ -47,12 +47,12 @@ export class ContentVersionService<V extends IContentVersionDocument> extends Ba
                 path: 'contentId',
                 match: { isDeleted: false }
             }).exec();
-        Validator.ThrowIfDocumentNotFound('ContentVersion', currentVersion, { _id: versionId });
+        Validator.throwIfDocumentNotFound('ContentVersion', currentVersion, { _id: versionId });
 
-        Validator.ThrowIfDocumentNotFound('Content', currentVersion.contentId, { contentId: currentVersion.contentId });
+        Validator.throwIfDocumentNotFound('Content', currentVersion.contentId, { contentId: currentVersion.contentId });
 
         const { language } = currentVersion;
-        Validator.ThrowIfNullOrEmpty('language', language);
+        Validator.throwIfNullOrEmpty('language', language);
         return currentVersion;
     }
 

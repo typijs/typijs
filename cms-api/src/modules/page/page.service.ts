@@ -1,17 +1,17 @@
 import * as httpStatus from 'http-status';
 import { Injectable } from 'injection-js';
 import 'reflect-metadata';
+import { CacheService } from '../../caching';
 import { DocumentNotFoundException, Exception } from '../../error';
 import { slugify } from '../../utils/slugify';
 import { ContentVersionService } from '../content/content-version.service';
-import { VersionStatus } from "../content/version-status";
 import { ContentService } from '../content/content.service';
+import { VersionStatus } from "../content/version-status";
 import { LanguageService } from '../language';
 import { SiteDefinitionService } from '../site-definition/site-definition.service';
 import { IPageLanguageDocument, PageLanguageModel } from './models/page-language.model';
 import { IPageVersionDocument, PageVersionModel } from "./models/page-version.model";
 import { IPageDocument, PageModel } from "./models/page.model";
-
 
 export class PageVersionService extends ContentVersionService<IPageVersionDocument> {
     constructor() {
@@ -21,8 +21,8 @@ export class PageVersionService extends ContentVersionService<IPageVersionDocume
 
 @Injectable()
 export class PageService extends ContentService<IPageDocument, IPageLanguageDocument, IPageVersionDocument> {
-
-    constructor(private siteDefinitionService: SiteDefinitionService, private languageService: LanguageService) {
+    private readonly PrefixCacheKey: string = 'Page';
+    constructor(private siteDefinitionService: SiteDefinitionService, private languageService: LanguageService, private cacheService: CacheService) {
         super(PageModel, PageLanguageModel, PageVersionModel);
     }
 
@@ -39,14 +39,16 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
     }
 
     private buildLinkUrl = async (currentId: string, parentPath: string, currentUrlSegment: string, language: string, host: string): Promise<string> => {
+
         const parentIds = parentPath ? parentPath.split(',').filter(id => id && id.trim() !== '') : [];
 
-        const currentSiteDefinition = await this.siteDefinitionService.getSiteDefinitionByHostname(host);
-        const startPageId = (currentSiteDefinition.startPage as IPageDocument)._id.toString();
-        const matchStartIndex = currentSiteDefinition ? parentIds.indexOf(startPageId) : -1;
+        const currentSite = await this.siteDefinitionService.getDefaultSiteDefinition(host);
+        const currentHost = this.siteDefinitionService.getDefaultHostDefinition(currentSite, host);
 
-        const defaultLang = currentSiteDefinition ? currentSiteDefinition.hosts.find(x => x.name == host).language : '';
+        const startPageId = (currentSite.startPage as IPageDocument)._id.toString();
+        const matchStartIndex = currentSite ? parentIds.indexOf(startPageId) : -1;
 
+        const defaultLang = currentHost.language;
         const urlSegments: string[] = [];
         if (defaultLang !== language) { urlSegments.push(language); }
 
@@ -60,15 +62,17 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
     }
 
     private getUrlSegmentByPageId = async (id: string, language: string): Promise<string> => {
-        const currentContent = await this.contentLanguageService.findOne({ contentId: id, language } as any, { lean: true })
-            .select('contentId urlSegment')
-            .populate({
-                path: 'contentId',
-                match: { isDeleted: false },
-                select: 'urlSegment'
-            })
-            .exec();
-
+        const cacheKey = this.cacheService.createCacheKey(this.PrefixCacheKey, 'getUrlSegmentByPageId', id, language);
+        const currentContent = await this.cacheService.get(cacheKey, () =>
+            this.contentLanguageService.findOne({ contentId: id, language } as any, { lean: true })
+                .select('contentId urlSegment')
+                .populate({
+                    path: 'contentId',
+                    match: { isDeleted: false },
+                    select: 'urlSegment'
+                })
+                .exec()
+        )
         return currentContent.urlSegment;
     }
 
@@ -148,8 +152,10 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         const publishedPages = (await this.getContentChildren(parentId, language)).filter(x => x.status == VersionStatus.Published);
         if (publishedPages.length == 0) return [];
 
-        //TODO: Temporary get first site definition
-        publishedPages.forEach(async page => page.linkUrl = await this.buildLinkUrl(page._id.toString(), page.parentPath, page.urlSegment, language, host));
+        for (let index = 0; index < publishedPages.length; index++) {
+            const page = publishedPages[index];
+            page.linkUrl = await this.buildLinkUrl(page._id.toString(), page.parentPath, page.urlSegment, language, host)
+        }
 
         return publishedPages;
     }

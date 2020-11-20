@@ -2,9 +2,10 @@ import 'reflect-metadata';
 import { Injectable } from "injection-js";
 import { CacheService } from "../../caching";
 import { BaseService } from "../shared/base.service";
-import { ISiteDefinitionDocument, SiteDefinitionModel } from "./site-definition.model";
+import { IHostDefinitionDocument, ISiteDefinitionDocument, SiteDefinitionModel } from "./site-definition.model";
 import { DuplicateHostNameException, DuplicateSiteNameException, DuplicateStartPageException, HostNameAlreadyUsedException, MultiplePrimaryHostException } from './site-definition.exception';
 import { groupBy } from '../../utils';
+import { Validator } from '../../validation/validator';
 
 @Injectable()
 export class SiteDefinitionService extends BaseService<ISiteDefinitionDocument> {
@@ -16,13 +17,49 @@ export class SiteDefinitionService extends BaseService<ISiteDefinitionDocument> 
     public getSiteDefinitionByHostname = (hostName: string): Promise<ISiteDefinitionDocument> => {
         const cacheKey = this.cacheService.createCacheKey(this.PrefixCacheKey, 'getSiteDefinitionByHostname', hostName);
         return this.cacheService.get(cacheKey, () =>
-            this.findOne({ 'hosts.name': hostName }, {lean: true})
+            this.findOne({ 'hosts.name': hostName }, { lean: true })
                 .populate({
                     path: 'startPage',
-                    match: { isDeleted: false },
+                    match: { isDeleted: false }
                 })
                 .exec()
         )
+    }
+
+    /**
+     * Get site definition by host. If host is not provided, the first site definition will be returned
+     * @param host 
+     */
+    public getDefaultSiteDefinition = async (host?: string): Promise<ISiteDefinitionDocument> => {
+        const siteDefinition = host ? await this.getSiteDefinitionByHostname(host) : await this.getFirstSiteDefinition();
+        Validator.throwIfDocumentNotFound('SiteDefinition', siteDefinition, { host });
+        Validator.throwIfDocumentNotFound('StartPage', siteDefinition.startPage);
+
+        return siteDefinition;
+    }
+
+    /**
+     * Get host definition by name. If the name is not provided, the primary or first host will be returned
+     * @param siteDefinition 
+     * @param hostName 
+     */
+    public getDefaultHostDefinition = (siteDefinition: ISiteDefinitionDocument, hostName?: string): IHostDefinitionDocument => {
+        let defaultHost: IHostDefinitionDocument;
+        if (hostName) {
+            defaultHost = siteDefinition.hosts.find(x => x.name == hostName);
+        } else {
+            defaultHost = siteDefinition.hosts.find(x => x.isPrimary);
+            if (!defaultHost) defaultHost = siteDefinition.hosts.length > 0 ? siteDefinition.hosts[0] : undefined;
+        }
+        Validator.throwIfDocumentNotFound('Host', defaultHost);
+        return defaultHost;
+    }
+
+    private getFirstSiteDefinition = (): Promise<ISiteDefinitionDocument> => {
+        return this.findOne({}, { lean: true }).sort('createdAt').populate({
+            path: 'startPage',
+            match: { isDeleted: false }
+        }).exec()
     }
 
     public createSiteDefinition = async (siteDefinition: ISiteDefinitionDocument, userId: string): Promise<ISiteDefinitionDocument> => {

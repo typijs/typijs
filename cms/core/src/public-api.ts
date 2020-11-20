@@ -8,6 +8,7 @@ export * from './bases/cms-property.factory';
 export * from './bases/selection-factory';
 export * from './cms';
 export * from './constants';
+export * from './constants/version-status';
 export * from './core.module';
 
 export * from './decorators/content-type.decorator';

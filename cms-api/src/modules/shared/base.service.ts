@@ -74,7 +74,10 @@ export class BaseService<T extends IBaseDocument> {
      * @param options query option ex `{ lean: true }`
      */
     public count = (filter: FilterQuery<T>): Promise<number> => {
-        return this.mongooseModel.count(filter).exec()
+        if (Object.keys(filter).length === 0 && filter.constructor === Object) {
+            return this.mongooseModel.estimatedDocumentCount().exec();
+        }
+        return this.mongooseModel.countDocuments(filter).exec()
     }
 
     /**
