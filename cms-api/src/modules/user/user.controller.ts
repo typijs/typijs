@@ -16,7 +16,7 @@ export class UserController extends BaseController<IUserDocument> {
         super(userService);
     }
 
-    create = async (req: express.Request, res: express.Response) => {
+    createUser = async (req: express.Request, res: express.Response) => {
         const { id } = req['user'];
         const newDoc: Partial<IUserDocument> = Object.assign({ createdBy: id }, req.body);
         const item = await this.userService.createUser(newDoc)

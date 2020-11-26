@@ -30,7 +30,7 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
      * Get primary version of page by id
      * @param id Page Object Id
      * @param language The current language
-     * @param host The host name
+     * @param host (Optional) The host name
      */
     public getPageVersion = async (id: string, versionId: string, language: string, host: string): Promise<IPageDocument & IPageVersionDocument> => {
         const primaryVersion = await this.getContentVersion(id, versionId, language);
@@ -38,6 +38,14 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         return primaryVersion;
     }
 
+    /**
+     * Build link url
+     * @param currentId 
+     * @param parentPath 
+     * @param currentUrlSegment 
+     * @param language 
+     * @param host (Optional)
+     */
     private buildLinkUrl = async (currentId: string, parentPath: string, currentUrlSegment: string, language: string, host: string): Promise<string> => {
 
         const parentIds = parentPath ? parentPath.split(',').filter(id => id && id.trim() !== '') : [];
