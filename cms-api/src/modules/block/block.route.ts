@@ -1,60 +1,54 @@
-import 'reflect-metadata';
 import { Router } from 'express';
 import { Injectable } from 'injection-js';
-
-import { requiredAdminOrEditor } from '../../constants/roles';
+import 'reflect-metadata';
 import { asyncRouterErrorHandler } from '../../error';
-import { validate } from '../../validation/validate.middleware';
-import { AuthGuard } from '../auth/auth.middleware';
-import { cutOrCopyContent, insertContent, requiredContentId } from '../content/content.validation';
-import { createFolder, requiredParentId, updateFolderName } from '../folder/folder.validation';
-import { BlockController } from './block.controller';
 import { LanguageGuard } from '../language';
+import { BlockController } from './block.controller';
 
 @Injectable()
 export class BlockRouter {
-    constructor(private blockController: BlockController, private authGuard: AuthGuard, private langGuard: LanguageGuard) { }
+    constructor(private blockController: BlockController, private langGuard: LanguageGuard) { }
 
     get router(): Router {
         const block: Router = asyncRouterErrorHandler(Router());
 
-        block.get('/folders/:parentId?', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredParentId), this.blockController.getFoldersByParentId);
+        block.get('/folders/:parentId?', this.blockController.getFoldersByParentId.bind(this.blockController));
 
-        block.get('/children/:parentId?', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredParentId), this.langGuard.checkEnabled(), this.blockController.getContentsByFolder);
+        block.get('/children/:parentId?', this.langGuard.checkEnabled(), this.blockController.getContentsByFolder.bind(this.blockController));
 
-        block.post('/folder', this.authGuard.checkRoles(requiredAdminOrEditor), validate(createFolder), this.blockController.createFolderContent);
+        block.post('/folder', this.blockController.createFolderContent.bind(this.blockController));
 
-        block.put('/folder/:id', this.authGuard.checkRoles(requiredAdminOrEditor), validate(updateFolderName), this.blockController.updateFolderName);
+        block.put('/folder/:id', this.blockController.updateFolderName.bind(this.blockController));
 
-        block.get('/simple/:id', validate(requiredContentId), this.langGuard.checkEnabled(), this.blockController.getSimpleContent);
+        block.get('/simple/:id', this.langGuard.checkEnabled(), this.blockController.getSimpleContent.bind(this.blockController));
 
-        block.post('/cut', this.authGuard.checkRoles(requiredAdminOrEditor), validate(cutOrCopyContent), this.blockController.cut);
+        block.post('/cut', this.blockController.cut.bind(this.blockController));
 
-        block.post('/copy', this.authGuard.checkRoles(requiredAdminOrEditor), validate(cutOrCopyContent), this.blockController.copy);
+        block.post('/copy', this.blockController.copy.bind(this.blockController));
 
-        block.post('/', this.authGuard.checkRoles(requiredAdminOrEditor), validate(insertContent), this.langGuard.checkEnabled(), this.blockController.create);
+        block.post('/', this.langGuard.checkEnabled(), this.blockController.createContent.bind(this.blockController));
 
         //move to trash
-        block.put('/trash/:id', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.blockController.moveToTrash);
+        block.put('/trash/:id', this.blockController.moveToTrash.bind(this.blockController));
 
-        block.delete('/:id', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.blockController.delete);
+        block.delete('/:id', this.blockController.deleteContent.bind(this.blockController));
         return block
     }
 
     get versionRouter(): Router {
         const blockVersion: Router = asyncRouterErrorHandler(Router());
         //get all versions of content
-        blockVersion.get('/list/:id', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.blockController.getAllVersionsOfContent);
+        blockVersion.get('/list/:id', this.blockController.getAllVersionsOfContent.bind(this.blockController));
         //get version detail
-        blockVersion.get('/:id', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.langGuard.checkEnabled(), this.blockController.getVersion);
+        blockVersion.get('/:id', this.langGuard.checkEnabled(), this.blockController.getVersion.bind(this.blockController));
         //update version
-        blockVersion.put('/:id', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.blockController.updateVersion);
+        blockVersion.put('/:id', this.blockController.updateVersion.bind(this.blockController));
         //set version is primary
-        blockVersion.put('/set-primary/:versionId', this.authGuard.checkRoles(requiredAdminOrEditor), this.blockController.setVersionIsPrimary);
+        blockVersion.put('/set-primary/:versionId', this.blockController.setVersionIsPrimary.bind(this.blockController));
         //publish version
-        blockVersion.put('/publish/:id', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.blockController.publishVersion);
+        blockVersion.put('/publish/:id', this.blockController.publishVersion.bind(this.blockController));
         //delete version
-        blockVersion.delete('/:versionId', this.authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.blockController.delete)
+        blockVersion.delete('/:versionId', this.blockController.deleteContent.bind(this.blockController))
         return blockVersion;
     }
 }

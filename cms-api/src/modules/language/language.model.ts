@@ -29,7 +29,7 @@ const LanguageBranchSchema = new mongoose.Schema({
     name: { type: String, required: true, trim: true },
     sortIndex: { type: Number },
     iconPath: { type: String },
-    enabled: { type: Boolean, required: true, default: true }
+    enabled: { type: Boolean, required: true, default: false }
 }, { timestamps: true });
 
 export const cmsLanguageBranch = 'cms_LanguageBranch';

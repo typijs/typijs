@@ -8,7 +8,7 @@ export const UPLOAD_PATH = 'uploads';
 
 const generateFolder = (req: express.Request, file: Express.Multer.File): string => {
     const fileId = mongoose.Types.ObjectId().toHexString();
-    Object.assign(req.params, { fileId })
+    Object.assign(req.body, { fileId })
     const dir = path.join(UPLOAD_PATH, `${fileId}`);
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
@@ -17,11 +17,11 @@ const generateFolder = (req: express.Request, file: Express.Multer.File): string
 }
 
 const generateFileName = (req: express.Request, file: Express.Multer.File): string => {
-    const fileId = req.params.fileId;
+    const fileId = req.body.fileId;
     const fileExt = path.extname(file.originalname);
     const linkUrl = getLinkUrl(fileId, file.originalname);
     const thumbnail = `${linkUrl}?w=50&h=50`;
-    Object.assign(req.params, { linkUrl, thumbnail })
+    Object.assign(req.body, { linkUrl, thumbnail })
     return `${fileId}${fileExt}`;
 }
 

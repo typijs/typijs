@@ -1,11 +1,15 @@
-import 'reflect-metadata';
-import { Injectable } from 'injection-js';
+import * as Joi from '@hapi/joi';
 import * as express from 'express';
-import * as mime from 'mime-types';
 import * as httpStatus from 'http-status';
-
+import { Injectable } from 'injection-js';
+import * as mime from 'mime-types';
+import 'reflect-metadata';
+import { slugify } from '../../utils';
+import { ValidateBody, ValidateParams } from '../../validation/validate.decorator';
+import { ContentVersionService } from '../content/content-version.service';
 import { ContentController } from '../content/content.controller';
 import { MediaService } from './media.service';
+import { IMediaLanguageDocument } from './models/media-language.model';
 import { IMediaVersionDocument, MediaVersionModel } from './models/media-version.model';
 import {
     FileContent,
@@ -14,9 +18,6 @@ import {
     VideoContent
 } from './models/media.model';
 import { Multer } from './multer';
-import { IMediaLanguageDocument } from './models/media-language.model';
-import { ContentVersionService } from '../content/content-version.service';
-import { slugify } from '../../utils';
 
 @Injectable()
 export class MediaController extends ContentController<IMediaDocument, IMediaLanguageDocument, IMediaVersionDocument> {
@@ -25,7 +26,11 @@ export class MediaController extends ContentController<IMediaDocument, IMediaLan
         super(mediaService, new ContentVersionService<IMediaVersionDocument>(MediaVersionModel));
     }
 
-    getMediaById = async (req: express.Request, res: express.Response) => {
+    @ValidateParams({
+        fileId: Joi.string().required(),
+        fileName: Joi.string().required()
+    })
+    async getMediaById(req: express.Request, res: express.Response) {
         const widthStr = req.query.w ? req.query.w : req.query.width;
         const heightStr = req.query.h ? req.query.h : req.query.height;
         const width = widthStr ? parseInt(widthStr, 10) : undefined;
@@ -43,15 +48,21 @@ export class MediaController extends ContentController<IMediaDocument, IMediaLan
         }
     }
 
-    handleFormData = (fieldName: string): any => {
+    handleFormData(fieldName: string): any {
         if (!fieldName) fieldName = 'file';
         return this.multer.uploadFile.single(fieldName);
     }
 
-    processMedia = async (req: express.Request, res: express.Response) => {
+    @ValidateBody({
+        fileId: Joi.string().required(),
+        linkUrl: Joi.string().required(),
+        thumbnail: Joi.string().required()
+    })
+    async processMedia(req: express.Request, res: express.Response) {
         const file: Express.Multer.File = req.file;
         const contentType: string = this.getMediaContentType(file.originalname);
-        const { parentId, fileId, linkUrl, thumbnail } = req.params;
+        const { parentId } = req.params;
+        const { fileId, linkUrl, thumbnail } = req.body;
         const { user, language } = req as any;
         const mediaObj: Partial<IMediaDocument & IMediaLanguageDocument> = {
             _id: fileId,
