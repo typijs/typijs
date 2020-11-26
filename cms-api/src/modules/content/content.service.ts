@@ -65,14 +65,7 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
                 populate: {
                     path: 'contentLanguages',
                     match: { language: language },
-                    populate: {
-                        path: 'childItems.content',
-                        match: { isDeleted: false },
-                        populate: {
-                            path: 'contentLanguages',
-                            match: { language: language }
-                        }
-                    }
+                    populate: this.deepPopulate(5, language)
                 }
             }).exec();
 
@@ -97,14 +90,7 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
             .populate({
                 path: 'contentLanguages',
                 match: { language: language },
-                populate: {
-                    path: 'childItems.content',
-                    match: { isDeleted: false },
-                    populate: {
-                        path: 'contentLanguages',
-                        match: { language: language }
-                    }
-                }
+                populate: this.deepPopulate(5, language)
             })
             .exec();
         if (!currentContent) return null;
@@ -115,6 +101,29 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         return this.mergeToContentLanguage(currentContent, publishedLang);
     }
 
+    private deepPopulate = (level: number, language: string): { path: string, match: any, populate?: any } => {
+        if (level > 1) {
+            return {
+                path: 'childItems.content',
+                match: { isDeleted: false },
+                populate: {
+                    path: 'contentLanguages',
+                    match: { language: language },
+                    populate: this.deepPopulate(--level, language)
+                }
+            }
+        } else if (level == 1) {
+            return {
+                path: 'childItems.content',
+                match: { isDeleted: false },
+                populate: {
+                    path: 'contentLanguages',
+                    match: { language: language }
+                }
+            }
+        }
+        return null
+    }
 
     /**
      * Get simple content without deep populate
