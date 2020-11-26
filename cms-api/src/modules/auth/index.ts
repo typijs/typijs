@@ -5,5 +5,6 @@ import { AuthRouter } from './auth.route';
 import { AuthService } from './auth.service';
 import { TokenService } from './token.service';
 
+export * from './auth.decorator';
 export { TokenService, AuthService, AuthRouter, AuthController, AuthGuard };
 export const AuthProviders: Provider[] = [TokenService, AuthService, AuthRouter, AuthController, AuthGuard]
