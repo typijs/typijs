@@ -25,14 +25,14 @@ export function ValidateRequest(joiSchema: { [property: string]: Joi.Schema }, k
      * @params{string} propertyKey - The name of the method.
      * @params{PropertyDescriptor} descriptor - Property that has a value (in that case the method)
      */
-    return function (target: any, propertyName: string, descriptor: TypedPropertyDescriptor<Function>) {
+    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         // Ensure we have the descriptor that might been overriden by another decorator
         if (descriptor === undefined) {
-            descriptor = Object.getOwnPropertyDescriptor(target, propertyName);
+            descriptor = Object.getOwnPropertyDescriptor(target, propertyKey);
         }
 
         if (!descriptor || (typeof descriptor.value !== 'function')) {
-            throw new TypeError(`Only methods can be decorated with @Validate${key}. <${propertyName}> is not a method!`);
+            throw new TypeError(`Only methods can be decorated with @Validate${key}. <${propertyKey}> is not a method!`);
         }
         // Copy
         const originalMethod = descriptor.value;
