@@ -4,6 +4,7 @@ import * as httpStatus from 'http-status';
 import { Injectable } from 'injection-js';
 import 'reflect-metadata';
 import { AdminOrEditor } from '../../constants';
+import { Profiler } from '../../logging';
 import { ValidateBody, ValidateParams, ValidateQuery } from '../../validation/validate.decorator';
 import { Authorize } from '../auth/auth.decorator';
 import { ContentController } from '../content/content.controller';
@@ -32,12 +33,14 @@ export class PageController extends ContentController<IPageDocument, IPageLangua
     res.status(httpStatus.OK).json(savedContent)
   }
 
+  @Profiler(true, 200)
   @ValidateParams({ url: Joi.string().required() })
   async getByUrl(req: express.Request, res: express.Response) {
     const item = await this.pageService.getPublishedPageByUrl(req.params.url);
     res.status(httpStatus.OK).json(item);
   }
 
+  @Profiler(true, 300)
   async getPublishedPageChildren(req: express.Request, res: express.Response) {
     const { language } = req as any;
     const items = await this.pageService.getPublishedPageChildren(req.params.parentId, language, req.query.host);

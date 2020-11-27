@@ -4,6 +4,7 @@ import * as httpStatus from 'http-status';
 import { Injectable } from 'injection-js';
 import * as mime from 'mime-types';
 import 'reflect-metadata';
+import { Profiler } from '../../logging';
 import { slugify } from '../../utils';
 import { ValidateBody, ValidateParams } from '../../validation/validate.decorator';
 import { ContentVersionService } from '../content/content-version.service';
@@ -26,6 +27,7 @@ export class MediaController extends ContentController<IMediaDocument, IMediaLan
         super(mediaService, new ContentVersionService<IMediaVersionDocument>(MediaVersionModel));
     }
 
+    @Profiler(true, 200)
     @ValidateParams({
         fileId: Joi.string().required(),
         fileName: Joi.string().required()

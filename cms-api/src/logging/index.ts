@@ -4,3 +4,4 @@ import { loggingMiddleware } from './logging.middleware';
 
 const LoggerProviders: Provider[] = [Logger];
 export { Logger, loggingMiddleware, logger, LoggerProviders }
+export * from './profiler.decorator';
