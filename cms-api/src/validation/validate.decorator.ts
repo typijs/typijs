@@ -3,9 +3,16 @@ import * as Joi from '@hapi/joi';
 import * as httpStatus from 'http-status';
 import { NextFunction, Request, Response } from 'express';
 import { ApiError } from '../error';
+import { Validator } from './validator';
 
-function validationFactory(model: { [key: string]: Joi.Schema }, source: 'params' | 'body' | 'query' | string) {
-    const validateSchema = Joi.object(model);
+/**
+ * Validate the request
+ * @param joiSchema The validation model schema
+ * @param key The request's property name
+ */
+export function ValidateRequest(joiSchema: { [property: string]: Joi.Schema }, key: 'params' | 'body' | 'query' | string) {
+    Validator.throwIfNullOrEmpty('key', key);
+    const validateSchema = Joi.object(joiSchema);
     // Joi validation options
     const validationOptions = {
         abortEarly: false, // abort after the last validation error
@@ -13,38 +20,48 @@ function validationFactory(model: { [key: string]: Joi.Schema }, source: 'params
         stripUnknown: true // remove unknown keys from the validated data
     };
 
+    /**
+     * @params{any} target - The prototype of the class (Object).
+     * @params{string} propertyKey - The name of the method.
+     * @params{PropertyDescriptor} descriptor - Property that has a value (in that case the method)
+     */
     return function (target: any, propertyName: string, descriptor: TypedPropertyDescriptor<Function>) {
-        if (!descriptor || (typeof descriptor.value !== 'function')) {
-            throw new TypeError(`Only methods can be decorated with @validation. <${propertyName}> is not a method!`);
+        // Ensure we have the descriptor that might been overriden by another decorator
+        if (descriptor === undefined) {
+            descriptor = Object.getOwnPropertyDescriptor(target, propertyName);
         }
 
-        const method = descriptor.value;
+        if (!descriptor || (typeof descriptor.value !== 'function')) {
+            throw new TypeError(`Only methods can be decorated with @Validate${key}. <${propertyName}> is not a method!`);
+        }
+        // Copy
+        const originalMethod = descriptor.value;
         descriptor.value = function (req: Request, res: Response, next: NextFunction) {
-            const plain = req[source];
+            const plain = req[key];
             const { value, error } = validateSchema.validate(plain, validationOptions);
             if (error) {
                 const errorMessage = error.details.map((details) => details.message).join(', ');
                 next(new ApiError(httpStatus.BAD_REQUEST, errorMessage));
                 return;
             }
-            Object.assign(req[source], value);
-            return method.apply(this, [req, res, next]);
+            Object.assign(req[key], value);
+            return originalMethod.apply(this, [req, res, next]);
         };
     };
 }
 
 /**
  * Validate the request's params
- * @param dto 
+ * @param joiSchema for example `{ name: Joi.string().required() }`
  */
-export function ValidateParams(dto: { [key: string]: Joi.Schema }) { return validationFactory(dto, 'params'); }
+export function ValidateParams(joiSchema: { [key: string]: Joi.Schema }) { return ValidateRequest(joiSchema, 'params'); }
 /**
  * Validate the request's query
- * @param dto 
+ * @param joiSchema for example `{ name: Joi.string().required() }` 
  */
-export function ValidateQuery(dto: { [key: string]: Joi.Schema }) { return validationFactory(dto, 'query'); }
+export function ValidateQuery(joiSchema: { [key: string]: Joi.Schema }) { return ValidateRequest(joiSchema, 'query'); }
 /**
  * Validate the request's body
- * @param dto 
+ * @param joiSchema for example `{ name: Joi.string().required() }` 
  */
-export function ValidateBody(dto: { [key: string]: Joi.Schema }) { return validationFactory(dto, 'body'); }
+export function ValidateBody(joiSchema: { [key: string]: Joi.Schema }) { return ValidateRequest(joiSchema, 'body'); }

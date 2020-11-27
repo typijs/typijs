@@ -31,12 +31,22 @@ export function Authorize(userClaims?: UserClaims) {
     const defaultClaims: UserClaims = { roles: [], permissions: [], users: [] };
     const { roles: requiredRoles, permissions: requiredPermissions, users } = userClaims ? userClaims : defaultClaims;
 
+    /**
+     * @params{any} target - The prototype of the class (Object).
+     * @params{string} propertyKey - The name of the method.
+     * @params{PropertyDescriptor} descriptor - Property that has a value (in that case the method)
+     */
     return function (target: any, propertyName: string, descriptor: TypedPropertyDescriptor<Function>) {
+        // Ensure we have the descriptor that might been overriden by another decorator
+        if (descriptor === undefined) {
+            descriptor = Object.getOwnPropertyDescriptor(target, propertyName);
+        }
+
         if (!descriptor || (typeof descriptor.value !== 'function')) {
             throw new TypeError(`Only methods can be decorated with @Authorize. <${propertyName}> is not a method!`);
         }
-
-        const method = descriptor.value;
+        // Copy
+        const originalMethod = descriptor.value;
         descriptor.value = function (req: Request, res: Response, next: NextFunction) {
             try {
                 Validator.throwIfNull('request', req);
@@ -61,7 +71,7 @@ export function Authorize(userClaims?: UserClaims) {
                     throw new ForbiddenException('Forbidden');
                 }
 
-                return method.apply(this, [req, res, next]);
+                return originalMethod.apply(this, [req, res, next]);
             } catch (err) {
                 next(err);
                 return;
