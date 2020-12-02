@@ -1,38 +1,28 @@
-import { ReflectiveInjector, Provider } from "injection-js";
-
-import { CacheInjectorProviders } from "./caching";
-import { EventInjectorProviders } from "./event";
-import { LoggerProviders } from "./logging";
-import { AuthProviders } from "./modules/auth";
-import { BlockProviders } from './modules/block';
-import { LanguageProviders } from "./modules/language";
-import { MediaProviders, StorageProviders } from './modules/media';
-import { PageProviders } from './modules/page';
-import { SiteDefinitionProviders } from "./modules/site-definition";
-import { UserProviders } from "./modules/user";
-import { CmsApiRouter } from "./routes";
+import { InjectionToken, Provider, ReflectiveInjector, Type } from "injection-js";
+import { Validator } from "./validation";
 
 export class CmsInjector {
-    constructor(private providers?: Provider[]) { }
+    private _providers: Provider[] = [];
+    private _injector: ReflectiveInjector = ReflectiveInjector.fromResolvedProviders([]);
 
-    get instance(): ReflectiveInjector {
-        let appProviders = [
-            ...LoggerProviders,
-            ...EventInjectorProviders,
-            ...CacheInjectorProviders,
-            ...AuthProviders,
-            ...BlockProviders,
-            ...MediaProviders,
-            ...StorageProviders,
-            ...PageProviders,
-            ...SiteDefinitionProviders,
-            ...UserProviders,
-            ...LanguageProviders,
-            CmsApiRouter
-        ];
-        if (this.providers) {
-            appProviders = [...appProviders, ...this.providers];
-        }
-        return ReflectiveInjector.fromResolvedProviders([...ReflectiveInjector.resolve(appProviders)]);
+    set(providers: Provider[]) {
+        this._providers = [...this._providers, ...providers];
+        this._injector = ReflectiveInjector.fromResolvedProviders([...ReflectiveInjector.resolve([...this._providers])]);
+    }
+
+    get<T>(token: Type<T> | InjectionToken<T>, notFoundValue?: T): T {
+        Validator.throwIfNull('_injector', this._injector);
+        return this._injector.get(token, notFoundValue);
+    }
+}
+
+export class Container {
+    public static readonly globalInstance: CmsInjector = new CmsInjector();
+
+    static get<T>(token: Type<T> | InjectionToken<T>, notFoundValue?: T): T {
+        return this.globalInstance.get(token, notFoundValue);
+    }
+    static set(providers?: Provider[]): void {
+        this.globalInstance.set(providers);
     }
 }

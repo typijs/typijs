@@ -1,9 +1,9 @@
-import 'reflect-metadata';
 import { NextFunction, Request, Response } from 'express';
-import { GlobalInjector } from '../../constants';
-import { AuthService } from './auth.service';
+import 'reflect-metadata';
 import { ForbiddenException, UnauthorizedException } from '../../error/exceptions';
+import { Container } from '../../injector';
 import { Validator } from '../../validation';
+import { AuthService } from './auth.service';
 
 /**
  * User claims
@@ -52,8 +52,7 @@ export function Authorize(userClaims?: UserClaims) {
                 Validator.throwIfNull('request', req);
                 Validator.throwIfNull('next function', next)
 
-                const injector = req.app.get(GlobalInjector);
-                const authService = injector ? <AuthService>injector.get(AuthService) : new AuthService(null, null);
+                const authService = Container.get(AuthService, new AuthService(null, null));
 
                 const isAuthenticated = authService.isAuthenticated(req);
                 if (!isAuthenticated) {

@@ -3,12 +3,20 @@ import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
 import * as express from 'express';
 import { Provider } from 'injection-js';
+import { CacheInjectorProviders } from "./caching";
 import { config } from './config/config';
-import { GlobalInjector } from './constants';
 import { Database } from './db/database';
 import { errorMiddleware } from './error';
-import { CmsInjector } from './injector';
-import { loggingMiddleware, logger } from './logging';
+import { EventInjectorProviders } from "./event";
+import { Container } from './injector';
+import { logger, LoggerProviders, loggingMiddleware } from './logging';
+import { AuthProviders } from "./modules/auth";
+import { BlockProviders } from './modules/block';
+import { LanguageProviders } from "./modules/language";
+import { MediaProviders, StorageProviders } from './modules/media';
+import { PageProviders } from './modules/page';
+import { SiteDefinitionProviders } from "./modules/site-definition";
+import { UserProviders } from "./modules/user";
 import { CmsApiRouter } from './routes';
 
 export type CmsAppOptions = {
@@ -20,7 +28,7 @@ export class CmsApp {
 
   constructor(appOptions: CmsAppOptions = {}) {
     this.express = express();
-    this.express.set(GlobalInjector, new CmsInjector(appOptions.provides).instance);
+    this.setProviders(appOptions.provides)
     this.setDatabaseConnection();
     this.setMiddlewares();
     this.setRoutes();
@@ -37,6 +45,27 @@ export class CmsApp {
         reject(err);
       });
     });
+  }
+
+  private setProviders(providers: Provider[]) {
+    let appProviders = [
+      ...LoggerProviders,
+      ...EventInjectorProviders,
+      ...CacheInjectorProviders,
+      ...AuthProviders,
+      ...BlockProviders,
+      ...MediaProviders,
+      ...StorageProviders,
+      ...PageProviders,
+      ...SiteDefinitionProviders,
+      ...UserProviders,
+      ...LanguageProviders,
+      CmsApiRouter
+    ];
+    if (providers) {
+      appProviders = [...appProviders, ...providers];
+    }
+    Container.set(appProviders);
   }
 
   private setDatabaseConnection() {
@@ -61,8 +90,7 @@ export class CmsApp {
   }
 
   private setRoutes(): void {
-    const cmsInjector = this.express.get(GlobalInjector);
-    const apiRouter = <CmsApiRouter>cmsInjector.get(CmsApiRouter);
+    const apiRouter = Container.get(CmsApiRouter);
     this.express.use('/api', apiRouter.router);
   }
 
