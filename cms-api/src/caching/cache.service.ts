@@ -1,13 +1,19 @@
 import 'reflect-metadata';
 import { Injectable } from "injection-js";
 import { CacheProvider } from "./cache.provider";
+import { ParamNullException } from '../error/exceptions/ParamNullException';
 
 @Injectable()
 export class CacheService {
     constructor(private readonly cache: CacheProvider) { }
 
-    public createCacheKey = (prefix: string, ...args: string[]): string => {
-        return args.length > 0 ? `${prefix}:${args.join(':')}` : prefix;
+    public createCacheKey = (...args: string[]): string => {
+        if (args.length == 0) throw new ParamNullException('args');
+
+        const filteredArgs = args.filter(arg => arg && arg.trim() !== '');
+        if (filteredArgs.length == 0) throw new ParamNullException('args');
+
+        return `${filteredArgs.join(':')}`;
     }
     /**
      * Async get item from cache

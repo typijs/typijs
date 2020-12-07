@@ -1,7 +1,7 @@
 import * as httpStatus from 'http-status';
 import { Injectable } from 'injection-js';
 import 'reflect-metadata';
-import { CacheService } from '../../caching';
+import { Cache, CacheService } from '../../caching';
 import { DocumentNotFoundException, Exception } from '../../error';
 import { slugify } from '../../utils/slugify';
 import { ContentVersionService } from '../content/content-version.service';
@@ -21,7 +21,7 @@ export class PageVersionService extends ContentVersionService<IPageVersionDocume
 
 @Injectable()
 export class PageService extends ContentService<IPageDocument, IPageLanguageDocument, IPageVersionDocument> {
-    private readonly PrefixCacheKey: string = 'Page';
+    private static readonly PrefixCacheKey: string = 'Page';
     constructor(private siteDefinitionService: SiteDefinitionService, private languageService: LanguageService, private cacheService: CacheService) {
         super(PageModel, PageLanguageModel, PageVersionModel);
     }
@@ -69,18 +69,20 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         return `/${urlSegments.filter(segment => segment && segment.trim() !== '').join('/')}`;
     }
 
-    private getUrlSegmentByPageId = async (id: string, language: string): Promise<string> => {
-        const cacheKey = this.cacheService.createCacheKey(this.PrefixCacheKey, 'getUrlSegmentByPageId', id, language);
-        const currentContent = await this.cacheService.get(cacheKey, () =>
-            this.contentLanguageService.findOne({ contentId: id, language } as any, { lean: true })
-                .select('contentId urlSegment')
-                .populate({
-                    path: 'contentId',
-                    match: { isDeleted: false },
-                    select: 'urlSegment'
-                })
-                .exec()
-        )
+    @Cache({
+        prefixKey: PageService.PrefixCacheKey,
+        suffixKey: (args) => `${args[0]}:${args[1]}`
+    })
+    private async getUrlSegmentByPageId(id: string, language: string): Promise<string> {
+        const currentContent = await this.contentLanguageService.findOne({ contentId: id, language } as any, { lean: true })
+            .select('contentId urlSegment')
+            .populate({
+                path: 'contentId',
+                match: { isDeleted: false },
+                select: 'urlSegment'
+            })
+            .exec()
+
         return currentContent.urlSegment;
     }
 
@@ -141,7 +143,7 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
      */
     private getLanguageFromUrl = async (url: URL, defaultLanguage: string): Promise<string> => {
         const pathUrl = url.pathname; // --> /abc/xyz
-        const paths = pathUrl.split('/');
+        const paths = pathUrl.split('/').filter(id => id && id.trim() !== '');
 
         if (paths.length > 0) {
             const languageCode = paths[0];

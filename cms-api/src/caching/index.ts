@@ -4,3 +4,4 @@ import { CacheService } from './cache.service';
 
 const CacheInjectorProviders: Provider[] = [CacheService, { provide: CacheProvider, useClass: NodeCacheProvider }]
 export { CacheProvider, CacheService, CacheInjectorProviders }
+export * from './cache.decorator';
