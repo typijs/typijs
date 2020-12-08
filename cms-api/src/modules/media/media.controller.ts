@@ -27,7 +27,7 @@ export class MediaController extends ContentController<IMediaDocument, IMediaLan
         super(mediaService, new ContentVersionService<IMediaVersionDocument>(MediaVersionModel));
     }
 
-    @Profiler(true, 200)
+    @Profiler({ thresholdInMs: 200 })
     @ValidateParams({
         fileId: Joi.string().required(),
         fileName: Joi.string().required()

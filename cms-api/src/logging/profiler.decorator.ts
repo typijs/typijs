@@ -1,13 +1,33 @@
 import { performance } from "perf_hooks";
 import { logger } from "./logger";
 
+export type ParametersAsStringBuilder = (args: any[]) => string;
+export type ProfilerOptions = {
+    /**
+     * The first parameter will tell if we want to display in the console the performance.
+     */
+    outputConsole?: boolean;
+    /**
+     * (default: 1000ms) The second parameter is when to change the log into an error. 
+     * It’s the threshold in millisecond of when it’s too long for the method.
+     */
+    thresholdInMs?: number;
+    parametersAsString?: string | ParametersAsStringBuilder;
+}
+
+const defaultOptions: ProfilerOptions = {
+    outputConsole: false,
+    thresholdInMs: 1000,
+    parametersAsString: ''
+}
+
 /**
  * The decorator to capture the time a method takes to execute
- * @param outputConsole The first parameter will tell if we want to display in the console the performance.
- * @param thresholdToDisplayErrorInMs (default: 1000ms) The second parameter is when to change the log into an error. 
- * It’s the threshold in millisecond of when it’s too long for the method.
  */
-export function Profiler(outputConsole: boolean, thresholdToDisplayErrorInMs: number = 1000) {
+export function Profiler(options?: ProfilerOptions) {
+
+    const { outputConsole, thresholdInMs: thresholdToDisplayErrorInMs, parametersAsString } = Object.assign(defaultOptions, options ? options : {});;
+
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         // Ensure we have the descriptor that might been overriden by another decorator
         if (descriptor === undefined) {
@@ -22,16 +42,14 @@ export function Profiler(outputConsole: boolean, thresholdToDisplayErrorInMs: nu
         // Redefine the method to this new method who will call the original method
         // Use the function's this context instead of the value of this when log is called (no arrow function)
         descriptor.value = async function (...args: any[]) {
-            //Error Converting circular structure when using JSON.stringify(request)
-            //const parametersAsString = args.filter(param => typeof param !== 'function').map((param) => JSON.stringify(param)).join(",");
-            const parametersAsString = '...';
+            const parameters = parametersAsString instanceof Function ? parametersAsString(args) : parametersAsString;
             const startTime = performance.now();
 
             const result = await originalMethod.apply(this, args); // Call the original method
             const stringResult = JSON.stringify(result)
             const endTime = performance.now();
             const timeSpan = endTime - startTime;
-            const message = "Call [" + timeSpan.toFixed(3) + "ms]: " + propertyKey + "(" + parametersAsString + ") => " + stringResult;
+            const message = `Call [${timeSpan.toFixed(3)}ms]: ${propertyKey}(${parameters}) => ${stringResult}`;
             if (timeSpan < thresholdToDisplayErrorInMs) {
                 if (outputConsole) console.log(message);
                 logger.info(message);

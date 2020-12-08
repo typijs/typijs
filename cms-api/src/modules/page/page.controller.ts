@@ -33,14 +33,22 @@ export class PageController extends ContentController<IPageDocument, IPageLangua
     res.status(httpStatus.OK).json(savedContent)
   }
 
-  @Profiler(true, 200)
+  @Profiler({
+    outputConsole: true,
+    thresholdInMs: 200,
+    parametersAsString: (args) => args[0].params.url
+  })
   @ValidateParams({ url: Joi.string().required() })
   async getByUrl(req: express.Request, res: express.Response) {
     const item = await this.pageService.getPublishedPageByUrl(req.params.url);
     res.status(httpStatus.OK).json(item);
   }
 
-  @Profiler(true, 300)
+  @Profiler({
+    outputConsole: true,
+    thresholdInMs: 300,
+    parametersAsString: (args) => `${args[0].params.parentId}, ${args[0]['language']}, ${args[0].query.host}`
+  })
   async getPublishedPageChildren(req: express.Request, res: express.Response) {
     const { language } = req as any;
     const items = await this.pageService.getPublishedPageChildren(req.params.parentId, language, req.query.host);

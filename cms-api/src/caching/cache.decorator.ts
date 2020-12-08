@@ -9,6 +9,8 @@ export type CacheOptions = {
     ttl?: number;
 }
 
+const defaultOptions: CacheOptions = { prefixKey: '', suffixKey: '', ttl: 0 }
+
 /**
  * Cache - This decorator allows you to first check if cached results for the
  *             decorated method exist. If so, return those, else run the decorated
@@ -16,7 +18,10 @@ export type CacheOptions = {
  *
  * @param options {CacheOptions}
  */
-export function Cache(options: CacheOptions = { prefixKey: '', suffixKey: '', ttl: 0 }) {
+export function Cache(cacheOptions?: CacheOptions) {
+
+    const options = Object.assign(defaultOptions, cacheOptions ? cacheOptions : {});
+
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         // Ensure we have the descriptor that might been overriden by another decorator
         if (descriptor === undefined) {
@@ -40,7 +45,7 @@ export function Cache(options: CacheOptions = { prefixKey: '', suffixKey: '', tt
             if (cacheValue) return cacheValue;
 
             const result = await originalMethod.apply(this, args); // Call the original method
-            cacheService.set(cacheKey, result, options.ttl ? options.ttl : 0);
+            cacheService.set(cacheKey, result, options.ttl);
             return result;
         }
     }

@@ -23,13 +23,15 @@ export type UserClaims = {
     users?: string[];
 }
 
+const defaultClaims: UserClaims = { roles: [], permissions: [], users: [] };
+
 /**
  * Decorator to check if request is authorized
  * @param userClaims 
  */
 export function Authorize(userClaims?: UserClaims) {
-    const defaultClaims: UserClaims = { roles: [], permissions: [], users: [] };
-    const { roles: requiredRoles, permissions: requiredPermissions, users } = userClaims ? userClaims : defaultClaims;
+
+    const { roles: requiredRoles, permissions: requiredPermissions, users } = Object.assign(defaultClaims, userClaims ? userClaims : {});
 
     /**
      * @params{any} target - The prototype of the class (Object).
