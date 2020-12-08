@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { Injectable } from "injection-js";
-import { CacheService } from "../../caching";
+import { CacheService, Cache } from "../../caching";
 import { BaseService } from "../shared/base.service";
 import { IHostDefinitionDocument, ISiteDefinitionDocument, SiteDefinitionModel } from "./site-definition.model";
 import { DuplicateHostNameException, DuplicateSiteNameException, DuplicateStartPageException, HostNameAlreadyUsedException, MultiplePrimaryHostException } from './site-definition.exception';
@@ -9,21 +9,22 @@ import { Validator } from '../../validation/validator';
 
 @Injectable()
 export class SiteDefinitionService extends BaseService<ISiteDefinitionDocument> {
-    private readonly PrefixCacheKey: string = 'SiteDefinition';
+    private static readonly PrefixCacheKey: string = 'SiteDefinition';
     constructor(private cacheService: CacheService) {
         super(SiteDefinitionModel);
     }
 
-    public getSiteDefinitionByHostname = (hostName: string): Promise<ISiteDefinitionDocument> => {
-        const cacheKey = this.cacheService.createCacheKey(this.PrefixCacheKey, 'getSiteDefinitionByHostname', hostName);
-        return this.cacheService.get(cacheKey, () =>
-            this.findOne({ 'hosts.name': hostName }, { lean: true })
-                .populate({
-                    path: 'startPage',
-                    match: { isDeleted: false }
-                })
-                .exec()
-        )
+    @Cache({
+        prefixKey: SiteDefinitionService.PrefixCacheKey,
+        suffixKey: (args) => args[0]
+    })
+    getSiteDefinitionByHostname(hostName: string): Promise<ISiteDefinitionDocument> {
+        return this.findOne({ 'hosts.name': hostName }, { lean: true })
+            .populate({
+                path: 'startPage',
+                match: { isDeleted: false }
+            })
+            .exec()
     }
 
     /**
@@ -65,7 +66,7 @@ export class SiteDefinitionService extends BaseService<ISiteDefinitionDocument> 
     public createSiteDefinition = async (siteDefinition: ISiteDefinitionDocument, userId: string): Promise<ISiteDefinitionDocument> => {
         await this.validateSiteDefinition(siteDefinition);
 
-        this.cacheService.deleteStartWith(this.PrefixCacheKey);
+        this.cacheService.deleteStartWith(SiteDefinitionService.PrefixCacheKey);
         siteDefinition.createdBy = userId;
         return this.create(siteDefinition);
     }
@@ -73,7 +74,7 @@ export class SiteDefinitionService extends BaseService<ISiteDefinitionDocument> 
     public updateSiteDefinition = async (siteDefinition: ISiteDefinitionDocument, userId: string): Promise<ISiteDefinitionDocument> => {
         await this.validateSiteDefinition(siteDefinition);
 
-        this.cacheService.deleteStartWith(this.PrefixCacheKey);
+        this.cacheService.deleteStartWith(SiteDefinitionService.PrefixCacheKey);
         siteDefinition.updatedBy = userId;
         return this.updateById(siteDefinition._id, siteDefinition);
     }
