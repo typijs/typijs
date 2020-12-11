@@ -1,52 +1,113 @@
-<div class="main1">
-    <div class="content">
-        <h2>The standard chunk of Lorem Ipsum used since the 1500s is reproduced </h2>
+<hero-banner *ngIf="currentContent.heroImage" [image]="currentContent.heroImage.src" [text]="currentContent.header">
+</hero-banner>
+
+<section class="ftco-section ftco-degree-bg">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 ftco-animate" *ngIf="articles$ | async as articles">
+        <div class="row">
+          <div class="col-md-12 d-flex ftco-animate" *ngFor="let item of articles">
+            <div class="blog-entry align-self-stretch d-md-flex">
+              <a href="javascript:;" [routerLink]="[item.linkUrl]" class="block-20"
+                [ngStyle]="{ 'background-image': 'url(' + (item.image | toImgSrc) + ')'}">
+              </a>
+              <div class="text d-block pl-md-4">
+                <div class="meta mb-3">
+                  <div><a href="#">{{item.publishedDate}}</a></div>
+                  <div><a href="#">{{item.author}}</a></div>
+                  <div><a href="#" class="meta-chat"><span class="icon-chat"></span> 3</a></div>
+                </div>
+                <h3 class="heading"><a href="#">{{item.header}}</a>
+                </h3>
+                <p [innerHTML]="item.summary"></p>
+                <p><a href="javascript:;" [routerLink]="[item.linkUrl]" class="btn btn-primary py-2 px-3">Read more</a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> <!-- .col-md-8 -->
+      <div class="col-lg-4 sidebar ftco-animate">
+        <div class="sidebar-box">
+          <form action="#" class="search-form">
+            <div class="form-group">
+              <span class="icon ion-ios-search"></span>
+              <input type="text" class="form-control" placeholder="Search...">
+            </div>
+          </form>
+        </div>
+        <div class="sidebar-box ftco-animate">
+          <h3 class="heading">Categories</h3>
+          <ul class="categories">
+            <li><a href="#">Vegetables <span>(12)</span></a></li>
+            <li><a href="#">Fruits <span>(22)</span></a></li>
+            <li><a href="#">Juice <span>(37)</span></a></li>
+            <li><a href="#">Dries <span>(42)</span></a></li>
+          </ul>
+        </div>
+
+        <div class="sidebar-box ftco-animate">
+          <h3 class="heading">Recent Blog</h3>
+          <div class="block-21 mb-4 d-flex">
+            <a class="blog-img mr-4" style="background-image: url(images/image_1.jpg);"></a>
+            <div class="text">
+              <h3 class="heading-1"><a href="#">Even the all-powerful Pointing has no control about the blind texts</a>
+              </h3>
+              <div class="meta">
+                <div><a href="#"><span class="icon-calendar"></span> April 09, 2019</a></div>
+                <div><a href="#"><span class="icon-person"></span> Admin</a></div>
+                <div><a href="#"><span class="icon-chat"></span> 19</a></div>
+              </div>
+            </div>
+          </div>
+          <div class="block-21 mb-4 d-flex">
+            <a class="blog-img mr-4" style="background-image: url(images/image_2.jpg);"></a>
+            <div class="text">
+              <h3 class="heading-1"><a href="#">Even the all-powerful Pointing has no control about the blind texts</a>
+              </h3>
+              <div class="meta">
+                <div><a href="#"><span class="icon-calendar"></span> April 09, 2019</a></div>
+                <div><a href="#"><span class="icon-person"></span> Admin</a></div>
+                <div><a href="#"><span class="icon-chat"></span> 19</a></div>
+              </div>
+            </div>
+          </div>
+          <div class="block-21 mb-4 d-flex">
+            <a class="blog-img mr-4" style="background-image: url(images/image_3.jpg);"></a>
+            <div class="text">
+              <h3 class="heading-1"><a href="#">Even the all-powerful Pointing has no control about the blind texts</a>
+              </h3>
+              <div class="meta">
+                <div><a href="#"><span class="icon-calendar"></span> April 09, 2019</a></div>
+                <div><a href="#"><span class="icon-person"></span> Admin</a></div>
+                <div><a href="#"><span class="icon-chat"></span> 19</a></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-box ftco-animate">
+          <h3 class="heading">Tag Cloud</h3>
+          <div class="tagcloud">
+            <a href="#" class="tag-cloud-link">fruits</a>
+            <a href="#" class="tag-cloud-link">tomatoe</a>
+            <a href="#" class="tag-cloud-link">mango</a>
+            <a href="#" class="tag-cloud-link">apple</a>
+            <a href="#" class="tag-cloud-link">carrots</a>
+            <a href="#" class="tag-cloud-link">orange</a>
+            <a href="#" class="tag-cloud-link">pepper</a>
+            <a href="#" class="tag-cloud-link">eggplant</a>
+          </div>
+        </div>
+
+        <div class="sidebar-box ftco-animate">
+          <h3 class="heading">Paragraph</h3>
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ducimus itaque, autem necessitatibus voluptate
+            quod mollitia delectus aut, sunt placeat nam vero culpa sapiente consectetur similique, inventore eos fugit
+            cupiditate numquam!</p>
+        </div>
+      </div>
+
     </div>
-    <div class="blog">
-        <div class="blog_list">
-            <h4><a href="">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</a></h4>
-            <h5>January 3rd, 2013 , Posted by&nbsp;<a href="index.html">H. Rackham</a></h5>
-            <div class="blog_para">
-                <p class="para1"><a href="details.html" rel="lightbox"><img src="images/pic9.jpg" alt=""></a>"On the
-                    other hand, we denounce with righteous indignation and dislike men who are so beguiled and
-                    demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot foresee
-                    the pain and trouble that are bound to ensue; and equal blame belongs to those who fail in their
-                    duty through weakness of will,</p>
-                <div class="read_more">
-                    <a class="btn" href="details.html">Read More</a>
-                </div>
-                <div class="clear"></div>
-            </div>
-        </div>
-        <div class="blog_list">
-            <h4><a href="">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</a></h4>
-            <h5>march 26th, 2013 , Posted by&nbsp;<a href="index.html">J. Smith</a></h5>
-            <div class="blog_para">
-                <p class="para1"><a href="details.html" rel="lightbox"><img src="images/pic10.jpg" alt=""></a>"On the
-                    other hand, we denounce with righteous indignation and dislike men who are so beguiled and
-                    demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot foresee
-                    the pain and trouble that are bound to ensue; and equal blame belongs to those who fail in their
-                    duty through weakness of will,</p>
-                <div class="read_more">
-                    <a class="btn" href="details.html">Read More</a>
-                </div>
-            </div>
-            <div class="clear"></div>
-        </div>
-        <div class="blog_list">
-            <h4><a href="">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</a></h4>
-            <h5>Auguest 3rd, 2013 , Posted by&nbsp;<a href="index.html">H. Rackham</a></h5>
-            <div class="blog_para">
-                <p class="para1"><a href="details.html" rel="lightbox"><img src="images/pic11.jpg" alt=""></a>"On the
-                    other hand, we denounce with righteous indignation and dislike men who are so beguiled and
-                    demoralized by the charms of pleasure of the moment, so blinded by desire, that they cannot foresee
-                    the pain and trouble that are bound to ensue; and equal blame belongs to those who fail in their
-                    duty through weakness of will,</p>
-                <div class="read_more">
-                    <a class="btn" href="details.html">Read More</a>
-                </div>
-            </div>
-            <div class="clear"></div>
-        </div>
-    </div>
-</div>
+  </div>
+</section> <!-- .section -->

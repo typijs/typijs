@@ -20,9 +20,7 @@ export class LayoutComponent implements OnInit, AfterViewInit {
         this.startPage$ = this.contentService.getStartPage().pipe(
             tap(page => {
                 if (page) {
-                    this.menuItems$ = this.contentService.getPublishedPageChildren(page._id).pipe(
-                        map(children => children.map(childPage => new PageData(childPage)))
-                    );
+                    this.menuItems$ = this.contentService.getPageChildren(page._id);
                 }
             }),
             map(page => new HomePage(page))

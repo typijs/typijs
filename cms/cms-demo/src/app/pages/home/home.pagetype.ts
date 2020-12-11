@@ -2,46 +2,47 @@ import { Property, PageType, UIHint, PageData, CmsImage, ContentReference } from
 import { HomeComponent } from './home.component';
 
 @PageType({
-    displayName: 'Home Page',
+    displayName: 'Start Page',
     componentRef: HomeComponent,
-    description: 'This is home page type'
+    description: 'This is start page type'
 })
 export class HomePage extends PageData {
 
     @Property({
-        displayName: 'Logo',
-        displayType: UIHint.Image
+        displayName: 'Text Logo',
+        displayType: UIHint.Text
     })
-    logo: CmsImage;
+    textLogo: string;
 
     @Property({
-        displayName: 'Projects Page Root',
-        displayType: UIHint.ContentReference,
-        allowedTypes: ['PortfolioPage'],
+        displayName: 'Phone number',
+        displayType: UIHint.Text
     })
-    latestProjectRoot: ContentReference;
+    phone: string;
 
     @Property({
-        displayName: 'Highlight Features',
-        description: 'This is highlight feature will be in banner area',
+        displayName: 'Email',
+        displayType: UIHint.Text
+    })
+    email: string;
+
+    @Property({
+        displayName: 'Header Shipping Text',
+        displayType: UIHint.Text
+    })
+    headerShippingText: string;
+
+    @Property({
+        displayName: 'Main Content',
         displayType: UIHint.ContentArea,
-        allowedTypes: ['FeatureBlock', 'PortfolioBlock'],
-        newProperty: 'abc'
     })
-    features: any[];
+    mainContent: any[];
 
     @Property({
-        displayName: 'Highlight Portfolios',
-        displayType: UIHint.ContentArea,
-        allowedTypes: ['PortfolioBlock']
-    })
-    portfolios: any[];
-
-    @Property({
-        displayName: 'Footer',
+        displayName: 'Footer Content',
         displayType: UIHint.ContentArea
     })
-    footer: any[];
+    footerContent: any[];
 
     @Property({
         displayName: 'Footer Text',

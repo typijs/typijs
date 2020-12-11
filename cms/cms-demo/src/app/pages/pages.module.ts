@@ -1,20 +1,22 @@
+import { AngularCms } from '@angular-cms/core';
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-
-import { AngularCms } from '@angular-cms/core';
-
-import { HomeComponent } from './home/home.component';
+import { RouterModule } from '@angular/router';
+import { HeroBannerComponent } from '../shared/hero-banner/hero-banner.component';
 import { ArticleComponent } from './article/article.component';
 import { BlogComponent } from './blog/blog.component';
-import { PortfolioComponent } from './portfolio/portfolio.component';
-import { RouterModule } from '@angular/router';
+import { ContactComponent } from './contact/contact.component';
+import { HomeComponent } from './home/home.component';
+import { StandardPageComponent } from './standard/standard.component';
 
 const PAGES_COMPONENT = [
-    HomeComponent,
     ArticleComponent,
     BlogComponent,
-    PortfolioComponent
+    ContactComponent,
+    HomeComponent,
+    StandardPageComponent,
+    HeroBannerComponent
 ];
 
 @NgModule({
