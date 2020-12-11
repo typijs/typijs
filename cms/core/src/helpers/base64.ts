@@ -1,5 +1,8 @@
-// https://base64.guru/developers/javascript/examples/polyfill
-// A helper that returns Base64 characters and their indices.
+/**
+ * A helper that returns Base64 characters and their indices.
+ *
+ * https://base64.guru/developers/javascript/examples/polyfill
+ */
 const chars = {
     ascii(): string {
         return 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
@@ -18,7 +21,10 @@ const chars = {
     }
 };
 
-// encode base 64
+/**
+ * Encode base 64
+ * @param data
+ */
 export function btoa(data: string): string {
     const ascii = chars.ascii();
     const len = data.length - 1;
@@ -44,7 +50,10 @@ export function btoa(data: string): string {
     return b64;
 }
 
-// decode base 64
+/**
+ * Decode base 64
+ * @param b64
+ */
 export function atob(b64: string): string {
     let indices = chars.indices(),
         pos = b64.indexOf('='),

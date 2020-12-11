@@ -110,3 +110,12 @@ export function convertObjectToUrlQueryString(query: { [param: string]: string |
 
     return new URLSearchParams(query as any).toString();
 }
+
+/**
+ * Indicates whether a specified string is null, empty, or consists only of white-space characters.
+ * @param str
+ * @returns
+ */
+export function isNullOrWhiteSpace(str) {
+    return str === null || str.match(/^ *$/) !== null;
+}

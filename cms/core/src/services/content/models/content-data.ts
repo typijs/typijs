@@ -3,6 +3,7 @@ import { Block } from './block.model';
 
 export abstract class ContentData {
     id: string;
+    versionId: string;
     parentId?: string;
     contentType: string;
     name: string;
@@ -15,6 +16,7 @@ export class BlockData extends ContentData {
         const blockData = {
             ...block.properties,
             id: block._id,
+            versionId: block.versionId,
             parentId: block.parentId,
             contentType: block.contentType,
             name: block.name,
@@ -34,6 +36,7 @@ export class PageData extends ContentData {
         const pageData = {
             ...page.properties,
             id: page._id,
+            versionId: page.versionId,
             linkUrl: page.linkUrl,
             parentId: page.parentId,
             urlSegment: page.urlSegment,

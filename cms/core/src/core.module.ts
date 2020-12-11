@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 
 import { CmsPropertyFactoryResolver } from './bases/cms-property.factory';
-import { AbsolutePipe } from './pipes/absolute.pipe';
+import { ToImgSrcPipe } from './pipes/to-img-src.pipe';
 import { MapPipe } from './pipes/map.pipe';
 import { SafePipe } from './pipes/safe.pipe';
 import { CmsPropertyDirective } from './renders/cms-property.directive';
@@ -24,7 +24,7 @@ import { UrlListRenderDirective } from './renders/url-list/url-list-render-as-di
 import { XHtmlRenderDirective } from './renders/xhtml/xhtml-render.directive';
 
 export const PIPES = [
-    AbsolutePipe,
+    ToImgSrcPipe,
     MapPipe,
     SafePipe
 ];

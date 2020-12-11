@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 
 import { Page } from './models/page.model';
 import { ContentService } from './content.service';
 import { BrowserLocationService } from '../../browser/browser-location.service';
 import { btoa } from '../../helpers/base64';
-import { convertObjectToUrlQueryString } from '../../helpers/common';
+import { PageData } from './models/content-data';
 
 @Injectable({
     providedIn: 'root'
@@ -32,4 +33,11 @@ export class PageService extends ContentService<Page> {
     getPublishedPageChildren(parentId: string): Observable<Page[]> {
         return this.httpClient.get<Page[]>(`${this.apiUrl}/published/children/${parentId}`);
     }
+
+    getPageChildren(parentId: string): Observable<PageData[]> {
+        return this.httpClient.get<Page[]>(`${this.apiUrl}/published/children/${parentId}`).pipe(
+            map(children => children.map(childPage => new PageData(childPage)))
+        );
+    }
+
 }

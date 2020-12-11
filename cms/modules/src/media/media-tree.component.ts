@@ -57,7 +57,7 @@ const MEDIA_MENU_ACTION = {
                             class="list-group-item list-group-item-action flex-column align-items-start p-1"
                             [routerLink]="['content/media', media._id]">
                             <div class="d-flex align-items-center">
-                                <img width='50' class="mr-1" [src]='media.thumbnail | absolute'/>
+                                <img width='50' class="mr-1" [src]='media.thumbnail | toImgSrc'/>
                                 <div class="w-100 mr-2 text-truncate">{{media.name}}</div>
                                 <fa-icon class="ml-auto" [icon]="['fas', 'bars']"></fa-icon>
                             </div>
