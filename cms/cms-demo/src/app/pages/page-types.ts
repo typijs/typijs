@@ -4,3 +4,8 @@ export * from './article/article.pagetype';
 export * from './blog/blog.pagetype';
 export * from './standard/standard.pagetype';
 export * from './contact/contact.pagetype';
+export * from './product/product.pagetype';
+export * from './product/product-listing.pagetype';
+export * from './cart/cart.pagetype';
+export * from './checkout/checkout.pagetype';
+export * from './wishlist/wishlist.pagetype';

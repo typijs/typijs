@@ -14,7 +14,7 @@ export class BestPriceBlock extends BlockData {
 
     @Property({
         displayName: 'Subheading',
-        displayType: UIHint.Text
+        displayType: UIHint.Textarea
     })
     subheading: string;
 
