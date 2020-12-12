@@ -20,7 +20,7 @@ const defaultOptions: CacheOptions = { prefixKey: '', suffixKey: '', ttl: 0 }
  */
 export function Cache(cacheOptions?: CacheOptions) {
 
-    const options = Object.assign(defaultOptions, cacheOptions ? cacheOptions : {});
+    const { prefixKey, suffixKey, ttl } = Object.assign(defaultOptions, cacheOptions ? cacheOptions : {});
 
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
         // Ensure we have the descriptor that might been overriden by another decorator
@@ -39,13 +39,13 @@ export function Cache(cacheOptions?: CacheOptions) {
             const cacheService = Container.get(CacheService);
             Validator.throwIfNull('cacheService', cacheService);
 
-            const suffixKey = options.suffixKey instanceof Function ? options.suffixKey(args) : options.suffixKey;
-            const cacheKey = cacheService.createCacheKey(options.prefixKey, propertyKey, suffixKey);
+            const suffixKeys = suffixKey instanceof Function ? suffixKey(args) : suffixKey;
+            const cacheKey = cacheService.createCacheKey(prefixKey, propertyKey, suffixKeys);
             const cacheValue = await cacheService.get(cacheKey);
             if (cacheValue) return cacheValue;
 
             const result = await originalMethod.apply(this, args); // Call the original method
-            cacheService.set(cacheKey, result, options.ttl);
+            cacheService.set(cacheKey, result, ttl);
             return result;
         }
     }
