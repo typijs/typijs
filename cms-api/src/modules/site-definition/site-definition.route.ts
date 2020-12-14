@@ -17,7 +17,7 @@ export class SideDefinitionRouter {
         sideDefinition.get('/', this.authGuard.checkRoles([Roles.Admin]), this.siteController.getAll);
         sideDefinition.get('/paginate', this.authGuard.checkRoles([Roles.Admin]), this.siteController.paginate);
         sideDefinition.get('/:id', this.authGuard.checkRoles([Roles.Admin]), this.siteController.get);
-        sideDefinition.post('/', this.authGuard.checkRoles([Roles.Admin]), this.siteController.create);
+        sideDefinition.post('/', this.siteController.createSiteDefinition.bind(this.siteController));
         sideDefinition.put('/:id', this.authGuard.checkRoles([Roles.Admin]), this.siteController.update);
 
         return sideDefinition;

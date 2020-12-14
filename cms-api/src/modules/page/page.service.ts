@@ -51,16 +51,12 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
 
         const parentIds = parentPath ? parentPath.split(',').filter(id => !isNullOrWhiteSpace(id)) : [];
 
-        const currentSite = await this.siteDefinitionService.getDefaultSiteDefinition(host);
-        const currentHost = this.siteDefinitionService.getDefaultHostDefinition(currentSite, host);
+        const [startPageId, defaultLang] = await this.siteDefinitionService.getCurrentSiteDefinition(host);
 
-        const startPageId = (currentSite.startPage as IPageDocument)._id.toString();
-        const matchStartIndex = currentSite ? parentIds.indexOf(startPageId) : -1;
-
-        const defaultLang = currentHost.language;
         const urlSegments: string[] = [];
         if (defaultLang !== language) { urlSegments.push(language); }
 
+        const matchStartIndex = parentIds.indexOf(startPageId);
         for (let i = matchStartIndex + 1; i < parentIds.length; i++) {
             const urlSegment = await this.getUrlSegmentByPageId(parentIds[i], language);
             urlSegments.push(urlSegment);
@@ -87,6 +83,10 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         return currentContent.urlSegment;
     }
 
+    /**
+     * Resolve page data via url
+     * @param encodedUrl 
+     */
     public getPublishedPageByUrl = async (encodedUrl: string): Promise<IPageDocument & IPageLanguageDocument> => {
         //get domain from url
         const url = Buffer.from(encodedUrl, 'base64').toString();
@@ -95,17 +95,15 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         const pathName = urlObj.pathname; // --> /abc/xyz
 
         //get site definition from domain
-        const currentSiteDefinition = await this.siteDefinitionService.getSiteDefinitionByHostname(host);
-        if (!currentSiteDefinition) return null;
-        //get start page, host, lang from site definition
-        const startPage = currentSiteDefinition.startPage as IPageDocument;
-        const currentHost = currentSiteDefinition.hosts.find(x => x.name == host);
+        const [startPageId, defaultLang] = await this.siteDefinitionService.getCurrentSiteDefinition(host);
+        if (startPageId === '0') throw new DocumentNotFoundException(url, 'The site definition is not found')
+
         // get language from url, fallback to default language of current host
-        const defaultLanguage = await this.getLanguageFromUrl(urlObj, currentHost.language);
+        const defaultLanguage = await this.getLanguageFromUrl(urlObj, defaultLang);
 
         if (!defaultLanguage) throw new DocumentNotFoundException(url, 'The language is not found')
         const urlSegments = this.splitPathNameToUrlSegments(pathName, defaultLanguage);
-        return await this.resolvePageContentFromUrlSegments(startPage, urlSegments, defaultLanguage);
+        return await this.resolvePageContentFromUrlSegments(startPageId, urlSegments, defaultLanguage);
     }
 
     private splitPathNameToUrlSegments = (pathname: string, language: string): string[] => {
@@ -118,15 +116,15 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         return paths;
     }
 
-    private resolvePageContentFromUrlSegments = async (startPage: IPageDocument, segments: string[], language: string): Promise<IPageDocument & IPageLanguageDocument> => {
-        if (!segments || segments.length == 0) return await this.getPublishedContentById(startPage._id, language);
+    private resolvePageContentFromUrlSegments = async (startPageId: string, segments: string[], language: string): Promise<IPageDocument & IPageLanguageDocument> => {
+        if (!segments || segments.length == 0) return await this.getPublishedContentById(startPageId, language);
 
-        return await this.recursiveResolvePageByUrlSegment(startPage, segments, language, 0);
+        return await this.recursiveResolvePageByUrlSegment(startPageId, segments, language, 0);
     }
 
-    private recursiveResolvePageByUrlSegment = async (parentPage: IPageDocument, segments: string[], language: string, index: number): Promise<IPageDocument & IPageLanguageDocument> => {
+    private recursiveResolvePageByUrlSegment = async (parentPageId: string, segments: string[], language: string, index: number): Promise<IPageDocument & IPageLanguageDocument> => {
         // get page children
-        const childrenPage = (await this.getContentChildren(parentPage._id, language)).filter(x => x.status == VersionStatus.Published);
+        const childrenPage = (await this.getContentChildren(parentPageId, language)).filter(x => x.status == VersionStatus.Published);
         if (!childrenPage || childrenPage.length == 0) return null;
 
         const matchPage = childrenPage.find(page => page.urlSegment == segments[index]);
@@ -134,7 +132,7 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
 
         if (index == segments.length - 1) return await this.getPublishedContentById(matchPage._id, language);
 
-        return await this.recursiveResolvePageByUrlSegment(matchPage, segments, language, index + 1);
+        return await this.recursiveResolvePageByUrlSegment(matchPage._id.toString(), segments, language, index + 1);
     }
 
     /**

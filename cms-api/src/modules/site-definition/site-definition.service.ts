@@ -6,11 +6,18 @@ import { IHostDefinitionDocument, ISiteDefinitionDocument, SiteDefinitionModel }
 import { DuplicateHostNameException, DuplicateSiteNameException, DuplicateStartPageException, HostNameAlreadyUsedException, MultiplePrimaryHostException } from './site-definition.exception';
 import { groupBy } from '../../utils';
 import { Validator } from '../../validation/validator';
+import { LanguageService } from '../language';
+import { IBaseDocument } from '../shared';
+import { Logger } from '../../logging';
+import { Container } from '../../injector';
 
 @Injectable()
 export class SiteDefinitionService extends BaseService<ISiteDefinitionDocument> {
+
     private static readonly PrefixCacheKey: string = 'SiteDefinition';
-    constructor(private cacheService: CacheService) {
+    private readonly logger: Logger = Container.get(Logger)
+
+    constructor(private languageService: LanguageService, private cacheService: CacheService) {
         super(SiteDefinitionModel);
     }
 
@@ -28,10 +35,31 @@ export class SiteDefinitionService extends BaseService<ISiteDefinitionDocument> 
     }
 
     /**
+     * Get current site definition. Fallback to default value
+     * @param host (Optional)
+     * @returns Return the Tuple [string, string] type of [startPageId, language]
+     */
+    getCurrentSiteDefinition = async (host?: string): Promise<[string, string]> => {
+        try {
+            const currentSite = await this.getDefaultSiteDefinition(host);
+            const currentHost = this.getDefaultHostDefinition(currentSite, host);
+            const startPageId = (currentSite.startPage as IBaseDocument)._id.toString();
+            const defaultLang = currentHost.language;
+            return [startPageId, defaultLang];
+        } catch (err) {
+            this.logger.error('The site definition must be config', err);
+            //return default language (first)
+            const languages = await this.languageService.getEnabledLanguages();
+            const defaultLang = languages.length > 0 ? languages[0].language : '';
+            return ['0', defaultLang]
+        }
+    }
+
+    /**
      * Get site definition by host. If host is not provided, the first site definition will be returned
      * @param host 
      */
-    public getDefaultSiteDefinition = async (host?: string): Promise<ISiteDefinitionDocument> => {
+    private getDefaultSiteDefinition = async (host?: string): Promise<ISiteDefinitionDocument> => {
         const siteDefinition = host ? await this.getSiteDefinitionByHostname(host) : await this.getFirstSiteDefinition();
         Validator.throwIfDocumentNotFound('SiteDefinition', siteDefinition, { host });
         Validator.throwIfDocumentNotFound('StartPage', siteDefinition.startPage);
@@ -44,7 +72,7 @@ export class SiteDefinitionService extends BaseService<ISiteDefinitionDocument> 
      * @param siteDefinition 
      * @param hostName 
      */
-    public getDefaultHostDefinition = (siteDefinition: ISiteDefinitionDocument, hostName?: string): IHostDefinitionDocument => {
+    private getDefaultHostDefinition = (siteDefinition: ISiteDefinitionDocument, hostName?: string): IHostDefinitionDocument => {
         let defaultHost: IHostDefinitionDocument;
         if (hostName) {
             defaultHost = siteDefinition.hosts.find(x => x.name == hostName);
@@ -63,7 +91,7 @@ export class SiteDefinitionService extends BaseService<ISiteDefinitionDocument> 
         }).exec()
     }
 
-    public createSiteDefinition = async (siteDefinition: ISiteDefinitionDocument, userId: string): Promise<ISiteDefinitionDocument> => {
+    createSiteDefinition = async (siteDefinition: ISiteDefinitionDocument, userId: string): Promise<ISiteDefinitionDocument> => {
         await this.validateSiteDefinition(siteDefinition);
 
         this.cacheService.deleteStartWith(SiteDefinitionService.PrefixCacheKey);
@@ -71,7 +99,7 @@ export class SiteDefinitionService extends BaseService<ISiteDefinitionDocument> 
         return this.create(siteDefinition);
     }
 
-    public updateSiteDefinition = async (siteDefinition: ISiteDefinitionDocument, userId: string): Promise<ISiteDefinitionDocument> => {
+    updateSiteDefinition = async (siteDefinition: ISiteDefinitionDocument, userId: string): Promise<ISiteDefinitionDocument> => {
         await this.validateSiteDefinition(siteDefinition);
 
         this.cacheService.deleteStartWith(SiteDefinitionService.PrefixCacheKey);
