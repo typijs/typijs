@@ -1,8 +1,8 @@
 import { Content, TypeOfContent } from '@angular-cms/core';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { merge, Observable } from 'rxjs';
-import { distinctUntilChanged, map, switchMap } from 'rxjs/operators';
+import { merge, Observable, of } from 'rxjs';
+import { distinctUntilChanged, catchError, switchMap } from 'rxjs/operators';
 import { SubjectService } from '../shared/services/subject.service';
 import { SubscriptionDestroy } from '../shared/subscription-destroy';
 import { ContentVersionModel } from './content-version.model';
@@ -38,6 +38,7 @@ export class ContentVersionComponent extends SubscriptionDestroy implements OnIn
                 this.versionService = this.versionServiceResolver.resolveContentVersionService(this.typeOfContent);
                 return this.versionService.getAllVersions(content._id);
             }),
+            catchError(error => of([]))
         );
     }
 

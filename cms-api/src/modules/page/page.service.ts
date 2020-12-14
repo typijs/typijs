@@ -3,6 +3,7 @@ import { Injectable } from 'injection-js';
 import 'reflect-metadata';
 import { Cache, CacheService } from '../../caching';
 import { DocumentNotFoundException, Exception } from '../../error';
+import { isNullOrWhiteSpace } from '../../utils';
 import { slugify } from '../../utils/slugify';
 import { ContentVersionService } from '../content/content-version.service';
 import { ContentService } from '../content/content.service';
@@ -48,7 +49,7 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
      */
     private buildLinkUrl = async (currentId: string, parentPath: string, currentUrlSegment: string, language: string, host: string): Promise<string> => {
 
-        const parentIds = parentPath ? parentPath.split(',').filter(id => id && id.trim() !== '') : [];
+        const parentIds = parentPath ? parentPath.split(',').filter(id => !isNullOrWhiteSpace(id)) : [];
 
         const currentSite = await this.siteDefinitionService.getDefaultSiteDefinition(host);
         const currentHost = this.siteDefinitionService.getDefaultHostDefinition(currentSite, host);
@@ -66,7 +67,7 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         }
 
         if (currentId != startPageId) { urlSegments.push(currentUrlSegment); }
-        return `/${urlSegments.filter(segment => segment && segment.trim() !== '').join('/')}`;
+        return `/${urlSegments.filter(segment => !isNullOrWhiteSpace(segment)).join('/')}`;
     }
 
     @Cache({
@@ -110,7 +111,7 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
     private splitPathNameToUrlSegments = (pathname: string, language: string): string[] => {
         if (!pathname) return [];
 
-        const paths = pathname.split('/').filter(id => id && id.trim() !== '');
+        const paths = pathname.split('/').filter(id => !isNullOrWhiteSpace(id));
         if (paths.length == 0) return [];
 
         if (paths[0] == language) paths.splice(0, 1);
@@ -143,7 +144,7 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
      */
     private getLanguageFromUrl = async (url: URL, defaultLanguage: string): Promise<string> => {
         const pathUrl = url.pathname; // --> /abc/xyz
-        const paths = pathUrl.split('/').filter(id => id && id.trim() !== '');
+        const paths = pathUrl.split('/').filter(id => !isNullOrWhiteSpace(id));
 
         if (paths.length > 0) {
             const languageCode = paths[0];

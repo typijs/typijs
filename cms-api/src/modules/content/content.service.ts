@@ -93,10 +93,10 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
                 populate: this.deepPopulate(5, language)
             })
             .exec();
-        if (!currentContent) return null;
+        Validator.throwIfDocumentNotFound('Content', currentContent, { _id: id, isDeleted: false });
 
-        const publishedLang = currentContent.contentLanguages.find((lang: P) => lang.language === language && lang.status == VersionStatus.Published);
-        if (!publishedLang) return null;
+        const publishedLang = currentContent.contentLanguages.find((contentLang: P) => contentLang.language === language && contentLang.status == VersionStatus.Published) as P;
+        Validator.throwIfDocumentNotFound('ContentLanguage', publishedLang, { language, status: VersionStatus.Published });
 
         return this.mergeToContentLanguage(currentContent, publishedLang);
     }

@@ -116,6 +116,6 @@ export function convertObjectToUrlQueryString(query: { [param: string]: string |
  * @param str
  * @returns
  */
-export function isNullOrWhiteSpace(str) {
+export function isNullOrWhiteSpace(str: string): boolean {
     return str === null || str.match(/^ *$/) !== null;
 }

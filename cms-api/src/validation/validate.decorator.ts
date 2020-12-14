@@ -12,7 +12,6 @@ import { Validator } from './validator';
  */
 export function ValidateRequest(joiSchema: { [property: string]: Joi.Schema }, key: 'params' | 'body' | 'query' | string) {
     Validator.throwIfNullOrEmpty('key', key);
-    const validateSchema = Joi.object(joiSchema);
     // Joi validation options
     const validationOptions = {
         abortEarly: false, // abort after the last validation error
@@ -38,6 +37,7 @@ export function ValidateRequest(joiSchema: { [property: string]: Joi.Schema }, k
         const originalMethod = descriptor.value;
         descriptor.value = function (req: Request, res: Response, next: NextFunction) {
             const plain = req[key];
+            const validateSchema = Joi.object(joiSchema);
             const { value, error } = validateSchema.validate(plain, validationOptions);
             if (error) {
                 const errorMessage = error.details.map((details) => details.message).join(', ');

@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import { Injectable } from "injection-js";
 import { CacheProvider } from "./cache.provider";
 import { ParamNullException } from '../error/exceptions/ParamNullException';
+import { isNullOrWhiteSpace } from '../utils';
 
 @Injectable()
 export class CacheService {
@@ -10,7 +11,7 @@ export class CacheService {
     public createCacheKey = (...args: string[]): string => {
         if (args.length == 0) throw new ParamNullException('args');
 
-        const filteredArgs = args.filter(arg => arg && arg.trim() !== '');
+        const filteredArgs = args.filter(arg => !isNullOrWhiteSpace(arg));
         if (filteredArgs.length == 0) throw new ParamNullException('args');
 
         return `${filteredArgs.join(':')}`;
