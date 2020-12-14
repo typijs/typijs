@@ -4,6 +4,7 @@ import { ClassOf } from '../types';
 import { ContentTypeProperty } from '../types/content-type';
 import { CmsPropertyRender } from './property-render';
 import { UIHint } from '../types/ui-hint';
+import { Content } from '../services/content/models/content.model';
 
 // https://stackoverflow.com/questions/51824125/injection-of-multiple-instances-in-angular
 // tslint:disable-next-line: max-line-length
@@ -35,6 +36,16 @@ export class CmsPropertyRenderFactory {
         (<CmsPropertyRender<any>>propertyComponent.instance).value = propertyValue;
 
         return propertyComponent;
+    }
+
+    /**
+     * Fill up the data for the reference property which need to be populated such as ContentArea
+     * @param contentData The current content
+     * @param property The property info
+     * @returns The value which is populated for reference property
+     */
+    getPopulatedReferenceProperty(contentData: Content, property: ContentTypeProperty): any {
+        return contentData.properties[property.name];
     }
 }
 

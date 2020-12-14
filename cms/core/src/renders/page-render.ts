@@ -13,6 +13,7 @@ import { ContentTypeProperty } from '../types/content-type';
 import { UIHint } from '../types/ui-hint';
 import { BrowserLocationService } from '../browser/browser-location.service';
 import { InsertPointDirective } from './insert-point.directive';
+import { CmsPropertyRenderFactoryResolver } from './property-render.factory';
 
 @Component({
     selector: 'cms-page',
@@ -25,6 +26,7 @@ export class CmsPageRender implements OnInit, OnDestroy {
 
     constructor(
         private componentFactoryResolver: ComponentFactoryResolver,
+        private propertyRenderFactoryResolver: CmsPropertyRenderFactoryResolver,
         private contentTypeService: ContentTypeService,
         private locationService: BrowserLocationService,
         private pageService: PageService) { }
@@ -75,22 +77,9 @@ export class CmsPageRender implements OnInit, OnDestroy {
     private populateReferenceProperty(currentPage: Page, property: ContentTypeProperty): void {
         if (!currentPage.properties) { return; }
 
-        const childItems = currentPage.childItems;
         const fieldType = property.metadata.displayType;
-        switch (fieldType) {
-            case UIHint.ContentArea:
-                const fieldValue = currentPage.properties[property.name];
-                if (Array.isArray(fieldValue)) {
-                    for (let i = 0; i < fieldValue.length; i++) {
-                        const matchItem = childItems.find(x => x.content && x.content._id == fieldValue[i]._id);
-                        if (matchItem) {
-                            fieldValue[i] = clone(matchItem.content);
-                        }
-                    }
-                    currentPage.properties[property.name] = fieldValue;
-                }
-                break;
-        }
+        const propertyFactory = this.propertyRenderFactoryResolver.resolvePropertyRenderFactory(fieldType);
+        currentPage.properties[property.name] = propertyFactory.getPopulatedReferenceProperty(currentPage, property);
     }
 
     private createPageComponent(page: Page, pageMetadata: ContentTypeMetadata): ComponentRef<any> {
