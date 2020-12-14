@@ -21,7 +21,7 @@ export class PartnerBlock extends BlockData {
 
     @Property({
         displayName: 'Partner Site',
-        displayType: UIHint.Url
+        displayType: UIHint.Text
     })
     link: string;
 }

@@ -8,7 +8,7 @@ import { VideoBlock } from './video.blocktype';
     template: `
     <div class="container">
         <div class="row">
-            <div class="col-md-5 p-md-5 img img-2 d-flex justify-content-center align-items-center" style="background-image: url(images/about.jpg);">
+            <div class="col-md-5 p-md-5 img img-2 d-flex justify-content-center align-items-center" [ngStyle]="{ 'background-image': 'url(' + (currentContent.thumbnail | toImgSrc) + ')'}">
                 <a [href]="currentContent.video" class="icon popup-vimeo d-flex justify-content-center align-items-center">
                     <span class="icon-play"></span>
                 </a>

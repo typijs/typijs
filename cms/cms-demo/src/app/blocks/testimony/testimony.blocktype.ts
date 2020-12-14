@@ -14,7 +14,7 @@ export class TestimonyBlock extends BlockData {
 
     @Property({
         displayName: 'Subheading',
-        displayType: UIHint.Textarea
+        displayType: UIHint.Text
     })
     subheading: string;
 

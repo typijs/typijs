@@ -25,7 +25,7 @@ export class TestimonyItemBlock extends BlockData {
     avatar: CmsImage;
 
     @Property({
-        displayName: 'Button Text',
+        displayName: 'Quote',
         displayType: UIHint.XHtml
     })
     quote: string;

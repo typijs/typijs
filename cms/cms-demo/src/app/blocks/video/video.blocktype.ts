@@ -25,6 +25,12 @@ export class VideoBlock extends BlockData {
     video: string;
 
     @Property({
+        displayName: 'Video Thumbnail',
+        displayType: UIHint.Image
+    })
+    thumbnail: CmsImage;
+
+    @Property({
         displayName: 'Link Text',
         displayType: UIHint.Text
     })
