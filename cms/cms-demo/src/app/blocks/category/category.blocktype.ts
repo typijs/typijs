@@ -2,7 +2,7 @@ import { BlockData, BlockType, CmsImage, Property, UIHint } from '@angular-cms/c
 import { CategoryComponent } from './category.component';
 
 @BlockType({
-    displayName: 'Service Block',
+    displayName: 'Category Block',
     componentRef: CategoryComponent
 })
 export class CategoryBlock extends BlockData {
@@ -13,8 +13,14 @@ export class CategoryBlock extends BlockData {
     heading: string;
 
     @Property({
-        displayName: 'Link',
+        displayName: 'Container Class',
         displayType: UIHint.Text
+    })
+    classes: string;
+
+    @Property({
+        displayName: 'Link',
+        displayType: UIHint.Url
     })
     link: string;
 
