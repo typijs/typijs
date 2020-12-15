@@ -7,7 +7,7 @@ export abstract class ContentData {
     parentId?: string;
     contentType: string;
     name: string;
-    type: 'page' | 'block';
+    type: 'page' | 'block' | 'media';
 }
 
 export class BlockData extends ContentData {

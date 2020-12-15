@@ -34,9 +34,11 @@ export type CmsUrl = {
     target: '_blank ' | '_self' | '_parent' | '_top'
 };
 
+export type TypeOfContent = 'page' | 'block' | 'media' | 'folder_block' | 'folder_media' | string;
+
 export type ContentReference = {
     id: string
-    type: 'page' | 'block' | 'media' | 'folder_block' | 'folder_media'
+    type: TypeOfContent
     contentType: string
     [propName: string]: any
 };

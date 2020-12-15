@@ -25,7 +25,7 @@ export class ContentAreaRenderFactory extends CmsPropertyRenderFactory {
             for (let i = 0; i < fieldValue.length; i++) {
                 const matchItem = childItems.find(x => x.content && x.content._id == fieldValue[i]._id);
                 if (matchItem) {
-                    fieldValue[i] = clone(matchItem.content);
+                    fieldValue[i] = Object.assign(fieldValue[i], clone(matchItem.content));
                 }
             }
         }
