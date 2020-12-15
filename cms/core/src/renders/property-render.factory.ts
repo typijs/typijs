@@ -65,12 +65,13 @@ export class CmsPropertyRenderFactoryResolver {
         }
 
         lastIndex = this.defaultPropertyRenderFactories.map(x => x.isMatching(uiHint)).lastIndexOf(true);
-        if (lastIndex === -1) {
-            // tslint:disable-next-line: max-line-length
-            console.warn(`The CMS can not resolve the Property Render Factor for the property with UIHint of ${uiHint}. The default Text Render will be returned`);
-            lastIndex = this.defaultPropertyRenderFactories.map(x => x.isMatching(UIHint.Text)).lastIndexOf(true);
-            return this.defaultPropertyRenderFactories[lastIndex];
-        }
+        if (lastIndex !== -1) { return this.defaultPropertyRenderFactories[lastIndex]; }
+
+        // Fallback to Text Property Render Factory
+        // tslint:disable-next-line: max-line-length
+        console.warn(`The CMS can not resolve the Property Render Factory for the property with UIHint of ${uiHint}.\nThe default Text Render will be returned`);
+        lastIndex = this.defaultPropertyRenderFactories.map(x => x.isMatching(UIHint.Text)).lastIndexOf(true);
+        if (lastIndex === -1) { throw new Error(`The CMS can not resolve the Property Factory for the property with UIHint of ${UIHint.Text}`); }
 
         return this.defaultPropertyRenderFactories[lastIndex];
     }
