@@ -1,4 +1,5 @@
 import { ComponentRef, Directive, Input, OnDestroy, ViewContainerRef } from '@angular/core';
+import { TypeOfContentEnum } from '../../types';
 import { CmsContentRenderFactoryResolver } from '../content-render.factory';
 
 @Directive({
@@ -36,8 +37,13 @@ export class ContentAreaDirective implements OnDestroy {
 
     private createContentComponent(content: any): ComponentRef<any> {
         try {
-            const pageRenderFactory = this.cmsContentRenderFactoryResolver.resolveContentRenderFactory(content.type);
-            return pageRenderFactory.createContentComponent(content, this.viewContainerRef);
+            if (content.type === TypeOfContentEnum.Page) {
+                const contentRenderFactory = this.cmsContentRenderFactoryResolver.resolveContentRenderFactory(TypeOfContentEnum.PagePartial);
+                return contentRenderFactory.createContentComponent(content, this.viewContainerRef);
+            } else {
+                const contentRenderFactory = this.cmsContentRenderFactoryResolver.resolveContentRenderFactory(content.type);
+                return contentRenderFactory.createContentComponent(content, this.viewContainerRef);
+            }
         } catch (err) {
             console.error(err);
         }

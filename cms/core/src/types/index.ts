@@ -36,6 +36,15 @@ export type CmsUrl = {
 
 export type TypeOfContent = 'page' | 'block' | 'media' | 'folder_block' | 'folder_media' | string;
 
+export enum TypeOfContentEnum {
+    Page = 'page',
+    PagePartial = 'page_partial',
+    Block = 'block',
+    Media = 'media',
+    FolderBlock = 'folder_block',
+    FolderMedia = 'folder_media'
+}
+
 export type ContentReference = {
     id: string
     type: TypeOfContent

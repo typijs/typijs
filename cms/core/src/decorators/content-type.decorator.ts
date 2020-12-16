@@ -10,11 +10,21 @@ import {
     PAGE_TYPE_METADATA_KEY
 } from './metadata-key';
 
-export type ContentTypeMetadata = {
+export interface ContentTypeMetadata {
     displayName?: string;
     description?: string;
+    /**
+     * The component which is used to render the content
+     */
     componentRef?: any;
 };
+
+export interface PageTypeMetadata extends ContentTypeMetadata {
+    /**
+     * The component which is used to render the page in Content Area
+     */
+    partialComponentRef?: any;
+}
 
 // https://www.laurivan.com/scan-decorated-classes-in-typescript/
 /**
@@ -25,7 +35,7 @@ export type ContentTypeMetadata = {
  * https://www.typescriptlang.org/docs/handbook/decorators.html#decorator-factories
  * @param metadata
  */
-export function PageType(metadata: ContentTypeMetadata) {
+export function PageType(metadata: PageTypeMetadata) {
     function pageTypeDecorator<T extends PageData>(target: ClassOf<T>) {
         registerPageTypeDecorator(target);
         Reflect.defineMetadata(PAGE_TYPE_METADATA_KEY, metadata, target);

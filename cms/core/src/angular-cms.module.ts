@@ -23,7 +23,7 @@ import { ImageRenderFactory } from './renders/image/image-render';
 import { UrlRenderFactory } from './renders/url/url-render';
 import { UrlListRenderFactory } from './renders/url-list/url-list-render';
 import { ObjectListRenderFactory } from './renders/object-list/object-list-render';
-import { BlockRenderFactory, CONTENT_RENDERS, MediaRenderFactory, PageRenderFactory } from './renders/content-render.factory';
+import { BlockRenderFactory, CONTENT_RENDERS, MediaRenderFactory, PagePartialRenderFactory, PageRenderFactory } from './renders/content-render.factory';
 
 /**
  * Re-export Core Module to used on client
@@ -55,6 +55,7 @@ export class AngularCms {
                 { provide: DEFAULT_PROPERTY_RENDERS, useClass: ObjectListRenderFactory, multi: true },
                 // Register Content Render Factories
                 { provide: CONTENT_RENDERS, useClass: PageRenderFactory, multi: true },
+                { provide: CONTENT_RENDERS, useClass: PagePartialRenderFactory, multi: true },
                 { provide: CONTENT_RENDERS, useClass: BlockRenderFactory, multi: true },
                 { provide: CONTENT_RENDERS, useClass: MediaRenderFactory, multi: true }
             ]

@@ -3,7 +3,7 @@ import { CmsComponent } from '../bases/cms-component';
 import { ContentTypeService } from '../services/content-type.service';
 import { BlockData, ContentData, PageData } from '../services/content/models/content-data';
 import { Content } from '../services/content/models/content.model';
-import { TypeOfContent } from '../types';
+import { TypeOfContent, TypeOfContentEnum } from '../types';
 import { ContentType, ContentTypeProperty } from '../types/content-type';
 import { CmsPropertyRenderFactoryResolver } from './property-render.factory';
 
@@ -39,7 +39,7 @@ export abstract class CmsContentRenderFactory {
 
     protected abstract getContentData(content: Content): ContentData;
 
-    private populateReferenceProperty(content: Content, property: ContentTypeProperty): void {
+    protected populateReferenceProperty(content: Content, property: ContentTypeProperty): void {
         if (!content.properties) { return; }
 
         const fieldType = property.metadata.displayType;
@@ -51,7 +51,7 @@ export abstract class CmsContentRenderFactory {
 export class PageRenderFactory extends CmsContentRenderFactory {
 
     constructor(protected injector: Injector, private contentTypeService: ContentTypeService) {
-        super(injector, 'page');
+        super(injector, TypeOfContentEnum.Page);
     }
     protected getContentType(content: Content): ContentType {
         return this.contentTypeService.getPageType(content.contentType);
@@ -61,11 +61,38 @@ export class PageRenderFactory extends CmsContentRenderFactory {
     }
 
 }
+
+@Injectable()
+export class PagePartialRenderFactory extends CmsContentRenderFactory {
+
+    constructor(protected injector: Injector, private contentTypeService: ContentTypeService) {
+        super(injector, TypeOfContentEnum.PagePartial);
+    }
+    protected getContentType(content: Content): ContentType {
+        return this.contentTypeService.getPageType(content.contentType);
+    }
+    protected getContentData(content: Content): ContentData {
+        return new PageData(content);
+    }
+
+    createContentComponent(content: Content, viewContainerRef: ViewContainerRef): ComponentRef<any> {
+        const contentType = this.getContentType(content);
+        if (!contentType.metadata.partialComponentRef) throw new Error(`The ${contentType.name} page type must defined the partialComponentRef to render in Content Area`);
+
+        const componentFactory = this.componentFactoryResolver.resolveComponentFactory(contentType.metadata.partialComponentRef);
+        contentType.properties.forEach(property => this.populateReferenceProperty(content, property));
+
+        const contentComponent = viewContainerRef.createComponent(componentFactory);
+        (<CmsComponent<ContentData>>contentComponent.instance).currentContent = this.getContentData(content);
+        return contentComponent;
+    }
+}
+
 @Injectable()
 export class BlockRenderFactory extends CmsContentRenderFactory {
 
     constructor(protected injector: Injector, private contentTypeService: ContentTypeService) {
-        super(injector, 'block');
+        super(injector, TypeOfContentEnum.Block);
     }
     protected getContentType(content: Content): ContentType {
         return this.contentTypeService.getBlockType(content.contentType);
@@ -79,7 +106,7 @@ export class BlockRenderFactory extends CmsContentRenderFactory {
 export class MediaRenderFactory extends CmsContentRenderFactory {
 
     constructor(protected injector: Injector, private contentTypeService: ContentTypeService) {
-        super(injector, 'media');
+        super(injector, TypeOfContentEnum.Media);
     }
     protected getContentType(content: Content): ContentType {
         return this.contentTypeService.getMediaType(content.contentType);
