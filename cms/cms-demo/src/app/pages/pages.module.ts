@@ -11,6 +11,7 @@ import { CheckoutComponent } from './checkout/checkout.component';
 import { ContactComponent } from './contact/contact.component';
 import { HomeComponent } from './home/home.component';
 import { ProductListingComponent } from './product/product-listing.component';
+import { ProductPartialComponent } from './product/product-partial.component';
 import { ProductComponent } from './product/product.component';
 import { StandardPageComponent } from './standard/standard.component';
 import { WishlistComponent } from './wishlist/wishlist.component';
@@ -21,6 +22,7 @@ const PAGES_COMPONENT = [
     ContactComponent,
     HomeComponent,
     ProductComponent,
+    ProductPartialComponent,
     ProductListingComponent,
     CartComponent,
     CheckoutComponent,

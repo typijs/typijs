@@ -5,8 +5,8 @@
   <div class="container">
     <div class="row">
       <div class="col-lg-6 mb-5 ftco-animate">
-        <a href="images/product-1.jpg" class="image-popup"><img src="images/product-1.jpg" class="img-fluid"
-            alt="Colorlib Template"></a>
+        <a [href]="currentContent.image | toImgSrc" class="image-popup"><img [src]="currentContent.image | toImgSrc"
+            class="img-fluid" alt="Colorlib Template"></a>
       </div>
       <div class="col-lg-6 product-details pl-md-5 ftco-animate">
         <h3 [cmsText]="currentContent.name"></h3>

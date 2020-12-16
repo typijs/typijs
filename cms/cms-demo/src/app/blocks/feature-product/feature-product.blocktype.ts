@@ -25,7 +25,7 @@ export class FeatureProductsBlock extends BlockData {
     description: string;
 
     @Property({
-        displayName: 'Testimony Items',
+        displayName: 'Product Items',
         displayType: UIHint.ContentArea
     })
     products: any[];

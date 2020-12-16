@@ -1,13 +1,21 @@
-import { PageType, Property, UIHint } from '@angular-cms/core';
+import { CmsImage, PageType, Property, UIHint } from '@angular-cms/core';
 import { StandardPage } from '../standard/standard.pagetype';
+import { ProductPartialComponent } from './product-partial.component';
 import { ProductComponent } from './product.component';
 
 @PageType({
     displayName: 'Product Page',
     componentRef: ProductComponent,
+    partialComponentRef: ProductPartialComponent,
     description: 'This is product page type'
 })
 export class ProductPage extends StandardPage {
+
+    @Property({
+        displayName: 'Main Image',
+        displayType: UIHint.Image,
+    })
+    image: CmsImage;
 
     @Property({
         displayName: 'Images',

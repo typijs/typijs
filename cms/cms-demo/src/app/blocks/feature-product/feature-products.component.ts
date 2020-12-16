@@ -16,7 +16,7 @@ import { FeatureProductsBlock } from './feature-product.blocktype';
         </div>
     </div>
     <div class="container">
-        <div class="row">
+        <div class="row" [cmsContentArea]="currentContent.products">
         </div>
     </div>`
 })
