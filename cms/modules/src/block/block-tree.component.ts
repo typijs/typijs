@@ -24,35 +24,39 @@ const BLOCK_MENU_ACTION = {
     template: `
     <as-split direction="vertical" gutterSize="4">
         <as-split-area size="50">
-            <cms-tree
-                class="tree-root pl-1 pt-2 d-block"
-                [root]="root"
-                [config]="treeConfig"
-                (nodeSelected)="folderSelected$.next($event)"
-                (nodeInlineCreated)="createBlockFolder($event)"
-                (nodeInlineUpdated)="updateBlockFolder($event)"
-                (menuItemSelected)="menuItemSelected($event)">
-                <ng-template #treeNodeTemplate let-node>
-                    <span [ngClass]="{'block-node': node.id != '0', 'border-bottom': node.isSelected && node.id != '0'}">
-                        <fa-icon class="mr-1" *ngIf="node.id == '0'" [icon]="['fas', 'cubes']"></fa-icon>
-                        <fa-icon class="mr-1" *ngIf="node.id != '0'" [icon]="['fas', 'folder']"></fa-icon>
-                        <span class="node-name">{{node.name}}</span>
-                        <button type="button"
-                            class="btn btn-xs btn-secondary float-right mr-1"
-                            *ngIf="node.id == '0'"
-                            (click)="clickToCreateFolder(node)">
-                            <fa-icon [icon]="['fas', 'folder-plus']"></fa-icon>
-                        </button>
-                        <a role="button"
-                            class="btn btn-xs btn-secondary mr-1 float-right"
-                            href="javascript:void(0)"
-                            *ngIf="node.id == '0'"
-                            [routerLink]="['new/block']">
-                            <fa-icon [icon]="['fas', 'plus']"></fa-icon>
-                        </a>
-                    </span>
-                </ng-template>
-            </cms-tree>
+            <div class="position-relative">
+                <cms-tree
+                    class="tree-root pl-1 pt-2 d-block"
+                    [root]="root"
+                    [config]="treeConfig"
+                    (nodeSelected)="folderSelected$.next($event)"
+                    (nodeInlineCreated)="createBlockFolder($event)"
+                    (nodeInlineUpdated)="updateBlockFolder($event)"
+                    (menuItemSelected)="menuItemSelected($event)">
+                    <ng-template #treeNodeTemplate let-node>
+                        <span [ngClass]="{'block-node': node.id != '0', 'border-bottom': node.isSelected && node.id != '0'}">
+                            <fa-icon class="mr-1" *ngIf="node.id == '0'" [icon]="['fas', 'cubes']"></fa-icon>
+                            <fa-icon class="mr-1" *ngIf="node.id != '0'" [icon]="['fas', 'folder']"></fa-icon>
+                            <span class="node-name">{{node.name}}</span>
+
+                        </span>
+                    </ng-template>
+                </cms-tree>
+                <div class='toolbar mt-2 mr-1'>
+                    <button type="button"
+                        class="btn btn-xs btn-secondary float-right mr-1"
+                        (click)="clickToCreateFolder(root)">
+                        <fa-icon [icon]="['fas', 'folder-plus']"></fa-icon>
+                    </button>
+                    <a role="button"
+                        class="btn btn-xs btn-secondary mr-1 float-right"
+                        href="javascript:void(0)"
+                        [routerLink]="['new/block']">
+                        <fa-icon [icon]="['fas', 'plus']"></fa-icon>
+                    </a>
+                </div>
+            </div>
+
         </as-split-area>
         <as-split-area size="50">
             <div class="list-group list-block" *ngIf="blocks$ |async as blocks">

@@ -20,6 +20,7 @@ const PAGE_MENU_ACTION = {
 
 @Component({
     template: `
+    <div class='position-relative'>
         <cms-tree
             class="tree-root pl-1 pt-2 d-block"
             [root]="root"
@@ -31,15 +32,16 @@ const PAGE_MENU_ACTION = {
                     <fa-icon class="mr-1" *ngIf="node.id == '0'" [icon]="['fas', 'sitemap']"></fa-icon>
                     <fa-icon class="mr-1" *ngIf="node.id != '0'" [icon]="['fas', 'file']"></fa-icon>
                     <span>{{node.name}}</span>
-                    <a role="button"
-                        class="btn btn-xs btn-secondary mr-1 float-right"
-                        href="javascript:void(0)"
-                        *ngIf="node.id == '0'" [routerLink]="['new/page']">
-                        <fa-icon [icon]="['fas', 'plus']"></fa-icon>
-                    </a>
                 </span>
             </ng-template>
         </cms-tree>
+        <a role="button"
+            class="btn btn-xs btn-secondary mt-2 mr-1 new-page-link"
+            href="javascript:void(0)"
+            [routerLink]="['new/page']">
+            <fa-icon [icon]="['fas', 'plus']"></fa-icon>
+        </a>
+    </div>
         `,
     styleUrls: ['./page-tree.scss'],
     providers: [PageTreeService, { provide: TreeService, useExisting: PageTreeService }]

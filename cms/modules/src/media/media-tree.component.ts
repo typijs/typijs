@@ -27,27 +27,32 @@ const MEDIA_MENU_ACTION = {
             </div>
             <as-split direction="vertical" gutterSize="4">
                 <as-split-area size="50">
-                    <cms-tree
-                        class="tree-root pl-1 pt-2 d-block"
-                        [root]="root"
-                        [config]="treeConfig"
-                        (nodeSelected)="folderSelected$.next($event)"
-                        (nodeInlineCreated)="createMediaFolder($event)"
-                        (nodeInlineUpdated)="updateMediaFolder($event)"
-                        (menuItemSelected)="menuItemSelected($event)">
-                        <ng-template #treeNodeTemplate let-node>
-                            <span [ngClass]="{'media-node': node.id != '0', 'border-bottom': node.isSelected && node.id != '0'}">
-                                <fa-icon class="mr-1" *ngIf="node.id == 0" [icon]="['fas', 'photo-video']"></fa-icon>
-                                <fa-icon class="mr-1" *ngIf="node.id != 0" [icon]="['fas', 'folder']"></fa-icon>
-                                <span class="node-name">{{node.name}}</span>
-                                <button type="button"
-                                    class="btn btn-xs btn-secondary float-right mr-1"
-                                    *ngIf="node.id == '0'" (click)="clickToCreateFolder(node)">
-                                    <fa-icon [icon]="['fas', 'folder-plus']"></fa-icon>
-                                </button>
-                            </span>
-                        </ng-template>
-                    </cms-tree>
+                    <div class="position-relative">
+                        <cms-tree
+                            class="tree-root pl-1 pt-2 d-block"
+                            [root]="root"
+                            [config]="treeConfig"
+                            (nodeSelected)="folderSelected$.next($event)"
+                            (nodeInlineCreated)="createMediaFolder($event)"
+                            (nodeInlineUpdated)="updateMediaFolder($event)"
+                            (menuItemSelected)="menuItemSelected($event)">
+                            <ng-template #treeNodeTemplate let-node>
+                                <span [ngClass]="{'media-node': node.id != '0', 'border-bottom': node.isSelected && node.id != '0'}">
+                                    <fa-icon class="mr-1" *ngIf="node.id == 0" [icon]="['fas', 'photo-video']"></fa-icon>
+                                    <fa-icon class="mr-1" *ngIf="node.id != 0" [icon]="['fas', 'folder']"></fa-icon>
+                                    <span class="node-name">{{node.name}}</span>
+
+                                </span>
+                            </ng-template>
+                        </cms-tree>
+                        <div class='toolbar mt-2 mr-1'>
+                            <button type="button"
+                                class="btn btn-xs btn-secondary float-right mr-1"
+                                (click)="clickToCreateFolder(root)">
+                                <fa-icon [icon]="['fas', 'folder-plus']"></fa-icon>
+                            </button>
+                        </div>
+                    </div>
                 </as-split-area>
                 <as-split-area size="50">
                     <div class="list-group list-media"  *ngIf="medias$ |async as medias" #mediaItem>

@@ -70,9 +70,12 @@ export class TreeComponent extends SubscriptionDestroy implements OnInit {
 
     // Set node.isSelected = true when node is clicked and fire node selected event
     selectNode(node: Partial<TreeNode>) {
-        this.treeStore.setSelectedNode(node);
-        this.treeStore.fireNodeSelectedInner(node);
-        this.nodeSelected.emit(node);
+        const selectedNode = this.treeStore.getSelectedNode()
+        if (!selectedNode || selectedNode.id !== node.id) {
+            this.treeStore.setSelectedNode(node);
+            this.treeStore.fireNodeSelectedInner(node);
+            this.nodeSelected.emit(node);
+        }
     }
 
     nodeOnBlur(node: TreeNode) {
