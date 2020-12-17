@@ -3,6 +3,7 @@ import { TestimonyItemComponent } from './testimony-item.component';
 
 @BlockType({
     displayName: 'Testimony Item Block',
+    groupName: 'Testimony',
     componentRef: TestimonyItemComponent
 })
 export class TestimonyItemBlock extends BlockData {

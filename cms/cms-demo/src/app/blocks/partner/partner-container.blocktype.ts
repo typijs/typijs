@@ -3,6 +3,7 @@ import { PartnerContainerComponent } from './partner-container.component';
 
 @BlockType({
     displayName: 'Partner Container Block',
+    groupName: 'Partner',
     componentRef: PartnerContainerComponent
 })
 export class PartnerContainerBlock extends BlockData {

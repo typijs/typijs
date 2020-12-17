@@ -5,6 +5,7 @@ import { StandardPageComponent } from './standard.component';
 @PageType({
     displayName: 'Standard Page',
     componentRef: StandardPageComponent,
+    order: 10,
     description: 'This is standard page type'
 })
 export class StandardPage extends BasePage {

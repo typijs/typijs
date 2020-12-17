@@ -3,6 +3,7 @@ import { CategoryComponent } from './category.component';
 
 @BlockType({
     displayName: 'Category Block',
+    groupName: 'Category',
     componentRef: CategoryComponent
 })
 export class CategoryBlock extends BlockData {

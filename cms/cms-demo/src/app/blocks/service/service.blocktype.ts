@@ -3,6 +3,7 @@ import { ServiceComponent } from './service.component';
 
 @BlockType({
     displayName: 'Service Block',
+    groupName: 'Service',
     componentRef: ServiceComponent
 })
 export class ServiceBlock extends BlockData {
