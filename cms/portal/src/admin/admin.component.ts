@@ -1,5 +1,5 @@
 import { Component, ChangeDetectorRef, Inject } from '@angular/core';
-import { sortWidgetByOrder, CmsComponentConfig, ADMIN_WIDGETS } from '@angular-cms/core';
+import { sortByNumber, CmsComponentConfig, ADMIN_WIDGETS } from '@angular-cms/core';
 
 import { BaseLayoutComponent } from '../shared/base-layout.component';
 import { WidgetService } from '../services/widget.service';
@@ -18,6 +18,6 @@ export class AdminComponent extends BaseLayoutComponent {
     }
 
     protected getCmsWidgets(): CmsComponentConfig[] {
-        return this.adminWidgets.sort(sortWidgetByOrder);
+        return this.adminWidgets.sort(sortByNumber('order', 'asc'));
     }
 }

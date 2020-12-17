@@ -1,26 +1,63 @@
-import { CmsTab } from '../types';
-import { CmsComponentConfig } from '../types/module-config';
+/**
+ * Sort the array of object by string field
+ * @param key the property name
+ * @param order 'asc' | 'desc'
+ */
+export function sortByString(key: string, order: 'asc' | 'desc' = 'asc') {
+    return function innerSort(a, b) {
+        let varA: string;
+        let varB: string;
+        if (!a.hasOwnProperty(key)) {
+            varA = '';
+        } else {
+            varA = a[key] ? a[key].toUpperCase() : '';
+        }
 
-export function sortTabByTitle(tabOne: CmsTab, tabTwo: CmsTab): number {
-    const titleOne = tabOne.title ? tabOne.title.toUpperCase() : ''; // ignore upper and lowercase
-    const titleTwo = tabTwo.title ? tabTwo.title.toUpperCase() : ''; // ignore upper and lowercase
-    if (titleOne < titleTwo) {
-        return -1;
-    }
-    if (titleOne > titleTwo) {
-        return 1;
-    }
-    return 0;
+        if (!b.hasOwnProperty(key)) {
+            varB = '';
+        } else {
+            varB = b[key] ? b[key].toUpperCase() : '';
+        }
+
+        return comparison(varA, varB, order);
+    };
 }
 
-export function sortWidgetByOrder(widget1: CmsComponentConfig, widget2: CmsComponentConfig): number {
-    if (!widget1.order) {
-        widget1.order = 0;
+/**
+ * Sort the array of object by number field
+ * @param key the property name
+ * @param order 'asc' | 'desc'
+ */
+export function sortByNumber(key: string, order: 'asc' | 'desc' = 'asc') {
+    return function innerSort(a, b) {
+        let varA: number;
+        let varB: number;
+        if (!a.hasOwnProperty(key)) {
+            varA = 0;
+        } else {
+            varA = a[key];
+        }
+
+        if (!b.hasOwnProperty(key)) {
+            varB = 0;
+        } else {
+            varB = b[key];
+        }
+
+        return comparison(varA, varB, order);
+    };
+}
+
+export function comparison(varA: string | number, varB: string | number, order: 'asc' | 'desc' = 'asc'): number {
+    let comparison = 0;
+    if (varA > varB) {
+        comparison = 1;
+    } else if (varA < varB) {
+        comparison = -1;
     }
-    if (!widget2.order) {
-        widget2.order = 0;
-    }
-    return widget1.order - widget2.order;
+    return (
+        (order === 'desc') ? (comparison * -1) : comparison
+    );
 }
 
 export function generateUUID(): string {

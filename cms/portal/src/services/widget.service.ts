@@ -5,7 +5,7 @@ import {
     CmsComponentConfig,
     CmsWidgetPosition,
     CmsTab,
-    sortTabByTitle
+    sortByString
 } from '@angular-cms/core';
 
 @Injectable()
@@ -71,7 +71,7 @@ export class WidgetService {
 
         tabs.forEach(tab => tab.areas = this.getNumberAreasOfTab(widgets, tab));
 
-        return tabs.sort(sortTabByTitle);
+        return tabs.sort(sortByString('title', 'asc'));
     }
 
     private getNumberAreasOfTab(registeredWidgets: CmsComponentConfig[], tab: CmsTab): number {

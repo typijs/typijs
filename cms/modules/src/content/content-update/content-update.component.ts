@@ -3,7 +3,7 @@ import {
     CmsObject, CmsPropertyFactoryResolver, CmsTab,
     Content,
     ContentTypeProperty, InsertPointDirective,
-    Media, Page, sortTabByTitle, TypeOfContent, BrowserLocationService
+    Media, Page, sortByString, TypeOfContent, BrowserLocationService
 } from '@angular-cms/core';
 import { AfterViewInit, ChangeDetectorRef, Component, ComponentRef, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -127,7 +127,7 @@ export class ContentUpdateComponent extends SubscriptionDestroy implements OnIni
             tabs.push({ title: this.defaultGroup, name: `${this.defaultGroup}` });
         }
 
-        return tabs.sort(sortTabByTitle);
+        return tabs.sort(sortByString('title', 'asc'));
     }
 
     private createFormGroup(properties: ContentTypeProperty[]): FormGroup {
