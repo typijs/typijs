@@ -1,36 +1,49 @@
-<div class="row">
-    <div class="col-lg-12">
-        <div class="card">
-            <div class="card-header">Create content</div>
-            <div class="card-body">
-                <div class="form-group ">
-                    <div class="input-group ">
-                        <div class="input-group-prepend ">
-                            <span class="input-group-text ">Name</span>
-                        </div>
-                        <input type="text" class="form-control" id="content-name" [(ngModel)]="contentName" required #name="ngModel" />
-                        <div class="input-group-append">
-                            <button type="button" class="btn btn-primary">Cancel</button>
-                        </div>
-                    </div>
-                    <div [hidden]="name.valid || name.pristine" class="alert alert-danger">
-                        Name is required
-                    </div>
-                </div>
-                <div class="row">
-                    <h5 class="col-lg-12">Select type</h5>
-                </div>
-                <div class="row">
-                    <div class="col-sm-6 col-md-4 col-lg-3" *ngFor="let contentType of contentTypes">
-                        <div class="card bg-primary" (click)="createNewContent(contentType)">
-                            <div class="card-body">
-                                <div class="h4 m-0">{{contentType.metadata.displayName}}</div>
-                                <div>{{contentType.metadata.description}}</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<div class='h-100'>
+  <as-split gutterSize="0" unit="pixel" direction="vertical" class="has-lock-area">
+    <as-split-area size="150" lockSize="true">
+      <div class="container-fluid h-100 pt-2 bg-white">
+        <form>
+          <h3>New {{typeOfContent}}</h3>
+          <div>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb m-0 pl-0 pt-2">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Library</li>
+              </ol>
+            </nav>
+          </div>
+          <div class="form-group row">
+            <div class="input-group col-sm-8">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Name</span>
+              </div>
+              <input type="text" class="form-control" id="content-name" name="contentName" [(ngModel)]="contentName"
+                required #name="ngModel" />
             </div>
+            <div class="col-sm-4">
+              <button type="button" class="btn btn-primary float-right" (click)="onCancel()">Cancel</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </as-split-area>
+    <as-split-area size="*" class='bg-light'>
+      <div class='container-fluid pt-2 h-100'>
+        <div class='mb-3' *ngFor="let group of contentTypeGroups">
+          <div class='row'>
+            <h5 class="col-lg-12">{{group.groupName}}</h5>
+          </div>
+          <div class="content-type-container">
+            <div class="content-type-item card" *ngFor="let item of group.contentTypes"
+              (click)="createNewContent(item)">
+              <div class="card-body">
+                <div class="h5 m-0">{{item.metadata.displayName}}</div>
+                <div>{{item.metadata.description}}</div>
+              </div>
+            </div>
+          </div>
         </div>
-    </div>
+      </div>
+    </as-split-area>
+  </as-split>
 </div>
