@@ -1,8 +1,8 @@
 import { Block, BlockService, BLOCK_TYPE } from '@angular-cms/core';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { distinctUntilKeyChanged, map, switchMap, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, merge, Observable, Subject } from 'rxjs';
+import { distinctUntilKeyChanged, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { SubjectService } from '../shared/services/subject.service';
 import { SubscriptionDestroy } from '../shared/subscription-destroy';
 import { TreeComponent } from '../shared/tree/components/tree.component';
@@ -93,8 +93,11 @@ export class BlockTreeComponent extends SubscriptionDestroy implements OnInit {
     @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
 
     folderSelected$: BehaviorSubject<Partial<TreeNode>>;
+    refreshFolder$: Subject<Partial<TreeNode>>;
     blocks$: Observable<Block[]>;
+
     root: TreeNode;
+    selectedFolder: Partial<TreeNode>;
     treeConfig: TreeConfig;
 
     constructor(
@@ -104,26 +107,35 @@ export class BlockTreeComponent extends SubscriptionDestroy implements OnInit {
         private subjectService: SubjectService) {
         super();
         this.root = new TreeNode({ id: '0', name: 'Block', hasChildren: true });
-        this.folderSelected$ = new BehaviorSubject<Partial<TreeNode>>(this.root);
+        this.selectedFolder = this.root;
         this.treeConfig = this.initTreeConfiguration();
+
+        this.folderSelected$ = new BehaviorSubject<Partial<TreeNode>>(this.root);
+        this.refreshFolder$ = new Subject<Partial<TreeNode>>();
     }
 
     ngOnInit() {
         this.subjectService.blockFolderCreated$
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(createdFolder => {
-                this.cmsTree.selectNode({ id: createdFolder._id, isNeedToScroll: true });
+                this.cmsTree.setSelectedNode({ id: createdFolder._id, isNeedToScroll: true });
                 this.cmsTree.reloadSubTree(createdFolder.parentId);
             });
 
         this.subjectService.blockCreated$
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(createdBlock => {
-                this.cmsTree.selectNode({ id: createdBlock.parentId });
+                this.cmsTree.setSelectedNode({ id: createdBlock.parentId });
+                // Reload current node
+                if (this.selectedFolder.id === createdBlock.parentId) { this.refreshFolder$.next(this.selectedFolder); }
             });
 
-        this.blocks$ = this.folderSelected$.pipe(
+        const setFolderSelected$ = this.folderSelected$.pipe(
             distinctUntilKeyChanged('id'),
+            tap(node => this.selectedFolder = node)
+        );
+
+        this.blocks$ = merge(setFolderSelected$, this.refreshFolder$).pipe(
             switchMap(node => this.blockService.getContentInFolder(node.id)),
             map((blocks: Block[]) => blocks.map(block => Object.assign(block, {
                 type: BLOCK_TYPE,
