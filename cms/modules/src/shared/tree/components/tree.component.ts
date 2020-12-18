@@ -17,7 +17,7 @@ import { SubscriptionDestroy } from '../../subscription-destroy';
                         [node]="root"
                         [config]="config"
                         [templates]="templates"
-                        (selectNode)="selectNode($event)"
+                        (selectNode)="setSelectedNode($event)"
                         (menuItemSelected)="handleNodeMenuItemSelected($event)"
                         (submitInlineNode)="submitInlineNode($event)"
                         (cancelInlineNode)="cancelInlineNode($event)">
@@ -26,7 +26,7 @@ import { SubscriptionDestroy } from '../../subscription-destroy';
                         [root]="root"
                         [config]="config"
                         [templates]="templates"
-                        (selectNode)="selectNode($event)"
+                        (selectNode)="setSelectedNode($event)"
                         (menuItemSelected)="handleNodeMenuItemSelected($event)"
                         (submitInlineNode)="submitInlineNode($event)"
                         (cancelInlineNode)="cancelInlineNode($event)">
@@ -66,8 +66,13 @@ export class TreeComponent extends SubscriptionDestroy implements OnInit {
         this.subscribeAndEmitNodeMenuItemSelectedEvent();
     }
 
-    // Set node.isSelected = true when node is clicked and fire node selected event
-    selectNode(node: Partial<TreeNode>) {
+    /**
+     * Set the tree node is selected and fire node selected event
+     *
+     * It is the same as node is clicked
+     * @param node
+     */
+    setSelectedNode(node: Partial<TreeNode>) {
         const selectedNode = this.treeStore.getSelectedNode()
         if (!selectedNode || selectedNode.id !== node.id) {
             this.treeStore.setSelectedNode(node);

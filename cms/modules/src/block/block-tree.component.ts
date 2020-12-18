@@ -169,6 +169,8 @@ export class BlockTreeComponent extends SubscriptionDestroy implements OnInit {
         if (nodeToDelete.id === '0') { return; }
         this.blockService.moveContentToTrash(nodeToDelete.id).subscribe(folderToDelete => {
             if (folderToDelete.isDeleted) {
+                // if the deleted node is selected then need to set the parent node is the new selected node
+                if (nodeToDelete.isSelected) this.cmsTree.setSelectedNode({ id: folderToDelete.parentId, isNeedToScroll: true });
                 this.cmsTree.reloadSubTree(folderToDelete.parentId);
             }
         });

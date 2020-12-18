@@ -68,7 +68,7 @@ export class PageTreeComponent extends SubscriptionDestroy implements OnInit {
             .subscribe((createdPage: Page) => {
                 // Reload parent page
                 // Reload the children of parent to update the created page
-                this.cmsTree.selectNode({ id: createdPage._id, isNeedToScroll: true });
+                this.cmsTree.setSelectedNode({ id: createdPage._id, isNeedToScroll: true });
                 this.cmsTree.reloadSubTree(createdPage.parentId);
             });
 
@@ -114,7 +114,8 @@ export class PageTreeComponent extends SubscriptionDestroy implements OnInit {
         if (nodeToDelete.id == '0') { return; }
         this.pageService.moveContentToTrash(nodeToDelete.id).subscribe((pageToDelete: Page) => {
             if (pageToDelete.isDeleted) {
-                this.cmsTree.selectNode({ id: pageToDelete.parentId, isNeedToScroll: true });
+                // if the deleted node is selected then need to set the parent node is the new selected node
+                if (nodeToDelete.isSelected) this.cmsTree.setSelectedNode({ id: pageToDelete.parentId, isNeedToScroll: true });
                 this.cmsTree.reloadSubTree(pageToDelete.parentId);
             }
         });

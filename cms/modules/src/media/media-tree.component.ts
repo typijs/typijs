@@ -96,9 +96,10 @@ export class MediaTreeComponent extends SubscriptionDestroy implements OnInit {
     folderSelected$: BehaviorSubject<Partial<TreeNode>>;
     refreshFolder$: Subject<Partial<TreeNode>>;
     medias$: Observable<Media[]>;
+
     root: TreeNode;
-    treeConfig: TreeConfig;
     selectedFolder: Partial<TreeNode>;
+    treeConfig: TreeConfig;
 
     constructor(
         private mediaService: MediaService,
@@ -107,16 +108,17 @@ export class MediaTreeComponent extends SubscriptionDestroy implements OnInit {
         super();
         this.root = new TreeNode({ id: '0', name: 'Media', hasChildren: true });
         this.selectedFolder = this.root;
+        this.treeConfig = this.initTreeConfiguration();
+
         this.folderSelected$ = new BehaviorSubject<Partial<TreeNode>>(this.root);
         this.refreshFolder$ = new Subject<Partial<TreeNode>>();
-        this.treeConfig = this.initTreeConfiguration();
     }
 
     ngOnInit() {
         this.subjectService.mediaFolderCreated$
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(createdFolder => {
-                this.cmsTree.selectNode({ id: createdFolder._id, isNeedToScroll: true });
+                this.cmsTree.setSelectedNode({ id: createdFolder._id, isNeedToScroll: true });
                 this.cmsTree.reloadSubTree(createdFolder.parentId);
             });
 
@@ -173,6 +175,8 @@ export class MediaTreeComponent extends SubscriptionDestroy implements OnInit {
         if (nodeToDelete.id == '0') { return; }
         this.mediaService.moveContentToTrash(nodeToDelete.id).subscribe(folderToDelete => {
             if (folderToDelete.isDeleted) {
+                // if the deleted node is selected then need to set the parent node is the new selected node
+                if (nodeToDelete.isSelected) this.cmsTree.setSelectedNode({ id: folderToDelete.parentId, isNeedToScroll: true });
                 this.cmsTree.reloadSubTree(folderToDelete.parentId);
             }
         });

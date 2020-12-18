@@ -287,14 +287,19 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         ]);
 
         //update the 'HasChildren' field of page's parent
-        const childCount = await this.countChildrenOfContent(currentContent.parentId);
+        const childCount = await this.countChildrenOfContent(currentContent);
         if (childCount == 0) await this.updateById(currentContent.parentId, { hasChildren: false } as any)
 
         return result[0];
     }
 
-    private countChildrenOfContent = (parentId: string): Promise<number> => {
-        return this.count({ parentId: parentId, isDeleted: false } as any)
+    private countChildrenOfContent = (currentContent: T): Promise<number> => {
+        // In case delete content: page, block, media
+        if (currentContent.contentType) {
+            return this.count({ parentId: currentContent.parentId, isDeleted: false } as any)
+        }
+        // In case delete folder
+        return this.count({ parentId: currentContent.parentId, isDeleted: false, contentType: null } as any)
     }
 
     private softDeleteContent = async (currentContent: T, userId: string): Promise<T> => {
