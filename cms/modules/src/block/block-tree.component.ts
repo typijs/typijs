@@ -1,19 +1,18 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { takeUntil, map, switchMap, distinctUntilKeyChanged } from 'rxjs/operators';
-
 import { Block, BlockService, BLOCK_TYPE } from '@angular-cms/core';
-// import { TreeNode, TreeComponent, TreeConfig, NodeMenuItemAction, TreeMenuActionEvent } from '../shared/tree';
-import { TreeNode } from '../shared/tree/interfaces/tree-node';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { distinctUntilKeyChanged, map, switchMap, takeUntil } from 'rxjs/operators';
+import { SubjectService } from '../shared/services/subject.service';
+import { SubscriptionDestroy } from '../shared/subscription-destroy';
 import { TreeComponent } from '../shared/tree/components/tree.component';
 import { TreeConfig } from '../shared/tree/interfaces/tree-config';
 import { NodeMenuItemAction, TreeMenuActionEvent } from '../shared/tree/interfaces/tree-menu';
-
-import { BlockTreeService } from './block-tree.service';
-import { SubscriptionDestroy } from '../shared/subscription-destroy';
-import { SubjectService } from '../shared/services/subject.service';
+// import { TreeNode, TreeComponent, TreeConfig, NodeMenuItemAction, TreeMenuActionEvent } from '../shared/tree';
+import { TreeNode } from '../shared/tree/interfaces/tree-node';
 import { TreeService } from '../shared/tree/interfaces/tree-service';
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import { BlockTreeService } from './block-tree.service';
+
 
 const BLOCK_MENU_ACTION = {
     DeleteFolder: 'DeleteFolder',

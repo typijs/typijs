@@ -1,4 +1,4 @@
-import { Component, Input, ElementRef, OnInit } from '@angular/core';
+import { Component, Input, ElementRef, OnInit, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
 
 import { TreeNode } from '../interfaces/tree-node';
@@ -27,9 +27,10 @@ import { TreeStore } from '../tree-store';
         <div *ngIf="node.isNew || node.isEditing" class="form-group row d-inline-block mb-2">
             <form class="form-inline" (ngSubmit)="submitInlineNode(node)" #inlineNodeForm="ngForm">
                 <div class="form-group mx-sm-3">
-                    <input type="text" required autofocus class="form-control form-control-sm"
-                    (blur)="nodeOnBlur(node)"
-                    [(ngModel)]="node.name" name="name" #name="ngModel"/>
+                    <input #nodeInlineInput type="text" class="form-control form-control-sm"
+                        required
+                        (blur)="nodeOnBlur(node)"
+                        [(ngModel)]="nodeName" name="name" #name="ngModel"/>
                 </div>
                 <button type="submit" class="btn btn-success btn-sm" [disabled]="!inlineNodeForm.form.valid">Save</button>
                 <button type="button" class="btn btn-default btn-sm" (click)="cancelInlineNode(node)">Cancel</button>
@@ -51,12 +52,15 @@ import { TreeStore } from '../tree-store';
     </div>
     `
 })
-export class TreeNodeComponent extends TreeBaseComponent implements OnInit {
+export class TreeNodeComponent extends TreeBaseComponent implements OnInit, AfterViewInit {
+    @ViewChildren("nodeInlineInput") nodeInlineInput: QueryList<ElementRef>;
     @Input() node: TreeNode;
     @Input() config: TreeConfig;
     @Input() templates: any = {};
 
     menuItems: TreeMenuItem[];
+    nodeName: string;
+    private blurTimer: any;
 
     constructor(
         private treeStore: TreeStore,
@@ -71,12 +75,53 @@ export class TreeNodeComponent extends TreeBaseComponent implements OnInit {
                 if (scrollToNode.id == this.node.id) { this.scrollIntoNode(); }
             });
 
-        if (this.config) {
-            this.menuItems = this.config.menuItems;
+        if (this.config) { this.menuItems = this.config.menuItems; }
+        if (this.node) { this.nodeName = this.node.name; }
+    }
+
+    ngAfterViewInit() {
+        this.setInlineInputFocus();
+        this.nodeInlineInput.changes.subscribe(() => {
+            this.setInlineInputFocus();
+        });
+    }
+
+    nodeOnBlur(node: TreeNode) {
+        this.blurTimer = setTimeout(() => {
+            if (this.nodeName) {
+                this.submitInlineNode(node);
+            } else {
+                this.cancelInlineNode(node);
+            }
+        }, 200);
+    }
+
+    submitInlineNode(node: TreeNode) {
+        if (this.blurTimer) clearTimeout(this.blurTimer);
+
+        const newName = this.nodeName ? this.nodeName.trim() : null;
+        if (newName && newName !== node.name) {
+            node.name = newName;
+            this.submitInlineNodeEvent.emit(node);
+        } else {
+            this.cancelInlineNode(node);
         }
     }
 
-    scrollIntoNode() {
+    cancelInlineNode(node: TreeNode) {
+        if (this.blurTimer) clearTimeout(this.blurTimer);
+
+        this.nodeName = node.name;
+        this.cancelInlineNodeEvent.emit({ parentNode: null, node });
+    }
+
+    private setInlineInputFocus() {
+        if (this.nodeInlineInput.length > 0) {
+            this.nodeInlineInput.first.nativeElement.focus();
+        }
+    }
+
+    private scrollIntoNode() {
         // scroll to middle of viewport
         this.hostElement.nativeElement.scrollIntoView({
             behavior: 'auto',

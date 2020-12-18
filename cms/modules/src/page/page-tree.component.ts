@@ -78,7 +78,7 @@ export class PageTreeComponent extends SubscriptionDestroy implements OnInit {
                 takeUntil(this.unsubscribe$)
             )
             .subscribe((selectedPage: Page) => {
-                this.cmsTree.locateToSelectedNode(new TreeNode({
+                this.cmsTree.expandTreeToSelectedNode(new TreeNode({
                     id: selectedPage._id,
                     isNeedToScroll: true,
                     name: selectedPage.name,

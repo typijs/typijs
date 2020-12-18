@@ -59,12 +59,24 @@ const MEDIA_MENU_ACTION = {
                         <a *ngFor="let media of medias"
                             [draggable]
                             [dragData]="media"
-                            class="list-group-item list-group-item-action flex-column align-items-start p-1"
-                            [routerLink]="['content/media', media._id]">
+                            href="javascript:void(0)"
+                            class="list-group-item list-group-item-action p-2">
                             <div class="d-flex align-items-center">
-                                <img width='50' class="mr-1" [src]='media.thumbnail | toImgSrc'/>
-                                <div class="w-100 mr-2 text-truncate">{{media.name}}</div>
-                                <fa-icon class="ml-auto" [icon]="['fas', 'bars']"></fa-icon>
+                                <img width='50' class="mr-1" [src]='media.thumbnail | toImgSrc' [routerLink]="['content/media', media._id]"/>
+                                <div class="w-100 mr-2 text-truncate" [routerLink]="['content/media', media._id]">{{media.name}}</div>
+                                <div class="hover-menu ml-auto" dropdown container="body">
+                                    <fa-icon class="mr-1" [icon]="['fas', 'bars']" dropdownToggle></fa-icon>
+                                    <div class="cms-dropdown-menu dropdown-menu dropdown-menu-right"
+                                        *dropdownMenu
+                                        aria-labelledby="simple-dropdown">
+                                        <a class="dropdown-item p-2" href="javascript:void(0)" [routerLink]="['content/media', media._id]">
+                                            Edit
+                                        </a>
+                                        <a class="dropdown-item p-2" href="javascript:void(0)">
+                                            Delete
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </a>
                     </div>

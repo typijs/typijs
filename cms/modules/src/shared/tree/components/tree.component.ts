@@ -19,7 +19,6 @@ import { SubscriptionDestroy } from '../../subscription-destroy';
                         [templates]="templates"
                         (selectNode)="selectNode($event)"
                         (menuItemSelected)="handleNodeMenuItemSelected($event)"
-                        (nodeOnBlur)="nodeOnBlur($event)"
                         (submitInlineNode)="submitInlineNode($event)"
                         (cancelInlineNode)="cancelInlineNode($event)">
                     </tree-node>
@@ -29,7 +28,6 @@ import { SubscriptionDestroy } from '../../subscription-destroy';
                         [templates]="templates"
                         (selectNode)="selectNode($event)"
                         (menuItemSelected)="handleNodeMenuItemSelected($event)"
-                        (nodeOnBlur)="nodeOnBlur($event)"
                         (submitInlineNode)="submitInlineNode($event)"
                         (cancelInlineNode)="cancelInlineNode($event)">
                     </tree-children>
@@ -78,10 +76,6 @@ export class TreeComponent extends SubscriptionDestroy implements OnInit {
         }
     }
 
-    nodeOnBlur(node: TreeNode) {
-        if (!node.name) { this.cancelInlineNode(node); }
-    }
-
     submitInlineNode(node: TreeNode) {
         if (node.name && node.isNew) {
             this.nodeInlineCreated.emit(node);
@@ -94,9 +88,10 @@ export class TreeComponent extends SubscriptionDestroy implements OnInit {
         }
     }
 
-    cancelInlineNode(node: TreeNode) {
+    cancelInlineNode(cancelData: { parentNode: TreeNode, node: TreeNode }) {
+        const node = cancelData.node;
         if (node.isNew) {
-            this.treeStore.cancelNewNodeInline(this.root, node);
+            this.treeStore.cancelNewNodeInline(cancelData.parentNode, node);
             return;
         }
 
@@ -106,16 +101,21 @@ export class TreeComponent extends SubscriptionDestroy implements OnInit {
         }
     }
 
-    // Reload the node data
-    // Reload node's children
-    // @nodeId: Mongoose ObjectId
+    /**
+     * Reload whole the sub tree including tree node children and parent node
+     * @param subTreeRootId
+     */
     reloadSubTree(subTreeRootId: string) {
         this.treeStore.reloadTreeChildrenData(subTreeRootId);
     }
 
-    locateToSelectedNode(node: TreeNode) {
-        this.treeStore.locateToSelectedNode(node).subscribe(nodeId => {
-            console.log(`locateToSelectedNode has id = ${nodeId}`);
+    /**
+     * Expand the tree to target node
+     * @param newSelectedNode
+     */
+    expandTreeToSelectedNode(node: TreeNode) {
+        this.treeStore.expandTreeToSelectedNode(node).subscribe(nodeId => {
+            console.log(`expandTreeToSelectedNode has id = ${nodeId}`);
         });
     }
 

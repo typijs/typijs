@@ -1,16 +1,15 @@
+import { CmsWidgetPosition, CoreModule, EDITOR_ROUTES, EDITOR_WIDGETS } from '@angular-cms/core';
 import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faFolder, faFolderPlus, faPhotoVideo } from '@fortawesome/free-solid-svg-icons';
-
-import { CmsWidgetPosition, CoreModule, EDITOR_ROUTES, EDITOR_WIDGETS } from '@angular-cms/core';
-
 import { ContentUpdateComponent } from '../content/content-update/content-update.component';
 import { DndModule } from '../shared/drag-drop/dnd.module';
 // import { CmsProgressbarModule, CmsModalModule, CmsAngularSplitModule } from '../shared/libs';
 import { CmsAngularSplitModule } from '../shared/libs/angular-split/module';
+import { CmsBsDropdownModule } from '../shared/libs/ngx-bootstrap/bs-dropdown.module';
 import { CmsModalModule } from '../shared/libs/ngx-bootstrap/modal.module';
 import { CmsProgressbarModule } from '../shared/libs/ngx-bootstrap/progressbar.module';
 import { TreeModule } from '../shared/tree/tree.module';
@@ -21,6 +20,7 @@ import { FileDropComponent } from './upload/file-drop.component';
 import { FileModalComponent } from './upload/file-modal.component';
 import { FileSelectDirective } from './upload/file-select.directive';
 import { UploadService } from './upload/upload.service';
+
 
 const mediaRoutes: Routes = [
     { path: 'content/media/:id', component: ContentUpdateComponent }
@@ -35,6 +35,7 @@ const mediaRoutes: Routes = [
         FontAwesomeModule,
 
         CmsAngularSplitModule,
+        CmsBsDropdownModule,
         CmsProgressbarModule,
         CmsModalModule,
 
