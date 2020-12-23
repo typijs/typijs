@@ -14,7 +14,7 @@ export class MediaTreeService implements TreeService {
 
     getNode(nodeId: string): Observable<TreeNode> {
         const language = this.languageService.getLanguageParam();
-        return this.mediaService.getSimpleContent(nodeId, language).pipe(
+        return this.mediaService.getContent(nodeId, language).pipe(
             map(media => TreeNode.createInstanceFromContent(media, FOLDER_MEDIA)));
     }
 

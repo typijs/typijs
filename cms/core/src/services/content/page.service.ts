@@ -32,15 +32,4 @@ export class PageService extends ContentService<Page> {
     getPublishedPage(linkUrl: string): Observable<Page> {
         return this.httpClient.get<Page>(`${this.apiUrl}/published/${btoa(linkUrl)}`);
     }
-
-    getPublishedPageChildren(parentId: string): Observable<Page[]> {
-        return this.httpClient.get<Page[]>(`${this.apiUrl}/published/children/${parentId}`);
-    }
-
-    getPageChildren(parentId: string): Observable<PageData[]> {
-        return this.httpClient.get<Page[]>(`${this.apiUrl}/published/children/${parentId}`).pipe(
-            map(children => children.map(childPage => new PageData(childPage)))
-        );
-    }
-
 }

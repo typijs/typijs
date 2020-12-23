@@ -14,7 +14,7 @@ export class PageVersionService extends ContentVersionService {
     }
 
     getAllVersions(contentId: string): Observable<Content[]> {
-        return this.pageService.getContentVersions(contentId);
+        return this.pageService.getAllVersionsOfContent(contentId);
     }
     createNewVersion(masterVersionId: string): Observable<Content> {
         throw new Error('Method not implemented.');

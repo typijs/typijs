@@ -14,8 +14,8 @@ export class PageCrudService extends ContentCrudService {
         super(PAGE_TYPE);
     }
 
-    getContentVersion(contentId: string, versionId: string, language: string, host: string): Observable<ContentInfo> {
-        return this.pageService.getContentVersion(contentId, versionId, language, host)
+    getContentVersion(contentId: string, versionId: string, language: string): Observable<ContentInfo> {
+        return this.pageService.getContentVersion(contentId, versionId, language)
             .pipe(
                 // fire page selected event to inform to page tree locate to right node
                 tap(contentData => this.subjectService.firePageSelected(contentData)),

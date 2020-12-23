@@ -15,7 +15,7 @@ export class BlockTreeService implements TreeService {
 
     getNode(nodeId: string): Observable<TreeNode> {
         const language = this.languageService.getLanguageParam();
-        return this.blockService.getSimpleContent(nodeId, language).pipe(
+        return this.blockService.getContent(nodeId, language).pipe(
             map(block => TreeNode.createInstanceFromContent(block, FOLDER_BLOCK)));
     }
 

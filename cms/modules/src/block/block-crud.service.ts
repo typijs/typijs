@@ -16,8 +16,8 @@ export class BlockCrudService extends ContentCrudService {
         super(BLOCK_TYPE);
     }
 
-    getContentVersion(contentId: string, versionId: string, language: string, host: string): Observable<ContentInfo> {
-        return this.blockService.getContentVersion(contentId, versionId, language, host)
+    getContentVersion(contentId: string, versionId: string, language: string): Observable<ContentInfo> {
+        return this.blockService.getContentVersion(contentId, versionId, language)
             .pipe(
                 map(contentData => ({
                     contentTypeProperties: this.contentTypeService.getBlockTypeProperties(contentData.contentType),

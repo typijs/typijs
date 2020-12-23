@@ -29,13 +29,21 @@ export abstract class ContentService<T extends Content> extends FolderService<T>
         return this.httpClient.post<T>(`${this.apiUrl}?${query}`, content);
     }
 
-    getSimpleContent(contentId: string, language?: string): Observable<T> {
-        const query = convertObjectToUrlQueryString({ language });
-        return this.httpClient.get<T>(`${this.apiUrl}/simple/${contentId}?${query}`);
+    /**
+     * Get the content detail without populate child items
+     * @param contentId
+     * @param language
+     */
+    getContent(contentId: string, language?: string): Observable<T> {
+        const host = this.locationService.getLocation().host;
+        const query = convertObjectToUrlQueryString({ language, host });
+        return this.httpClient.get<T>(`${this.apiUrl}/${contentId}?${query}`);
     }
 
-    getContentChildren(parentId: string): Observable<T[]> {
-        return this.httpClient.get<T[]>(`${this.apiUrl}/children/${parentId}`);
+    getContentChildren(parentId: string, language?: string): Observable<T[]> {
+        const host = this.locationService.getLocation().host;
+        const query = convertObjectToUrlQueryString({ language, host });
+        return this.httpClient.get<T[]>(`${this.apiUrl}/children/${parentId}?${query}`);
     }
 
     moveContentToTrash(contentId: string): Observable<T> {
@@ -57,6 +65,22 @@ export abstract class ContentService<T extends Content> extends FolderService<T>
     /*------------------------------------Version-------------------------------------*/
 
     /**
+     * Get content version detail
+     * @param contentId
+     * @param versionId
+     * @param language
+     */
+    getContentVersion(contentId: string, versionId: string, language?: string): Observable<T> {
+        const host = this.locationService.getLocation().host;
+        const query = convertObjectToUrlQueryString({ versionId, language, host });
+        return this.httpClient.get<T>(`${this.apiUrl}/version/${contentId}?${query}`);
+    }
+
+    getAllVersionsOfContent(contentId: string): Observable<T[]> {
+        return this.httpClient.get<T[]>(`${this.apiUrl}/version/list/${contentId}`);
+    }
+
+    /**
      * Edit content version
      * @param contentId
      * @param versionId
@@ -67,29 +91,13 @@ export abstract class ContentService<T extends Content> extends FolderService<T>
     }
 
     /**
-     * Publishs convent version
+     * Publish convent version
      * @param contentId
      * @param versionId
      * @returns content
      */
     publishContentVersion(contentId: string, versionId: string): Observable<T> {
         return this.httpClient.put<T>(`${this.apiUrl}/version/publish/${contentId}?versionId=${versionId}`, {});
-    }
-
-    /**
-     * Get content version detail
-     * @param contentId
-     * @param versionId
-     * @param language
-     * @param host
-     */
-    getContentVersion(contentId: string, versionId: string, language?: string, host?: string): Observable<T> {
-        const query = convertObjectToUrlQueryString({ versionId, language, host });
-        return this.httpClient.get<T>(`${this.apiUrl}/version/${contentId}?${query}`);
-    }
-
-    getContentVersions(contentId: string): Observable<T[]> {
-        return this.httpClient.get<T[]>(`${this.apiUrl}/version/list/${contentId}`);
     }
 
     setPrimaryVersion(versionId: string): Observable<T> {

@@ -16,7 +16,13 @@ export abstract class ContentCrudService {
         return this.typeOfContent === typeOfContent;
     }
     abstract getAllContentTypes(): ContentType[];
-    abstract getContentVersion(contentId: string, versionId: string, language: string, host: string): Observable<ContentInfo>;
+    /**
+     * Get content version detail. If the version Id is not provided, the primary version will be used
+     * @param contentId the content id
+     * @param versionId (Optional) the content version id. If the version Id is not provided, the primary version will be used
+     * @param language (Optional) if the language is not provided, the default language will be used
+     */
+    abstract getContentVersion(contentId: string, versionId?: string, language?: string): Observable<ContentInfo>;
     abstract createContent(content: Partial<Content>, language?: string): Observable<Content>;
     abstract editContentVersion(contentId: string, versionId: string, content: Partial<Content>): Observable<Content>;
     abstract publishContentVersion(contentId: string, versionId: string): Observable<Content>;

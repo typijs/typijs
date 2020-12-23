@@ -3,7 +3,7 @@ import {
     CmsObject, CmsPropertyFactoryResolver, CmsTab,
     Content,
     ContentTypeProperty, InsertPointDirective,
-    Media, Page, sortByString, TypeOfContent, BrowserLocationService
+    Media, Page, sortByString, TypeOfContent
 } from '@angular-cms/core';
 import { AfterViewInit, ChangeDetectorRef, Component, ComponentRef, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -39,7 +39,6 @@ export class ContentUpdateComponent extends SubscriptionDestroy implements OnIni
     constructor(
         private contentServiceResolver: ContentCrudServiceResolver,
         private propertyFactoryResolver: CmsPropertyFactoryResolver,
-        private locationService: BrowserLocationService,
         private subjectService: SubjectService,
         private formBuilder: FormBuilder,
         private route: ActivatedRoute,
@@ -47,7 +46,6 @@ export class ContentUpdateComponent extends SubscriptionDestroy implements OnIni
     ) { super(); }
 
     ngOnInit() {
-        const host = this.locationService.getLocation().host;
         combineLatest([this.route.paramMap, this.route.queryParamMap])
             .pipe(
                 switchMap(([params, query]) => {
@@ -56,7 +54,7 @@ export class ContentUpdateComponent extends SubscriptionDestroy implements OnIni
                     const language = query.get('language');
                     this.typeOfContent = this.getTypeContentFromUrl(this.route.snapshot.url);
                     this.contentService = this.contentServiceResolver.resolveCrudFormService(this.typeOfContent);
-                    return contentId ? this.contentService.getContentVersion(contentId, versionId, language, host) : of({});
+                    return contentId ? this.contentService.getContentVersion(contentId, versionId, language) : of({});
                 }),
                 tap((result: ContentInfo) => {
                     this.contentTypeProperties = result.contentTypeProperties;

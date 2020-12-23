@@ -14,7 +14,7 @@ export class PageTreeService implements TreeService {
 
     getNode(nodeId: string): any {
         const language = this.languageService.getLanguageParam();
-        return this.pageService.getSimpleContent(nodeId, language).pipe(
+        return this.pageService.getContent(nodeId, language).pipe(
             map(page => TreeNode.createInstanceFromContent(page, PAGE_TYPE)));
     }
 

@@ -14,7 +14,7 @@ export class BlockVersionService extends ContentVersionService {
     }
 
     getAllVersions(contentId: string): Observable<Content[]> {
-        return this.blockService.getContentVersions(contentId);
+        return this.blockService.getAllVersionsOfContent(contentId);
     }
     createNewVersion(masterVersionId: string): Observable<Content> {
         throw new Error('Method not implemented.');
