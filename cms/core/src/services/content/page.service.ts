@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-
-import { Page } from './models/page.model';
-import { ContentService } from './content.service';
-import { BrowserLocationService } from '../../browser/browser-location.service';
 import { btoa } from '../../helpers/base64';
+import { TypeOfContentEnum } from '../../types';
+import { ContentService } from './content.service';
 import { PageData } from './models/content-data';
+import { Page } from './models/page.model';
 
 @Injectable({
     providedIn: 'root'
@@ -19,6 +17,12 @@ export class PageService extends ContentService<Page> {
         private locationService: BrowserLocationService,
         httpClient: HttpClient) {
         super(httpClient);
+    isMatching(typeOfContent: string) {
+        return typeOfContent === TypeOfContentEnum.Page;
+    }
+
+    getContentData(content: Page): PageData {
+        return new PageData(content);
     }
 
     getStartPage(hostName?: string): Observable<Page> {

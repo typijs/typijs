@@ -49,5 +49,6 @@ export type ContentReference = {
     id: string
     type: TypeOfContent
     contentType: string
+    versionId?: string;
     [propName: string]: any
 };

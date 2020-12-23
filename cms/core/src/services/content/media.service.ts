@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpRequest, HttpEvent } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
-import { Media } from './models/media.model';
+import { TypeOfContentEnum } from '../../types';
 import { ContentService } from './content.service';
+import { ContentData } from './models/content-data';
+import { Media } from './models/media.model';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,13 @@ export class MediaService extends ContentService<Media> {
   constructor(httpClient: HttpClient) {
     super(httpClient);
   }
+    isMatching(typeOfContent: string) {
+        return typeOfContent === TypeOfContentEnum.Media || typeOfContent === TypeOfContentEnum.FolderMedia
+    }
+
+    getContentData(content: Media): ContentData {
+        throw new Error('Not implemented');
+    }
 
   uploadMedia(folderId: string = '', file: File): Observable<HttpEvent<any>> {
     const formData: FormData = new FormData();

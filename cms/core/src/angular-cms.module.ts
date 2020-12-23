@@ -24,6 +24,10 @@ import { UrlRenderFactory } from './renders/url/url-render';
 import { UrlListRenderFactory } from './renders/url-list/url-list-render';
 import { ObjectListRenderFactory } from './renders/object-list/object-list-render';
 import { BlockRenderFactory, CONTENT_RENDERS, MediaRenderFactory, PagePartialRenderFactory, PageRenderFactory } from './renders/content-render.factory';
+import { CONTENT_SERVICE_PROVIDER } from './services/content/content-loader.service';
+import { PageService } from './services/content/page.service';
+import { MediaService } from './services/content/media.service';
+import { BlockService } from './services/content/block.service';
 
 /**
  * Re-export Core Module to used on client
@@ -57,7 +61,11 @@ export class AngularCms {
                 { provide: CONTENT_RENDERS, useClass: PageRenderFactory, multi: true },
                 { provide: CONTENT_RENDERS, useClass: PagePartialRenderFactory, multi: true },
                 { provide: CONTENT_RENDERS, useClass: BlockRenderFactory, multi: true },
-                { provide: CONTENT_RENDERS, useClass: MediaRenderFactory, multi: true }
+                { provide: CONTENT_RENDERS, useClass: MediaRenderFactory, multi: true },
+                // Register Content Providers
+                { provide: CONTENT_SERVICE_PROVIDER, useClass: PageService, multi: true },
+                { provide: CONTENT_SERVICE_PROVIDER, useClass: MediaService, multi: true },
+                { provide: CONTENT_SERVICE_PROVIDER, useClass: BlockService, multi: true }
             ]
         };
     }

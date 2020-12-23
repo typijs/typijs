@@ -1,4 +1,4 @@
-import { PageData, PageService } from '@angular-cms/core';
+import { ContentLoader, PageData, PageService } from '@angular-cms/core';
 import { Component, ViewEncapsulation, OnInit, AfterViewInit, Renderer2 } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
@@ -14,16 +14,16 @@ export class LayoutComponent implements OnInit, AfterViewInit {
     startPage$: Observable<HomePage>;
     menuItems$: Observable<PageData[]>;
 
-    constructor(private contentService: PageService, private renderer: Renderer2) { }
+    constructor(private contentService: PageService, private contentLoader: ContentLoader, private renderer: Renderer2) { }
 
     ngOnInit() {
         this.startPage$ = this.contentService.getStartPage().pipe(
+            map(page => new HomePage(page)),
             tap(page => {
                 if (page) {
-                    this.menuItems$ = this.contentService.getPageChildren(page._id);
+                    this.menuItems$ = this.contentLoader.getChildren<PageData>(page.contentLink);
                 }
-            }),
-            map(page => new HomePage(page))
+            })
         );
     }
 

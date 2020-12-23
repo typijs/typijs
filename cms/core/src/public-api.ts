@@ -48,12 +48,14 @@ export * from './services/language.service';
 export * from './services/content-type.service';
 export * from './services/content/block.service';
 export * from './services/content/media.service';
+export * from './services/content/page.service';
+export * from './services/content/content-loader.service';
+
 export * from './services/content/models/block.model';
 export * from './services/content/models/content-data';
 export * from './services/content/models/content.model';
 export * from './services/content/models/media.model';
 export * from './services/content/models/page.model';
-export * from './services/content/page.service';
 export * from './types';
 export * from './types/content-type';
 export * from './types/module-config';

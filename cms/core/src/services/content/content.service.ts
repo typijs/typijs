@@ -1,15 +1,19 @@
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
-import { Content } from './models/content.model';
-import { FolderService } from './folder.service';
+import { BrowserLocationService } from '../../browser/browser-location.service';
 import { convertObjectToUrlQueryString } from '../../helpers/common';
+import { TypeOfContent } from '../../types';
+import { FolderService } from './folder.service';
+import { Content } from './models/content.model';
+
 
 export abstract class ContentService<T extends Content> extends FolderService<T> {
 
     constructor(httpClient: HttpClient) {
         super(httpClient);
     }
+
+    abstract isMatching(typeOfContent: TypeOfContent);
+    abstract getContentData(content: T);
 
     /**
      * Creates content based on language
