@@ -1,8 +1,10 @@
+import * as Joi from '@hapi/joi';
 import * as express from 'express';
 import * as httpStatus from 'http-status';
 import { Injectable } from 'injection-js';
 import 'reflect-metadata';
 import { Roles } from '../../constants';
+import { ValidateParams } from '../../validation';
 import { Authorize } from '../auth';
 import { BaseController } from '../shared/base.controller';
 import { ISiteDefinitionDocument } from './site-definition.model';
@@ -28,6 +30,15 @@ export class SiteDefinitionController extends BaseController<ISiteDefinitionDocu
             .populate('startPage')
             .exec();
         res.status(httpStatus.OK).json(items)
+    }
+
+    @ValidateParams({
+        host: Joi.string().required()
+    })
+    async getSiteIdByHost(req: express.Request, res: express.Response) {
+        const host = req.params.host;
+        const item = await this.siteDefinitionService.getCurrentSiteDefinition(host);
+        res.status(httpStatus.OK).json(item)
     }
 
     @Authorize({ roles: [Roles.Admin] })

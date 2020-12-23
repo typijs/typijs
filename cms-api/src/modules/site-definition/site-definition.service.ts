@@ -1,48 +1,40 @@
-import 'reflect-metadata';
 import { Injectable } from "injection-js";
-import { CacheService, Cache } from "../../caching";
-import { BaseService } from "../shared/base.service";
-import { IHostDefinitionDocument, ISiteDefinitionDocument, SiteDefinitionModel } from "./site-definition.model";
-import { DuplicateHostNameException, DuplicateSiteNameException, DuplicateStartPageException, HostNameAlreadyUsedException, MultiplePrimaryHostException } from './site-definition.exception';
+import 'reflect-metadata';
+import { Cache, CacheService } from "../../caching";
+import { Logger } from '../../logging/logger';
 import { groupBy } from '../../utils';
 import { Validator } from '../../validation/validator';
-import { LanguageService } from '../language';
+import { LanguageService } from '../language/language.service';
 import { IBaseDocument } from '../shared';
-import { Logger } from '../../logging';
-import { Container } from '../../injector';
+import { BaseService } from "../shared/base.service";
+import { DuplicateHostNameException, DuplicateSiteNameException, DuplicateStartPageException, HostNameAlreadyUsedException, MultiplePrimaryHostException } from './site-definition.exception';
+import { IHostDefinitionDocument, ISiteDefinitionDocument, SiteDefinitionModel } from "./site-definition.model";
 
 @Injectable()
 export class SiteDefinitionService extends BaseService<ISiteDefinitionDocument> {
 
     private static readonly PrefixCacheKey: string = 'SiteDefinition';
-    private readonly logger: Logger = Container.get(Logger)
-
-    constructor(private languageService: LanguageService, private cacheService: CacheService) {
+    constructor(private logger: Logger, private cacheService: CacheService, private languageService: LanguageService) {
         super(SiteDefinitionModel);
     }
 
+    /**
+     * Get start page id and the corresponding language based on host. 
+     * 
+     * If host is not provided, it is fallback to first site definition.
+     * 
+     * If the site definition has not defined yet, startPageId = 0 and the first enabled language will be return
+     * @param host (Optional) the host name such as mysite.com, www.mysite.org:80
+     * @returns Return the Tuple [string, string] type of [startPageId, language]
+     */
     @Cache({
         prefixKey: SiteDefinitionService.PrefixCacheKey,
         suffixKey: (args) => args[0]
     })
-    getSiteDefinitionByHostname(hostName: string): Promise<ISiteDefinitionDocument> {
-        return this.findOne({ 'hosts.name': hostName }, { lean: true })
-            .populate({
-                path: 'startPage',
-                match: { isDeleted: false }
-            })
-            .exec()
-    }
-
-    /**
-     * Get current site definition. Fallback to default value
-     * @param host (Optional)
-     * @returns Return the Tuple [string, string] type of [startPageId, language]
-     */
-    getCurrentSiteDefinition = async (host?: string): Promise<[string, string]> => {
+    async getCurrentSiteDefinition(host?: string): Promise<[string, string]> {
         try {
-            const currentSite = await this.getDefaultSiteDefinition(host);
-            const currentHost = this.getDefaultHostDefinition(currentSite, host);
+            const currentSite = await this.getSiteDefinitionWithFallback(host);
+            const currentHost = this.getHostDefinitionWithFallback(currentSite, host);
             const startPageId = (currentSite.startPage as IBaseDocument)._id.toString();
             const defaultLang = currentHost.language;
             return [startPageId, defaultLang];
@@ -57,9 +49,11 @@ export class SiteDefinitionService extends BaseService<ISiteDefinitionDocument> 
 
     /**
      * Get site definition by host. If host is not provided, the first site definition will be returned
+     * 
+     * Throw exception if the site definition has not defined yet or start page don't existed
      * @param host 
      */
-    private getDefaultSiteDefinition = async (host?: string): Promise<ISiteDefinitionDocument> => {
+    private getSiteDefinitionWithFallback = async (host?: string): Promise<ISiteDefinitionDocument> => {
         const siteDefinition = host ? await this.getSiteDefinitionByHostname(host) : await this.getFirstSiteDefinition();
         Validator.throwIfNotFound('SiteDefinition', siteDefinition, { host });
         Validator.throwIfNotFound('StartPage', siteDefinition.startPage);
@@ -67,12 +61,28 @@ export class SiteDefinitionService extends BaseService<ISiteDefinitionDocument> 
         return siteDefinition;
     }
 
+    private getSiteDefinitionByHostname(hostName: string): Promise<ISiteDefinitionDocument> {
+        return this.findOne({ 'hosts.name': hostName }, { lean: true })
+            .populate({
+                path: 'startPage',
+                match: { isDeleted: false }
+            })
+            .exec()
+    }
+
+    private getFirstSiteDefinition = (): Promise<ISiteDefinitionDocument> => {
+        return this.findOne({}, { lean: true }).sort('createdAt').populate({
+            path: 'startPage',
+            match: { isDeleted: false }
+        }).exec()
+    }
+
     /**
      * Get host definition by name. If the name is not provided, the primary or first host will be returned
      * @param siteDefinition 
      * @param hostName 
      */
-    private getDefaultHostDefinition = (siteDefinition: ISiteDefinitionDocument, hostName?: string): IHostDefinitionDocument => {
+    private getHostDefinitionWithFallback = (siteDefinition: ISiteDefinitionDocument, hostName?: string): IHostDefinitionDocument => {
         let defaultHost: IHostDefinitionDocument;
         if (hostName) {
             defaultHost = siteDefinition.hosts.find(x => x.name == hostName);
@@ -82,13 +92,6 @@ export class SiteDefinitionService extends BaseService<ISiteDefinitionDocument> 
         }
         Validator.throwIfNotFound('Host', defaultHost);
         return defaultHost;
-    }
-
-    private getFirstSiteDefinition = (): Promise<ISiteDefinitionDocument> => {
-        return this.findOne({}, { lean: true }).sort('createdAt').populate({
-            path: 'startPage',
-            match: { isDeleted: false }
-        }).exec()
     }
 
     createSiteDefinition = async (siteDefinition: ISiteDefinitionDocument, userId: string): Promise<ISiteDefinitionDocument> => {

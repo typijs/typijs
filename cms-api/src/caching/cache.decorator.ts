@@ -42,7 +42,9 @@ export function Cache(cacheOptions?: CacheOptions) {
             const suffixKeys = suffixKey instanceof Function ? suffixKey(args) : suffixKey;
             const cacheKey = cacheService.createCacheKey(prefixKey, propertyKey, suffixKeys);
             const cacheValue = await cacheService.get(cacheKey);
-            if (cacheValue) return cacheValue;
+            if (cacheValue) {
+                return cacheValue;
+            }
 
             const result = await originalMethod.apply(this, args); // Call the original method
             cacheService.set(cacheKey, result, ttl);

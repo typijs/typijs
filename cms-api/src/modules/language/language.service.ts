@@ -23,6 +23,10 @@ export class LanguageService extends BaseService<ILanguageBranchDocument> {
      * Get enabled language document by language code
      * @param language 
      */
+    @Cache({
+        prefixKey: LanguageService.PrefixCacheKey,
+        suffixKey: (args) => args[0]
+    })
     async getLanguageByCode(language: string): Promise<ILanguageBranchDocument> {
         const languages = await this.getEnabledLanguages();
         return languages.find(x => x.language == language);

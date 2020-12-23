@@ -12,7 +12,7 @@ import { Container } from './injector';
 import { logger, LoggerProviders, loggingMiddleware } from './logging';
 import { AuthProviders } from "./modules/auth";
 import { BlockProviders } from './modules/block';
-import { LanguageProviders } from "./modules/language";
+import { LanguageGuard, LanguageProviders } from "./modules/language";
 import { MediaProviders, StorageProviders } from './modules/media';
 import { PageProviders } from './modules/page';
 import { SiteDefinitionProviders } from "./modules/site-definition";
@@ -39,7 +39,7 @@ export class CmsApp {
     return new Promise((resolve, reject) => {
       this.express.listen(config.app.port, () => {
         console.log(`Angular CMS listening on port ${config.app.port}`);
-        resolve();
+        resolve('Start successfully!');
       }).on('error', (err: any) => {
         logger.error('Server can not start', err);
         reject(err);
@@ -52,14 +52,14 @@ export class CmsApp {
       ...LoggerProviders,
       ...EventInjectorProviders,
       ...CacheInjectorProviders,
+      ...LanguageProviders,
+      ...StorageProviders,
+      ...UserProviders,
       ...AuthProviders,
+      ...SiteDefinitionProviders,
       ...BlockProviders,
       ...MediaProviders,
-      ...StorageProviders,
       ...PageProviders,
-      ...SiteDefinitionProviders,
-      ...UserProviders,
-      ...LanguageProviders,
       CmsApiRouter
     ];
     if (providers) {

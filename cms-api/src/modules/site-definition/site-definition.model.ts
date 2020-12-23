@@ -7,6 +7,9 @@ export interface IHostDefinition {
      * The host name such as mysite.com, www.mysite.org:80 ..(not include protocol http or https)
      */
     name: string;
+    /**
+     * The default language of host
+     */
     language: string;
     isPrimary: boolean;
     /** Gets or sets a value indicating whether HTTPS should be preferred when generating links to this host. */
