@@ -77,33 +77,21 @@ export abstract class FolderService<T extends IContentDocument, P extends IConte
         })
     }
 
-    public getContentChildren = async (parentId: string, language: string): Promise<Array<T & P>> => {
-        if (parentId == '0') parentId = null;
 
-        const contentChildren = await this.find({ parentId: parentId, isDeleted: false, contentType: { $ne: null } } as any, { lean: true })
-            .populate({
-                path: 'contentLanguages',
-                match: { language: language }
-            })
-            .exec();
-
-        return contentChildren.map(x => {
-            const contentLanguage = x.contentLanguages.find(contentLang => contentLang.language === language);
-            return this.mergeToContentLanguage(x, contentLanguage);
-        })
-    }
 
     protected mergeToContentLanguage(content: T, contentLang: P): T & P {
         const contentJson: T = content && typeof content.toJSON === 'function' ? content.toJSON() : content;
         const contentLangJson: P = contentLang && typeof contentLang.toJSON === 'function' ? contentLang.toJSON() : contentLang;
 
-        const language = contentLangJson.language;
-        contentLangJson.childItems.forEach(childItem => {
-            if (childItem.content.contentLanguages) {
-                const publishedItem = childItem.content.contentLanguages.find((cLang: P) => cLang.language === language && cLang.status == VersionStatus.Published) as P;
-                childItem.content = this.mergeToContentLanguage(childItem.content, publishedItem);
-            }
-        });
+        if (contentLangJson && contentLangJson.childItems) {
+            const language = contentLangJson.language;
+            contentLangJson.childItems.forEach(childItem => {
+                if (childItem.content.contentLanguages) {
+                    const publishedItem = childItem.content.contentLanguages.find((cLang: P) => cLang.language === language && cLang.status == VersionStatus.Published) as P;
+                    childItem.content = this.mergeToContentLanguage(childItem.content, publishedItem);
+                }
+            });
+        }
 
         const contentLanguageData: T & P = Object.assign(contentLangJson ? contentLangJson : {} as any, contentJson);
 

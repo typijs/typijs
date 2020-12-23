@@ -2,6 +2,7 @@ import * as Joi from '@hapi/joi';
 import * as express from 'express';
 import * as httpStatus from 'http-status';
 import { AdminOrEditor } from '../../constants';
+import { Profiler } from '../../logging';
 import { ValidateBody, ValidateParams, ValidateQuery } from '../../validation/validate.decorator';
 import { Authorize } from '../auth/auth.decorator';
 
@@ -19,10 +20,21 @@ export abstract class ContentController<T extends IContentDocument, P extends IC
   /*------------------------CONTENT-----------------------*/
 
   @Authorize({ roles: AdminOrEditor })
-  async getSimpleContent(req: express.Request, res: express.Response) {
+  async getContent(req: express.Request, res: express.Response) {
     const { language } = req as any;
-    const createdContent = await this.contentService.getSimpleContent(req.params.id, language);
+    const createdContent = await this.contentService.getContent(req.params.id, language);
     res.status(httpStatus.OK).json(createdContent)
+  }
+
+  @Profiler({
+    outputConsole: true,
+    thresholdInMs: 300,
+    parametersAsString: (args) => `${args[0].params.parentId}, ${args[0]['language']}, ${args[0].query.host}`
+  })
+  async getContentChildren(req: express.Request, res: express.Response) {
+    const { language } = req as any;
+    const items = await this.contentService.getContentChildren(req.params.parentId, language, req.query.host);
+    res.status(httpStatus.OK).json(items)
   }
 
   @Authorize({ roles: AdminOrEditor })

@@ -12,15 +12,13 @@ export class PageRouter {
     get router(): Router {
         const page: Router = asyncRouterErrorHandler(Router());
 
-        //get published children of page
-        page.get('/published/children/:parentId', this.langGuard.checkEnabled(), this.pageController.getPublishedPageChildren.bind(this.pageController));
         //get published page by url
         page.get('/published/:url', this.pageController.getByUrl.bind(this.pageController));
         //get children of page
-        page.get('/children/:parentId', this.langGuard.checkEnabled(), this.pageController.getPageChildren.bind(this.pageController));
+        page.get('/children/:parentId', this.langGuard.checkEnabled(), this.pageController.getContentChildren.bind(this.pageController));
 
         //get page without populate
-        page.get('/simple/:id', this.langGuard.checkEnabled(), this.pageController.getSimpleContent.bind(this.pageController));
+        page.get('/:id', this.langGuard.checkEnabled(), this.pageController.getContent.bind(this.pageController));
         //move page from parent to another one
         page.post('/cut', this.pageController.cut.bind(this.pageController));
         //copy page from parent to another one

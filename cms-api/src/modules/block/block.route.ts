@@ -14,13 +14,13 @@ export class BlockRouter {
 
         block.get('/folders/:parentId?', this.blockController.getFoldersByParentId.bind(this.blockController));
 
-        block.get('/children/:parentId?', this.langGuard.checkEnabled(), this.blockController.getContentsByFolder.bind(this.blockController));
+        block.get('/children/:parentId?', this.langGuard.checkEnabled(), this.blockController.getContentChildren.bind(this.blockController));
 
         block.post('/folder', this.blockController.createFolderContent.bind(this.blockController));
 
         block.put('/folder/:id', this.blockController.updateFolderName.bind(this.blockController));
 
-        block.get('/simple/:id', this.langGuard.checkEnabled(), this.blockController.getSimpleContent.bind(this.blockController));
+        block.get('/:id', this.langGuard.checkEnabled(), this.blockController.getContent.bind(this.blockController));
 
         block.post('/cut', this.blockController.cut.bind(this.blockController));
 

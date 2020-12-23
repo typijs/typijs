@@ -37,10 +37,5 @@ export abstract class FolderController<T extends IContentDocument, P extends ICo
         res.status(httpStatus.OK).json(items)
     }
 
-    @Authorize()
-    async getContentsByFolder(req: express.Request, res: express.Response) {
-        const { language } = req as any;
-        const items = await this.folderService.getContentChildren(req.params.parentId, language);
-        res.status(httpStatus.OK).json(items)
-    }
+
 }

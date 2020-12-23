@@ -16,13 +16,13 @@ export class MediaRouter {
 
         media.get('/folders/:parentId?', this.mediaController.getFoldersByParentId.bind(this.mediaController));
 
-        media.get('/children/:parentId?', this.langGuard.checkEnabled(), this.mediaController.getContentsByFolder.bind(this.mediaController));
+        media.get('/children/:parentId?', this.langGuard.checkEnabled(), this.mediaController.getContentChildren.bind(this.mediaController));
 
         media.post('/folder', this.mediaController.createFolderContent.bind(this.mediaController));
 
         media.put('/folder/:id', this.mediaController.updateFolderName.bind(this.mediaController));
 
-        media.get('/simple/:id', this.langGuard.checkEnabled(), this.mediaController.getSimpleContent.bind(this.mediaController));
+        media.get('/:id', this.langGuard.checkEnabled(), this.mediaController.getContent.bind(this.mediaController));
 
         media.post('/upload/:parentId?', this.authGuard.checkRoles(AdminOrEditor), this.langGuard.checkEnabled(), this.mediaController.handleFormData('file'), this.mediaController.processMedia.bind(this.mediaController))
 
