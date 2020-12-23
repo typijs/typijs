@@ -16,14 +16,12 @@ export abstract class CmsContentRenderFactory {
     protected componentFactoryResolver: ComponentFactoryResolver;
     protected propertyRenderFactoryResolver: CmsPropertyRenderFactoryResolver;
 
-    constructor(protected injector: Injector, protected typeOfContent: TypeOfContent) {
+    constructor(protected injector: Injector) {
         this.componentFactoryResolver = injector.get(ComponentFactoryResolver);
         this.propertyRenderFactoryResolver = injector.get(CmsPropertyRenderFactoryResolver);
     }
 
-    isMatching(typeOfContent: TypeOfContent): boolean {
-        return this.typeOfContent == typeOfContent;
-    }
+    abstract isMatching(typeOfContent: TypeOfContent): boolean;
 
     createContentComponent(content: Content, viewContainerRef: ViewContainerRef): ComponentRef<any> {
         const contentType = this.getContentType(content);
@@ -49,9 +47,12 @@ export abstract class CmsContentRenderFactory {
 }
 @Injectable()
 export class PageRenderFactory extends CmsContentRenderFactory {
-
     constructor(protected injector: Injector, private contentTypeService: ContentTypeService) {
-        super(injector, TypeOfContentEnum.Page);
+        super(injector);
+    }
+
+    isMatching(typeOfContent: string): boolean {
+        return typeOfContent === TypeOfContentEnum.Page;
     }
     protected getContentType(content: Content): ContentType {
         return this.contentTypeService.getPageType(content.contentType);
@@ -59,15 +60,19 @@ export class PageRenderFactory extends CmsContentRenderFactory {
     protected getContentData(content: Content): ContentData {
         return new PageData(content);
     }
-
 }
 
 @Injectable()
 export class PagePartialRenderFactory extends CmsContentRenderFactory {
 
     constructor(protected injector: Injector, private contentTypeService: ContentTypeService) {
-        super(injector, TypeOfContentEnum.PagePartial);
+        super(injector);
     }
+
+    isMatching(typeOfContent: string): boolean {
+        return typeOfContent === TypeOfContentEnum.PagePartial;
+    }
+
     protected getContentType(content: Content): ContentType {
         return this.contentTypeService.getPageType(content.contentType);
     }
@@ -92,22 +97,31 @@ export class PagePartialRenderFactory extends CmsContentRenderFactory {
 export class BlockRenderFactory extends CmsContentRenderFactory {
 
     constructor(protected injector: Injector, private contentTypeService: ContentTypeService) {
-        super(injector, TypeOfContentEnum.Block);
+        super(injector);
     }
+
+    isMatching(typeOfContent: string): boolean {
+        return typeOfContent === TypeOfContentEnum.Block;
+    }
+
     protected getContentType(content: Content): ContentType {
         return this.contentTypeService.getBlockType(content.contentType);
     }
     protected getContentData(content: Content): ContentData {
         return new BlockData(content);
     }
-
 }
 @Injectable()
 export class MediaRenderFactory extends CmsContentRenderFactory {
 
     constructor(protected injector: Injector, private contentTypeService: ContentTypeService) {
-        super(injector, TypeOfContentEnum.Media);
+        super(injector);
     }
+
+    isMatching(typeOfContent: string): boolean {
+        return typeOfContent === TypeOfContentEnum.Media;
+    }
+
     protected getContentType(content: Content): ContentType {
         return this.contentTypeService.getMediaType(content.contentType);
     }

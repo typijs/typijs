@@ -1,13 +1,12 @@
 import { HttpClient } from '@angular/common/http';
+import { Injector } from '@angular/core';
 import { Observable } from 'rxjs';
-
-import { Content } from './models/content.model';
 import { BaseService } from '../base.service';
+import { Content } from './models/content.model';
 
 export abstract class FolderService<T extends Content> extends BaseService {
-
-    constructor(httpClient: HttpClient) {
-        super(httpClient);
+    constructor(injector: Injector) {
+        super(injector.get(HttpClient));
     }
 
     getFolderChildren(parentId: string): Observable<T[]> {

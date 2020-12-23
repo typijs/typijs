@@ -1,3 +1,4 @@
+import { Injector } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BrowserLocationService } from '../../browser/browser-location.service';
 import { convertObjectToUrlQueryString } from '../../helpers/common';
@@ -8,8 +9,10 @@ import { Content } from './models/content.model';
 
 export abstract class ContentService<T extends Content> extends FolderService<T> {
 
-    constructor(httpClient: HttpClient) {
-        super(httpClient);
+    protected locationService: BrowserLocationService
+    constructor(injector: Injector) {
+        super(injector);
+        this.locationService = injector.get(BrowserLocationService);
     }
 
     abstract isMatching(typeOfContent: TypeOfContent);

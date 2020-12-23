@@ -1,5 +1,4 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable, Injector } from '@angular/core';
 import { Observable } from 'rxjs';
 import { btoa } from '../../helpers/base64';
 import { TypeOfContentEnum } from '../../types';
@@ -11,12 +10,12 @@ import { Page } from './models/page.model';
     providedIn: 'root'
 })
 export class PageService extends ContentService<Page> {
-
     protected apiUrl: string = `${this.baseApiUrl}/page`;
-    constructor(
-        private locationService: BrowserLocationService,
-        httpClient: HttpClient) {
-        super(httpClient);
+
+    constructor(injector: Injector) {
+        super(injector);
+    }
+
     isMatching(typeOfContent: string) {
         return typeOfContent === TypeOfContentEnum.Page;
     }
