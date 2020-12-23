@@ -1,13 +1,23 @@
-import { DocumentNotFoundException } from '../../error';
 import { Validator } from '../../validation/validator';
 import { BaseService } from '../shared';
-import {
-    IContentVersionDocument
-} from './content.model';
+import { IContentVersionDocument } from './content.model';
 import { VersionStatus } from "./version-status";
 
 export class ContentVersionService<V extends IContentVersionDocument> extends BaseService<V> {
+    /**
+     * Create new version of content
+     * @param version 
+     * @param contentId 
+     * @param userId 
+     * @param language 
+     * @param masterVersionId 
+     */
     createNewVersion = (version: V, contentId: string, userId: string, language: string, masterVersionId?: string): Promise<V> => {
+        Validator.throwIfNull('version body', version);
+        Validator.throwIfNullOrEmpty('contentId', contentId);
+        Validator.throwIfNullOrEmpty('language', language);
+        Validator.throwIfNullOrEmpty('userId', userId);
+
         const contentVersionDoc = { ...version };
         contentVersionDoc._id = undefined;
         contentVersionDoc.contentId = contentId;
@@ -21,9 +31,15 @@ export class ContentVersionService<V extends IContentVersionDocument> extends Ba
         return this.create(contentVersionDoc)
     }
 
+    /**
+     * Set the specific version as primary version. Each language will have one the primary version
+     * @param versionId 
+     */
     setPrimaryVersion = async (versionId: string): Promise<V> => {
+        Validator.throwIfNullOrEmpty('versionId', versionId);
+
         const matchVersion = await this.findById(versionId).exec();
-        if (!matchVersion) throw new DocumentNotFoundException(versionId, `The version with id ${versionId} is not found`);
+        Validator.throwIfNotFound('Content Version', matchVersion, { versionId });
 
         const { contentId, language } = matchVersion;
 
@@ -40,28 +56,46 @@ export class ContentVersionService<V extends IContentVersionDocument> extends Ba
         return await matchVersion.save();
     }
 
+    /**
+     * Get content version without deep populate by version id
+     * @param versionId 
+     */
     getVersionById = async (versionId: string): Promise<V> => {
+        Validator.throwIfNullOrEmpty('versionId', versionId);
+
         //Step1: Get current version
         const currentVersion = await this.findOne({ _id: versionId } as any)
             .populate({
                 path: 'contentId',
                 match: { isDeleted: false }
             }).exec();
-        Validator.throwIfDocumentNotFound('ContentVersion', currentVersion, { _id: versionId });
 
-        Validator.throwIfDocumentNotFound('Content', currentVersion.contentId, { contentId: currentVersion.contentId });
+        Validator.throwIfNotFound('ContentVersion', currentVersion, { _id: versionId });
+        Validator.throwIfNullOrEmpty('Language of content', currentVersion.language);
+        Validator.throwIfNotFound('Content', currentVersion.contentId, { contentId: currentVersion.contentId });
 
-        const { language } = currentVersion;
-        Validator.throwIfNullOrEmpty('language', language);
         return currentVersion;
     }
 
-    //get draft version which marked as Primary
+    /**
+     * Get draft version (`CheckedOut` or `Rejected`) which marked as primary
+     * @param contentId 
+     * @param language 
+     */
     getPrimaryDraftVersion = async (contentId: string, language: string): Promise<V> => {
+        Validator.throwIfNullOrEmpty('contentId', contentId);
+        Validator.throwIfNullOrEmpty('language', language);
+
         return await this.findOne({ contentId, language, isPrimary: true, $or: [{ status: VersionStatus.CheckedOut }, { status: VersionStatus.Rejected }] } as any).exec();
     }
 
+    /**
+     * Get all version of content. The result is sorted by saved date desc
+     * @param contentId 
+     */
     getAllVersionsOfContent = (contentId: string): Promise<V[]> => {
+        Validator.throwIfNullOrEmpty('contentId', contentId);
+
         return this.find({ contentId } as any, { lean: true })
             .sort('-savedAt')
             .populate('savedBy').exec()

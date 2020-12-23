@@ -61,8 +61,8 @@ export class SiteDefinitionService extends BaseService<ISiteDefinitionDocument> 
      */
     private getDefaultSiteDefinition = async (host?: string): Promise<ISiteDefinitionDocument> => {
         const siteDefinition = host ? await this.getSiteDefinitionByHostname(host) : await this.getFirstSiteDefinition();
-        Validator.throwIfDocumentNotFound('SiteDefinition', siteDefinition, { host });
-        Validator.throwIfDocumentNotFound('StartPage', siteDefinition.startPage);
+        Validator.throwIfNotFound('SiteDefinition', siteDefinition, { host });
+        Validator.throwIfNotFound('StartPage', siteDefinition.startPage);
 
         return siteDefinition;
     }
@@ -80,7 +80,7 @@ export class SiteDefinitionService extends BaseService<ISiteDefinitionDocument> 
             defaultHost = siteDefinition.hosts.find(x => x.isPrimary);
             if (!defaultHost) defaultHost = siteDefinition.hosts.length > 0 ? siteDefinition.hosts[0] : undefined;
         }
-        Validator.throwIfDocumentNotFound('Host', defaultHost);
+        Validator.throwIfNotFound('Host', defaultHost);
         return defaultHost;
     }
 

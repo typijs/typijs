@@ -56,11 +56,13 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
      * 
      */
     async getContentVersion(id: string, versionId: string, language: string, host?: string): Promise<T & V> {
+        Validator.throwIfNullOrEmpty('contentId', id);
+        Validator.throwIfNullOrEmpty('language', language);
 
         const currentContent = await this.findOne({ _id: id, isDeleted: false } as any, { lean: true }).exec();
-        Validator.throwIfDocumentNotFound('Content', currentContent, { _id: id, isDeleted: false });
+        Validator.throwIfNotFound('Content', currentContent, { _id: id, isDeleted: false });
 
-        const query: any = versionId ? { _id: versionId } : { isPrimary: true, contentId: id, language };
+        const query: any = versionId ? { _id: versionId, contentId: id } : { isPrimary: true, contentId: id, language };
 
         const currentVersion = await this.contentVersionService.findOne(query, { lean: true })
             .populate({
@@ -97,10 +99,10 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
                 populate: this.deepPopulate(5, language)
             })
             .exec();
-        Validator.throwIfDocumentNotFound('Content', currentContent, { _id: id, isDeleted: false });
+        Validator.throwIfNotFound('Content', currentContent, { _id: id, isDeleted: false });
 
         const publishedLang = currentContent.contentLanguages.find((contentLang: P) => contentLang.language === language && contentLang.status == VersionStatus.Published) as P;
-        Validator.throwIfDocumentNotFound('ContentLanguage', publishedLang, { language, status: VersionStatus.Published });
+        Validator.throwIfNotFound('ContentLanguage', publishedLang, { language, status: VersionStatus.Published });
 
         return this.mergeToContentLanguage(currentContent, publishedLang);
     }
@@ -142,11 +144,11 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
                 match: { $or: [{ language: language }, { language: this.EMPTY_LANGUAGE }] }
             })
             .exec();
-        Validator.throwIfDocumentNotFound('Simple Content', currentContent, { _id: id, isDeleted: false });
+        Validator.throwIfNotFound('Simple Content', currentContent, { _id: id, isDeleted: false });
 
         const contentLanguage = currentContent.contentLanguages.find((contentLang: P) =>
             contentLang.language === language || contentLang.language === this.EMPTY_LANGUAGE);
-        Validator.throwIfDocumentNotFound('Simple Content Language', contentLanguage, { _id: id, isDeleted: false });
+        Validator.throwIfNotFound('Simple Content Language', contentLanguage, { _id: id, isDeleted: false });
 
         return this.mergeToContentLanguage(currentContent, contentLanguage);
     }

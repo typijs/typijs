@@ -9,5 +9,5 @@ export * from './groupBy';
  * @returns Return `true` if string is null, empty, or consists only of white-space characters
  */
 export function isNullOrWhiteSpace(str: string): boolean {
-    return str === null || str.match(/^ *$/) !== null;
+    return str === null || str === undefined || str.match(/^ *$/) !== null;
 }

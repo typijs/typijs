@@ -1,7 +1,7 @@
 import { Injectable } from "injection-js";
 import { NextFunction, Request, Response } from "express";
+import { Validator } from "../../validation";
 import { LanguageService } from "./language.service";
-import { DocumentNotFoundException } from "../../error";
 
 @Injectable()
 export class LanguageGuard {
@@ -16,7 +16,7 @@ export class LanguageGuard {
             let language = req.query.language;
             if (language) {
                 const exitedLang = await this.languageService.getLanguageByCode(language);
-                if (!exitedLang) throw new DocumentNotFoundException(language, 'The language is not found');
+                Validator.throwIfNotFound('exitedLang', exitedLang);
                 language = exitedLang.language;
             }
             else {
