@@ -24,12 +24,7 @@ export class PageService extends ContentService<Page> {
         return new PageData(content);
     }
 
-    getStartPage(hostName?: string): Observable<Page> {
-        const startPageUrl = hostName ? hostName : this.locationService.getLocation().origin;
-        return this.httpClient.get<Page>(`${this.apiUrl}/published/${btoa(startPageUrl)}`);
-    }
-
-    getPublishedPage(linkUrl: string): Observable<Page> {
+    getPageByLinkUrl(linkUrl: string): Observable<Page> {
         return this.httpClient.get<Page>(`${this.apiUrl}/published/${btoa(linkUrl)}`);
     }
 }

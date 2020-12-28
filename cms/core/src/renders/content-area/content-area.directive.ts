@@ -37,6 +37,7 @@ export class ContentAreaDirective implements OnDestroy {
 
     private createContentComponent(content: any): ComponentRef<any> {
         try {
+            // Incase the page is dragged to content area, the page partial will be used to render
             if (content.type === TypeOfContentEnum.Page) {
                 const contentRenderFactory = this.cmsContentRenderFactoryResolver.resolveContentRenderFactory(TypeOfContentEnum.PagePartial);
                 return contentRenderFactory.createContentComponent(content, this.viewContainerRef);

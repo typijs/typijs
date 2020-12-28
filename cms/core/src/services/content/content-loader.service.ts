@@ -1,13 +1,14 @@
 import { Inject, Injectable, InjectionToken } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ClassOf, ContentReference, TypeOfContent } from '../../types';
+import { ClassOf, TypeOfContent } from '../../types';
+import { ContentReference } from "../../types/content-reference";
 import { ContentService } from './content.service';
 import { ContentData } from './models/content-data';
 import { Content } from './models/content.model';
 
 /**
- * The loader options for ContentLoader
+ * The loader options for `ContentLoader`
  *
  * @member contentType name of Content Type or class of Content Type such as 'ArticlePage' or `ArticlePage`
  * @member language the language of content, if not provided the default language will be used
@@ -41,7 +42,7 @@ export class ContentLoader {
 
     get<T extends ContentData>(contentLink: ContentReference, language?: string): Observable<T> {
         const contentService = this.contentServiceResolver.resolveContentProviderFactory(contentLink.type);
-        return contentService.getContentVersion(contentLink.id, contentLink.versionId, language).pipe(
+        return contentService.getContent(contentLink.id, language).pipe(
             map((content: Content) => contentService.getContentData(content))
         )
     }

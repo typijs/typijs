@@ -19,7 +19,6 @@ export abstract class ContentController<T extends IContentDocument, P extends IC
 
   /*------------------------CONTENT-----------------------*/
 
-  @Authorize({ roles: AdminOrEditor })
   async getContent(req: express.Request, res: express.Response) {
     const { language } = req as any;
     const createdContent = await this.contentService.getContent(req.params.id, language);

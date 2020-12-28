@@ -54,7 +54,7 @@ export class CmsPageRender implements OnInit, OnDestroy {
     private resolveContentDataByUrl() {
         const location = this.locationService.getLocation();
         const currentUrl = `${location.origin}${location.pathname}`;
-        this.pageService.getPublishedPage(currentUrl).subscribe((currentPage: Page) => {
+        this.pageService.getPageByLinkUrl(currentUrl).subscribe((currentPage: Page) => {
             if (currentPage) {
                 this.pageComponentRef = this.createPageComponent(currentPage);
             }

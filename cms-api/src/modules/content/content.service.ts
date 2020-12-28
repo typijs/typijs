@@ -2,39 +2,15 @@ import { DocumentNotFoundException } from '../../error';
 import { pick } from '../../utils';
 import { Validator } from '../../validation/validator';
 import { FolderService } from '../folder/folder.service';
-import { BaseService } from '../shared';
+import { ContentLanguageService } from './content-language.service';
 import { ContentVersionService } from './content-version.service';
 import {
     IContentDocument,
     IContentLanguageDocument,
-    IContentVersionDocument,
-    IContentModel,
-    IContentLanguageModel,
+    IContentLanguageModel, IContentModel, IContentVersionDocument,
     IContentVersionModel
 } from './content.model';
 import { VersionStatus } from "./version-status";
-
-export class ContentLanguageService<P extends IContentLanguageDocument> extends BaseService<P> {
-    public async createContentLanguage(content: P, contentId: string, versionId: string, userId: string, language: string): Promise<P> {
-        const contentLangDoc = { ...content };
-        contentLangDoc._id = undefined;
-        contentLangDoc.contentId = contentId;
-        contentLangDoc.versionId = versionId;
-        contentLangDoc.language = language;
-        contentLangDoc.createdBy = userId;
-        contentLangDoc.status = VersionStatus.CheckedOut;
-        const savedResult = await (await this.create(contentLangDoc)).populate('contentId').execPopulate();
-
-        //update content languages array in main content
-        const currentContent = savedResult.contentId as IContentDocument;
-        if (!Array.isArray(currentContent.contentLanguages)) {
-            currentContent.contentLanguages = [];
-        }
-        currentContent.contentLanguages.push(savedResult._id);
-        await currentContent.save();
-        return savedResult;
-    }
-}
 
 export class ContentService<T extends IContentDocument, P extends IContentLanguageDocument, V extends IContentVersionDocument> extends FolderService<T, P> {
     protected contentLanguageService: ContentLanguageService<P>;

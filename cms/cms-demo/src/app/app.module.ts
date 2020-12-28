@@ -11,11 +11,12 @@ import { LayoutComponent } from './shared/layout/layout.component';
 import { PagesModule } from './pages/pages.module';
 import { BlocksModule } from './blocks/block.module';
 import { HttpClientModule } from '@angular/common/http';
+import { DOCUMENT } from '@angular/common';
 
 AngularCms.registerContentTypes(contentTypes);
 
 // Use a factory that return an array of dependant functions to be executed
-export function pageAfterViewInit(rendererFactory: RendererFactory2) {
+export function pageAfterViewInit(rendererFactory: RendererFactory2, document: Document) {
     return () => {
         const renderer = rendererFactory.createRenderer(null, null);
         const existedScript = document.getElementById('secondary-js');
@@ -46,7 +47,7 @@ export function pageAfterViewInit(rendererFactory: RendererFactory2) {
         LayoutComponent,
     ],
     providers: [
-        { provide: PAGE_AFTER_INIT, useFactory: pageAfterViewInit, deps: [RendererFactory2], multi: true }
+        { provide: PAGE_AFTER_INIT, useFactory: pageAfterViewInit, deps: [RendererFactory2, DOCUMENT], multi: true }
     ],
     bootstrap: [AppComponent]
 })

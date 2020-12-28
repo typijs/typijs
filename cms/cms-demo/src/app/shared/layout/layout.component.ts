@@ -1,7 +1,8 @@
-import { ContentLoader, PageData, PageService } from '@angular-cms/core';
-import { Component, ViewEncapsulation, OnInit, AfterViewInit, Renderer2 } from '@angular/core';
+import { ContentLoader, PageData, SiteDefinition } from '@angular-cms/core';
+import { DOCUMENT } from '@angular/common';
+import { Component, ViewEncapsulation, OnInit, AfterViewInit, Renderer2, Inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { publishReplay, refCount, switchMap, tap } from 'rxjs/operators';
 
 import { HomePage } from '../../pages/home/home.pagetype';
 
@@ -14,16 +15,22 @@ export class LayoutComponent implements OnInit, AfterViewInit {
     startPage$: Observable<HomePage>;
     menuItems$: Observable<PageData[]>;
 
-    constructor(private contentService: PageService, private contentLoader: ContentLoader, private renderer: Renderer2) { }
+    constructor(
+        private siteDefinition: SiteDefinition,
+        private contentLoader: ContentLoader,
+        private renderer: Renderer2,
+        @Inject(DOCUMENT) private document: Document) { }
 
     ngOnInit() {
-        this.startPage$ = this.contentService.getStartPage().pipe(
-            map(page => new HomePage(page)),
-            tap(page => {
-                if (page) {
-                    this.menuItems$ = this.contentLoader.getChildren<PageData>(page.contentLink);
-                }
-            })
+        const siteDefinition$ = this.siteDefinition.current().pipe(
+            publishReplay(1),// this tells Rx to cache the latest emitted
+            refCount() // and this tells Rx to keep the Observable alive as long as there are any Subscribers
+        )
+        this.startPage$ = siteDefinition$.pipe(
+            switchMap(([startPageId, language]) => this.contentLoader.get<HomePage>(startPageId, language))
+        );
+        this.menuItems$ = siteDefinition$.pipe(
+            switchMap(([startPageId, language]) => this.contentLoader.getChildren<PageData>(startPageId))
         );
     }
 
@@ -31,6 +38,6 @@ export class LayoutComponent implements OnInit, AfterViewInit {
         const script = this.renderer.createElement('script');
         script.type = 'text/javascript';
         script.src = 'assets/js/layout.js';
-        this.renderer.appendChild(document.body, script);
+        this.renderer.appendChild(this.document.body, script);
     }
 }
