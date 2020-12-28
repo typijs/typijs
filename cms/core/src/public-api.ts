@@ -50,6 +50,7 @@ export * from './services/content/block.service';
 export * from './services/content/media.service';
 export * from './services/content/page.service';
 export * from './services/content/content-loader.service';
+export * from './services/site-definition';
 
 export * from './services/content/models/block.model';
 export * from './services/content/models/content-data';

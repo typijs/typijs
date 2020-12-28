@@ -4,7 +4,7 @@ import * as httpStatus from 'http-status';
 import { Injectable } from 'injection-js';
 import 'reflect-metadata';
 import { Roles } from '../../constants';
-import { ValidateParams } from '../../validation';
+import { ValidateQuery } from '../../validation';
 import { Authorize } from '../auth';
 import { BaseController } from '../shared/base.controller';
 import { ISiteDefinitionDocument } from './site-definition.model';
@@ -32,11 +32,11 @@ export class SiteDefinitionController extends BaseController<ISiteDefinitionDocu
         res.status(httpStatus.OK).json(items)
     }
 
-    @ValidateParams({
+    @ValidateQuery({
         host: Joi.string().required()
     })
     async getSiteIdByHost(req: express.Request, res: express.Response) {
-        const host = req.params.host;
+        const host = req.query.host;
         const item = await this.siteDefinitionService.getCurrentSiteDefinition(host);
         res.status(httpStatus.OK).json(item)
     }
