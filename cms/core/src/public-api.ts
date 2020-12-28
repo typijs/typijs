@@ -57,6 +57,7 @@ export * from './services/content/models/content.model';
 export * from './services/content/models/media.model';
 export * from './services/content/models/page.model';
 export * from './types';
+export * from './types/content-reference';
 export * from './types/content-type';
 export * from './types/module-config';
 export * from './types/ui-hint';

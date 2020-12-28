@@ -22,18 +22,27 @@ export type CmsTab = {
     areas: number
 };
 
+/**
+ * Contains information to reference `Cms Image` instance
+ */
 export type CmsImage = {
     src: string,
     alt: string,
     thumbnail: string
 };
 
+/**
+ * Contains information to reference `Cms Url` instance
+ */
 export type CmsUrl = {
     url: string,
     text: string
     target: '_blank ' | '_self' | '_parent' | '_top'
 };
 
+/**
+ * The type of content such as `page`, `block`, `media`, `folder_block`, `folder_media`
+ */
 export type TypeOfContent = 'page' | 'block' | 'media' | 'folder_block' | 'folder_media' | string;
 
 export enum TypeOfContentEnum {
@@ -44,11 +53,3 @@ export enum TypeOfContentEnum {
     FolderBlock = 'folder_block',
     FolderMedia = 'folder_media'
 }
-
-export type ContentReference = {
-    id: string
-    type: TypeOfContent
-    contentType: string
-    versionId?: string;
-    [propName: string]: any
-};

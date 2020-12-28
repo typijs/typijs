@@ -1,4 +1,5 @@
-import { ContentReference, TypeOfContent, TypeOfContentEnum } from '../../../types';
+import { TypeOfContent, TypeOfContentEnum } from '../../../types';
+import { ContentReference } from "../../../types/content-reference";
 import { Block } from './block.model';
 import { Page } from './page.model';
 
