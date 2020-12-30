@@ -17,7 +17,7 @@ import { TreeStore } from '../tree-store';
         <span *ngIf="!node.hasChildren" class="no-children mr-2"></span>
         <span *ngIf="!(node.isNew || node.isEditing)"
             (click)="selectNode(node)"
-            [ngClass]="{'font-weight-bold': node.isSelected && node.id != '0'}">
+            [ngClass]="{'font-weight-bold': node.isSelected}">
             <span *ngIf="!templates?.treeNodeTemplate" >{{ node.name }}</span>
             <ng-container   [ngTemplateOutlet]="templates.treeNodeTemplate"
                             [ngTemplateOutletContext]="{ $implicit: node, node: node}">

@@ -2,7 +2,7 @@ import { ContentLoader, PageData, SiteDefinition } from '@angular-cms/core';
 import { DOCUMENT } from '@angular/common';
 import { Component, ViewEncapsulation, OnInit, AfterViewInit, Renderer2, Inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { publishReplay, refCount, switchMap, tap } from 'rxjs/operators';
+import { publishReplay, refCount, switchMap } from 'rxjs/operators';
 
 import { HomePage } from '../../pages/home/home.pagetype';
 
@@ -30,7 +30,7 @@ export class LayoutComponent implements OnInit, AfterViewInit {
             switchMap(([startPageId, language]) => this.contentLoader.get<HomePage>(startPageId, language))
         );
         this.menuItems$ = siteDefinition$.pipe(
-            switchMap(([startPageId, language]) => this.contentLoader.getChildren<PageData>(startPageId))
+            switchMap(([startPageId, language]) => this.contentLoader.getChildren<PageData>(startPageId, { language }))
         );
     }
 

@@ -15,8 +15,10 @@ import { PageTreeReadonlyComponent } from './page-tree-readonly.component';
 import { PageTreeComponent } from './page-tree.component';
 import { CONTENT_VERSION_SERVICES } from '../content-version/content-version.service';
 import { PageVersionService } from './page-version.service';
+import { DefaultPageComponent } from './default-page.component';
 
 const pageRoutes: Routes = [
+    { path: '', component: DefaultPageComponent },
     { path: `new/page`, component: ContentCreateComponent },
     { path: `new/page/:parentId`, component: ContentCreateComponent },
     { path: `content/page/:id`, component: ContentUpdateComponent }
@@ -35,10 +37,12 @@ const pageRoutes: Routes = [
         DndModule
     ],
     declarations: [
+        DefaultPageComponent,
         PageTreeComponent,
         PageTreeReadonlyComponent
     ],
     entryComponents: [
+        DefaultPageComponent,
         PageTreeComponent,
         PageTreeReadonlyComponent
     ]
