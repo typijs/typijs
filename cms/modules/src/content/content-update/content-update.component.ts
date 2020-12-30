@@ -201,7 +201,12 @@ export class ContentUpdateComponent extends SubscriptionDestroy implements OnIni
                         validators.push(validate.validateFn);
                     });
                 }
-                formControls[property.name] = [formModel[property.name], validators];
+                // make sure form controls don't have the property
+                if (!formControls.hasOwnProperty(property.name)) {
+                    formControls[property.name] = [formModel[property.name], validators];
+                } else {
+                    console.warn(`Duplicate the property ${property.name} in form. Consider change the name of this property to avoid warning`);
+                }
             });
             return this.formBuilder.group(formControls);
         }
@@ -271,20 +276,22 @@ export class ContentUpdateComponent extends SubscriptionDestroy implements OnIni
         }
     }
 
-    private extractPropertiesPropertyOfContent(formValue: any): CmsObject {
+    private extractOwnPropertyValuesOfContent(formValue: any): CmsObject {
         const properties = {};
         Object.keys(formValue).forEach(key => {
-            if (!this.currentContent.hasOwnProperty(key)) {
+            // check current content object own the key
+            if (this.currentContent.hasOwnProperty(key)) {
                 properties[key] = formValue[key];
             }
         });
         return properties;
     }
 
-    private extractOwnPropertyValuesOfContent(formValue: any): CmsObject {
+    private extractPropertiesPropertyOfContent(formValue: any): CmsObject {
         const properties = {};
         Object.keys(formValue).forEach(key => {
-            if (this.currentContent.hasOwnProperty(key)) {
+            // check current content object don't own key
+            if (!this.currentContent.hasOwnProperty(key)) {
                 properties[key] = formValue[key];
             }
         });

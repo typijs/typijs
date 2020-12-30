@@ -7,11 +7,6 @@ import { TestimonyItemComponent } from './testimony-item.component';
     componentRef: TestimonyItemComponent
 })
 export class TestimonyItemBlock extends BlockData {
-    @Property({
-        displayName: 'Full Name',
-        displayType: UIHint.Text
-    })
-    name: string;
 
     @Property({
         displayName: 'Position',

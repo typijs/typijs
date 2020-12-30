@@ -12,7 +12,7 @@ export class PartnerBlock extends BlockData {
         displayName: 'Partner Name',
         displayType: UIHint.Text
     })
-    name: string;
+    partnerName: string;
 
     @Property({
         displayName: 'Partner Image',
