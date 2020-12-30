@@ -1,18 +1,20 @@
 import {
-    Block, ChildItemRef,
+    ChildItemRef,
     CmsObject, CmsPropertyFactoryResolver, CmsTab,
     Content,
     ContentTypeProperty, InsertPointDirective,
-    Media, Page, sortByString, TypeOfContent, TypeOfContentEnum
+    sortByString, TypeOfContent, TypeOfContentEnum
 } from '@angular-cms/core';
 import { AfterViewInit, ChangeDetectorRef, Component, ComponentRef, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, UrlSegment } from '@angular/router';
-import { of, combineLatest, Observable, Subscription } from 'rxjs';
-import { map, switchMap, takeUntil, tap, catchError, concatMap, auditTime } from 'rxjs/operators';
+import { combineLatest, Observable, of } from 'rxjs';
+import { auditTime, catchError, concatMap, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { SubjectService } from '../../shared/services/subject.service';
 import { SubscriptionDestroy } from '../../shared/subscription-destroy';
 import { ContentCrudService, ContentCrudServiceResolver, ContentInfo } from '../content-crud.service';
+
+export type ContentExt = Content & { urlSegment?: string, linkUrl?: string }
 
 @Component({
     templateUrl: './content-update.component.html',
@@ -24,7 +26,7 @@ export class ContentUpdateComponent extends SubscriptionDestroy implements OnIni
 
     contentFormGroup: FormGroup = new FormGroup({});
     formTabs: Partial<CmsTab>[] = [];
-    currentContent: Partial<Page> & Content;
+    currentContent: ContentExt;
 
     editMode: 'AllProperties' | 'OnPageEdit' = 'AllProperties';
     typeOfContent: TypeOfContent;
@@ -57,27 +59,35 @@ export class ContentUpdateComponent extends SubscriptionDestroy implements OnIni
                     const language = query.get('language');
                     this.typeOfContent = this.getTypeContentFromUrl(this.route.snapshot.url);
                     this.contentService = this.contentServiceResolver.resolveCrudFormService(this.typeOfContent);
-                    return contentId ? this.contentService.getContentVersion(contentId, versionId, language) : of({});
+
+                    return this.contentService.getContentVersion(contentId, versionId, language).pipe(
+                        catchError(error => {
+                            return of({});
+                        })
+                    );
                 }),
                 tap((result: ContentInfo) => {
-                    this.contentTypeProperties = result.contentTypeProperties;
                     this.previewUrl = result.previewUrl;
-                }),
-                map((result: ContentInfo) => result.contentData),
-                catchError(error => {
-                    return of({});
+                    this.contentTypeProperties = result.contentTypeProperties;
+                    // Extract the tab from property information of content type
+                    this.formTabs = this.extractFormTabsFromProperties(result.contentTypeProperties);
+                    // Populate the properties for content data
+                    this.currentContent = this.getContentWithPopulatedProperties(result.contentData, result.contentTypeProperties);
+                    // Binds data for content form and create the form group controls
+                    this.contentFormGroup = this.createFormGroup(this.currentContent, result.contentTypeProperties);
                 }),
                 takeUntil(this.unsubscribe$))
-            .subscribe((contentData: Content) => {
-                this.subjectService.fireContentSelected(this.typeOfContent, contentData);
-                this.bindDataForContentForm(contentData);
+            .subscribe(() => {
+                this.subjectService.fireContentSelected(this.typeOfContent, this.currentContent);
+                this.handleFormChangesToAutoSave(this.contentFormGroup)
             });
 
         this.subjectService.portalLayoutChanged$
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe((showIframeHider: boolean) => {
-                this.showIframeHider = showIframeHider;
-            });
+            .pipe(
+                tap((showIframeHider: boolean) => this.showIframeHider = showIframeHider),
+                takeUntil(this.unsubscribe$)
+            )
+            .subscribe();
     }
 
     ngAfterViewInit() {
@@ -98,7 +108,7 @@ export class ContentUpdateComponent extends SubscriptionDestroy implements OnIni
                 catchError(error => {
                     return of(undefined);
                 })
-            ).subscribe((publishedContent: Partial<Page> & Content) => {
+            ).subscribe((publishedContent: ContentExt) => {
                 this.isPublishing = false;
                 formId.control.markAsPristine();
                 if (publishedContent) {
@@ -117,50 +127,43 @@ export class ContentUpdateComponent extends SubscriptionDestroy implements OnIni
     private getTypeContentFromUrl(url: UrlSegment[]): TypeOfContent {
         return url.length >= 2 && url[0].path === 'content' ? url[1].path : '';
     }
+
     /**
-     * Binds data for content form and create the form group controls
-     * @param contentData
+     * Subscribe the form value changes to trigger the save action
      */
-    private bindDataForContentForm(contentData: Page | Block | Media) {
-        this.currentContent = this.getPopulatedContentData(contentData, this.contentTypeProperties);
+    private handleFormChangesToAutoSave(formGroup: FormGroup) {
+        // implement the auto save function
+        this.saveMessage = '';
+        formGroup.valueChanges.pipe(
+            auditTime(3000),
+            tap(() => this.saveMessage = 'Saving...'),
+            concatMap(formValues => this.updateContent(formValues)),
+            takeUntil(this.unsubscribe$)
+        ).subscribe((savedContent: Content) => {
+            if (savedContent) {
+                // update current content
+                this.saveMessage = 'Saved';
+                const { versionId, status } = this.currentContent;
+                Object.assign(this.currentContent, savedContent);
 
-        if (this.contentTypeProperties.length > 0) {
-            this.formTabs = this.extractFormTabsFromProperties(this.contentTypeProperties);
-            this.contentFormGroup = this.createFormGroup(this.contentTypeProperties);
-
-            // implement the auto save function
-            this.saveMessage = '';
-            this.contentFormGroup.valueChanges.pipe(
-                auditTime(3000),
-                tap(() => this.saveMessage = 'Saving...'),
-                concatMap(formValues => this.updateContent(formValues)),
-                takeUntil(this.unsubscribe$)
-            ).subscribe((savedContent: Content) => {
-                if (savedContent) {
-                    // update current content
-                    this.saveMessage = 'Saved';
-                    const { versionId, status } = this.currentContent;
-                    Object.assign(this.currentContent, savedContent);
-
-                    if (versionId !== savedContent.versionId || status !== savedContent.status) {
-                        this.subjectService.fireContentStatusChanged(this.typeOfContent, savedContent);
-                    }
-                } else {
-                    this.saveMessage = 'Save Error';
+                if (versionId !== savedContent.versionId || status !== savedContent.status) {
+                    this.subjectService.fireContentStatusChanged(this.typeOfContent, savedContent);
                 }
-            });
-        }
+            } else {
+                this.saveMessage = 'Save Error';
+            }
+        });
     }
 
-    private getPopulatedContentData(contentData: Page | Block | Media, propertiesMetadata: ContentTypeProperty[]): Partial<Page> & Content {
+    private getContentWithPopulatedProperties(content: Content, propertiesMetadata: ContentTypeProperty[]): ContentExt {
         propertiesMetadata.forEach(propertyMeta => {
-            if (contentData.properties) {
+            if (content.properties) {
                 const propertyFactory = this.propertyFactoryResolver.resolvePropertyFactory(propertyMeta.metadata.displayType);
-                contentData.properties[propertyMeta.name] = propertyFactory.getPopulatedReferenceProperty(contentData, propertyMeta);
+                content.properties[propertyMeta.name] = propertyFactory.getPopulatedReferenceProperty(content, propertyMeta);
             }
         });
 
-        return contentData;
+        return content;
     }
 
     private extractFormTabsFromProperties(properties: ContentTypeProperty[]): Partial<CmsTab>[] {
@@ -186,10 +189,10 @@ export class ContentUpdateComponent extends SubscriptionDestroy implements OnIni
      * @param properties
      * @returns form group
      */
-    private createFormGroup(properties: ContentTypeProperty[]): FormGroup {
+    private createFormGroup(content: ContentExt, properties: ContentTypeProperty[]): FormGroup {
         if (properties) {
-            const formModel = this.currentContent.properties ? this.currentContent.properties : {};
-            const formControls: { [key: string]: any } = this.createDefaultFormControls();
+            const formModel = content.properties ? content.properties : {};
+            const formControls: { [key: string]: any } = this.createDefaultFormControls(content);
 
             properties.forEach(property => {
                 const validators = [];
@@ -209,12 +212,12 @@ export class ContentUpdateComponent extends SubscriptionDestroy implements OnIni
     /**
      * Create the default form controls such as content name, page url segment
      */
-    private createDefaultFormControls(): { [key: string]: any } {
+    private createDefaultFormControls(content: ContentExt): { [key: string]: any } {
         const formControls: { [key: string]: any } = {};
-        formControls.name = [this.currentContent.name, Validators.required];
+        formControls.name = [content.name, Validators.required];
 
         if (this.typeOfContent === TypeOfContentEnum.Page) {
-            formControls.urlSegment = [this.currentContent.urlSegment, Validators.required];
+            formControls.urlSegment = [content.urlSegment, Validators.required];
         }
         return formControls;
     }
