@@ -11,13 +11,11 @@
           </nav>
         </div>
         <div class="ml-auto mr-2" *ngIf="currentContent">
-          <button type="button" class="btn btn-sm btn-primary mr-1" [disabled]="!formId.dirty"
-            (click)="formId.ngSubmit.emit(false)">
-            <fa-icon class="mr-1" [icon]="['fas', 'save']"></fa-icon>Update
-          </button>
-          <button type="button" class="btn btn-sm btn-success mr-1" [disabled]="!formId.valid"
-            (click)="formId.ngSubmit.emit(true)">
-            <fa-icon class="mr-1" [icon]="['fas', 'file-export']"></fa-icon>Publish
+          <span class="mr-2 font-weight-bold">{{saveMessage}}</span>
+          <button type="button" class="btn btn-sm btn-success mr-1"
+            [disabled]="!(this.currentContent && this.currentContent.status == 2 && formId.valid)"
+            (click)="formId.ngSubmit.emit()">
+            <fa-icon class="mr-1" [icon]="['fas', 'file-export']"></fa-icon>{{ isPublishing ? 'Publishing' : 'Publish'}}
           </button>
           <a class="btn btn-sm btn-primary" target="_blank" [href]="currentContent.linkUrl">
             <fa-icon [icon]="['fas', 'external-link-alt']"></fa-icon>
@@ -34,7 +32,7 @@
       </div>
     </as-split-area>
     <as-split-area size="*">
-      <form class="m-0" (ngSubmit)="updateContent($event, formId)" [formGroup]="contentFormGroup" #formId="ngForm">
+      <form class="m-0" (ngSubmit)="publishContent(formId)" [formGroup]="contentFormGroup" #formId="ngForm">
         <div class="row" *ngIf="editMode == 'AllProperties'">
           <div class="col-lg-12">
             <div class="card">
@@ -45,10 +43,15 @@
                     <input type="text" class="form-control" name="name" formControlName="name">
                   </dd>
                   <dt class='col-sm-4'></dt>
-                  <dt class="col-sm-3">Name in url</dt>
-                  <dd class="col-sm-9">{{currentContent.urlSegment}}</dd>
-                  <dt class="col-sm-3">Link url</dt>
-                  <dd class="col-sm-9">{{currentContent.linkUrl}}</dd>
+                  <ng-container *ngIf="typeOfContent === 'page'">
+                    <dt class="col-sm-3">Name in url</dt>
+                    <dd class="col-sm-5">
+                      <input type="text" class="form-control" name="urlSegment" formControlName="urlSegment">
+                    </dd>
+                    <dt class='col-sm-4'></dt>
+                    <dt class="col-sm-3">Link url</dt>
+                    <dd class="col-sm-9">{{currentContent.linkUrl}}</dd>
+                  </ng-container>
                   <dt class="col-sm-3">Type</dt>
                   <dd class="col-sm-9">{{currentContent.contentType}}</dd>
                 </dl>

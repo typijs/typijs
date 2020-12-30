@@ -236,7 +236,7 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
      * Execute publish content flow of content service
      * @returns the published version in current language
      */
-    async executePublishContentFlow(id: string, versionId: string, userId: string): Promise<T & V> {
+    async executePublishContentFlow(id: string, versionId: string, userId: string, host?: string): Promise<T & V> {
         //Step1: Get current version
         const currentVersion = await this.contentVersionService.getVersionById(versionId);
         const currentContent = currentVersion.contentId as T;

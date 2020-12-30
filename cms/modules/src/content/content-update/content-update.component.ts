@@ -3,13 +3,13 @@ import {
     CmsObject, CmsPropertyFactoryResolver, CmsTab,
     Content,
     ContentTypeProperty, InsertPointDirective,
-    Media, Page, sortByString, TypeOfContent
+    Media, Page, sortByString, TypeOfContent, TypeOfContentEnum
 } from '@angular-cms/core';
 import { AfterViewInit, ChangeDetectorRef, Component, ComponentRef, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, UrlSegment } from '@angular/router';
-import { of, combineLatest } from 'rxjs';
-import { map, switchMap, takeUntil, tap, catchError } from 'rxjs/operators';
+import { of, combineLatest, Observable, Subscription } from 'rxjs';
+import { map, switchMap, takeUntil, tap, catchError, concatMap, auditTime } from 'rxjs/operators';
 import { SubjectService } from '../../shared/services/subject.service';
 import { SubscriptionDestroy } from '../../shared/subscription-destroy';
 import { ContentCrudService, ContentCrudServiceResolver, ContentInfo } from '../content-crud.service';
@@ -25,11 +25,14 @@ export class ContentUpdateComponent extends SubscriptionDestroy implements OnIni
     contentFormGroup: FormGroup = new FormGroup({});
     formTabs: Partial<CmsTab>[] = [];
     currentContent: Partial<Page> & Content;
+
     editMode: 'AllProperties' | 'OnPageEdit' = 'AllProperties';
     typeOfContent: TypeOfContent;
+    previewUrl: string;
 
     showIframeHider = false;
-    previewUrl: string;
+    saveMessage: string = '';
+    isPublishing = false;
 
     private readonly defaultGroup: string = 'Content';
     private contentService: ContentCrudService;
@@ -86,16 +89,66 @@ export class ContentUpdateComponent extends SubscriptionDestroy implements OnIni
         });
     }
 
+    publishContent(formId: any) {
+        if (this.contentFormGroup.valid && this.currentContent && this.currentContent.status === 2) {
+            this.saveMessage = '';
+            this.isPublishing = true;
+            const { _id, versionId } = this.currentContent;
+            this.contentService.publishContentVersion(_id, versionId).pipe(
+                catchError(error => {
+                    return of(undefined);
+                })
+            ).subscribe((publishedContent: Partial<Page> & Content) => {
+                this.isPublishing = false;
+                formId.control.markAsPristine();
+                if (publishedContent) {
+                    this.saveMessage = 'Published';
+                    if (publishedContent.status !== this.currentContent.status) {
+                        Object.assign(this.currentContent, publishedContent);
+                        this.subjectService.fireContentStatusChanged(this.typeOfContent, publishedContent);
+                    }
+                } else {
+                    this.saveMessage = 'Publish Error';
+                }
+            });
+        }
+    }
+
     private getTypeContentFromUrl(url: UrlSegment[]): TypeOfContent {
         return url.length >= 2 && url[0].path === 'content' ? url[1].path : '';
     }
-
+    /**
+     * Binds data for content form and create the form group controls
+     * @param contentData
+     */
     private bindDataForContentForm(contentData: Page | Block | Media) {
         this.currentContent = this.getPopulatedContentData(contentData, this.contentTypeProperties);
 
         if (this.contentTypeProperties.length > 0) {
             this.formTabs = this.extractFormTabsFromProperties(this.contentTypeProperties);
             this.contentFormGroup = this.createFormGroup(this.contentTypeProperties);
+
+            // implement the auto save function
+            this.saveMessage = '';
+            this.contentFormGroup.valueChanges.pipe(
+                auditTime(3000),
+                tap(() => this.saveMessage = 'Saving...'),
+                concatMap(formValues => this.updateContent(formValues)),
+                takeUntil(this.unsubscribe$)
+            ).subscribe((savedContent: Content) => {
+                if (savedContent) {
+                    // update current content
+                    this.saveMessage = 'Saved';
+                    const { versionId, status } = this.currentContent;
+                    Object.assign(this.currentContent, savedContent);
+
+                    if (versionId !== savedContent.versionId || status !== savedContent.status) {
+                        this.subjectService.fireContentStatusChanged(this.typeOfContent, savedContent);
+                    }
+                } else {
+                    this.saveMessage = 'Save Error';
+                }
+            });
         }
     }
 
@@ -128,6 +181,11 @@ export class ContentUpdateComponent extends SubscriptionDestroy implements OnIni
         return tabs.sort(sortByString('title', 'asc'));
     }
 
+    /**
+     * Creates Reactive Form from the properties of content
+     * @param properties
+     * @returns form group
+     */
     private createFormGroup(properties: ContentTypeProperty[]): FormGroup {
         if (properties) {
             const formModel = this.currentContent.properties ? this.currentContent.properties : {};
@@ -147,12 +205,25 @@ export class ContentUpdateComponent extends SubscriptionDestroy implements OnIni
         return new FormGroup({});
     }
 
+
+    /**
+     * Create the default form controls such as content name, page url segment
+     */
     private createDefaultFormControls(): { [key: string]: any } {
         const formControls: { [key: string]: any } = {};
         formControls.name = [this.currentContent.name, Validators.required];
+
+        if (this.typeOfContent === TypeOfContentEnum.Page) {
+            formControls.urlSegment = [this.currentContent.urlSegment, Validators.required];
+        }
         return formControls;
     }
 
+    /**
+     * Creates the form controls corresponding to the properties of content type
+     * @param properties
+     * @returns property components
+     */
     private createPropertyComponents(properties: ContentTypeProperty[]): ComponentRef<any>[] {
         const propertyControls: ComponentRef<any>[] = [];
 
@@ -178,64 +249,40 @@ export class ContentUpdateComponent extends SubscriptionDestroy implements OnIni
         return propertyControls;
     }
 
-    updateContent(isPublished: boolean, formId: any) {
-        if (this.contentFormGroup.valid) {
-            if (this.currentContent) {
+    private updateContent(formValue: any): Observable<Content> {
+        if (formValue) {
 
-                // Extract the field's values such as name, url segment. These fields don't belong properties
-                const contentDto: Partial<Content> = this.extractOwnPropertyValuesOfContent(this.contentFormGroup);
-                Object.assign(this.currentContent, contentDto);
-                // Extract the properties's values
-                this.currentContent.properties = this.extractPropertiesPropertyOfContent(this.contentFormGroup);
-                this.currentContent.childItems = this.extractChildItemsRefs();
+            // Extract the field's values such as name, url segment. These fields don't belong properties
+            const contentDto: Partial<Content> = this.extractOwnPropertyValuesOfContent(formValue);
+            Object.assign(this.currentContent, contentDto);
+            // Extract the properties's values
+            this.currentContent.properties = this.extractPropertiesPropertyOfContent(formValue);
+            this.currentContent.childItems = this.extractChildItemsRefs();
 
-                const { _id, versionId, properties, childItems, status } = this.currentContent;
-                Object.assign(contentDto, { properties, childItems });
+            const { _id, versionId, properties, childItems } = this.currentContent;
+            Object.assign(contentDto, { properties, childItems });
 
-                if (formId.dirty) {
-                    this.contentService.editContentVersion(_id, versionId, contentDto).subscribe((savedContent: Content) => {
-                        formId.control.markAsPristine();
-                        // update current content
-                        Object.assign(this.currentContent, savedContent);
-                        if (isPublished) {
-                            this.publishContent(_id, savedContent.versionId);
-                        } else {
-                            if (versionId !== savedContent.versionId || status !== savedContent.status) {
-                                this.subjectService.fireContentStatusChanged(this.typeOfContent, savedContent);
-                            }
-                        }
-                    });
-                } else if (isPublished) {
-                    this.publishContent(_id, versionId);
-                }
-            }
+            return this.contentService.editContentVersion(_id, versionId, contentDto).pipe(catchError(error => {
+                return of(undefined);
+            }));
         }
     }
 
-    private publishContent(contentId: string, versionId: string) {
-        this.contentService.publishContentVersion(contentId, versionId).subscribe(publishedContent => {
-            if (publishedContent.status !== this.currentContent.status) {
-                this.currentContent.status = publishedContent.status;
-                this.subjectService.fireContentStatusChanged(this.typeOfContent, publishedContent);
-            }
-        });
-    }
-
-    private extractPropertiesPropertyOfContent(formGroup: FormGroup): CmsObject {
+    private extractPropertiesPropertyOfContent(formValue: any): CmsObject {
         const properties = {};
-        Object.keys(formGroup.value).forEach(key => {
+        Object.keys(formValue).forEach(key => {
             if (!this.currentContent.hasOwnProperty(key)) {
-                properties[key] = formGroup.value[key];
+                properties[key] = formValue[key];
             }
         });
         return properties;
     }
 
-    private extractOwnPropertyValuesOfContent(formGroup: FormGroup): CmsObject {
+    private extractOwnPropertyValuesOfContent(formValue: any): CmsObject {
         const properties = {};
-        Object.keys(formGroup.value).forEach(key => {
+        Object.keys(formValue).forEach(key => {
             if (this.currentContent.hasOwnProperty(key)) {
-                properties[key] = formGroup.value[key];
+                properties[key] = formValue[key];
             }
         });
         return properties;

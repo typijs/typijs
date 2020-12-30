@@ -89,7 +89,7 @@ export abstract class ContentController<T extends IContentDocument, P extends IC
   @Authorize({ roles: AdminOrEditor })
   async getVersion(req: express.Request, res: express.Response) {
     const { language } = req as any;
-    const content = await this.contentService.getContentVersion(req.params.id, req.query.versionId, language)
+    const content = await this.contentService.getContentVersion(req.params.id, req.query.versionId, language, req.query.host)
     res.status(httpStatus.OK).json(content)
   }
 
@@ -105,7 +105,7 @@ export abstract class ContentController<T extends IContentDocument, P extends IC
   @ValidateQuery({ versionId: Joi.string().required() })
   async publishVersion(req: express.Request, res: express.Response) {
     const { user } = req as any;
-    const publishedContent = await this.contentService.executePublishContentFlow(req.params.id, req.query.versionId, user.id)
+    const publishedContent = await this.contentService.executePublishContentFlow(req.params.id, req.query.versionId, user.id, req.query.host)
     res.status(httpStatus.OK).json(publishedContent)
   }
 

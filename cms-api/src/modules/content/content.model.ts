@@ -99,7 +99,7 @@ export const ContentSchema = new mongoose.Schema({
     contentType: { type: String, required: false },
     masterLanguageId: { type: String },
     //IHierarchyContent Implements
-    parentId: { type: String, default: null },
+    parentId: { type: mongoose.Schema.Types.ObjectId, default: null },
     //https://docs.mongodb.com/manual/tutorial/model-tree-structures-with-materialized-paths/
     parentPath: { type: String, required: false, index: true }, // ex ",parent1_id,parent2_id,parent3_id,"
     //https://docs.mongodb.com/manual/tutorial/model-tree-structures-with-ancestors-array/

@@ -97,7 +97,9 @@ export abstract class ContentService<T extends Content> extends FolderService<T>
      * @returns content
      */
     publishContentVersion(contentId: string, versionId: string): Observable<T> {
-        return this.httpClient.put<T>(`${this.apiUrl}/version/publish/${contentId}?versionId=${versionId}`, {});
+        const host = this.locationService.getLocation().host;
+        const query = convertObjectToUrlQueryString({ versionId, host });
+        return this.httpClient.put<T>(`${this.apiUrl}/version/publish/${contentId}?${query}`, {});
     }
 
     setPrimaryVersion(versionId: string): Observable<T> {

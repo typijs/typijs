@@ -38,7 +38,8 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
      */
     async getContentVersion(id: string, versionId: string, language: string, host: string): Promise<IPageDocument & IPageVersionDocument> {
         const primaryVersion = await super.getContentVersion(id, versionId, language);
-        primaryVersion.linkUrl = await this.buildLinkUrl(primaryVersion._id.toString(), primaryVersion.parentPath, primaryVersion.urlSegment, language, host);
+        const { _id, parentPath, urlSegment } = primaryVersion;
+        primaryVersion.linkUrl = await this.buildLinkUrl(_id.toString(), parentPath, urlSegment, language, host);
         return primaryVersion;
     }
 
@@ -52,7 +53,7 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
      */
     @Cache({
         prefixKey: PageService.PrefixCacheKey,
-        suffixKey: (args) => `${args[0]}:${args[3]}:${args[4]}`
+        suffixKey: (args) => `${args[0]}:${args[1]}:${args[2]}:${args[3]}:${args[4]}`
     })
     private async buildLinkUrl(currentId: string, parentPath: string, currentUrlSegment: string, language: string, host: string): Promise<string> {
 
@@ -208,9 +209,12 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         return await this.generateUrlSegment(seed + 1, originalUrl, parentId, language, `${originalUrl}${seed + 1}`);
     }
 
-    public executePublishContentFlow = async (id: string, versionId: string, userId: string): Promise<IPageDocument & IPageVersionDocument> => {
+    public executePublishContentFlow = async (id: string, versionId: string, userId: string, host: string): Promise<IPageDocument & IPageVersionDocument> => {
         await this.throwIfUrlSegmentDuplicated(id, versionId);
-        return super.executePublishContentFlow(id, versionId, userId);
+        const publishedContent = await super.executePublishContentFlow(id, versionId, userId);
+        const { _id, parentPath, urlSegment, language } = publishedContent;
+        publishedContent.linkUrl = await this.buildLinkUrl(_id.toString(), parentPath, urlSegment, language, host);
+        return publishedContent;
     }
 
     private throwIfUrlSegmentDuplicated = async (pageId: string, versionId: string): Promise<void> => {
@@ -218,20 +222,22 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         const pageContent = pageVersion.contentId as IPageDocument;
         const { language, urlSegment } = pageVersion;
 
-        const parentId = pageContent.parentId;
-
         //Find published page has the same url segment
         const existPages = await this.contentLanguageService.find({ contentId: { $ne: pageId }, urlSegment, language, status: VersionStatus.Published }, { lean: true })
-            .select('contentId')
+            .select('contentId name')
             .populate({
                 path: 'contentId',
                 match: { isDeleted: false },
                 select: 'parentId'
             }).exec();
 
-        const duplicatedUrlSegmentPages = existPages.filter(x => (x.contentId as IPageDocument).parentId == parentId);
+        const parentId = pageContent.parentId;
+        const duplicatedUrlSegmentPages = existPages.filter(x =>
+            JSON.stringify((x.contentId as IPageDocument).parentId) === JSON.stringify(parentId)
+        );
+
         if (duplicatedUrlSegmentPages.length > 0) {
-            const pageInfo = JSON.stringify(duplicatedUrlSegmentPages.map(x => ({ _id: x.contentId, name: x.name })));
+            const pageInfo = JSON.stringify(duplicatedUrlSegmentPages.map(x => ({ id: (x.contentId as IPageDocument)._id, name: x.name })));
             const message = `The url segment ${urlSegment} has been used in pages ${pageInfo}`;
             throw new Exception(httpStatus.BAD_REQUEST, message);
         }
