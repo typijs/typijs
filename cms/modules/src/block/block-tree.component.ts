@@ -90,7 +90,7 @@ const BLOCK_MENU_ACTION = {
     providers: [BlockTreeService, { provide: TreeService, useExisting: BlockTreeService }]
 })
 export class BlockTreeComponent extends SubscriptionDestroy implements OnInit {
-    @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
+    @ViewChild(TreeComponent) cmsTree: TreeComponent;
 
     folderSelected$: BehaviorSubject<Partial<TreeNode>>;
     refreshFolder$: Subject<Partial<TreeNode>>;

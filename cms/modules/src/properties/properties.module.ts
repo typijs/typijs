@@ -69,9 +69,6 @@ export const CONTROLS = [
         ...PROPERTIES,
         ...CONTROLS
     ],
-    entryComponents: [
-        ...PROPERTIES
-    ],
     exports: [
         ...PROPERTIES
     ]

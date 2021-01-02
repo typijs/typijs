@@ -19,7 +19,6 @@ const contentTypeRoutes: Routes = [
         CoreModule,
         CrudModule
     ],
-    entryComponents: [ContentTypeDetailComponent, ContentTypeListComponent],
     declarations: [ContentTypeDetailComponent, ContentTypeListComponent]
 })
 export class ContentTypeModule {

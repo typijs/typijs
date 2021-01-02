@@ -50,9 +50,6 @@ const mediaRoutes: Routes = [
         FileSelectDirective,
         DragOverDirective,
         DragLeaveDirective
-    ],
-    entryComponents: [
-        MediaTreeComponent
     ]
 })
 export class MediaModule {

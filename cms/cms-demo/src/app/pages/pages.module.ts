@@ -38,9 +38,6 @@ const PAGES_COMPONENT = [
         RouterModule,
         AngularCms
     ],
-    entryComponents: [
-        ...PAGES_COMPONENT
-    ],
     declarations: [
         ...PAGES_COMPONENT
     ]

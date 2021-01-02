@@ -1,7 +1,8 @@
-import { Input } from '@angular/core';
+import { Input, Directive } from '@angular/core';
 
 import { ContentTypeProperty } from '../types/content-type';
 
+@Directive()
 export abstract class CmsPropertyRender<T> {
     @Input()
     get value(): T {

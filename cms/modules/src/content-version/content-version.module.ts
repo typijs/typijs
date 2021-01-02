@@ -24,9 +24,6 @@ import { ContentVersionServiceResolver } from './content-version.service';
     ],
     declarations: [
         ContentVersionComponent
-    ],
-    entryComponents: [
-        ContentVersionComponent
     ]
 })
 export class ContentVersionModule {

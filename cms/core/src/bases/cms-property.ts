@@ -1,9 +1,10 @@
-import { Input } from '@angular/core';
+import { Input, Directive } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { generateUUID } from '../helpers/common';
 import { ContentTypeProperty } from '../types/content-type';
 
+@Directive()
 export abstract class CmsProperty {
     @Input() label: string;
     @Input() propertyName: string;

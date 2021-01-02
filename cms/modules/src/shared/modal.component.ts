@@ -1,9 +1,10 @@
-import { ViewChild, TemplateRef } from '@angular/core';
+import { ViewChild, TemplateRef, Directive } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
 import { BsModalService, BsModalRef, ModalOptions } from 'ngx-bootstrap/modal';
 
 import { SubscriptionDestroy } from './subscription-destroy';
 
+@Directive()
 export abstract class ModalComponent extends SubscriptionDestroy {
     @ViewChild('modalTemplate', { static: true }) modalTemplate: TemplateRef<any>;
     modalRef: BsModalRef;

@@ -38,9 +38,6 @@ const blockRoutes: Routes = [
     ],
     declarations: [
         BlockTreeComponent
-    ],
-    entryComponents: [
-        BlockTreeComponent
     ]
 })
 export class BlockModule {

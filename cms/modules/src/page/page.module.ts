@@ -40,11 +40,6 @@ const pageRoutes: Routes = [
         DefaultPageComponent,
         PageTreeComponent,
         PageTreeReadonlyComponent
-    ],
-    entryComponents: [
-        DefaultPageComponent,
-        PageTreeComponent,
-        PageTreeReadonlyComponent
     ]
 })
 export class PageModule {

@@ -36,10 +36,6 @@ import { ContentCreateComponent } from './content-create/content-create.componen
     exports: [
         ContentUpdateComponent,
         ContentCreateComponent
-    ],
-    entryComponents: [
-        ContentCreateComponent,
-        ContentUpdateComponent
     ]
 })
 export class ContentModule {

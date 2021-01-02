@@ -32,7 +32,7 @@ import { TreeService } from '../shared/tree/interfaces/tree-service';
     providers: [PageTreeService, { provide: TreeService, useExisting: PageTreeService }]
 })
 export class PageTreeReadonlyComponent {
-    @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
+    @ViewChild(TreeComponent) cmsTree: TreeComponent;
 
     root: TreeNode;
 

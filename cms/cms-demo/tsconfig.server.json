@@ -10,5 +10,8 @@
   "angularCompilerOptions": {
     "entryModule": "./src/app/app.server.module#AppServerModule",
     "fullTemplateTypeCheck": false
-  }
+  },
+  "include": [
+    "cms-demo/src/**/*.d.ts"
+  ]
 }

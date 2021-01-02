@@ -90,8 +90,8 @@ const MEDIA_MENU_ACTION = {
 })
 export class MediaTreeComponent extends SubscriptionDestroy implements OnInit {
 
-    @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
-    @ViewChild(FileModalComponent, { static: false }) fileModal: FileModalComponent;
+    @ViewChild(TreeComponent) cmsTree: TreeComponent;
+    @ViewChild(FileModalComponent) fileModal: FileModalComponent;
 
     folderSelected$: BehaviorSubject<Partial<TreeNode>>;
     refreshFolder$: Subject<Partial<TreeNode>>;
