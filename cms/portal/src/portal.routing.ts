@@ -65,7 +65,6 @@ export function getPortalRoutes(editorRoutes: Routes[], adminRoutes: Routes[]): 
             provide: ROUTES,
             useFactory: getPortalRoutes,
             deps: [EDITOR_ROUTES, ADMIN_ROUTES],
-            useValue: {},
             multi: true
         }
     ]

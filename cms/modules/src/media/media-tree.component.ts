@@ -13,10 +13,9 @@ import { MediaTreeService } from './media-tree.service';
 import { FileModalComponent } from './upload/file-modal.component';
 import { UploadService } from './upload/upload.service';
 
-
 const MEDIA_MENU_ACTION = {
-    DeleteFolder: 'DeleteFolder',
-    NewFileUpload: 'NewFile'
+    NewFileUpload: 'NewFile',
+    DeleteFolder: 'DeleteFolder'
 };
 
 @Component({

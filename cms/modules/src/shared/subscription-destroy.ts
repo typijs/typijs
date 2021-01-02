@@ -1,7 +1,7 @@
-import { OnDestroy } from '@angular/core';
+import { Directive, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 
-// TODO: Add Angular decorator.
+@Directive()
 export abstract class SubscriptionDestroy implements OnDestroy {
     protected unsubscribe$: Subject<any> = new Subject();
 
