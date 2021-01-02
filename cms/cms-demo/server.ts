@@ -5,7 +5,6 @@ import { ngExpressEngine, RenderOptions } from '@nguniversal/express-engine';
 import * as express from 'express';
 import { join } from 'path';
 
-import { provideModuleMap } from '@nguniversal/module-map-ngfactory-loader';
 
 export function detectBot(userAgent: string): boolean {
     if (!userAgent) { return false; }
@@ -65,17 +64,11 @@ export function app() {
         const engine = ngExpressEngine({
             bootstrap: AppServerModuleNgFactory,
             providers: [
-                provideModuleMap(LAZY_MODULE_MAP),
                 { provide: 'APP_BASE_URL', useFactory: () => `${protocol}://${host}`, deps: [] },
             ]
         });
         engine(_, options, callback);
     });
-
-    // server.engine('html', ngExpressEngine({
-    //     bootstrap: AppServerModuleNgFactory,
-    //     providers: [provideModuleMap(LAZY_MODULE_MAP)]
-    // }));
 
     // register the template engine
     server.set('view engine', 'html');
