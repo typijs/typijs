@@ -157,17 +157,17 @@
       "prefix": "cms",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "core/tsconfig.lib.json",
             "project": "core/ng-package.json"
-          }
-        ,          "configurations": {
+          },
+          "configurations": {
             "production": {
               "tsConfig": "core/tsconfig.lib.prod.json"
             }
           }
-}
+        }
       }
     },
     "modules": {
@@ -177,17 +177,17 @@
       "prefix": "lib",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "modules/tsconfig.lib.json",
             "project": "modules/ng-package.json"
-          }
-        ,          "configurations": {
+          },
+          "configurations": {
             "production": {
               "tsConfig": "modules/tsconfig.lib.prod.json"
             }
           }
-}
+        }
       }
     },
     "portal": {
@@ -197,17 +197,17 @@
       "prefix": "lib",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "portal/tsconfig.lib.json",
             "project": "portal/ng-package.json"
-          }
-        ,          "configurations": {
+          },
+          "configurations": {
             "production": {
               "tsConfig": "portal/tsconfig.lib.prod.json"
             }
           }
-}
+        }
       }
     }
   },
