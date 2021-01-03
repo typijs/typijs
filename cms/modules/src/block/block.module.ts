@@ -5,16 +5,16 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faBars, faCube, faCubes, faFolder, faFolderPlus, faPlus, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
-import { ContentUpdateComponent } from '../content/content-update/content-update.component';
-import { CONTENT_CRUD_SERVICES } from '../content/content-crud.service';
+import { AngularSplitModule } from 'angular-split';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { CONTENT_VERSION_SERVICES } from '../content-version/content-version.service';
 import { ContentCreateComponent } from '../content/content-create/content-create.component';
+import { CONTENT_CRUD_SERVICES } from '../content/content-crud.service';
+import { ContentUpdateComponent } from '../content/content-update/content-update.component';
 import { DndModule } from '../shared/drag-drop/dnd.module';
-import { CmsAngularSplitModule } from '../shared/libs/angular-split/module';
-import { CmsBsDropdownModule } from '../shared/libs/ngx-bootstrap/bs-dropdown.module';
 import { TreeModule } from '../shared/tree/tree.module';
 import { BlockCrudService } from './block-crud.service';
 import { BlockTreeComponent } from './block-tree.component';
-import { CONTENT_VERSION_SERVICES } from '../content-version/content-version.service';
 import { BlockVersionService } from './block-version.service';
 
 
@@ -31,8 +31,8 @@ const blockRoutes: Routes = [
         ReactiveFormsModule,
         RouterModule,
         FontAwesomeModule,
-        CmsAngularSplitModule,
-        CmsBsDropdownModule,
+        AngularSplitModule,
+        BsDropdownModule,
         TreeModule,
         DndModule
     ],

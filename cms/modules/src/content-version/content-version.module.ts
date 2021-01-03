@@ -5,8 +5,8 @@ import { RouterModule } from '@angular/router';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faDesktop, faExternalLinkAlt, faFileExport, faList, faSave } from '@fortawesome/free-solid-svg-icons';
 import { CrudModule } from '../shared/crud/crud.module';
-import { CmsButtonsModule } from '../shared/libs/ngx-bootstrap/buttons.module';
-import { CmsTabsModule } from '../shared/libs/ngx-bootstrap/tabs.module';
+import { ButtonsModule } from 'ngx-bootstrap/buttons';
+import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ContentVersionComponent } from './content-version.component';
 import { ContentVersionServiceResolver } from './content-version.service';
 
@@ -16,8 +16,8 @@ import { ContentVersionServiceResolver } from './content-version.service';
         RouterModule,
         FontAwesomeModule,
 
-        CmsButtonsModule,
-        CmsTabsModule,
+        ButtonsModule,
+        TabsModule,
 
         CoreModule,
         CrudModule

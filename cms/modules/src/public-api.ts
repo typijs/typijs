@@ -7,14 +7,6 @@
 // export * from './shared/libs';
 // export * from './shared/drag-drop';
 
-export * from './shared/libs/ngx-bootstrap/bs-dropdown.module';
-export * from './shared/libs/ngx-bootstrap/buttons.module';
-export * from './shared/libs/ngx-bootstrap/modal.module';
-export * from './shared/libs/ngx-bootstrap/progressbar.module';
-export * from './shared/libs/ngx-bootstrap/tabs.module';
-
-export * from './shared/libs/angular-split/module';
-
 export * from './shared/drag-drop/dnd.module';
 export * from './shared/drag-drop/directives/draggable.directive';
 export * from './shared/drag-drop/directives/droppable.directive';

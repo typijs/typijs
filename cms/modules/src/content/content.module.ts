@@ -5,14 +5,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faDesktop, faExternalLinkAlt, faFileExport, faList, faSave } from '@fortawesome/free-solid-svg-icons';
+import { AngularSplitModule } from 'angular-split';
+import { TabsModule } from 'ngx-bootstrap/tabs';
+import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { PropertiesModule } from '../properties/properties.module';
-// import { CmsAngularSplitModule, CmsTabsModule } from '../shared/libs';
-import { CmsAngularSplitModule } from '../shared/libs/angular-split/module';
-import { CmsButtonsModule } from '../shared/libs/ngx-bootstrap/buttons.module';
-import { CmsTabsModule } from '../shared/libs/ngx-bootstrap/tabs.module';
-import { ContentUpdateComponent } from './content-update/content-update.component';
-import { ContentCrudServiceResolver } from './content-crud.service';
 import { ContentCreateComponent } from './content-create/content-create.component';
+import { ContentCrudServiceResolver } from './content-crud.service';
+import { ContentUpdateComponent } from './content-update/content-update.component';
 
 @NgModule({
     imports: [
@@ -22,9 +21,9 @@ import { ContentCreateComponent } from './content-create/content-create.componen
         RouterModule,
         FontAwesomeModule,
 
-        CmsAngularSplitModule,
-        CmsButtonsModule,
-        CmsTabsModule,
+        AngularSplitModule,
+        ButtonsModule,
+        TabsModule,
 
         CoreModule,
         PropertiesModule,

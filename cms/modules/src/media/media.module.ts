@@ -5,13 +5,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faFolder, faFolderPlus, faPhotoVideo } from '@fortawesome/free-solid-svg-icons';
+import { AngularSplitModule } from 'angular-split';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
 import { ContentUpdateComponent } from '../content/content-update/content-update.component';
 import { DndModule } from '../shared/drag-drop/dnd.module';
-// import { CmsProgressbarModule, CmsModalModule, CmsAngularSplitModule } from '../shared/libs';
-import { CmsAngularSplitModule } from '../shared/libs/angular-split/module';
-import { CmsBsDropdownModule } from '../shared/libs/ngx-bootstrap/bs-dropdown.module';
-import { CmsModalModule } from '../shared/libs/ngx-bootstrap/modal.module';
-import { CmsProgressbarModule } from '../shared/libs/ngx-bootstrap/progressbar.module';
 import { TreeModule } from '../shared/tree/tree.module';
 import { MediaTreeComponent } from './media-tree.component';
 import { DragLeaveDirective } from './upload/drag-leave.directive';
@@ -20,7 +19,6 @@ import { FileDropComponent } from './upload/file-drop.component';
 import { FileModalComponent } from './upload/file-modal.component';
 import { FileSelectDirective } from './upload/file-select.directive';
 import { UploadService } from './upload/upload.service';
-
 
 const mediaRoutes: Routes = [
     { path: 'content/media/:id', component: ContentUpdateComponent }
@@ -34,10 +32,10 @@ const mediaRoutes: Routes = [
         RouterModule,
         FontAwesomeModule,
 
-        CmsAngularSplitModule,
-        CmsBsDropdownModule,
-        CmsProgressbarModule,
-        CmsModalModule,
+        AngularSplitModule,
+        BsDropdownModule,
+        ProgressbarModule,
+        ModalModule,
 
         TreeModule,
         DndModule,
