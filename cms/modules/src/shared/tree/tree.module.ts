@@ -9,7 +9,6 @@ import { TreeChildrenComponent } from './components/tree-children.component';
 import { TreeNodeComponent } from './components/tree-node.component';
 import { TreeComponent } from './components/tree.component';
 
-
 @NgModule({
     imports: [
         CommonModule,

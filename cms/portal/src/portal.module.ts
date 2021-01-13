@@ -14,6 +14,7 @@ import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
 import {
+    DialogModule,
     DndModule,
     PageModule,
     MediaModule,
@@ -51,6 +52,7 @@ import { QuillModule } from 'ngx-quill';
         ModalModule.forRoot(),
         QuillModule.forRoot(),
 
+        DialogModule.forRoot(),
         DndModule.forRoot(),
         CoreModule.forRoot(),
         PropertiesModule.forRoot(),

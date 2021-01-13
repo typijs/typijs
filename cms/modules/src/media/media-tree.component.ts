@@ -2,7 +2,8 @@ import { Media, MediaService, MEDIA_TYPE, VersionStatus } from '@angular-cms/cor
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 import { BehaviorSubject, merge, Observable, Subject } from 'rxjs';
-import { distinctUntilKeyChanged, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { distinctUntilKeyChanged, map, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
+import { DialogService } from '../shared/dialog/dialog.service';
 import { SubjectService } from '../shared/services/subject.service';
 import { SubscriptionDestroy } from '../shared/subscription-destroy';
 import { TreeComponent } from '../shared/tree/components/tree.component';
@@ -101,6 +102,7 @@ export class MediaTreeComponent extends SubscriptionDestroy implements OnInit {
 
     constructor(
         private mediaService: MediaService,
+        private dialogService: DialogService,
         private modalService: BsModalService,
         private subjectService: SubjectService,
         private uploadService: UploadService) {
@@ -182,7 +184,8 @@ export class MediaTreeComponent extends SubscriptionDestroy implements OnInit {
             initialState: uploadProgress,
             backdrop: true, // Show backdrop
             keyboard: false, // Esc button option
-            ignoreBackdropClick: true // Backdrop click to hide
+            ignoreBackdropClick: true, // Backdrop click to hide,
+            animated: false
         }
 
         this.modalService.show(FileModalComponent, config);
@@ -190,13 +193,18 @@ export class MediaTreeComponent extends SubscriptionDestroy implements OnInit {
 
     private folderDelete(nodeToDelete: TreeNode) {
         if (nodeToDelete.id == '0') { return; }
-        this.mediaService.moveContentToTrash(nodeToDelete.id).subscribe(folderToDelete => {
-            if (folderToDelete.isDeleted) {
-                // if the deleted node is selected then need to set the parent node is the new selected node
-                if (nodeToDelete.isSelected) this.cmsTree.setSelectedNode({ id: folderToDelete.parentId, isNeedToScroll: true });
-                this.cmsTree.reloadSubTree(folderToDelete.parentId);
-            }
-        });
+
+        this.dialogService.confirm(`Delete ${nodeToDelete.name}`, `Do you want to delete the folder ${nodeToDelete.name}?`).pipe(
+            takeWhile(confirm => confirm),
+        ).subscribe(() => {
+            this.mediaService.moveContentToTrash(nodeToDelete.id).subscribe(folderToDelete => {
+                if (folderToDelete.isDeleted) {
+                    // if the deleted node is selected then need to set the parent node is the new selected node
+                    if (nodeToDelete.isSelected) this.cmsTree.setSelectedNode({ id: folderToDelete.parentId, isNeedToScroll: true });
+                    this.cmsTree.reloadSubTree(folderToDelete.parentId);
+                }
+            });
+        })
     }
 
     private initTreeConfiguration(): TreeConfig {

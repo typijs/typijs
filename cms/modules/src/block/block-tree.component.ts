@@ -2,7 +2,8 @@ import { Block, BlockService, BLOCK_TYPE } from '@angular-cms/core';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, merge, Observable, Subject } from 'rxjs';
-import { distinctUntilKeyChanged, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { distinctUntilKeyChanged, map, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
+import { DialogService } from '../shared/dialog/dialog.service';
 import { SubjectService } from '../shared/services/subject.service';
 import { SubscriptionDestroy } from '../shared/subscription-destroy';
 import { TreeComponent } from '../shared/tree/components/tree.component';
@@ -103,6 +104,7 @@ export class BlockTreeComponent extends SubscriptionDestroy implements OnInit {
     constructor(
         private router: Router,
         private route: ActivatedRoute,
+        private dialogService: DialogService,
         private blockService: BlockService,
         private subjectService: SubjectService) {
         super();
@@ -179,13 +181,18 @@ export class BlockTreeComponent extends SubscriptionDestroy implements OnInit {
 
     private folderDelete(nodeToDelete: TreeNode) {
         if (nodeToDelete.id === '0') { return; }
-        this.blockService.moveContentToTrash(nodeToDelete.id).subscribe(folderToDelete => {
-            if (folderToDelete.isDeleted) {
-                // if the deleted node is selected then need to set the parent node is the new selected node
-                if (nodeToDelete.isSelected) this.cmsTree.setSelectedNode({ id: folderToDelete.parentId, isNeedToScroll: true });
-                this.cmsTree.reloadSubTree(folderToDelete.parentId);
-            }
-        });
+
+        this.dialogService.confirm(`Delete ${nodeToDelete.name}`, `Do you want to delete the folder ${nodeToDelete.name}?`).pipe(
+            takeWhile(confirm => confirm),
+        ).subscribe(() => {
+            this.blockService.moveContentToTrash(nodeToDelete.id).subscribe(folderToDelete => {
+                if (folderToDelete.isDeleted) {
+                    // if the deleted node is selected then need to set the parent node is the new selected node
+                    if (nodeToDelete.isSelected) this.cmsTree.setSelectedNode({ id: folderToDelete.parentId, isNeedToScroll: true });
+                    this.cmsTree.reloadSubTree(folderToDelete.parentId);
+                }
+            });
+        })
     }
 
     private initTreeConfiguration(): TreeConfig {

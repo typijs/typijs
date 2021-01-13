@@ -13,6 +13,9 @@ export * from './shared/drag-drop/directives/droppable.directive';
 export * from './shared/drag-drop/directives/drag-handle.directive';
 export * from './shared/drag-drop/directives/drag-placeholder.directive';
 
+export * from './shared/dialog/dialog.module';
+export * from './shared/dialog/dialog.service';
+
 export * from './shared/services/subject.service';
 
 export * from './content/content.module';

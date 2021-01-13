@@ -1,6 +1,6 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { takeUntil, distinctUntilKeyChanged } from 'rxjs/operators';
+import { takeUntil, distinctUntilKeyChanged, takeWhile } from 'rxjs/operators';
 
 import { Page, PageService } from '@angular-cms/core';
 import { TreeNode } from '../shared/tree/interfaces/tree-node';
@@ -12,6 +12,7 @@ import { PageTreeService } from './page-tree.service';
 import { SubscriptionDestroy } from '../shared/subscription-destroy';
 import { SubjectService } from '../shared/services/subject.service';
 import { TreeService } from '../shared/tree/interfaces/tree-service';
+import { DialogService } from '../shared/dialog/dialog.service';
 
 const PAGE_MENU_ACTION = {
     DeletePage: 'DeletePage',
@@ -54,6 +55,7 @@ export class PageTreeComponent extends SubscriptionDestroy implements OnInit {
 
     constructor(
         private pageService: PageService,
+        private dialogService: DialogService,
         private subjectService: SubjectService,
         private router: Router,
         private route: ActivatedRoute) {
@@ -112,12 +114,17 @@ export class PageTreeComponent extends SubscriptionDestroy implements OnInit {
 
     private pageDelete(nodeToDelete: TreeNode) {
         if (nodeToDelete.id == '0') { return; }
-        this.pageService.moveContentToTrash(nodeToDelete.id).subscribe((pageToDelete: Page) => {
-            if (pageToDelete.isDeleted) {
-                // if the deleted node is selected then need to set the parent node is the new selected node
-                if (nodeToDelete.isSelected) this.cmsTree.setSelectedNode({ id: pageToDelete.parentId, isNeedToScroll: true });
-                this.cmsTree.reloadSubTree(pageToDelete.parentId);
-            }
+
+        this.dialogService.confirm(`Delete the ${nodeToDelete.name}`, `Do you want to delete the page ${nodeToDelete.name}?`).pipe(
+            takeWhile(confirm => confirm)
+        ).subscribe(() => {
+            this.pageService.moveContentToTrash(nodeToDelete.id).subscribe((pageToDelete: Page) => {
+                if (pageToDelete.isDeleted) {
+                    // if the deleted node is selected then need to set the parent node is the new selected node
+                    if (nodeToDelete.isSelected) this.cmsTree.setSelectedNode({ id: pageToDelete.parentId, isNeedToScroll: true });
+                    this.cmsTree.reloadSubTree(pageToDelete.parentId);
+                }
+            });
         });
     }
 
