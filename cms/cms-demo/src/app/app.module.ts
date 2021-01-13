@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, Renderer2, RendererFactory2 } from '@angular/core';
+import { ApplicationRef, NgModule, Renderer2, RendererFactory2 } from '@angular/core';
 import { TransferHttpCacheModule } from '@nguniversal/common';
 
 import { AngularCms, AuthModule, PAGE_AFTER_INIT } from '@angular-cms/core';
@@ -51,4 +51,18 @@ export function pageAfterViewInit(rendererFactory: RendererFactory2, document: D
     ],
     bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+    constructor(applicationRef: ApplicationRef) {
+        // https://medium.com/@dmitrymogilko/profiling-angular-change-detection-c00605862b9f
+        const originalTick = applicationRef.tick;
+        applicationRef.tick = function () {
+            const windowPerfomance = window.performance;
+            const before = windowPerfomance.now();
+            const retValue = originalTick.apply(this, arguments);
+            const after = windowPerfomance.now();
+            const runTime = after - before;
+            window.console.log('CHANGE DETECTION TIME', runTime);
+            return retValue;
+        };
+    }
+}
