@@ -13,10 +13,9 @@ import { MediaTreeService } from './media-tree.service';
 import { FileModalComponent } from './upload/file-modal.component';
 import { UploadService } from './upload/upload.service';
 
-
 const MEDIA_MENU_ACTION = {
-    DeleteFolder: 'DeleteFolder',
-    NewFileUpload: 'NewFile'
+    NewFileUpload: 'NewFile',
+    DeleteFolder: 'DeleteFolder'
 };
 
 @Component({
@@ -90,8 +89,8 @@ const MEDIA_MENU_ACTION = {
 })
 export class MediaTreeComponent extends SubscriptionDestroy implements OnInit {
 
-    @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
-    @ViewChild(FileModalComponent, { static: false }) fileModal: FileModalComponent;
+    @ViewChild(TreeComponent) cmsTree: TreeComponent;
+    @ViewChild(FileModalComponent) fileModal: FileModalComponent;
 
     folderSelected$: BehaviorSubject<Partial<TreeNode>>;
     refreshFolder$: Subject<Partial<TreeNode>>;

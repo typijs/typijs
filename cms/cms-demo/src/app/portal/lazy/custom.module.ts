@@ -24,10 +24,6 @@ const customRoutes: Routes = [
     declarations: [
         CustomEntryComponent,
         CustomComponent
-    ],
-    entryComponents: [
-        CustomEntryComponent,
-        CustomComponent
     ]
 })
 export class CustomModule {

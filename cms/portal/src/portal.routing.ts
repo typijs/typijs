@@ -60,16 +60,13 @@ export function getPortalRoutes(editorRoutes: Routes[], adminRoutes: Routes[]): 
     exports: [
         RouterModule
     ],
-    entryComponents: [PortalComponent, DashboardComponent, EditorComponent, AdminComponent],
     providers: [
         {
             provide: ROUTES,
             useFactory: getPortalRoutes,
             deps: [EDITOR_ROUTES, ADMIN_ROUTES],
-            useValue: {},
             multi: true
-        },
-        // { provide: ANALYZE_FOR_ENTRY_COMPONENTS, multi: true, useValue: cmsRoutes },
+        }
     ]
 })
 export class PortalRoutingModule { }

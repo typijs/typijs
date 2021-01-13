@@ -7,19 +7,29 @@
 // export * from './shared/libs';
 // export * from './shared/drag-drop';
 
-export * from './shared/libs/ngx-bootstrap/bs-dropdown.module';
-export * from './shared/libs/ngx-bootstrap/buttons.module';
-export * from './shared/libs/ngx-bootstrap/modal.module';
-export * from './shared/libs/ngx-bootstrap/progressbar.module';
-export * from './shared/libs/ngx-bootstrap/tabs.module';
-
-export * from './shared/libs/angular-split/module';
-
 export * from './shared/drag-drop/dnd.module';
+export * from './shared/drag-drop/directives/draggable.directive';
+export * from './shared/drag-drop/directives/droppable.directive';
+export * from './shared/drag-drop/directives/drag-handle.directive';
+export * from './shared/drag-drop/directives/drag-placeholder.directive';
+
 export * from './shared/services/subject.service';
 
 export * from './content/content.module';
+export * from './content/content-create/content-create.component';
+export * from './content/content-update/content-update.component';
+
 export * from './properties/properties.module';
+export * from './properties/text/text.property';
+export * from './properties/textarea/textarea.property';
+export * from './properties/checkbox/checkbox.property';
+export * from './properties/select/dropdown/dropdown.property';
+export * from './properties/select/checkbox-list/checkbox-list.property';
+export * from './properties/xhtml/xhtml.property';
+export * from './properties/object-list/object-list.property';
+export * from './properties/content-area/content-area.property';
+export * from './properties/content-reference/content-reference.property';
+export * from './/properties/image-reference/image-reference.property';
 
 export * from './page/page.module';
 export * from './page/page-tree.component';

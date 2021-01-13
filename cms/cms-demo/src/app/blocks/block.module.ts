@@ -47,9 +47,6 @@ const BLOCKS_COMPONENT = [
         FormsModule,
         AngularCms
     ],
-    entryComponents: [
-        ...BLOCKS_COMPONENT
-    ],
     declarations: [
         ...BLOCKS_COMPONENT
     ]

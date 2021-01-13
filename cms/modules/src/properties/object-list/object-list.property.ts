@@ -53,7 +53,7 @@ import { ObjectListControl } from './object-list.control';
 
 export class ObjectListProperty extends CmsProperty {
     @ViewChild(InsertPointDirective, { static: true }) modelEditHost: InsertPointDirective;
-    @ViewChild(ObjectListControl, { static: false }) propertyGroup: ObjectListControl;
+    @ViewChild(ObjectListControl) propertyGroup: ObjectListControl;
 
     @Input()
     set itemType(itemType: any) {

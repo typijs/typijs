@@ -1,7 +1,8 @@
-import { ElementRef, NgZone, OnDestroy, OnInit, Renderer2, Injector } from '@angular/core';
+import { ElementRef, NgZone, OnDestroy, OnInit, Renderer2, Injector, Directive } from '@angular/core';
 import { BrowserLocationService } from '../browser/browser-location.service';
 import { ngEditMode } from '../constants';
 
+@Directive()
 export abstract class PropertyDirectiveBase implements OnInit, OnDestroy {
 
     ngEditMode: boolean = false;

@@ -70,9 +70,6 @@ export const CORE_PROPERTY_RENDERS = [
         CmsPageRender,
         InsertPointDirective,
         CmsPropertyDirective
-    ],
-    entryComponents: [
-        ...CORE_PROPERTY_RENDERS
     ]
 })
 export class CoreModule {

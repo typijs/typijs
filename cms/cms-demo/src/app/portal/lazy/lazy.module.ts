@@ -11,9 +11,6 @@ import { LazyComponent } from './lazy.component';
     ],
     declarations: [
         LazyComponent,
-    ],
-    entryComponents: [
-        LazyComponent,
     ]
 })
 export class LazyModule { }

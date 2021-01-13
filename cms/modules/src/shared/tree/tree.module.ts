@@ -1,16 +1,14 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
-import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faBars, faCaretDown, faCaretRight, faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
-
-import { CmsBsDropdownModule } from '../libs/ngx-bootstrap/bs-dropdown.module';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { DndModule } from '../drag-drop/dnd.module';
-
-import { TreeNodeComponent } from './components/tree-node.component';
 import { TreeChildrenComponent } from './components/tree-children.component';
+import { TreeNodeComponent } from './components/tree-node.component';
 import { TreeComponent } from './components/tree.component';
+
 
 @NgModule({
     imports: [
@@ -18,7 +16,7 @@ import { TreeComponent } from './components/tree.component';
         FormsModule,
         ReactiveFormsModule,
         FontAwesomeModule,
-        CmsBsDropdownModule,
+        BsDropdownModule,
 
         DndModule
     ],

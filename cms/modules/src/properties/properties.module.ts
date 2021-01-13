@@ -5,9 +5,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faBars, faCube, faFile, faFolder, faHashtag, faImage, faList, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { QuillModule } from 'ngx-quill';
 import { DndModule } from '../shared/drag-drop/dnd.module';
-import { CmsBsDropdownModule } from '../shared/libs/ngx-bootstrap/bs-dropdown.module';
 import { CheckboxPropertyFactory } from './checkbox/checkbox.factory';
 import { CheckboxProperty } from './checkbox/checkbox.property';
 import { ContentAreaControl } from './content-area/content-area.control';
@@ -61,16 +61,13 @@ export const CONTROLS = [
         RouterModule,
         QuillModule,
         FontAwesomeModule,
-        CmsBsDropdownModule,
+        BsDropdownModule,
         CoreModule,
         DndModule
     ],
     declarations: [
         ...PROPERTIES,
         ...CONTROLS
-    ],
-    entryComponents: [
-        ...PROPERTIES
     ],
     exports: [
         ...PROPERTIES

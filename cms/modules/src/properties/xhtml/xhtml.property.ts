@@ -1,14 +1,18 @@
+import { CmsProperty, MediaService, MEDIA_TYPE, PAGE_TYPE } from '@angular-cms/core';
 import { Component, ViewChild } from '@angular/core';
 import { QuillEditorComponent } from 'ngx-quill';
-
-import { CmsProperty, PAGE_TYPE, MEDIA_TYPE, MediaService } from '@angular-cms/core';
+import Quill from 'quill';
 import { DropEvent } from '../../shared/drag-drop/drop-event.model';
-
 import './quill-inline-style';
+
 // Temp comment since this import is not working with --prod in runtime
 // quill Cannot import modules/imageResize. Are you sure it was registered?
 // import './quill-modules';
-import './ngx-quill.extension';
+
+export type InsertOperator = {
+    insert: any
+    attributes: any
+};
 
 @Component({
     selector: '[xhtmlProperty]',
@@ -67,7 +71,7 @@ export class XHtmlProperty extends CmsProperty {
         const insertOps = [
             { insert: { image: src }, attributes: { width: '150' } }
         ];
-        this.editor.insertAtCursorPosition(insertOps);
+        this.insertAtCursorPosition(this.editor.quillEditor, insertOps);
     }
 
     private insertPageUrl(dragData) {
@@ -75,6 +79,17 @@ export class XHtmlProperty extends CmsProperty {
         const insertOps = [
             { insert: name, attributes: { link: linkUrl } }
         ];
-        this.editor.insertAtCursorPosition(insertOps);
+        this.insertAtCursorPosition(this.editor.quillEditor, insertOps);
     }
+
+    private insertAtCursorPosition(quillEditor: Quill, insertOperators: InsertOperator[]) {
+        if (!quillEditor) { return; }
+
+        const operators: any[] = [];
+        const range = quillEditor.getSelection(true);
+        if (range.index > 0) { operators.push({ retain: range.index }); }
+
+        insertOperators.forEach(insert => operators.push(insert));
+        quillEditor.updateContents({ ops: operators } as any);
+    };
 }

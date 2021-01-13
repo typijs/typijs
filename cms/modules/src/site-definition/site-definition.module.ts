@@ -36,11 +36,6 @@ const siteRoutes: Routes = [
         SiteDefinitionListComponent,
         SiteDefinitionMenuComponent,
         SiteDefinitionDetailComponent
-    ],
-    entryComponents: [
-        SiteDefinitionListComponent,
-        SiteDefinitionMenuComponent,
-        SiteDefinitionDetailComponent
     ]
 })
 export class SiteDefinitionModule {
