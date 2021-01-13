@@ -1,7 +1,4 @@
-import { Component, Input } from '@angular/core';
-import { TreeNode } from '../../shared/tree/interfaces/tree-node';
-
-import { UploadService } from './upload.service';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
     selector: 'file-drop',
@@ -11,8 +8,8 @@ import { UploadService } from './upload.service';
                 <input type="file"
                     multiple
                     cmsFileSelect
-                    [name]="uploadFieldName"
-                    (fileSelected)="filesSelected($event)"/>
+                    [name]="'files'"
+                    (fileSelected)="filesDropped.emit($event)"/>
             </div>
         </form>
     `,
@@ -27,15 +24,6 @@ import { UploadService } from './upload.service';
         }
   `]
 })
-
 export class FileDropComponent {
-    @Input() uploadFieldName: string = 'files'; // default field file name
-    @Input() targetFolder: Partial<TreeNode>;
-
-    constructor(private uploadService: UploadService) {
-    }
-
-    filesSelected(files: File[]) {
-        this.uploadService.uploadFiles(files, this.targetFolder);
-    }
+    @Output() filesDropped: EventEmitter<File[]> = new EventEmitter<File[]>();
 }

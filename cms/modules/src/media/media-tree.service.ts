@@ -1,10 +1,9 @@
-import { Media, MediaService, LanguageService, FOLDER_MEDIA } from '@angular-cms/core';
+import { FOLDER_MEDIA, LanguageService, Media, MediaService } from '@angular-cms/core';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
-import { TreeService } from '../shared/tree/interfaces/tree-service';
 import { TreeNode } from '../shared/tree/interfaces/tree-node';
+import { TreeService } from '../shared/tree/interfaces/tree-service';
 import '../types/tree-node-extension';
 
 @Injectable()

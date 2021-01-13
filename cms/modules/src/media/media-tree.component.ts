@@ -1,5 +1,6 @@
 import { Media, MediaService, MEDIA_TYPE, VersionStatus } from '@angular-cms/core';
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 import { BehaviorSubject, merge, Observable, Subject } from 'rxjs';
 import { distinctUntilKeyChanged, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { SubjectService } from '../shared/services/subject.service';
@@ -11,7 +12,7 @@ import { TreeNode } from '../shared/tree/interfaces/tree-node';
 import { TreeService } from '../shared/tree/interfaces/tree-service';
 import { MediaTreeService } from './media-tree.service';
 import { FileModalComponent } from './upload/file-modal.component';
-import { UploadService } from './upload/upload.service';
+import { FileUploadProgress, UploadService } from './upload/upload.service';
 
 const MEDIA_MENU_ACTION = {
     NewFileUpload: 'NewFile',
@@ -22,7 +23,7 @@ const MEDIA_MENU_ACTION = {
     template: `
         <div dragOver class="media-container">
             <div class="drop-zone" dragLeave>
-                <file-drop [uploadFieldName]='"files"' [targetFolder]="selectedFolder"></file-drop>
+                <file-drop (filesDropped)="onFilesDropped($event)"></file-drop>
             </div>
             <as-split direction="vertical" gutterSize="4">
                 <as-split-area size="50">
@@ -81,7 +82,6 @@ const MEDIA_MENU_ACTION = {
                     </div>
                 </as-split-area>
             </as-split>
-            <file-modal></file-modal>
         </div>
         `,
     styleUrls: ['./media-tree.scss'],
@@ -89,8 +89,7 @@ const MEDIA_MENU_ACTION = {
 })
 export class MediaTreeComponent extends SubscriptionDestroy implements OnInit {
 
-    @ViewChild(TreeComponent) cmsTree: TreeComponent;
-    @ViewChild(FileModalComponent) fileModal: FileModalComponent;
+    @ViewChild(TreeComponent, { static: true }) cmsTree: TreeComponent;
 
     folderSelected$: BehaviorSubject<Partial<TreeNode>>;
     refreshFolder$: Subject<Partial<TreeNode>>;
@@ -102,6 +101,7 @@ export class MediaTreeComponent extends SubscriptionDestroy implements OnInit {
 
     constructor(
         private mediaService: MediaService,
+        private modalService: BsModalService,
         private subjectService: SubjectService,
         private uploadService: UploadService) {
         super();
@@ -162,12 +162,30 @@ export class MediaTreeComponent extends SubscriptionDestroy implements OnInit {
         const { action, node } = nodeAction;
         switch (action) {
             case MEDIA_MENU_ACTION.NewFileUpload:
-                this.fileModal.openFileUploadModal(node);
+                this.openFileUploadModal({ uploadFolder: node });
                 break;
             case MEDIA_MENU_ACTION.DeleteFolder:
                 this.folderDelete(node);
                 break;
         }
+    }
+
+    onFilesDropped(files: File[]) {
+        this.uploadService.uploadFiles(files, this.selectedFolder)
+            .subscribe(uploadProgress => {
+                this.openFileUploadModal(uploadProgress);
+            });
+    }
+
+    private openFileUploadModal(uploadProgress: FileUploadProgress) {
+        const config: ModalOptions = {
+            initialState: uploadProgress,
+            backdrop: true, // Show backdrop
+            keyboard: false, // Esc button option
+            ignoreBackdropClick: true // Backdrop click to hide
+        }
+
+        this.modalService.show(FileModalComponent, config);
     }
 
     private folderDelete(nodeToDelete: TreeNode) {

@@ -453,7 +453,7 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
     protected mergeToContentVersion(content: T, contentVersion: V): T & V {
         const contentJson = content && typeof content.toJSON === 'function' ? content.toJSON() : content;
         const contentVersionJson = contentVersion && typeof contentVersion.toJSON === 'function' ? contentVersion.toJSON() : contentVersion;
-        const contentVersionData: T & V = Object.assign(contentVersionJson ? contentVersionJson : {}, contentJson, { versionId: contentVersionJson._id });
+        const contentVersionData: T & V = Object.assign(contentVersionJson ?? {}, contentJson, { versionId: contentVersionJson?._id?.toString() });
         delete contentVersionData.contentLanguages;
         delete contentVersionData.contentId;
         return contentVersionData;

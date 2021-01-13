@@ -93,7 +93,7 @@ export abstract class FolderService<T extends IContentDocument, P extends IConte
             });
         }
 
-        const contentLanguageData: T & P = Object.assign(contentLangJson ? contentLangJson : {} as any, contentJson);
+        const contentLanguageData: T & P = Object.assign(contentLangJson ?? {} as any, contentJson);
 
         delete contentLanguageData.contentLanguages;
         delete contentLanguageData.contentId;
