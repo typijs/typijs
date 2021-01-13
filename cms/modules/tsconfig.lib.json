@@ -4,6 +4,7 @@
     "outDir": "../out-tsc/lib",
     "target": "es2015",
     "declaration": true,
+    "declarationMap": true,
     "inlineSources": true,
     "types": [],
     "lib": [
@@ -12,7 +13,6 @@
     ]
   },
   "angularCompilerOptions": {
-    "annotateForClosureCompiler": true,
     "skipTemplateCodegen": true,
     "strictMetadataEmit": true,
     "fullTemplateTypeCheck": true,

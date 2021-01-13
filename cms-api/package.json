@@ -34,7 +34,7 @@
     "node-cache": "^5.1.2",
     "reflect-metadata": "^0.1.13",
     "sharp": "^0.23.4",
-    "tslib": "^1.11.1",
+    "tslib": "^2.0.0",
     "winston": "^3.2.1",
     "winston-daily-rotate-file": "^4.5.0"
   },
@@ -53,6 +53,6 @@
     "@types/sharp": "^0.17.8",
     "nodemon": "^1.19.2",
     "ts-node": "^8.4.1",
-    "typescript": "^3.8.3"
+    "typescript": "^3.9.7"
   }
 }

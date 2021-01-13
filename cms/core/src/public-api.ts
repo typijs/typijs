@@ -65,3 +65,7 @@ export * from './types/ui-hint';
 export * from './utils/app-injector';
 export * from './utils/route-reuse-strategy';
 export * from './utils/undetected.event';
+
+export * from './pipes/map.pipe';
+export * from './pipes/safe.pipe';
+export * from './pipes/to-img-src.pipe';

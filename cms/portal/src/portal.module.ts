@@ -7,13 +7,13 @@ import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontaweso
 import { faChevronRight, faChevronLeft, faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 
 import { CoreModule } from '@angular-cms/core';
+import { AngularSplitModule } from 'angular-split';
+import { TabsModule } from 'ngx-bootstrap/tabs';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { ButtonsModule } from 'ngx-bootstrap/buttons';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
 import {
-    CmsAngularSplitModule,
-    CmsBsDropdownModule,
-    CmsButtonsModule,
-    CmsTabsModule,
-    CmsProgressbarModule,
-    CmsModalModule,
     DndModule,
     PageModule,
     MediaModule,
@@ -43,12 +43,12 @@ import { QuillModule } from 'ngx-quill';
         ReactiveFormsModule,
 
         FontAwesomeModule,
-        CmsAngularSplitModule.forRoot(),
-        CmsTabsModule.forRoot(),
-        CmsBsDropdownModule.forRoot(),
-        CmsButtonsModule.forRoot(),
-        CmsProgressbarModule.forRoot(),
-        CmsModalModule.forRoot(),
+        AngularSplitModule.forRoot(),
+        TabsModule.forRoot(),
+        BsDropdownModule.forRoot(),
+        ButtonsModule.forRoot(),
+        ProgressbarModule.forRoot(),
+        ModalModule.forRoot(),
         QuillModule.forRoot(),
 
         DndModule.forRoot(),

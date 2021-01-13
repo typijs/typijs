@@ -1,4 +1,4 @@
-import { AfterViewInit, InjectionToken, Input } from '@angular/core';
+import { AfterViewInit, InjectionToken, Input, Directive } from '@angular/core';
 
 import { ContentData } from '../services/content/models/content-data';
 import { ContentTypeService } from '../services/content-type.service';
@@ -10,6 +10,7 @@ import { PAGE_TYPE, BLOCK_TYPE } from '../constants';
  * A function that will be executed when an Page Component is initialized.
  */
 export const PAGE_AFTER_INIT: InjectionToken<(() => void)[]> = new InjectionToken<(() => void)[]>('PAGE_AFTER_INIT');
+@Directive()
 export abstract class CmsComponent<T extends ContentData> implements AfterViewInit {
 
     @Input() currentContent: T;

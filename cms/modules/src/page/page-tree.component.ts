@@ -47,7 +47,7 @@ const PAGE_MENU_ACTION = {
     providers: [PageTreeService, { provide: TreeService, useExisting: PageTreeService }]
 })
 export class PageTreeComponent extends SubscriptionDestroy implements OnInit {
-    @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
+    @ViewChild(TreeComponent) cmsTree: TreeComponent;
 
     root: TreeNode;
     treeConfig: TreeConfig;

@@ -20,9 +20,6 @@ import { NgxWigProperty } from './xhtml/wig.property';
     declarations: [
         NgxWigProperty
     ],
-    entryComponents: [
-        NgxWigProperty
-    ],
     providers: [
         // Override the default xhtml property, using the ngx-wig instead of ngx-quill
         { provide: PROPERTY_FACTORIES, useClass: NgxWigPropertyFactory, multi: true }

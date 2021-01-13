@@ -14,12 +14,13 @@ export const config = {
         port: process.env.PORT || '3000',
         origin: process.env.ORIGIN || 'http://localhost:4200,http://localhost:4202'
     },
+    //mongodb+srv://dbAdmin:<password>@cluster0.6s8ha.azure.mongodb.net/test
     mongdb: {
-        protocol: process.env.MONGO_DB_PROTOCOL || 'mongodb',
-        host: process.env.MONGO_DB_HOST || 'localhost:27017',
-        name: process.env.MONGO_DB_NAME || 'angularcms',
-        user: process.env.MONGO_DB_USER || '',
-        password: process.env.MONGO_DB_PASSWORD || ''
+        protocol: process.env.MONGO_DB_PROTOCOL || 'mongodb+srv',
+        host: process.env.MONGO_DB_HOST || 'cluster0.6s8ha.azure.mongodb.net',
+        name: process.env.MONGO_DB_NAME || 'vegefoods',
+        user: process.env.MONGO_DB_USER || 'dbAdmin',
+        password: process.env.MONGO_DB_PASSWORD || '02091945m@'
     },
     jwt: {
         secret: process.env.JWT_SECRET || '1878B83DE0384DE08D3F69FE1C308D55',
