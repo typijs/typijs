@@ -5,6 +5,7 @@ import { TreeModule } from '../tree';
 import { ConfirmationDialogComponent } from './confirmation-dialog.component';
 import { ContentDialogComponent } from './content-dialog.component';
 import { DialogService } from './dialog.service';
+import { MediaListComponent, MediaTreeDialogComponent } from './media-dialog.component';
 import { PageTreeDialogComponent } from './page-dialog.component';
 
 @NgModule({
@@ -16,6 +17,8 @@ import { PageTreeDialogComponent } from './page-dialog.component';
     declarations: [
         ConfirmationDialogComponent,
         ContentDialogComponent,
+        MediaTreeDialogComponent,
+        MediaListComponent,
         PageTreeDialogComponent,
     ]
 })

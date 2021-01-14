@@ -4,6 +4,7 @@ import { BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 import { Observable } from 'rxjs';
 
 import { ConfirmationDialogComponent } from './confirmation-dialog.component';
+import { MediaTreeDialogComponent } from './media-dialog.component';
 import { PageTreeDialogComponent } from './page-dialog.component';
 
 @Injectable()
@@ -39,4 +40,15 @@ export class DialogService {
         return modalRef.content.getResult();
     }
 
+    openMediaDialog(selectedContentId: string): Observable<CmsImage & ContentReference> {
+        const config: ModalOptions = {
+            initialState: { selectedContentId },
+            animated: false,
+            class: 'modal-lg'
+        }
+
+        const modalRef = this.modalService.show(MediaTreeDialogComponent, config);
+
+        return modalRef.content.getResult();
+    }
 }

@@ -185,7 +185,8 @@ export class MediaTreeComponent extends SubscriptionDestroy implements OnInit {
             backdrop: true, // Show backdrop
             keyboard: false, // Esc button option
             ignoreBackdropClick: true, // Backdrop click to hide,
-            animated: false
+            animated: false,
+            class: 'modal-md'
         }
 
         this.modalService.show(FileModalComponent, config);

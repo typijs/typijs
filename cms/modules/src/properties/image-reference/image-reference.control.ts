@@ -1,6 +1,7 @@
+import { CmsImage, ContentReference, MEDIA_TYPE } from '@angular-cms/core';
 import { Component, forwardRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { CmsImage, MEDIA_TYPE } from '@angular-cms/core';
+import { DialogService } from '../../shared/dialog/dialog.service';
 import { DropEvent } from '../../shared/drag-drop/drop-event.model';
 import { CmsControl } from '../cms-control';
 
@@ -13,7 +14,8 @@ const IMAGE_REFERENCE_VALUE_ACCESSOR = {
 @Component({
     selector: 'image-reference',
     template: `
-        <div class="image-reference border">
+    <div class="d-flex align-items-center">
+        <div class="image-reference border w-100 mr-1">
             <div class="p-1 drop-area" droppable [dropScope]="isDropAllowed" (onDrop)="onDropImage($event)">
                 <div class="d-flex align-items-center p-1 bg-light rounded" *ngIf="model">
                     <img class="mr-2 rounded" [src]="model.thumbnail | toImgSrc" />
@@ -23,6 +25,8 @@ const IMAGE_REFERENCE_VALUE_ACCESSOR = {
                 <div dragPlaceholder></div>
             </div>
         </div>
+        <button type="button" class="btn btn-primary ml-auto" (click)="openMediaDialog()">...</button>
+    </div>
     `,
     styles: [`
         .image-reference .drop-area {
@@ -32,22 +36,26 @@ const IMAGE_REFERENCE_VALUE_ACCESSOR = {
     providers: [IMAGE_REFERENCE_VALUE_ACCESSOR]
 })
 export class ImageReferenceControl extends CmsControl {
-    model: CmsImage;
+    model: CmsImage & ContentReference;
 
-    constructor() {
+    constructor(private dialogService: DialogService) {
         super();
     }
 
-    writeValue(value: CmsImage): void {
+    writeValue(value: CmsImage & ContentReference): void {
         this.model = value;
     }
 
     onDropImage(e: DropEvent) {
-        const { name, linkUrl, thumbnail } = e.dragData;
-        this.model = <CmsImage>{
+        const { name, linkUrl, thumbnail, _id, id, type, contentType } = e.dragData;
+        this.model = <CmsImage & ContentReference>{
             alt: name,
             src: linkUrl,
-            thumbnail
+            thumbnail,
+            id: _id ? _id : id,
+            type,
+            name,
+            contentType
         };
         this.onChange(this.model);
     }
@@ -61,5 +69,14 @@ export class ImageReferenceControl extends CmsControl {
 
     removeImage() {
         this.model = null;
+    }
+
+    openMediaDialog() {
+        this.dialogService.openMediaDialog(this.model?.id).subscribe(
+            selectedMedia => {
+                this.model = selectedMedia;
+                this.onChange(this.model);
+            }
+        );
     }
 }

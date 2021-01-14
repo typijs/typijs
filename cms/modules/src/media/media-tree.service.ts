@@ -1,26 +1,9 @@
-import { FOLDER_MEDIA, LanguageService, Media, MediaService } from '@angular-cms/core';
+import { LanguageService, MediaService } from '@angular-cms/core';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { TreeNode } from '../shared/tree/interfaces/tree-node';
-import { TreeService } from '../shared/tree/interfaces/tree-service';
+import { MediaTreeReadonlyService } from '../shared/dialog/media-dialog.component';
 import '../types/tree-node-extension';
 
 @Injectable()
-export class MediaTreeService implements TreeService {
-
-    constructor(private mediaService: MediaService, private languageService: LanguageService) { }
-
-    getNode(nodeId: string): Observable<TreeNode> {
-        const language = this.languageService.getLanguageParam();
-        return this.mediaService.getContent(nodeId, language).pipe(
-            map(media => TreeNode.createInstanceFromContent(media, FOLDER_MEDIA)));
-    }
-
-    loadChildren(parentNodeId: string): Observable<TreeNode[]> {
-        return this.mediaService.getFolderChildren(parentNodeId).pipe(
-            map((childFolders: Media[]) => {
-                return childFolders.map(folder => TreeNode.createInstanceFromContent(folder, FOLDER_MEDIA));
-            }));
-    }
+export class MediaTreeService extends MediaTreeReadonlyService {
+    constructor(mediaService: MediaService, languageService: LanguageService) { super(mediaService, languageService); }
 }

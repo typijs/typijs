@@ -27,21 +27,21 @@ export class ConfirmationDialogComponent {
     @Input() message: string;
     @Input() btnYesText: string = 'Yes';
     @Input() btnNoText: string = 'No';
-    private isConfirm: ReplaySubject<boolean> = new ReplaySubject(1);
+    private isConfirm$: ReplaySubject<boolean> = new ReplaySubject(1);
 
     constructor(public bsModalRef: BsModalRef) { }
 
     confirm(): void {
-        this.isConfirm.next(true);
+        this.isConfirm$.next(true);
         this.bsModalRef.hide();
     }
 
     decline(): void {
-        this.isConfirm.next(false);
+        this.isConfirm$.next(false);
         this.bsModalRef.hide();
     }
 
     getResult(): Observable<boolean> {
-        return this.isConfirm.asObservable().pipe(take(1));
+        return this.isConfirm$.asObservable().pipe(take(1));
     }
 }
