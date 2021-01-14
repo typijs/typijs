@@ -53,7 +53,7 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
 
         if (currentVersion.childItems) {
             currentVersion.childItems.forEach(item => {
-                const childContentLang = item.content.contentLanguages.find(contentLanguage => contentLanguage.language === language);
+                const childContentLang = item.content?.contentLanguages?.find(contentLanguage => contentLanguage.language === language);
                 item.content = this.mergeToContentLanguage(item.content, childContentLang)
             })
         }

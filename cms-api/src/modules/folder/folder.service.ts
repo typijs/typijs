@@ -77,8 +77,6 @@ export abstract class FolderService<T extends IContentDocument, P extends IConte
         })
     }
 
-
-
     protected mergeToContentLanguage(content: T, contentLang: P): T & P {
         const contentJson: T = content && typeof content.toJSON === 'function' ? content.toJSON() : content;
         const contentLangJson: P = contentLang && typeof contentLang.toJSON === 'function' ? contentLang.toJSON() : contentLang;
@@ -86,10 +84,8 @@ export abstract class FolderService<T extends IContentDocument, P extends IConte
         if (contentLangJson && contentLangJson.childItems) {
             const language = contentLangJson.language;
             contentLangJson.childItems.forEach(childItem => {
-                if (childItem.content.contentLanguages) {
-                    const publishedItem = childItem.content.contentLanguages.find((cLang: P) => cLang.language === language && cLang.status == VersionStatus.Published) as P;
-                    childItem.content = this.mergeToContentLanguage(childItem.content, publishedItem);
-                }
+                const publishedItem = childItem.content?.contentLanguages?.find((cLang: P) => cLang.language === language && cLang.status == VersionStatus.Published) as P;
+                childItem.content = this.mergeToContentLanguage(childItem.content, publishedItem);
             });
         }
 
