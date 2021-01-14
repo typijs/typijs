@@ -32,11 +32,10 @@ export * from './properties/xhtml/xhtml.property';
 export * from './properties/object-list/object-list.property';
 export * from './properties/content-area/content-area.property';
 export * from './properties/content-reference/content-reference.property';
-export * from './/properties/image-reference/image-reference.property';
+export * from './properties/image-reference/image-reference.property';
 
 export * from './page/page.module';
 export * from './page/page-tree.component';
-export * from './page/page-tree-readonly.component';
 
 export * from './block/block.module';
 export * from './block/block-tree.component';

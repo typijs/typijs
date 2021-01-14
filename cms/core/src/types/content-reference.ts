@@ -3,7 +3,6 @@ import { TypeOfContent } from "./index";
 /**
  * Contains information to reference `ContentData` instance
  */
-
 export class ContentReference {
 
     constructor(contentRef: Partial<ContentReference>) {

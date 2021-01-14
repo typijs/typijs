@@ -11,7 +11,6 @@ import { ContentCreateComponent } from '../content/content-create/content-create
 import { DndModule } from '../shared/drag-drop/dnd.module';
 import { TreeModule } from '../shared/tree/tree.module';
 import { PageCrudService } from './page-crud.service';
-import { PageTreeReadonlyComponent } from './page-tree-readonly.component';
 import { PageTreeComponent } from './page-tree.component';
 import { CONTENT_VERSION_SERVICES } from '../content-version/content-version.service';
 import { PageVersionService } from './page-version.service';
@@ -39,7 +38,6 @@ const pageRoutes: Routes = [
     declarations: [
         DefaultPageComponent,
         PageTreeComponent,
-        PageTreeReadonlyComponent
     ]
 })
 export class PageModule {
@@ -56,10 +54,6 @@ export class PageModule {
                 { provide: EDITOR_ROUTES, useValue: pageRoutes, multi: true },
                 {
                     provide: EDITOR_WIDGETS, useValue: { group: 'Pages', position: CmsWidgetPosition.Left, component: PageTreeComponent, order: 10 },
-                    multi: true
-                },
-                {
-                    provide: ADMIN_WIDGETS, useValue: { group: 'Pages', position: CmsWidgetPosition.Right, component: PageTreeReadonlyComponent, order: 10 },
                     multi: true
                 }
             ]
