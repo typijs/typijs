@@ -29,11 +29,17 @@ export class ContentDialogComponent {
     @Input() title: string;
     @Input() disableSelectButton: boolean = false;
     @Output() confirmSelect: EventEmitter<void> = new EventEmitter();
+    @Output() cancel: EventEmitter<void> = new EventEmitter();
 
     constructor(public bsModalRef: BsModalRef) { }
 
     onConfirmSelect() {
         this.confirmSelect.emit();
+        this.bsModalRef.hide();
+    }
+
+    onCancel() {
+        this.cancel.emit();
         this.bsModalRef.hide();
     }
 }
