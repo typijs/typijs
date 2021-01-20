@@ -3,8 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
-import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faBars, faCube, faCubes, faFolder, faFolderPlus, faPlus, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AngularSplitModule } from 'angular-split';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { CONTENT_VERSION_SERVICES } from '../content-version/content-version.service';
@@ -41,10 +40,6 @@ const blockRoutes: Routes = [
     ]
 })
 export class BlockModule {
-    constructor(library: FaIconLibrary) {
-        library.addIcons(faFolder, faCubes, faCube, faFolderPlus, faPlusSquare, faBars, faPlus);
-    }
-
     static forRoot(): ModuleWithProviders<BlockModule> {
         return {
             ngModule: BlockModule,

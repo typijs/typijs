@@ -1,10 +1,9 @@
-import { ADMIN_WIDGETS, CmsWidgetPosition, CoreModule, EDITOR_ROUTES, EDITOR_WIDGETS } from '@angular-cms/core';
+import { CmsWidgetPosition, CoreModule, EDITOR_ROUTES, EDITOR_WIDGETS } from '@angular-cms/core';
 import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
-import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faFile, faFolder, faPlus, faSitemap } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ContentUpdateComponent } from '../content/content-update/content-update.component';
 import { CONTENT_CRUD_SERVICES } from '../content/content-crud.service';
 import { ContentCreateComponent } from '../content/content-create/content-create.component';
@@ -41,10 +40,6 @@ const pageRoutes: Routes = [
     ]
 })
 export class PageModule {
-    constructor(library: FaIconLibrary) {
-        library.addIcons(faFolder, faSitemap, faFile, faPlus);
-    }
-
     static forRoot(): ModuleWithProviders<PageModule> {
         return {
             ngModule: PageModule,

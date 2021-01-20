@@ -52,3 +52,5 @@ export * from './content-type/content-type-detail.component';
 
 export * from './content-version/content-version.module';
 export * from './content-version/content-version.component';
+
+export * from './shared/font-icons';

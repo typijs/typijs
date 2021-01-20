@@ -35,7 +35,8 @@ export class PageTreeReadonlyService implements TreeService {
                 [root]="root"
                 (nodeSelected)="onContentSelected($event)">
                 <ng-template #treeNodeTemplate let-node>
-                    <i class="fa fa-folder-o"></i>
+                    <fa-icon class="mr-1" *ngIf="node.id == '0'" icon="sitemap"></fa-icon>
+                    <fa-icon class="mr-1" *ngIf="node.id != '0'" icon="file"></fa-icon>
                     <span>{{node.name}}</span>
                 </ng-template>
             </cms-tree>

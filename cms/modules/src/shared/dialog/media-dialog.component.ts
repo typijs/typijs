@@ -57,7 +57,8 @@ export class MediaListComponent {
                     [root]="root"
                     (nodeSelected)="folderSelected$.next($event)">
                     <ng-template #treeNodeTemplate let-node>
-                        <i class="fa fa-folder-o"></i>
+                        <fa-icon class="mr-1" *ngIf="node.id == 0" icon="photo-video"></fa-icon>
+                        <fa-icon class="mr-1" *ngIf="node.id != 0" icon="folder"></fa-icon>
                         <span>{{node.name}}</span>
                     </ng-template>
                 </cms-tree>

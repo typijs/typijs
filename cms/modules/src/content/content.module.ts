@@ -3,8 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faDesktop, faExternalLinkAlt, faFileExport, faList, faSave } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AngularSplitModule } from 'angular-split';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
@@ -38,10 +37,6 @@ import { ContentUpdateComponent } from './content-update/content-update.componen
     ]
 })
 export class ContentModule {
-    constructor(library: FaIconLibrary) {
-        library.addIcons(faList, faDesktop, faSave, faFileExport, faExternalLinkAlt);
-    }
-
     static forRoot(): ModuleWithProviders<ContentModule> {
         return {
             ngModule: ContentModule,

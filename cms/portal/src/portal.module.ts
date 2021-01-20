@@ -23,7 +23,8 @@ import {
     ContentModule,
     SiteDefinitionModule,
     ContentTypeModule,
-    ContentVersionModule
+    ContentVersionModule,
+    ICONS
 } from '@angular-cms/modules';
 
 import { CmsHeaderComponent } from './shared/components/cms-header/cms-header.component';
@@ -77,7 +78,7 @@ import { QuillModule } from 'ngx-quill';
 })
 export class CmsPortalModule {
     constructor(library: FaIconLibrary) {
-        library.addIcons(faChevronRight, faChevronLeft, faAngleUp, faAngleDown);
+        library.addIcons(...ICONS, faChevronRight, faChevronLeft, faAngleUp, faAngleDown);
     }
 
     static forRoot(): ModuleWithProviders<CmsPortalModule> {

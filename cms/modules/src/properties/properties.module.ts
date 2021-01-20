@@ -3,8 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faBars, faCube, faFile, faFolder, faHashtag, faImage, faList, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { QuillModule } from 'ngx-quill';
 import { DndModule } from '../shared/drag-drop/dnd.module';
@@ -74,10 +73,6 @@ export const CONTROLS = [
     ]
 })
 export class PropertiesModule {
-    constructor(library: FaIconLibrary) {
-        library.addIcons(faFolder, faFile, faImage, faCube, faBars, faHashtag, faList, faTimes);
-    }
-
     static forRoot(): ModuleWithProviders<PropertiesModule> {
         return {
             ngModule: PropertiesModule,

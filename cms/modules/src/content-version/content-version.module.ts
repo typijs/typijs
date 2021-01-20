@@ -2,8 +2,7 @@ import { CmsWidgetPosition, CoreModule, EDITOR_WIDGETS } from '@angular-cms/core
 import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faDesktop, faExternalLinkAlt, faFileExport, faList, faSave } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { CrudModule } from '../shared/crud/crud.module';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { TabsModule } from 'ngx-bootstrap/tabs';
@@ -27,10 +26,6 @@ import { ContentVersionServiceResolver } from './content-version.service';
     ]
 })
 export class ContentVersionModule {
-    constructor(library: FaIconLibrary) {
-        library.addIcons(faList, faDesktop, faSave, faFileExport, faExternalLinkAlt);
-    }
-
     static forRoot(): ModuleWithProviders<ContentVersionModule> {
         return {
             ngModule: ContentVersionModule,

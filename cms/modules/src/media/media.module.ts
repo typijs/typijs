@@ -3,8 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
-import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faFolder, faFolderPlus, faPhotoVideo } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AngularSplitModule } from 'angular-split';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -51,10 +50,6 @@ const mediaRoutes: Routes = [
     ]
 })
 export class MediaModule {
-    constructor(library: FaIconLibrary) {
-        library.addIcons(faFolder, faPhotoVideo, faFolderPlus);
-    }
-
     static forRoot(): ModuleWithProviders<MediaModule> {
         return {
             ngModule: MediaModule,
