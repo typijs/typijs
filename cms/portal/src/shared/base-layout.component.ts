@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, OnInit, QueryList, ViewChild, ComponentRef, AfterViewInit, OnDestroy, Directive } from '@angular/core';
 
-import { CmsComponentConfig, CmsTab, CmsWidgetPosition, InsertPointDirective } from '@angular-cms/core';
+import { CmsComponentConfig, CmsTab, CmsWidgetPosition, InsertPointDirective, sortByNumber } from '@angular-cms/core';
 
 import { WidgetService } from '../services/widget.service';
 import { CmsLayoutComponent } from './components/cms-layout/cms-layout.component';
@@ -10,17 +10,16 @@ export abstract class BaseLayoutComponent implements OnInit, AfterViewInit, OnDe
     @ViewChild(CmsLayoutComponent) private cmsLayout: CmsLayoutComponent;
 
     private insertPoints: QueryList<InsertPointDirective>;
-    private componentRefs: ComponentRef<any>[] = [];
-    protected cmsWidgets: CmsComponentConfig[] = [];
+    private componentRefs: ComponentRef<any>[];
+    protected cmsWidgets: CmsComponentConfig[];
 
     rightTabs: CmsTab[] = [];
     leftTabs: CmsTab[] = [];
 
-    constructor(private _changeDetectionRef: ChangeDetectorRef, private widgetService: WidgetService) {
-        // this.cmsWidgets = this.getCmsWidgets();
+    constructor(private _changeDetectionRef: ChangeDetectorRef, private widgetService: WidgetService, widgets: CmsComponentConfig[]) {
+        this.componentRefs = [];
+        this.cmsWidgets = widgets.sort(sortByNumber('order', 'asc'));;
     }
-
-    protected abstract getCmsWidgets(): CmsComponentConfig[];
 
     ngOnInit() {
         this.rightTabs = this.getTabsForRightPanel();
