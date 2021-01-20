@@ -29,7 +29,7 @@ export class DynamicFormService {
             if (!formControls.hasOwnProperty(property.name)) {
                 formControls[property.name] = [formData[property.name], validators];
             } else {
-                console.warn(`Duplicate the property ${property.name} in form. Consider change the name of this property to avoid warning`);
+                console.warn(`Duplicate the property '${property.name}' in form. Consider change the name of this property to avoid warning`);
             }
         });
 
@@ -45,7 +45,7 @@ export class DynamicFormService {
                 const propertyComponent = propertyFactory.createPropertyComponent(property, formGroup);
                 propertyControls.push(propertyComponent);
             } catch (error) {
-                console.error(`Error on creating the component for property ${property.name}`);
+                console.error(`Error on creating the component for property '${property.name}'`);
                 console.error(error);
             }
         });

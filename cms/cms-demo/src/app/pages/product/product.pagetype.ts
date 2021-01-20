@@ -3,6 +3,20 @@ import { StandardPage } from '../standard/standard.pagetype';
 import { ProductPartialComponent } from './product-partial.component';
 import { ProductComponent } from './product.component';
 
+export class Variant {
+    @Property({
+        displayName: 'Variant Code',
+        displayType: UIHint.Text
+    })
+    code: string;
+
+    @Property({
+        displayName: 'Size',
+        displayType: UIHint.Text
+    })
+    size: string;
+}
+
 @PageType({
     displayName: 'Product Page',
     componentRef: ProductComponent,
@@ -50,6 +64,7 @@ export class ProductPage extends StandardPage {
     @Property({
         displayName: 'Variants',
         displayType: UIHint.ObjectList,
+        objectListItemType: Variant
     })
-    variants: string;
+    variants: Variant[];
 }

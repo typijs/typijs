@@ -19,6 +19,7 @@ import { ContentReferenceProperty } from './content-reference/content-reference.
 import { ImageReferenceControl } from './image-reference/image-reference.control';
 import { ImagePropertyFactory } from './image-reference/image-reference.factory';
 import { ImageReferenceProperty } from './image-reference/image-reference.property';
+import { ObjectDetailsComponent } from './object-list/object-details.component';
 import { ObjectListControl } from './object-list/object-list.control';
 import { ObjectListFactory } from './object-list/object-list.factory';
 import { ObjectListProperty } from './object-list/object-list.property';
@@ -66,6 +67,7 @@ export const CONTROLS = [
         DndModule
     ],
     declarations: [
+        ObjectDetailsComponent,
         ...PROPERTIES,
         ...CONTROLS
     ],
