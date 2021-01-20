@@ -7,7 +7,7 @@ import { ServiceBlock } from './service.blocktype';
     host: { 'class': 'col-md-3 text-center d-flex align-self-stretch ftco-animate' },
     template: `
         <div class="media block-6 services mb-md-0 mb-4">
-            <div class="icon bg-color-1 active d-flex justify-content-center align-items-center mb-2">
+            <div class="icon {{currentContent.background}} active d-flex justify-content-center align-items-center mb-2">
                 <span [class]="currentContent.icon"></span>
             </div>
             <div class="media-body">

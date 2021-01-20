@@ -8,6 +8,8 @@ import { PAGE_TYPE, BLOCK_TYPE } from '../constants';
 
 /**
  * A function that will be executed when an Page Component is initialized.
+ *
+ * The function can be return the promise
  */
 export const PAGE_AFTER_INIT: InjectionToken<(() => void)[]> = new InjectionToken<(() => void)[]>('PAGE_AFTER_INIT');
 @Directive()
