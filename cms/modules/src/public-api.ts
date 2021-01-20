@@ -17,6 +17,7 @@ export * from './shared/dialog/dialog.module';
 export * from './shared/dialog/dialog.service';
 
 export * from './shared/services/subject.service';
+export * from './shared/services/dynamic-form.service';
 
 export * from './content/content.module';
 export * from './content/content-create/content-create.component';

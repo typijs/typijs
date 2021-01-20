@@ -6,10 +6,11 @@ import {
     sortByString, TypeOfContent, TypeOfContentEnum
 } from '@angular-cms/core';
 import { AfterViewInit, ChangeDetectorRef, Component, ComponentRef, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, UrlSegment } from '@angular/router';
 import { combineLatest, Observable, of } from 'rxjs';
 import { auditTime, catchError, concatMap, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { DynamicFormService } from '../../shared/services/dynamic-form.service';
 import { SubjectService } from '../../shared/services/subject.service';
 import { SubscriptionDestroy } from '../../shared/subscription-destroy';
 import { ContentCrudService, ContentCrudServiceResolver, ContentInfo } from '../content-crud.service';
@@ -44,8 +45,8 @@ export class ContentUpdateComponent extends SubscriptionDestroy implements OnIni
     constructor(
         private contentServiceResolver: ContentCrudServiceResolver,
         private propertyFactoryResolver: CmsPropertyFactoryResolver,
+        private dynamicFormService: DynamicFormService,
         private subjectService: SubjectService,
-        private formBuilder: FormBuilder,
         private route: ActivatedRoute,
         private changeDetectionRef: ChangeDetectorRef
     ) { super(); }
@@ -187,30 +188,12 @@ export class ContentUpdateComponent extends SubscriptionDestroy implements OnIni
     /**
      * Creates Reactive Form from the properties of content
      * @param properties
-     * @returns form group
+     * @returns FormGroup instance
      */
     private createFormGroup(content: ContentExt, properties: ContentTypeProperty[]): FormGroup {
-        if (properties) {
-            const formModel = content.properties ? content.properties : {};
-            const formControls: { [key: string]: any } = this.createDefaultFormControls(content);
-
-            properties.forEach(property => {
-                const validators = [];
-                if (property.metadata.validates) {
-                    property.metadata.validates.forEach(validate => {
-                        validators.push(validate.validateFn);
-                    });
-                }
-                // make sure form controls don't have the property
-                if (!formControls.hasOwnProperty(property.name)) {
-                    formControls[property.name] = [formModel[property.name], validators];
-                } else {
-                    console.warn(`Duplicate the property ${property.name} in form. Consider change the name of this property to avoid warning`);
-                }
-            });
-            return this.formBuilder.group(formControls);
-        }
-        return new FormGroup({});
+        const formControls: { [key: string]: any } = this.createDefaultFormControls(content);
+        const formModel = content.properties ? content.properties : {};
+        return this.dynamicFormService.createFormGroup(properties, formModel, formControls);
     }
 
 
@@ -241,17 +224,14 @@ export class ContentUpdateComponent extends SubscriptionDestroy implements OnIni
             const viewContainerRef = this.insertPoints.find(x => x.name === tab.name).viewContainerRef;
             viewContainerRef.clear();
 
-            properties.filter(x => (x.metadata.groupName === tab.title || (!x.metadata.groupName && tab.title === this.defaultGroup)))
-                .forEach(property => {
-                    try {
-                        const propertyFactory = this.propertyFactoryResolver.resolvePropertyFactory(property.metadata.displayType);
-                        const propertyComponent = propertyFactory.createPropertyComponent(property, this.contentFormGroup);
-                        viewContainerRef.insert(propertyComponent.hostView);
-                        propertyControls.push(propertyComponent);
-                    } catch (error) {
-                        console.error(error);
-                    }
-                });
+            const propertiesInTab = properties.filter(x => (x.metadata.groupName === tab.title || (!x.metadata.groupName && tab.title === this.defaultGroup)));
+            const fieldComponentsInTab = this.dynamicFormService.createFormFieldComponents(propertiesInTab, this.contentFormGroup);
+
+            fieldComponentsInTab.forEach(fieldCmp => {
+                viewContainerRef.insert(fieldCmp.hostView);
+                propertyControls.push(fieldCmp);
+            });
+
         });
 
         return propertyControls;

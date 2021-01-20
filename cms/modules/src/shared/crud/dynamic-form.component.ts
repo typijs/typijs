@@ -1,13 +1,14 @@
-import { Component, OnInit, ViewChild, OnDestroy, AfterViewInit, ChangeDetectorRef, Input, ComponentRef, Output, EventEmitter } from '@angular/core';
-import { InsertPointDirective, CmsPropertyFactoryResolver, ContentTypeService, ContentTypeProperty, CmsObject } from '@angular-cms/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { CmsObject, ContentTypeProperty, ContentTypeService, InsertPointDirective } from '@angular-cms/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ComponentRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, ViewContainerRef } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { DynamicFormService } from '../services/dynamic-form.service';
 
 @Component({
     selector: 'cms-form',
     templateUrl: 'dynamic-form.component.html'
 })
 export class DynamicFormComponent implements OnInit, OnDestroy, AfterViewInit {
-    @ViewChild(InsertPointDirective, { static: true }) insertPoint: InsertPointDirective;
+    @ViewChild(InsertPointDirective, { static: true, read: ViewContainerRef }) formContainerRef: ViewContainerRef;
 
     @Input() modelType: new () => any;
     @Input()
@@ -20,7 +21,7 @@ export class DynamicFormComponent implements OnInit, OnDestroy, AfterViewInit {
             if (this.contentFormGroup) {
                 this.contentFormGroup.patchValue(this._formData);
             } else {
-                this.contentFormGroup = this.createFormGroup(this.contentTypeProperties);
+                this.contentFormGroup = this.dynamicFormService.createFormGroup(this.contentTypeProperties, this._formData);
             }
         }
     }
@@ -33,27 +34,28 @@ export class DynamicFormComponent implements OnInit, OnDestroy, AfterViewInit {
     private contentTypeProperties: ContentTypeProperty[] = [];
 
     constructor(
-        private propertyFactoryResolver: CmsPropertyFactoryResolver,
-        private formBuilder: FormBuilder,
         private changeDetectionRef: ChangeDetectorRef,
-        private contentTypeService: ContentTypeService
+        private contentTypeService: ContentTypeService,
+        private dynamicFormService: DynamicFormService
     ) { }
 
     ngOnInit() {
         // Get property info
         this.contentTypeProperties = this.contentTypeService.getContentTypeProperties(this.modelType);
-        this.contentFormGroup = this.createFormGroup(this.contentTypeProperties);
+        this.contentFormGroup = this.dynamicFormService.createFormGroup(this.contentTypeProperties, this.formData);
     }
 
     ngAfterViewInit(): void {
         // Create form
-        this.componentRefs = this.createPropertyComponents(this.contentTypeProperties);
+        this.componentRefs = this.dynamicFormService.createFormFieldComponents(this.contentTypeProperties, this.contentFormGroup);
+        this.formContainerRef.clear();
+        this.componentRefs.forEach(component => this.formContainerRef.insert(component.hostView));
         this.changeDetectionRef.detectChanges();
     }
 
     ngOnDestroy(): void {
-        if (this.insertPoint) {
-            this.insertPoint.viewContainerRef.clear();
+        if (this.formContainerRef) {
+            this.formContainerRef.clear();
         }
 
         if (this.componentRefs) {
@@ -65,44 +67,5 @@ export class DynamicFormComponent implements OnInit, OnDestroy, AfterViewInit {
     onSubmit(formValue: any): void {
         const submittedValue = Object.assign(this._formData, formValue);
         this.submit.emit(submittedValue);
-    }
-
-    private createFormGroup(properties: ContentTypeProperty[]): FormGroup {
-        if (properties) {
-            const formModel = this.formData ? this.formData : {};
-            const formControls: { [key: string]: any } = {};
-
-            properties.forEach(property => {
-                const validators = [];
-                if (property.metadata.validates) {
-                    property.metadata.validates.forEach(validate => {
-                        validators.push(validate.validateFn);
-                    });
-                }
-                formControls[property.name] = [formModel[property.name], validators];
-            });
-            return this.formBuilder.group(formControls);
-        }
-        return new FormGroup({});
-    }
-
-    private createPropertyComponents(properties: ContentTypeProperty[]): ComponentRef<any>[] {
-        const propertyControls: ComponentRef<any>[] = [];
-
-        const viewContainerRef = this.insertPoint.viewContainerRef;
-        viewContainerRef.clear();
-
-        properties.forEach(property => {
-            try {
-                const propertyFactory = this.propertyFactoryResolver.resolvePropertyFactory(property.metadata.displayType);
-                const propertyComponent = propertyFactory.createPropertyComponent(property, this.contentFormGroup);
-                viewContainerRef.insert(propertyComponent.hostView);
-                propertyControls.push(propertyComponent);
-            } catch (error) {
-                console.error(error);
-            }
-        });
-
-        return propertyControls;
     }
 }
