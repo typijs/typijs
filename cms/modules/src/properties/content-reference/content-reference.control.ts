@@ -1,11 +1,11 @@
 import { ContentReference, PAGE_TYPE } from '@angular-cms/core';
 import { Component, forwardRef, Input } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { DialogService } from '../../shared/dialog/dialog.service';
 import { DropEvent } from '../../shared/drag-drop/drop-event.model';
 import { SubjectService } from '../../shared/services/subject.service';
 import { CmsControl } from '../cms-control';
 import { ContentAreaItem } from '../content-area/content-area.model';
+import { ContentModalService } from '../../content-modal/content-modal.service';
 
 
 const CONTENT_REFERENCE_VALUE_ACCESSOR = {
@@ -42,7 +42,7 @@ export class ContentReferenceControl extends CmsControl {
     @Input() allowedTypes: string[];
     model: ContentReference;
 
-    constructor(private subjectService: SubjectService, private dialogService: DialogService) {
+    constructor(private subjectService: SubjectService, private contentModalService: ContentModalService) {
         super();
     }
 
@@ -82,7 +82,7 @@ export class ContentReferenceControl extends CmsControl {
     }
 
     openPageDialog() {
-        this.dialogService.openPageDialog(this.model?.id).subscribe(
+        this.contentModalService.openPageDialog(this.model?.id).subscribe(
             contentRef => {
                 this.model = contentRef;
                 this.onChange(this.model);

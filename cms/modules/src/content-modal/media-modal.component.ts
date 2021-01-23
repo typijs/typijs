@@ -2,9 +2,9 @@ import { CmsImage, ContentReference, FOLDER_MEDIA, LanguageService, Media, Media
 import { Component, EventEmitter, Injectable, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
 import { map, switchMap, take } from 'rxjs/operators';
-import { TreeComponent } from '../tree/components/tree.component';
-import { TreeNode } from '../tree/interfaces/tree-node';
-import { TreeService } from '../tree/interfaces/tree-service';
+import { TreeComponent } from '../shared/tree/components/tree.component';
+import { TreeNode } from '../shared/tree/interfaces/tree-node';
+import { TreeService } from '../shared/tree/interfaces/tree-service';
 
 @Injectable()
 export class MediaTreeReadonlyService implements TreeService {
@@ -47,9 +47,14 @@ export class MediaListComponent {
 }
 
 @Component({
-    selector: 'media-tree-dialog',
+    selector: 'media-tree-modal',
     template: `
-    <content-dialog (confirmSelect)="onConfirmSelect()" [title]="'Select the file'" [disableSelectButton]="!selectedContent">
+    <cms-modal
+        [title]="'Select the file'"
+        [okButtonText]="'Select'"
+        [bodyClass]="'overflow-auto p-2'"
+        [disableOkButton]="!selectedContent"
+        (ok)="onConfirmSelect()">
         <div class="d-flex h-100">
             <div class='w-50 h-100 overflow-auto'>
                 <cms-tree
@@ -67,11 +72,11 @@ export class MediaListComponent {
                 <media-list [medias]="medias$ | async" (mediaSelect)="onMediaSelected($event)"></media-list>
             </div>
         </div>
-    </content-dialog>
+    </cms-modal>
     `,
     providers: [MediaTreeReadonlyService, { provide: TreeService, useExisting: MediaTreeReadonlyService }]
 })
-export class MediaTreeDialogComponent implements OnInit {
+export class MediaTreeModalComponent implements OnInit {
     @ViewChild(TreeComponent, { static: true }) cmsTree: TreeComponent;
 
     @Input() selectedContentId: string;

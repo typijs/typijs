@@ -1,9 +1,9 @@
 import { CmsImage, ContentReference, MEDIA_TYPE } from '@angular-cms/core';
 import { Component, forwardRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { DialogService } from '../../shared/dialog/dialog.service';
 import { DropEvent } from '../../shared/drag-drop/drop-event.model';
 import { CmsControl } from '../cms-control';
+import { ContentModalService } from '../../content-modal/content-modal.service';
 
 const IMAGE_REFERENCE_VALUE_ACCESSOR = {
     provide: NG_VALUE_ACCESSOR,
@@ -38,7 +38,7 @@ const IMAGE_REFERENCE_VALUE_ACCESSOR = {
 export class ImageReferenceControl extends CmsControl {
     model: CmsImage & ContentReference;
 
-    constructor(private dialogService: DialogService) {
+    constructor(private contentModalService: ContentModalService) {
         super();
     }
 
@@ -72,7 +72,7 @@ export class ImageReferenceControl extends CmsControl {
     }
 
     openMediaDialog() {
-        this.dialogService.openMediaDialog(this.model?.id).subscribe(
+        this.contentModalService.openMediaDialog(this.model?.id).subscribe(
             selectedMedia => {
                 this.model = selectedMedia;
                 this.onChange(this.model);

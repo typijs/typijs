@@ -9,23 +9,14 @@ import { DynamicFormService } from '../../shared/services/dynamic-form.service';
 @Component({
     selector: 'object-details',
     template: `
-    <div class="modal-header">
-        <h4 class="modal-title">Item Details</h4>
-        <button type="button" class="close" aria-label="Close" (click)="bsModalRef.hide()">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <div class="modal-body">
+    <cms-modal
+        [title]="'Item Details'"
+        [disableOkButton]="!formId.valid"
+        (ok)="formId.ngSubmit.emit()">
         <form (ngSubmit)="createItem(formId.value)" [formGroup]="itemDetailsForm" #formId="ngForm">
             <ng-template cmsInsertPoint></ng-template>
         </form>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-primary"
-            [disabled]="!formId.valid"
-            (click)="formId.ngSubmit.emit()">Ok</button>
-        <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">Cancel</button>
-    </div>
+    </cms-modal>
     `
 })
 export class ObjectDetailsComponent implements OnInit, OnDestroy {

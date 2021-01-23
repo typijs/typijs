@@ -3,7 +3,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, merge, Observable, Subject } from 'rxjs';
 import { distinctUntilKeyChanged, map, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
-import { DialogService } from '../shared/dialog/dialog.service';
+import { CmsModalService } from '../shared/modal/modal.service';
 import { SubjectService } from '../shared/services/subject.service';
 import { SubscriptionDestroy } from '../shared/subscription-destroy';
 import { TreeComponent } from '../shared/tree/components/tree.component';
@@ -104,7 +104,7 @@ export class BlockTreeComponent extends SubscriptionDestroy implements OnInit {
     constructor(
         private router: Router,
         private route: ActivatedRoute,
-        private dialogService: DialogService,
+        private modalService: CmsModalService,
         private blockService: BlockService,
         private subjectService: SubjectService) {
         super();
@@ -182,7 +182,7 @@ export class BlockTreeComponent extends SubscriptionDestroy implements OnInit {
     private folderDelete(nodeToDelete: TreeNode) {
         if (nodeToDelete.id === '0') { return; }
 
-        this.dialogService.confirm(`Delete ${nodeToDelete.name}`, `Do you want to delete the folder ${nodeToDelete.name}?`).pipe(
+        this.modalService.confirm(`Delete ${nodeToDelete.name}`, `Do you want to delete the folder ${nodeToDelete.name}?`).pipe(
             takeWhile(confirm => confirm),
         ).subscribe(() => {
             this.blockService.moveContentToTrash(nodeToDelete.id).subscribe(folderToDelete => {

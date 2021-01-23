@@ -12,7 +12,7 @@ import { PageTreeService } from './page-tree.service';
 import { SubscriptionDestroy } from '../shared/subscription-destroy';
 import { SubjectService } from '../shared/services/subject.service';
 import { TreeService } from '../shared/tree/interfaces/tree-service';
-import { DialogService } from '../shared/dialog/dialog.service';
+import { CmsModalService } from '../shared/modal/modal.service';
 
 const PAGE_MENU_ACTION = {
     DeletePage: 'DeletePage',
@@ -55,7 +55,7 @@ export class PageTreeComponent extends SubscriptionDestroy implements OnInit {
 
     constructor(
         private pageService: PageService,
-        private dialogService: DialogService,
+        private dialogService: CmsModalService,
         private subjectService: SubjectService,
         private router: Router,
         private route: ActivatedRoute) {

@@ -13,8 +13,9 @@ export * from './shared/drag-drop/directives/droppable.directive';
 export * from './shared/drag-drop/directives/drag-handle.directive';
 export * from './shared/drag-drop/directives/drag-placeholder.directive';
 
-export * from './shared/dialog/dialog.module';
-export * from './shared/dialog/dialog.service';
+export * from './shared/modal/modal.module';
+export * from './shared/modal/cms-modal.component';
+export * from './shared/modal/modal.service';
 
 export * from './shared/services/subject.service';
 export * from './shared/services/dynamic-form.service';
@@ -22,6 +23,9 @@ export * from './shared/services/dynamic-form.service';
 export * from './content/content.module';
 export * from './content/content-create/content-create.component';
 export * from './content/content-update/content-update.component';
+
+export * from './content-modal/content-modal.module';
+export * from './content-modal/content-modal.service';
 
 export * from './properties/properties.module';
 export * from './properties/text/text.property';

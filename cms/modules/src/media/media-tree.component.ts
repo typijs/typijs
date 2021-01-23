@@ -3,7 +3,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 import { BehaviorSubject, merge, Observable, Subject } from 'rxjs';
 import { distinctUntilKeyChanged, map, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
-import { DialogService } from '../shared/dialog/dialog.service';
+import { CmsModalService } from '../shared/modal/modal.service';
 import { SubjectService } from '../shared/services/subject.service';
 import { SubscriptionDestroy } from '../shared/subscription-destroy';
 import { TreeComponent } from '../shared/tree/components/tree.component';
@@ -102,7 +102,7 @@ export class MediaTreeComponent extends SubscriptionDestroy implements OnInit {
 
     constructor(
         private mediaService: MediaService,
-        private dialogService: DialogService,
+        private dialogService: CmsModalService,
         private modalService: BsModalService,
         private subjectService: SubjectService,
         private uploadService: UploadService) {

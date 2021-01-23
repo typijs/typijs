@@ -1,6 +1,6 @@
 import { LanguageService, MediaService } from '@angular-cms/core';
 import { Injectable } from '@angular/core';
-import { MediaTreeReadonlyService } from '../shared/dialog/media-dialog.component';
+import { MediaTreeReadonlyService } from '../content-modal/media-modal.component';
 import '../types/tree-node-extension';
 
 @Injectable()

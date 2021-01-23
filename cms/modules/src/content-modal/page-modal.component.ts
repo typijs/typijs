@@ -2,9 +2,9 @@ import { ContentReference, LanguageService, Page, PageService, PAGE_TYPE } from 
 import { Component, Injectable, Input, OnInit, ViewChild } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
 import { map, take } from 'rxjs/operators';
-import { TreeComponent } from '../tree/components/tree.component';
-import { TreeNode } from '../tree/interfaces/tree-node';
-import { TreeService } from '../tree/interfaces/tree-service';
+import { TreeComponent } from '../shared/tree/components/tree.component';
+import { TreeNode } from '../shared/tree/interfaces/tree-node';
+import { TreeService } from '../shared/tree/interfaces/tree-service';
 
 @Injectable()
 export class PageTreeReadonlyService implements TreeService {
@@ -26,9 +26,14 @@ export class PageTreeReadonlyService implements TreeService {
 }
 
 @Component({
-    selector: 'page-tree-dialog',
+    selector: 'page-tree-modal',
     template: `
-    <content-dialog (confirmSelect)="onConfirmSelect()" [title]="'Select the page'" [disableSelectButton]="!selectedContent">
+    <cms-modal
+        [title]="'Select the page'"
+        [okButtonText]="'Select'"
+        [bodyClass]="'overflow-auto p-2'"
+        [disableOkButton]="!selectedContent"
+        (ok)="onConfirmSelect()">
         <div class='position-relative'>
             <cms-tree
                 class="tree-root pl-1 pt-2 d-block"
@@ -41,11 +46,11 @@ export class PageTreeReadonlyService implements TreeService {
                 </ng-template>
             </cms-tree>
         </div>
-    </content-dialog>
+    </cms-modal>
     `,
     providers: [PageTreeReadonlyService, { provide: TreeService, useExisting: PageTreeReadonlyService }]
 })
-export class PageTreeDialogComponent implements OnInit {
+export class PageTreeModalComponent implements OnInit {
     @ViewChild(TreeComponent, { static: true }) cmsTree: TreeComponent;
 
     @Input() selectedContentId: string;

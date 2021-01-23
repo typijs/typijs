@@ -4,29 +4,25 @@ import { Observable, ReplaySubject } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 @Component({
-    selector: 'confirmation-dialog',
+    selector: 'confirmation-modal',
     template: `
-    <div class="modal-header">
-        <h4 class="modal-title">{{ title }}</h4>
-        <button type="button" class="close" aria-label="Close" (click)="decline()">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <div class="modal-body">
+    <cms-modal
+        [title]="title"
+        [okButtonText]="btnYesText"
+        [cancelButtonText]="btnNoText"
+        [okButtonClass]="'btn-danger'"
+        (ok)="confirm()"
+        (cancel)="decline()">
         {{ message }}
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-danger" (click)="confirm()">{{ btnYesText }}</button>
-        <button type="button" class="btn btn-primary" (click)="decline()">{{ btnNoText }}</button>
-    </div>
+    </cms-modal>
   `,
 })
-export class ConfirmationDialogComponent {
+export class ConfirmationModalComponent {
 
     @Input() title: string;
     @Input() message: string;
-    @Input() btnYesText: string = 'Yes';
-    @Input() btnNoText: string = 'No';
+    @Input() btnYesText: string;
+    @Input() btnNoText: string;
     private isConfirm$: ReplaySubject<boolean> = new ReplaySubject(1);
 
     constructor(public bsModalRef: BsModalRef) { }
