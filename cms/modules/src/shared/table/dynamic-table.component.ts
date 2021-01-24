@@ -51,17 +51,17 @@ export class DynamicTableComponent extends SubscriptionDestroy implements OnInit
     /**
      * The total number items
      */
-    @Input() count: number;
+    @Input() totalItems: number;
 
     /**
      * The page size
      */
-    @Input() pageSize: number = 10;
+    @Input() itemsPerPage: number = 10;
 
     /**
      * The current page number
      */
-    @Input() page: number = 1;
+    @Input() currentPage: number = 1;
 
     @Output() rowClick: EventEmitter<CmsObject> = new EventEmitter();
     @Output() change: EventEmitter<TableChangeEvent> = new EventEmitter();
@@ -81,8 +81,8 @@ export class DynamicTableComponent extends SubscriptionDestroy implements OnInit
 
     keyword$: BehaviorSubject<string> = new BehaviorSubject('');
     sortColumn$: BehaviorSubject<ColumnSettings> = new BehaviorSubject({ name: '' });
-    pageSize$: BehaviorSubject<number> = new BehaviorSubject(this.pageSize);
-    pageNumber$: BehaviorSubject<number> = new BehaviorSubject(this.page);
+    pageSize$: BehaviorSubject<number> = new BehaviorSubject(this.itemsPerPage);
+    pageNumber$: BehaviorSubject<number> = new BehaviorSubject(this.currentPage);
 
     private _columnDirectives: QueryList<TableColumnDirective>;
     constructor(private contentTypeService: ContentTypeService, private changeDetectionRef: ChangeDetectorRef) {
@@ -106,7 +106,7 @@ export class DynamicTableComponent extends SubscriptionDestroy implements OnInit
         this.columns.filter(x => x.name !== column.name).forEach(x => { x.sort = false; x.desc = false; });
         column.desc = column.sort ? !column.desc : false;
         column.sort = true;
-        //this.changeDetectionRef.markForCheck();
+        // this.changeDetectionRef.markForCheck();
         this.sortColumn$.next(column);
     }
 

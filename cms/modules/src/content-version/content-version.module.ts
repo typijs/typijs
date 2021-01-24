@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { CrudModule } from '../shared/crud/crud.module';
+import { CmsTableModule } from '../shared/table/table.module';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ContentVersionComponent } from './content-version.component';
@@ -19,7 +19,7 @@ import { ContentVersionServiceResolver } from './content-version.service';
         TabsModule,
 
         CoreModule,
-        CrudModule
+        CmsTableModule
     ],
     declarations: [
         ContentVersionComponent

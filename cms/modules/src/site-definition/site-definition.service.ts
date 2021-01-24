@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CrudService } from '../shared/crud/crud.service';
+import { CrudService } from '../shared/services/crud.service';
 import { SiteDefinition } from './site-definition.model';
 
 @Injectable()

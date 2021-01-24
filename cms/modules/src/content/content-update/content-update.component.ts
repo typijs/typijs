@@ -10,7 +10,7 @@ import { FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, UrlSegment } from '@angular/router';
 import { combineLatest, Observable, of } from 'rxjs';
 import { auditTime, catchError, concatMap, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { DynamicFormService } from '../../shared/services/dynamic-form.service';
+import { DynamicFormService } from '../../shared/form/dynamic-form.service';
 import { SubjectService } from '../../shared/services/subject.service';
 import { SubscriptionDestroy } from '../../shared/subscription-destroy';
 import { ContentCrudService, ContentCrudServiceResolver, ContentInfo } from '../content-crud.service';

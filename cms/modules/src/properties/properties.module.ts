@@ -8,7 +8,6 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { QuillModule } from 'ngx-quill';
 import { DndModule } from '../shared/drag-drop/dnd.module';
 import { CmsModalModule } from '../shared/modal/modal.module';
-import { DynamicFormService } from '../shared/services/dynamic-form.service';
 import { CheckboxPropertyFactory } from './checkbox/checkbox.factory';
 import { CheckboxProperty } from './checkbox/checkbox.property';
 import { ContentAreaControl } from './content-area/content-area.control';
@@ -82,7 +81,6 @@ export class PropertiesModule {
         return {
             ngModule: PropertiesModule,
             providers: [
-                DynamicFormService,
                 { provide: DEFAULT_PROPERTY_FACTORIES, useClass: TextPropertyFactory, multi: true },
                 { provide: DEFAULT_PROPERTY_FACTORIES, useClass: TextareaPropertyFactory, multi: true },
                 { provide: DEFAULT_PROPERTY_FACTORIES, useClass: CheckboxPropertyFactory, multi: true },

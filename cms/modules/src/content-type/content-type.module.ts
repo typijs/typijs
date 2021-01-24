@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, ModuleWithProviders } from '@angular/core';
-import { CrudModule } from '../shared/crud/crud.module';
+import { CmsTableModule } from '../shared/table/table.module';
 import { ContentTypeListComponent } from './content-type-list.component';
 import { ContentTypeDetailComponent } from './content-type-detail.component';
 import { Routes, RouterModule } from '@angular/router';
@@ -17,7 +17,7 @@ const contentTypeRoutes: Routes = [
         CommonModule,
         RouterModule,
         CoreModule,
-        CrudModule
+        CmsTableModule
     ],
     declarations: [ContentTypeDetailComponent, ContentTypeListComponent]
 })

@@ -5,12 +5,12 @@
       [ngTemplateOutletContext]="{rows: rows}">
     </ng-container>
   </div>
-  <div>
+  <!-- <div>
     <label>Search:</label>
   </div>
   <div>
     <input type="search" class="form-control form-control-sm" (change)="keyword$.next($event.target.value)" />
-  </div>
+  </div> -->
 </div>
 <!-- Table -->
 <div class="d-flex mt-1 mb-1">
@@ -59,8 +59,10 @@
       <option value="100">100</option>
     </select>
   </div>
-  <div>Showing {{(page - 1) * pageSize + 1}} to {{page * pageSize}} of {{count}} items</div>
+  <div>Showing {{(page - 1) * itemsPerPage + 1}} to {{currentPage * itemsPerPage}} of {{totalItems}} items</div>
   <div>
-    <cms-pager [page]="page" [pageSize]="pageSize" [count]="count" (change)="pageNumber$.next($event)"></cms-pager>
+    <pagination [(ngModel)]="currentPage" [itemsPerPage]="itemsPerPage" [totalItems]="totalItems" [boundaryLinks]="true"
+      previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;"
+      (pageChanged)="pageNumber$.next($event)"></pagination>
   </div>
 </div>

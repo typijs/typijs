@@ -18,7 +18,10 @@ export * from './shared/modal/cms-modal.component';
 export * from './shared/modal/modal.service';
 
 export * from './shared/services/subject.service';
-export * from './shared/services/dynamic-form.service';
+export * from './shared/services/crud.service';
+
+export * from './shared/form/form.module';
+export * from './shared/form/dynamic-form.service';
 
 export * from './content/content.module';
 export * from './content/content-create/content-create.component';

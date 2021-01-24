@@ -4,7 +4,7 @@ import { FormGroup } from '@angular/forms';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { Observable, ReplaySubject } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { DynamicFormService } from '../../shared/services/dynamic-form.service';
+import { DynamicFormService } from '../../shared/form/dynamic-form.service';
 
 @Component({
     selector: 'object-details',

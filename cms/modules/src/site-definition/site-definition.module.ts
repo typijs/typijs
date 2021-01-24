@@ -7,7 +7,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { CmsWidgetPosition, ADMIN_ROUTES, ADMIN_WIDGETS } from '@angular-cms/core';
 import { SiteDefinitionListComponent, SiteDefinitionMenuComponent, SiteDefinitionDetailComponent } from './site-definition.component';
 import { SiteDefinitionService } from './site-definition.service';
-import { CrudModule } from '../shared/crud/crud.module';
+import { CmsTableModule } from '../shared/table/table.module';
 import { LanguageSelectionFactory } from './site-definition.model';
 
 const siteRoutes: Routes = [
@@ -29,7 +29,7 @@ const siteRoutes: Routes = [
         RouterModule,
         FontAwesomeModule,
 
-        CrudModule
+        CmsTableModule
     ],
     declarations: [
         SiteDefinitionListComponent,
