@@ -31,10 +31,9 @@ export class PageTreeReadonlyService implements TreeService {
     <cms-modal
         [title]="'Select the page'"
         [okButtonText]="'Select'"
-        [bodyClass]="'overflow-auto p-2'"
         [disableOkButton]="!selectedContent"
         (ok)="onConfirmSelect()">
-        <div class='position-relative'>
+        <div class='position-relative page-tree overflow-auto p-2'>
             <cms-tree
                 class="tree-root pl-1 pt-2 d-block"
                 [root]="root"
@@ -48,6 +47,11 @@ export class PageTreeReadonlyService implements TreeService {
         </div>
     </cms-modal>
     `,
+    styles: [`
+        .page-tree {
+            height: 450px;
+        }
+  `],
     providers: [PageTreeReadonlyService, { provide: TreeService, useExisting: PageTreeReadonlyService }]
 })
 export class PageTreeModalComponent implements OnInit {

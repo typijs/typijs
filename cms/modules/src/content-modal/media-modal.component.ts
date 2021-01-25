@@ -52,10 +52,9 @@ export class MediaListComponent {
     <cms-modal
         [title]="'Select the file'"
         [okButtonText]="'Select'"
-        [bodyClass]="'overflow-auto p-2'"
         [disableOkButton]="!selectedContent"
         (ok)="onConfirmSelect()">
-        <div class="d-flex h-100">
+        <div class="d-flex h-100 media-tree p-2">
             <div class='w-50 h-100 overflow-auto'>
                 <cms-tree
                     class="tree-root pl-1 pt-2 d-block"
@@ -74,6 +73,11 @@ export class MediaListComponent {
         </div>
     </cms-modal>
     `,
+    styles: [`
+        .media-tree {
+            height: 450px;
+        }
+  `],
     providers: [MediaTreeReadonlyService, { provide: TreeService, useExisting: MediaTreeReadonlyService }]
 })
 export class MediaTreeModalComponent implements OnInit {

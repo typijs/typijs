@@ -17,12 +17,7 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
         <button type="button" class="btn {{okButtonClass}}" [disabled]="disableOkButton" (click)="onOkClick()">{{okButtonText}}</button>
         <button type="button" class="btn {{cancelButtonClass}}" (click)="onCancelClick()">{{cancelButtonText}}</button>
     </div>
-  `,
-    styles: [`
-        .modal-body {
-            height: 450px;
-        }
-  `]
+  `
 })
 export class CmsModalComponent {
 
