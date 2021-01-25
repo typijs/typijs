@@ -1,11 +1,10 @@
-import { Component, Input, ElementRef, OnInit, ViewChildren, QueryList, AfterViewInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
-
-import { TreeNode } from '../interfaces/tree-node';
 import { TreeConfig } from '../interfaces/tree-config';
 import { NodeMenuItemAction, TreeMenuItem } from '../interfaces/tree-menu';
-import { TreeBaseComponent } from './tree-base.component';
+import { TreeNode } from '../interfaces/tree-node';
 import { TreeStore } from '../tree-store';
+import { TreeBaseComponent } from './tree-base.component';
 
 @Component({
     selector: 'tree-node',
@@ -52,8 +51,15 @@ import { TreeStore } from '../tree-store';
     </div>
     `
 })
-export class TreeNodeComponent extends TreeBaseComponent implements OnInit, AfterViewInit {
-    @ViewChildren("nodeInlineInput") nodeInlineInput: QueryList<ElementRef>;
+export class TreeNodeComponent extends TreeBaseComponent implements OnInit {
+    // https://netbasal.com/autofocus-that-works-anytime-in-angular-apps-68cb89a3f057
+    @ViewChild('nodeInlineInput', { static: false })
+    set nodeInlineInput(element: ElementRef<HTMLInputElement>) {
+        if (element) {
+            element.nativeElement.focus()
+        }
+    }
+
     @Input() node: TreeNode;
     @Input() config: TreeConfig;
     @Input() templates: any = {};
@@ -77,13 +83,6 @@ export class TreeNodeComponent extends TreeBaseComponent implements OnInit, Afte
 
         if (this.config) { this.menuItems = this.config.menuItems; }
         if (this.node) { this.nodeName = this.node.name; }
-    }
-
-    ngAfterViewInit() {
-        this.setInlineInputFocus();
-        this.nodeInlineInput.changes.subscribe(() => {
-            this.setInlineInputFocus();
-        });
     }
 
     nodeOnBlur(node: TreeNode) {
@@ -113,12 +112,6 @@ export class TreeNodeComponent extends TreeBaseComponent implements OnInit, Afte
 
         this.nodeName = node.name;
         this.cancelInlineNodeEvent.emit({ parentNode: null, node });
-    }
-
-    private setInlineInputFocus() {
-        if (this.nodeInlineInput.length > 0) {
-            this.nodeInlineInput.first.nativeElement.focus();
-        }
     }
 
     private scrollIntoNode() {
