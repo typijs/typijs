@@ -6,29 +6,42 @@ import { DynamicFormService } from './dynamic-form.service';
 @Component({
     selector: 'cms-form',
     exportAs: 'cmsForm',
-    templateUrl: 'dynamic-form.component.html'
+    template: `
+    <form [formGroup]="formGroup" (ngSubmit)="onSubmit(cmsForm.value)" #cmsForm="ngForm">
+        <div>
+            <ng-template cmsInsertPoint></ng-template>
+        </div>
+        <!-- <input type="submit" value="Submit"/> -->
+    </form>
+    `
 })
 export class DynamicFormComponent implements OnInit, OnDestroy, OnChanges {
     @ViewChild(InsertPointDirective, { static: true, read: ViewContainerRef }) formContainerRef: ViewContainerRef;
     @ViewChild('cmsForm', { static: true }) cmsForm: NgForm;
 
+    /**
+     * Form Model Type
+     */
     @Input() modelType: new () => any;
 
+    /**
+     * Form Model Data
+     */
     @Input()
-    get formData(): CmsObject {
-        return this._formData;
+    get model(): CmsObject {
+        return this._model;
     }
-    set formData(value: CmsObject) {
-        this._formData = value;
-        if (this._formData && this.contentFormGroup) {
-            this.contentFormGroup.patchValue(this._formData);
+    set model(value: CmsObject) {
+        this._model = value;
+        if (this._model && this.formGroup) {
+            this.formGroup.patchValue(this._model);
         }
     }
-    private _formData: CmsObject;
+    private _model: CmsObject;
 
     @Output() ngSubmit: EventEmitter<CmsObject> = new EventEmitter<CmsObject>();
 
-    contentFormGroup: FormGroup;
+    formGroup: FormGroup;
     private componentRefs: ComponentRef<any>[];
 
     constructor(
@@ -36,20 +49,20 @@ export class DynamicFormComponent implements OnInit, OnDestroy, OnChanges {
         private dynamicFormService: DynamicFormService
     ) { }
 
-    ngOnChanges({ modelType, formData }: SimpleChanges): void {
+    ngOnChanges({ modelType, model }: SimpleChanges): void {
         // handle the second change of modelType to render the form
         if (!modelType.isFirstChange()) {
-            this.createDynamicForm(modelType.currentValue, formData.currentValue);
+            this.createDynamicForm(modelType.currentValue, model.currentValue);
         }
     }
 
     ngOnInit() {
         // handle in first change of all inputs
-        this.createDynamicForm(this.modelType, this.formData);
+        this.createDynamicForm(this.modelType, this.model);
     }
 
     onSubmit(formValue: any): void {
-        const submittedValue = Object.assign(this._formData, formValue);
+        const submittedValue = Object.assign(this._model, formValue);
         this.ngSubmit.emit(submittedValue);
     }
 
@@ -68,11 +81,11 @@ export class DynamicFormComponent implements OnInit, OnDestroy, OnChanges {
         }
     }
 
-    private createDynamicForm(modelType: new () => any, formData: CmsObject) {
+    private createDynamicForm(modelType: new () => any, model: CmsObject) {
         const contentTypeProperties = this.modelType ? this.contentTypeService.getContentTypeProperties(modelType) : [];
-        this.contentFormGroup = this.dynamicFormService.createFormGroup(contentTypeProperties, formData);
+        this.formGroup = this.dynamicFormService.createFormGroup(contentTypeProperties, model);
 
-        this.componentRefs = this.dynamicFormService.createFormFieldComponents(contentTypeProperties, this.contentFormGroup);
+        this.componentRefs = this.dynamicFormService.createFormFieldComponents(contentTypeProperties, this.formGroup);
         this.formContainerRef.clear();
         this.componentRefs.forEach(component => this.formContainerRef.insert(component.hostView));
     }

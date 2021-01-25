@@ -67,7 +67,7 @@ export class SiteDefinitionListComponent implements OnInit {
     <div class="row">
         <div class="col-12">
             <cms-form [modelType]="modelType"
-                    [formData]="siteDefinition$ | async"
+                    [model]="siteDefinition$ | async"
                     (ngSubmit)="onSubmit($event)"></cms-form>
         </div>
     </div>

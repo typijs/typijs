@@ -21,6 +21,7 @@ export * from './shared/services/subject.service';
 export * from './shared/services/crud.service';
 
 export * from './shared/form/form.module';
+export * from './shared/form/dynamic-form.component';
 export * from './shared/form/dynamic-form.service';
 
 export * from './content/content.module';

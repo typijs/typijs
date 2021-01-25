@@ -13,7 +13,7 @@ import { take } from 'rxjs/operators';
             #formId="cmsForm"
             (ngSubmit)="createItem($event)"
             [modelType]="itemType"
-            [formData]="itemData">
+            [model]="itemData">
         </cms-form>
     </cms-modal>
     `
