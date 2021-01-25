@@ -7,7 +7,6 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AngularSplitModule } from 'angular-split';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
-import { PropertiesModule } from '../properties/properties.module';
 import { ContentCreateComponent } from './content-create/content-create.component';
 import { ContentCrudServiceResolver } from './content-crud.service';
 import { ContentUpdateComponent } from './content-update/content-update.component';
@@ -24,8 +23,7 @@ import { ContentUpdateComponent } from './content-update/content-update.componen
         ButtonsModule,
         TabsModule,
 
-        CoreModule,
-        PropertiesModule,
+        CoreModule
     ],
     declarations: [
         ContentUpdateComponent,

@@ -1,49 +1,31 @@
-import { ContentTypeService, InsertPointDirective } from '@angular-cms/core';
-import { Component, ComponentRef, Input, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Component, Input } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { Observable, ReplaySubject } from 'rxjs';
 import { take } from 'rxjs/operators';
-import { DynamicFormService } from '../../shared/form/dynamic-form.service';
 
 @Component({
     selector: 'object-details',
     template: `
     <cms-modal
         [title]="'Item Details'"
-        [disableOkButton]="!formId.valid"
-        (ok)="formId.ngSubmit.emit()">
-        <form (ngSubmit)="createItem(formId.value)" [formGroup]="itemDetailsForm" #formId="ngForm">
-            <ng-template cmsInsertPoint></ng-template>
-        </form>
+        (ok)="formId.submit()">
+        <cms-form
+            #formId="cmsForm"
+            (ngSubmit)="createItem($event)"
+            [modelType]="itemType"
+            [formData]="itemData">
+        </cms-form>
     </cms-modal>
     `
 })
-export class ObjectDetailsComponent implements OnInit, OnDestroy {
-    @ViewChild(InsertPointDirective, { static: true, read: ViewContainerRef }) formContainerRef: ViewContainerRef;
+export class ObjectDetailsComponent {
 
     @Input() itemData: { [key: string]: any };
     @Input() itemType: new () => any;
 
-    itemDetailsForm: FormGroup = new FormGroup({});
-    private componentRefs: ComponentRef<any>[] = [];
     private itemSubject: ReplaySubject<{ [key: string]: any }> = new ReplaySubject(1);
 
-    constructor(
-        public bsModalRef: BsModalRef,
-        private contentTypeService: ContentTypeService,
-        private dynamicFormService: DynamicFormService) { }
-
-    ngOnInit() {
-        const propertiesMetadata = this.contentTypeService.getContentTypeProperties(this.itemType);
-        if (propertiesMetadata.length > 0) {
-            this.itemDetailsForm = this.dynamicFormService.createFormGroup(propertiesMetadata, this.itemData);
-            this.componentRefs = this.dynamicFormService.createFormFieldComponents(propertiesMetadata, this.itemDetailsForm);
-
-            this.formContainerRef.clear();
-            this.componentRefs.forEach(component => this.formContainerRef.insert(component.hostView));
-        }
-    }
+    constructor(public bsModalRef: BsModalRef) { }
 
     createItem(item: { [key: string]: any }) {
         this.itemSubject.next(Object.assign(this.itemData, item));
@@ -52,13 +34,5 @@ export class ObjectDetailsComponent implements OnInit, OnDestroy {
 
     getResult(): Observable<{ [key: string]: any }> {
         return this.itemSubject.asObservable().pipe(take(1));
-    }
-
-    ngOnDestroy(): void {
-        this.formContainerRef.clear();
-        if (this.componentRefs) {
-            this.componentRefs.forEach(cmpRef => { cmpRef.destroy(); });
-            this.componentRefs = [];
-        }
     }
 }

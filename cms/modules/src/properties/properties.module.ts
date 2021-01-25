@@ -7,6 +7,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { QuillModule } from 'ngx-quill';
 import { DndModule } from '../shared/drag-drop/dnd.module';
+import { CmsFormModule } from '../shared/form/form.module';
 import { CmsModalModule } from '../shared/modal/modal.module';
 import { CheckboxPropertyFactory } from './checkbox/checkbox.factory';
 import { CheckboxProperty } from './checkbox/checkbox.property';
@@ -65,7 +66,8 @@ export const CONTROLS = [
         BsDropdownModule,
         CoreModule,
         DndModule,
-        CmsModalModule
+        CmsModalModule,
+        CmsFormModule
     ],
     declarations: [
         ObjectDetailsComponent,

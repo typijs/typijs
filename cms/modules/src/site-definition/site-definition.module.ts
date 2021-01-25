@@ -9,6 +9,7 @@ import { SiteDefinitionListComponent, SiteDefinitionMenuComponent, SiteDefinitio
 import { SiteDefinitionService } from './site-definition.service';
 import { CmsTableModule } from '../shared/table/table.module';
 import { LanguageSelectionFactory } from './site-definition.model';
+import { CmsFormModule } from '../shared/form/form.module';
 
 const siteRoutes: Routes = [
     {
@@ -29,7 +30,8 @@ const siteRoutes: Routes = [
         RouterModule,
         FontAwesomeModule,
 
-        CmsTableModule
+        CmsTableModule,
+        CmsFormModule
     ],
     declarations: [
         SiteDefinitionListComponent,

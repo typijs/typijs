@@ -59,10 +59,9 @@
       <option value="100">100</option>
     </select>
   </div>
-  <div>Showing {{(page - 1) * itemsPerPage + 1}} to {{currentPage * itemsPerPage}} of {{totalItems}} items</div>
+  <div>Showing {{(currentPage - 1) * itemsPerPage + 1}} to {{currentPage * itemsPerPage}} of {{totalItems}} items</div>
   <div>
-    <pagination [(ngModel)]="currentPage" [itemsPerPage]="itemsPerPage" [totalItems]="totalItems" [boundaryLinks]="true"
-      previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;"
-      (pageChanged)="pageNumber$.next($event)"></pagination>
+    <pagination [itemsPerPage]="itemsPerPage" [totalItems]="totalItems" [boundaryLinks]="true" previousText="&lsaquo;"
+      nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;" (pageChanged)="pageNumber$.next($event)"></pagination>
   </div>
 </div>
