@@ -7,7 +7,8 @@ import { take } from 'rxjs/operators';
     selector: 'object-details',
     template: `
     <cms-modal
-        [title]="'Item Details'"
+        [title]="title"
+        [disableOkButton]="!formId.ngForm.valid"
         (ok)="formId.submit()">
         <cms-form
             #formId="cmsForm"
@@ -20,6 +21,7 @@ import { take } from 'rxjs/operators';
 })
 export class ObjectDetailsComponent {
 
+    @Input() title: string;
     @Input() itemData: { [key: string]: any };
     @Input() itemType: new () => any;
 

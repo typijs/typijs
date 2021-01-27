@@ -28,6 +28,7 @@ import { CheckboxListControl } from './select/checkbox-list/checkbox-list.contro
 import { CheckboxListProperty } from './select/checkbox-list/checkbox-list.property';
 import { DropdownProperty } from './select/dropdown/dropdown.property';
 import { CheckboxListPropertyFactory, DropdownPropertyFactory } from './select/select-property.factory';
+import { SortableComponent } from './sortable.component';
 import { TextPropertyFactory } from './text/text.factory';
 import { TextProperty } from './text/text.property';
 import { TextareaPropertyFactory } from './textarea/textarea.factory';
@@ -71,6 +72,7 @@ export const CONTROLS = [
     ],
     declarations: [
         ObjectDetailsComponent,
+        SortableComponent,
         ...PROPERTIES,
         ...CONTROLS
     ],

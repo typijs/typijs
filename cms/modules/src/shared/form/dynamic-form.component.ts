@@ -7,9 +7,10 @@ import { DynamicFormService } from './dynamic-form.service';
     selector: 'cms-form',
     exportAs: 'cmsForm',
     template: `
-    <form [formGroup]="formGroup" (ngSubmit)="onSubmit(cmsForm.value)" #cmsForm="ngForm">
+    <form [formGroup]="formGroup" (ngSubmit)="onSubmit(ngForm.value)" #ngForm="ngForm">
         <div>
             <ng-template cmsInsertPoint></ng-template>
+            <ng-content></ng-content>
         </div>
         <!-- <input type="submit" value="Submit"/> -->
     </form>
@@ -17,7 +18,7 @@ import { DynamicFormService } from './dynamic-form.service';
 })
 export class DynamicFormComponent implements OnInit, OnDestroy, OnChanges {
     @ViewChild(InsertPointDirective, { static: true, read: ViewContainerRef }) formContainerRef: ViewContainerRef;
-    @ViewChild('cmsForm', { static: true }) cmsForm: NgForm;
+    @ViewChild('ngForm', { static: true }) ngForm: NgForm;
 
     /**
      * Form Model Type
@@ -67,7 +68,7 @@ export class DynamicFormComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     submit(): void {
-        this.cmsForm.ngSubmit.emit();
+        this.ngForm.ngSubmit.emit();
     }
 
     ngOnDestroy(): void {
