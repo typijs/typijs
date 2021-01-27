@@ -11,25 +11,29 @@ export class HomePage extends PageData {
 
     @Property({
         displayName: 'Text Logo',
-        displayType: UIHint.Text
+        displayType: UIHint.Text,
+        groupName: 'Header'
     })
     textLogo: string;
 
     @Property({
         displayName: 'Phone number',
-        displayType: UIHint.Text
+        displayType: UIHint.Text,
+        groupName: 'Header'
     })
     phone: string;
 
     @Property({
         displayName: 'Email',
-        displayType: UIHint.Text
+        displayType: UIHint.Text,
+        groupName: 'Header'
     })
     email: string;
 
     @Property({
         displayName: 'Header Shipping Text',
-        displayType: UIHint.Text
+        displayType: UIHint.Text,
+        groupName: 'Header'
     })
     headerShippingText: string;
 
@@ -41,14 +45,16 @@ export class HomePage extends PageData {
 
     @Property({
         displayName: 'Footer Content',
-        displayType: UIHint.ContentArea
+        displayType: UIHint.ContentArea,
+        groupName: 'Footer'
     })
     footerContent: any[];
 
     @Property({
         displayName: 'Footer Text',
         description: 'This is footer text to show the copyright',
-        displayType: UIHint.XHtml
+        displayType: UIHint.XHtml,
+        groupName: 'Footer'
     })
     footerText: string;
 }

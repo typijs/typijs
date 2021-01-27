@@ -9,7 +9,6 @@ import { CmsProperty } from '@angular-cms/core';
         <div class="col-5">
             <input type="text" class="form-control"
                     [id]="id"
-                    [placeholder]="label"
                     [name]="propertyName"
                     [formControlName]="propertyName"/>
         </div>

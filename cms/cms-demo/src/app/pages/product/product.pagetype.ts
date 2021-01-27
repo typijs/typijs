@@ -38,33 +38,37 @@ export class ProductPage extends StandardPage {
     images: any[];
 
     @Property({
-        displayName: 'Product Code',
-        displayType: UIHint.Text,
-    })
-    productCode: string;
-
-    @Property({
-        displayName: 'Price',
-        displayType: UIHint.Text,
-    })
-    price: string;
-
-    @Property({
-        displayName: 'Inventory',
-        displayType: UIHint.Text,
-    })
-    inventory: string;
-
-    @Property({
         displayName: 'Product Description',
         displayType: UIHint.XHtml,
     })
     description: string;
 
     @Property({
+        displayName: 'Product Code',
+        displayType: UIHint.Text,
+        groupName: 'Commerce'
+    })
+    productCode: string;
+
+    @Property({
+        displayName: 'Price',
+        displayType: UIHint.Text,
+        groupName: 'Commerce'
+    })
+    price: string;
+
+    @Property({
+        displayName: 'Inventory',
+        displayType: UIHint.Text,
+        groupName: 'Commerce'
+    })
+    inventory: string;
+
+    @Property({
         displayName: 'Variants',
         displayType: UIHint.ObjectList,
-        objectListItemType: Variant
+        objectListItemType: Variant,
+        groupName: 'Commerce'
     })
     variants: Variant[];
 }
