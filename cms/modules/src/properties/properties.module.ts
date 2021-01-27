@@ -33,6 +33,9 @@ import { TextPropertyFactory } from './text/text.factory';
 import { TextProperty } from './text/text.property';
 import { TextareaPropertyFactory } from './textarea/textarea.factory';
 import { TextareaProperty } from './textarea/textarea.property';
+import { UrlDetailsComponent } from './url-list/url-details.component';
+import { UrlListControl } from './url-list/url-list.control';
+import { UrlListProperty, UrlListPropertyFactory } from './url-list/url-list.property';
 import { XHtmlPropertyFactory } from './xhtml/xhtml.factory';
 import { XHtmlProperty } from './xhtml/xhtml.property';
 
@@ -43,6 +46,7 @@ export const PROPERTIES = [
     DropdownProperty,
     CheckboxListProperty,
     ObjectListProperty,
+    UrlListProperty,
     XHtmlProperty,
     ContentAreaProperty,
     ContentReferenceProperty,
@@ -54,7 +58,8 @@ export const CONTROLS = [
     ContentReferenceControl,
     ImageReferenceControl,
     CheckboxListControl,
-    ObjectListControl
+    ObjectListControl,
+    UrlListControl
 ];
 @NgModule({
     imports: [
@@ -72,6 +77,7 @@ export const CONTROLS = [
     ],
     declarations: [
         ObjectDetailsComponent,
+        UrlDetailsComponent,
         SortableComponent,
         ...PROPERTIES,
         ...CONTROLS
@@ -91,6 +97,7 @@ export class PropertiesModule {
                 { provide: DEFAULT_PROPERTY_FACTORIES, useClass: CheckboxListPropertyFactory, multi: true },
                 { provide: DEFAULT_PROPERTY_FACTORIES, useClass: DropdownPropertyFactory, multi: true },
                 { provide: DEFAULT_PROPERTY_FACTORIES, useClass: ObjectListFactory, multi: true },
+                { provide: DEFAULT_PROPERTY_FACTORIES, useClass: UrlListPropertyFactory, multi: true },
                 { provide: DEFAULT_PROPERTY_FACTORIES, useClass: XHtmlPropertyFactory, multi: true },
                 { provide: DEFAULT_PROPERTY_FACTORIES, useClass: ContentAreaFactory, multi: true },
                 { provide: DEFAULT_PROPERTY_FACTORIES, useClass: ContentReferenceFactory, multi: true },

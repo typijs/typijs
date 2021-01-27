@@ -40,13 +40,15 @@ export class DynamicFormService {
         const propertyControls: ComponentRef<any>[] = [];
 
         properties.forEach(property => {
-            try {
-                const propertyFactory = this.propertyFactoryResolver.resolvePropertyFactory(property.metadata.displayType);
-                const propertyComponent = propertyFactory.createPropertyComponent(property, formGroup);
-                propertyControls.push(propertyComponent);
-            } catch (error) {
-                console.error(`Error on creating the component for property '${property.name}'`);
-                console.error(error);
+            if (property.metadata && property.metadata.displayType) {
+                try {
+                    const propertyFactory = this.propertyFactoryResolver.resolvePropertyFactory(property.metadata.displayType);
+                    const propertyComponent = propertyFactory.createPropertyComponent(property, formGroup);
+                    propertyControls.push(propertyComponent);
+                } catch (error) {
+                    console.error(`Error on creating the component for property '${property.name}'`);
+                    console.error(error);
+                }
             }
         });
 

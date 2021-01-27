@@ -1,6 +1,5 @@
 import { BlockData, BlockType, Property, ValidationTypes, UIHint } from '@angular-cms/core';
 import { LinkListComponent } from './link-list.component';
-import { LinkItem } from '../../shared/link-item';
 
 @BlockType({
     displayName: 'Link List Block',
@@ -17,8 +16,7 @@ export class LinkListBlock extends BlockData {
 
     @Property({
         displayName: 'Link Items',
-        displayType: UIHint.ObjectList,
-        objectListItemType: LinkItem,
+        displayType: UIHint.UrlList
     })
-    linkItems: LinkItem[];
+    linkItems: any[];
 }
