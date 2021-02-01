@@ -16,7 +16,12 @@ export interface PropertyMetadata {
     description?: string;
     displayType?: string;
     selectionFactory?: ClassOf<ISelectionFactory>;
-    objectListItemType?: any;
+    /**
+     * The type of item in object list
+     *
+     * Must have a value when the `displayType=UIHint.ObjectList`
+     */
+    objectListItemType?: ClassOf<any>;
     order?: number;
     groupName?: string;
     validates?: ValidateMetadata[];

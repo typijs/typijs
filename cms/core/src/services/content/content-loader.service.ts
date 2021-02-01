@@ -17,7 +17,7 @@ import { Content } from './models/content.model';
  */
 export type LoaderOptions = {
     /**
-     * name of Content Type or class of Content Type such as 'ArticlePage' or `ArticlePage`
+     * name of Content Type or class of Content Type such as `'ArticlePage'` or `ArticlePage`
      */
     contentType?: string | ClassOf<any>;
     /**

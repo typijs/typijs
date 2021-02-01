@@ -1,4 +1,4 @@
-import { CmsObject, ContentTypeService, InsertPointDirective } from '@angular-cms/core';
+import { ClassOf, CmsObject, ContentTypeService, InsertPointDirective } from '@angular-cms/core';
 import { Component, ComponentRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormGroup, NgForm } from '@angular/forms';
 import { DynamicFormService } from './dynamic-form.service';
@@ -23,7 +23,7 @@ export class DynamicFormComponent implements OnInit, OnDestroy, OnChanges {
     /**
      * Form Model Type
      */
-    @Input() modelType: new () => any;
+    @Input() modelType: ClassOf<any>;
 
     /**
      * Form Model Data
@@ -82,7 +82,7 @@ export class DynamicFormComponent implements OnInit, OnDestroy, OnChanges {
         }
     }
 
-    private createDynamicForm(modelType: new () => any, model: CmsObject) {
+    private createDynamicForm(modelType: ClassOf<any>, model: CmsObject) {
         const contentTypeProperties = this.modelType ? this.contentTypeService.getContentTypeProperties(modelType) : [];
         this.formGroup = this.dynamicFormService.createFormGroup(contentTypeProperties, model);
 

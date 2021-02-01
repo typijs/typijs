@@ -1,4 +1,4 @@
-import { CmsProperty } from '@angular-cms/core';
+import { ClassOf, CmsProperty } from '@angular-cms/core';
 import { Component, Input } from '@angular/core';
 @Component({
     selector: '[objectListProperty]',
@@ -12,5 +12,5 @@ import { Component, Input } from '@angular/core';
   `
 })
 export class ObjectListProperty extends CmsProperty {
-    @Input() itemType: new () => any;
+    @Input() itemType: ClassOf<any>;
 }

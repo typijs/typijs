@@ -1,7 +1,14 @@
 /**
- * Function.prototype
+ * Class type declaration
+ *
+ * T can be a interface which the class must implemented
+ *
+ * T can be a class which the class must extend or has the same signature (equal)
+ *
+ * T can be `any` to indicate the class don't need implement any interface or extend any base class
  */
 export type ClassOf<T> = new (...args: any[]) => T;
+
 /**
  * Object.prototype
  */

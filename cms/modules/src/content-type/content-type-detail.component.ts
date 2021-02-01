@@ -1,4 +1,4 @@
-import { ContentType, ContentTypeProperty, ContentTypeService, TypeOfContent } from '@angular-cms/core';
+import { ClassOf, ContentType, ContentTypeProperty, ContentTypeService, TypeOfContent } from '@angular-cms/core';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, UrlSegment } from '@angular/router';
 import { Observable, of } from 'rxjs';
@@ -16,13 +16,13 @@ import { ContentPropertyModel } from './content-property.model';
         <div class="col-4">Description</div>
         <div class="col-8">{{contentType.metadata.description}}</div>
         <div class="mt-4 col-12">
-            <cms-table [modelType]="modelType" [rows]="contentType.properties |map: mapToModel"></cms-table>
+            <cms-table [modelType]="modelType" [rows]="contentType.properties | map: mapToModel"></cms-table>
         </div>
     </div>
   `
 })
 export class ContentTypeDetailComponent implements OnInit {
-    modelType: new () => ContentPropertyModel = ContentPropertyModel;
+    modelType: ClassOf<ContentPropertyModel> = ContentPropertyModel;
 
     contentType$: Observable<ContentType>;
     constructor(private route: ActivatedRoute, private contentTypeService: ContentTypeService) { }

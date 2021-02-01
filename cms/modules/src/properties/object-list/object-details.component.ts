@@ -1,3 +1,4 @@
+import { ClassOf } from '@angular-cms/core';
 import { Component, Input } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { Observable, ReplaySubject } from 'rxjs';
@@ -23,7 +24,7 @@ export class ObjectDetailsComponent {
 
     @Input() title: string;
     @Input() itemData: { [key: string]: any };
-    @Input() itemType: new () => any;
+    @Input() itemType: ClassOf<any>;
 
     private itemSubject: ReplaySubject<{ [key: string]: any }> = new ReplaySubject(1);
 

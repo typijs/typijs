@@ -1,4 +1,4 @@
-import { CmsObject, ContentTypeService } from '@angular-cms/core';
+import { ClassOf, CmsObject, ContentTypeService } from '@angular-cms/core';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChild, ContentChildren, Directive, EventEmitter, Input, OnInit, Output, QueryList, TemplateRef } from '@angular/core';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
@@ -45,7 +45,7 @@ export class TableToolbarDirective {
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DynamicTableComponent extends SubscriptionDestroy implements OnInit {
-    @Input() modelType: new () => any;
+    @Input() modelType: ClassOf<any>;
     @Input() rows: CmsObject[];
 
     /**

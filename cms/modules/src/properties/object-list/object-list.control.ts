@@ -1,3 +1,4 @@
+import { ClassOf } from '@angular-cms/core';
 import { Component, forwardRef, Input } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
@@ -52,7 +53,7 @@ const OBJECT_LIST_VALUE_ACCESSOR = {
     providers: [OBJECT_LIST_VALUE_ACCESSOR, DndService]
 })
 export class ObjectListControl extends CmsListControl {
-    @Input() itemType: new () => any;
+    @Input() itemType: ClassOf<any>;
 
     constructor(private modalService: BsModalService) {
         super();

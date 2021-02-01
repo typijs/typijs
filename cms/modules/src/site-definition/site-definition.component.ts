@@ -1,3 +1,4 @@
+import { ClassOf } from '@angular-cms/core';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -47,7 +48,7 @@ export class SiteDefinitionMenuComponent { }
   `
 })
 export class SiteDefinitionListComponent implements OnInit {
-    modelType: new () => any = SiteDefinition;
+    modelType: ClassOf<SiteDefinition> = SiteDefinition;
     siteDefinitions$: Observable<SiteDefinition[]>;
 
     constructor(private service: SiteDefinitionService, private router: Router, private route: ActivatedRoute) { }
@@ -74,7 +75,7 @@ export class SiteDefinitionListComponent implements OnInit {
   `
 })
 export class SiteDefinitionDetailComponent implements OnInit {
-    modelType: new () => any = SiteDefinition;
+    modelType: ClassOf<SiteDefinition> = SiteDefinition;
     siteDefinition$: Observable<SiteDefinition>;
 
     constructor(private service: SiteDefinitionService, private router: Router, private route: ActivatedRoute) { }
