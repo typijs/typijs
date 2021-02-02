@@ -1,6 +1,6 @@
 import { Inject, Injectable, InjectionToken } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { forkJoin, Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import { ClassOf, TypeOfContent } from '../../types';
 import { ContentReference } from "../../types/content-reference";
 import { ContentService } from './content.service';
@@ -58,12 +58,22 @@ export class ContentLoader {
         throw new Error('Not implemented');
     }
 
-    getAncestors(contentLink: ContentReference, loaderOptions?: LoaderOptions): Observable<ContentData> {
+    getAncestors(contentLink: ContentReference, loaderOptions?: LoaderOptions): Observable<ContentData[]> {
         throw new Error('Not implemented');
     }
 
-    getItems(contentLinks: ContentReference[], loaderOptions?: LoaderOptions): Observable<ContentData[]> {
-        throw new Error('Not implemented');
+    getItems(contentLinks: ContentReference[], loaderOptions?: LoaderOptions): Observable<Content[]> {
+        const pageService = this.contentServiceResolver.resolveContentProviderFactory('page');
+        const blockService = this.contentServiceResolver.resolveContentProviderFactory('block');
+        const pageIds = contentLinks.filter(x => x.type == 'page').map(x => x._id);
+        const blockIds = contentLinks.filter(x => x.type == 'block').map(x => x._id);
+        return forkJoin(pageService.getContentItems(pageIds), blockService.getContentItems(blockIds)).pipe(
+            tap(([pages, blocks]) => {
+                pages.forEach(page => Object.assign(page, { type: 'page' }));
+                blocks.forEach(block => Object.assign(block, { type: 'block' }));
+            }),
+            map(([pages, blocks]) => pages.concat(blocks))
+        )
     }
 }
 

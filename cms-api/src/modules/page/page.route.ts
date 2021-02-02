@@ -25,6 +25,8 @@ export class PageRouter {
         page.post('/copy', this.pageController.copy.bind(this.pageController));
         //get page url
         page.post('/getUrls', this.langGuard.checkEnabled(), this.pageController.getPageUrls.bind(this.pageController));
+        //get content items
+        page.post('/getContentItems', this.langGuard.checkEnabled(), this.pageController.getContentItems.bind(this.pageController));
         //create the page
         page.post('/', this.langGuard.checkEnabled(), this.pageController.createContent.bind(this.pageController));
 

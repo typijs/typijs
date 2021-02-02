@@ -25,6 +25,12 @@ export abstract class ContentController<T extends IContentDocument, P extends IC
     res.status(httpStatus.OK).json(createdContent)
   }
 
+  async getContentItems(req: express.Request, res: express.Response) {
+    const { language } = req as any;
+    const items = await this.contentService.getPublishedContentItems(req.body, language, true);
+    res.status(httpStatus.OK).json(items);
+  }
+
   @Profiler({
     outputConsole: true,
     thresholdInMs: 300,

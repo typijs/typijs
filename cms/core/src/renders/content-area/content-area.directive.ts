@@ -1,38 +1,64 @@
-import { ComponentRef, Directive, Input, OnDestroy, ViewContainerRef } from '@angular/core';
+import { ComponentRef, Directive, EventEmitter, Input, OnDestroy, OnInit, Output, ViewContainerRef } from '@angular/core';
+import { ContentReference } from '../../types/content-reference';
 import { TypeOfContentEnum } from '../../types';
 import { CmsContentRenderFactoryResolver } from '../content-render.factory';
+import { ContentLoader } from '../../services/content/content-loader.service';
+import { Content } from '../../services/content/models/content.model';
 
 @Directive({
     selector: '[contentArea]'
 })
-export class ContentAreaDirective implements OnDestroy {
-    private componentRefs: ComponentRef<any>[] = [];
+export class ContentAreaDirective implements OnInit, OnDestroy {
 
-    private _value: any[];
-    @Input('contentArea')
-    get value(): any[] {
-        return this._value;
-    }
-    set value(value: any[]) {
-        this.viewContainerRef.clear();
-        this._value = value;
-        if (this._value) {
-            this._value.forEach(content => {
-                const createdComponent = this.createContentComponent(content);
-                if (createdComponent) { this.componentRefs.push(createdComponent); }
-            });
-        }
-    }
+    @Output() contentLoaded = new EventEmitter();
+    @Input('contentArea') contentAreaItems: Array<ContentReference & Partial<Content>>;
+    private componentRefs: ComponentRef<any>[] = [];
 
     constructor(
         private viewContainerRef: ViewContainerRef,
+        private contentLoader: ContentLoader,
         private cmsContentRenderFactoryResolver: CmsContentRenderFactoryResolver) { }
+
+    ngOnInit(): void {
+        if (this.contentAreaItems && this.contentAreaItems.length > 0) {
+
+            const firstItem = this.contentAreaItems[0];
+            const mustFetchItems: boolean = !firstItem.status;
+            if (mustFetchItems) {
+                this.contentLoader.getItems(this.contentAreaItems).subscribe((contents: Content[]) => {
+
+                    this.contentAreaItems.forEach(item => {
+                        const matchContent = contents.find(x => item._id === x._id);
+                        if (matchContent) {
+                            item = Object.assign(item, matchContent);
+                        }
+                    });
+
+                    this.renderContentAreaComponent();
+                });
+            } else {
+                this.renderContentAreaComponent();
+            }
+        }
+    }
 
     ngOnDestroy() {
         if (this.componentRefs) {
             this.componentRefs.forEach(component => component.destroy());
             this.componentRefs = [];
         }
+    }
+
+    private renderContentAreaComponent() {
+        this.viewContainerRef.clear();
+        this.contentAreaItems.forEach(content => {
+            const createdComponent = this.createContentComponent(content);
+            if (createdComponent) {
+                this.componentRefs.push(createdComponent);
+
+            }
+        });
+        setTimeout(() => { this.contentLoaded.emit(); }, 0);
     }
 
     private createContentComponent(content: any): ComponentRef<any> {

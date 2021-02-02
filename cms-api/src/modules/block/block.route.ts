@@ -22,6 +22,9 @@ export class BlockRouter {
 
         block.get('/:id', this.langGuard.checkEnabled(), this.blockController.getContent.bind(this.blockController));
 
+        //get content items
+        block.post('/getContentItems', this.langGuard.checkEnabled(), this.blockController.getContentItems.bind(this.blockController));
+
         block.post('/cut', this.blockController.cut.bind(this.blockController));
 
         block.post('/copy', this.blockController.copy.bind(this.blockController));
