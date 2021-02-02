@@ -47,7 +47,7 @@ export function pageAfterViewInit(rendererFactory: RendererFactory2, document: D
         LayoutComponent,
     ],
     providers: [
-        { provide: PAGE_AFTER_INIT, useFactory: pageAfterViewInit, deps: [RendererFactory2, DOCUMENT], multi: true }
+        //{ provide: PAGE_AFTER_INIT, useFactory: pageAfterViewInit, deps: [RendererFactory2, DOCUMENT], multi: true }
     ],
     bootstrap: [AppComponent]
 })

@@ -1,4 +1,4 @@
-import { AfterViewInit, InjectionToken, Input, Directive } from '@angular/core';
+import { AfterViewInit, InjectionToken, Input, Directive, InjectFlags } from '@angular/core';
 
 import { ContentData } from '../services/content/models/content-data';
 import { ContentTypeService } from '../services/content-type.service';
@@ -17,7 +17,7 @@ export abstract class CmsComponent<T extends ContentData> implements AfterViewIn
 
     @Input() currentContent: T;
     protected contentTypeService: ContentTypeService = AppInjector.get(ContentTypeService);
-    protected pageAfterInitFuncs: (() => void)[] = AppInjector.get(PAGE_AFTER_INIT);
+    protected pageAfterInitFuncs: (() => void)[] = AppInjector.get(PAGE_AFTER_INIT, undefined, InjectFlags.Optional);
 
     getProperty<K extends keyof T>(propertyName: K): PropertyModel {
         const contentType = this.currentContent.contentType;
@@ -61,7 +61,7 @@ export abstract class CmsComponent<T extends ContentData> implements AfterViewIn
 
     ngAfterViewInit(): void {
         const type = this.currentContent.type;
-        if (type === PAGE_TYPE) {
+        if (type === PAGE_TYPE && this.pageAfterInitFuncs) {
             this.pageAfterInitFuncs.forEach(func => {
                 const result: any = func();
                 if (result instanceof Promise) { Promise.all([result]); }
