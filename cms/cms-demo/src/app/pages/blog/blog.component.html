@@ -4,9 +4,9 @@
 <section class="ftco-section ftco-degree-bg">
   <div class="container">
     <div class="row">
-      <div class="col-lg-8 ftco-animate" *ngIf="articles$ | async as articles">
+      <div class="col-lg-8 " *ngIf="articles$ | async as articles">
         <div class="row">
-          <div class="col-md-12 d-flex ftco-animate" *ngFor="let item of articles">
+          <div class="col-md-12 d-flex " *ngFor="let item of articles">
             <div class="blog-entry align-self-stretch d-md-flex">
               <a href="javascript:;" [routerLink]="[item.linkUrl]" class="block-20"
                 [ngStyle]="{ 'background-image': 'url(' + (item.image | toImgSrc) + ')'}">
@@ -27,7 +27,7 @@
           </div>
         </div>
       </div> <!-- .col-md-8 -->
-      <div class="col-lg-4 sidebar ftco-animate">
+      <div class="col-lg-4 sidebar ">
         <div class="sidebar-box">
           <form action="#" class="search-form">
             <div class="form-group">
@@ -36,7 +36,7 @@
             </div>
           </form>
         </div>
-        <div class="sidebar-box ftco-animate">
+        <div class="sidebar-box ">
           <h3 class="heading">Categories</h3>
           <ul class="categories">
             <li><a href="#">Vegetables <span>(12)</span></a></li>
@@ -46,7 +46,7 @@
           </ul>
         </div>
 
-        <div class="sidebar-box ftco-animate">
+        <div class="sidebar-box ">
           <h3 class="heading">Recent Blog</h3>
           <div class="block-21 mb-4 d-flex">
             <a class="blog-img mr-4" style="background-image: url(images/image_1.jpg);"></a>
@@ -86,7 +86,7 @@
           </div>
         </div>
 
-        <div class="sidebar-box ftco-animate">
+        <div class="sidebar-box ">
           <h3 class="heading">Tag Cloud</h3>
           <div class="tagcloud">
             <a href="#" class="tag-cloud-link">fruits</a>
@@ -100,7 +100,7 @@
           </div>
         </div>
 
-        <div class="sidebar-box ftco-animate">
+        <div class="sidebar-box ">
           <h3 class="heading">Paragraph</h3>
           <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ducimus itaque, autem necessitatibus voluptate
             quod mollitia delectus aut, sunt placeat nam vero culpa sapiente consectetur similique, inventore eos fugit

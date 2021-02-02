@@ -8,8 +8,8 @@ import { CarouselItemBlock } from './carousel-item.blocktype';
     <div class="slider-item" [ngStyle]="{ 'background-image': 'url(' + (currentContent.image | toImgSrc) + ')'}">
         <div class="overlay"></div>
         <div class="container">
-            <div class="row slider-text justify-content-center align-items-center" data-scrollax-parent="true">
-                <div class="col-md-12 ftco-animate text-center">
+            <div class="row slider-text justify-content-center align-items-center">
+                <div class="col-md-12  text-center">
                     <h1 class="mb-2" [cmsText]="currentContent.heading"></h1>
                     <h2 class="subheading mb-4" [cmsText]="currentContent.subheading"></h2>
                     <p><a href="#" class="btn btn-primary">{{currentContent.buttonText}}</a></p>

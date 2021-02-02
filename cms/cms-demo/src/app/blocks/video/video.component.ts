@@ -13,7 +13,7 @@ import { VideoBlock } from './video.blocktype';
                     <span class="icon-play"></span>
                 </a>
             </div>
-            <div class="col-md-7 py-5 wrap-about pb-md-5 ftco-animate">
+            <div class="col-md-7 py-5 wrap-about pb-md-5 ">
                 <div class="heading-section-bold mb-4 mt-md-5">
                     <div class="ml-md-0">
                         <h2 class="mb-4" [cmsText]="currentContent.heading"></h2>

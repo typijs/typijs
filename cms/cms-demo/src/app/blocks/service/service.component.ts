@@ -4,7 +4,7 @@ import { ServiceBlock } from './service.blocktype';
 
 @Component({
     selector: 'div[service-item]',
-    host: { 'class': 'col-md-3 text-center d-flex align-self-stretch ftco-animate' },
+    host: { 'class': 'col-md-3 text-center d-flex align-self-stretch ' },
     template: `
         <div class="media block-6 services mb-md-0 mb-4">
             <div class="icon {{currentContent.background}} active d-flex justify-content-center align-items-center mb-2">

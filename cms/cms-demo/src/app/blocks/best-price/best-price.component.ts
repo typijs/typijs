@@ -9,7 +9,7 @@ import { BestPriceBlock } from './best-price.blocktype';
     <section class="ftco-section img" [ngStyle]="{ 'background-image': 'url(' + (currentContent.backgroundImage | toImgSrc) + ')'}">
         <div class="container">
             <div class="row justify-content-end">
-                <div class="col-md-6 heading-section ftco-animate deal-of-the-day ftco-animate">
+                <div class="col-md-6 heading-section  deal-of-the-day ">
                     <span class="subheading" [cmsText]="currentContent.subheading"></span>
                     <h2 class="mb-4" [cmsText]="currentContent.heading"></h2>
                     <div [cmsXhtml]="currentContent.description"></div>

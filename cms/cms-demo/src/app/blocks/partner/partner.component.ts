@@ -4,7 +4,7 @@ import { PartnerBlock } from './partner.blocktype';
 
 @Component({
     selector: 'div[partner-block]',
-    host: { 'class': 'col-sm ftco-animate' },
+    host: { 'class': 'col-sm ' },
     template: `
     <a class="partner" [cmsUrl]="currentContent.link">
         <img class="img-fluid" [cmsImage]="currentContent.image"/>

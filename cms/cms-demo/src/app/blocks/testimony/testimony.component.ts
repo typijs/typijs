@@ -8,13 +8,13 @@ import { TestimonyBlock } from './testimony.blocktype';
     template: `
     <div class="container">
         <div class="row justify-content-center mb-5 pb-3">
-            <div class="col-md-7 heading-section ftco-animate text-center">
+            <div class="col-md-7 heading-section  text-center">
                 <span class="subheading" [cmsText]="currentContent.subheading"></span>
                 <h2 class="mb-4" [cmsText]="currentContent.heading"></h2>
                 <p [cmsXhtml]="currentContent.description"></p>
             </div>
         </div>
-        <div class="row ftco-animate">
+        <div class="row ">
 				<div class="col-md-12">
 					<div class="carousel-testimony owl-carousel" [cmsContentArea]="currentContent.testimonies">
 					</div>

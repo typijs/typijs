@@ -4,7 +4,7 @@ import { ProductPage } from './product.pagetype';
 
 @Component({
     selector: 'div[product-partial]',
-    host: { 'class': 'col-md-6 col-lg-3 ftco-animate fadeInUp ftco-animated' },
+    host: { 'class': 'col-md-6 col-lg-3' },
     template: `
         <div class="product">
             <a [cmsUrl]="currentContent.contentLink | toPageUrl" target="_blank" class="img-prod"><img class="img-fluid" [src]="currentContent.image | toImgSrc" alt="Colorlib Template">
