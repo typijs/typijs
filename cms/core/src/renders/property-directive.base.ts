@@ -6,12 +6,12 @@ import { ngEditMode } from '../constants';
 export abstract class PropertyDirectiveBase implements OnInit, OnDestroy {
 
     ngEditMode: boolean = false;
+    protected renderer: Renderer2;
+    protected locationService: BrowserLocationService;
 
     private zone: NgZone;
-    private renderer: Renderer2;
-    private locationService: BrowserLocationService;
-    private unbindMouseEnterListener: Function;
-    private unbindMouseLeaveListener: Function;
+    private unbindMouseEnterListener: () => void;
+    private unbindMouseLeaveListener: () => void;
 
     constructor(injector: Injector, private elementRef: ElementRef) {
         this.zone = injector.get(NgZone);
