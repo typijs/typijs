@@ -27,20 +27,29 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         super(PageModel, PageLanguageModel, PageVersionModel);
     }
 
-    /**
-     * Get page version detail with deep populate the child reference items. 
-     * 
-     * If the version Id is not provided, the primary version based on language will be used instead
-     * @param id (`Required`) The content's id
-     * @param versionId (`Required` but null is allowed)  the version id, if value is null, the primary version based on language will be used
-     * @param language (`Required`) The language code (ex 'en', 'de'...)
-     * @param host (`Required`) The host name
-     */
-    async getContentVersion(id: string, versionId: string, language: string, host: string): Promise<IPageDocument & IPageVersionDocument> {
-        const primaryVersion = await super.getContentVersion(id, versionId, language);
-        const { _id, parentPath, urlSegment } = primaryVersion;
-        primaryVersion.linkUrl = await this.buildLinkUrl(_id.toString(), parentPath, urlSegment, language, host);
-        return primaryVersion;
+    async getPageUrls(id: string[], language: string, host: string): Promise<Array<IPageDocument & IPageLanguageDocument>> {
+        const resultPages = await this.getPublishedContentItems(id, language);
+
+        const linkArray: Array<[string, string]> = await this.buildManyLinkTuples(resultPages, language, host);
+
+        resultPages.forEach(page => {
+            const linkItem = linkArray.find(x => x[0] == page._id.toString());
+            if (linkItem) page.linkUrl = linkItem[1];
+        })
+
+        return resultPages;
+    }
+
+    private async buildManyLinkTuples(pages: Array<IPageDocument & IPageLanguageDocument>, language: string, host: string): Promise<Array<[string, string]>> {
+        const siteDefinition = await this.siteDefinitionService.getCurrentSiteDefinition(host);
+
+        const fetchLinkPromises: Promise<any>[] = pages.map(page => {
+            const { _id, parentPath, urlSegment } = page;
+            const buildUrlPromise = this.buildLinkUrlTuple(_id.toString(), parentPath, urlSegment, language, siteDefinition);
+            return buildUrlPromise;
+        })
+
+        return Promise.all(fetchLinkPromises);
     }
 
     /**
@@ -49,17 +58,18 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
      * @param parentPath 
      * @param currentUrlSegment 
      * @param language 
-     * @param host (Optional)
+     * @param siteDefinition ([startPageId, defaultLang])
+     * @returns [contentId, url]
      */
     @Cache({
         prefixKey: PageService.PrefixCacheKey,
-        suffixKey: (args) => `${args[0]}:${args[1]}:${args[2]}:${args[3]}:${args[4]}`
+        suffixKey: (args) => `${args[0]}:${args[1]}:${args[2]}:${args[3]}:${args[4][0]}:${args[4][1]}`
     })
-    private async buildLinkUrl(currentId: string, parentPath: string, currentUrlSegment: string, language: string, host: string): Promise<string> {
+    private async buildLinkUrlTuple(currentId: string, parentPath: string, currentUrlSegment: string, language: string, siteDefinition: [string, string]): Promise<[string, string]> {
 
         const parentIds = parentPath ? parentPath.split(',').filter(id => !isNullOrWhiteSpace(id)) : [];
 
-        const [startPageId, defaultLang] = await this.siteDefinitionService.getCurrentSiteDefinition(host);
+        const [startPageId, defaultLang] = siteDefinition;
 
         const urlSegments: string[] = [];
         if (defaultLang !== language) { urlSegments.push(language); }
@@ -71,7 +81,26 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         }
 
         if (currentId != startPageId) { urlSegments.push(currentUrlSegment); }
-        return `/${urlSegments.filter(segment => !isNullOrWhiteSpace(segment)).join('/')}`;
+        return [currentId, `/${urlSegments.filter(segment => !isNullOrWhiteSpace(segment)).join('/')}`];
+    }
+
+
+    /**
+     * Get page version detail with deep populate the child reference items. 
+     * 
+     * If the version Id is not provided, the primary version based on language will be used instead
+     * @param id (`Required`) The content's id
+     * @param versionId (`Required` but null is allowed)  the version id, if value is null, the primary version based on language will be used
+     * @param language (`Required`) The language code (ex 'en', 'de'...)
+     * @param host (`Required`) The host name
+     */
+    async getContentVersion(id: string, versionId: string, language: string, host: string): Promise<IPageDocument & IPageVersionDocument> {
+        const primaryVersion = await super.getContentVersion(id, versionId, language);
+        const siteDefinition = await this.siteDefinitionService.getCurrentSiteDefinition(host);
+        const { _id, parentPath, urlSegment } = primaryVersion;
+        const linkTuple = await this.buildLinkUrlTuple(_id.toString(), parentPath, urlSegment, language, siteDefinition);
+        primaryVersion.linkUrl = linkTuple[1];
+        return primaryVersion;
     }
 
     @Cache({
@@ -169,10 +198,12 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         const pageChildren = await super.getContentChildren(parentId, language)
         if (pageChildren.length == 0) return [];
 
-        for (let index = 0; index < pageChildren.length; index++) {
-            const page = pageChildren[index];
-            page.linkUrl = await this.buildLinkUrl(page._id.toString(), page.parentPath, page.urlSegment, language, host)
-        }
+        const linkArray: Array<[string, string]> = await this.buildManyLinkTuples(pageChildren, language, host);
+
+        pageChildren.forEach(page => {
+            const linkItem = linkArray.find(x => x[0] == page._id.toString());
+            if (linkItem) page.linkUrl = linkItem[1];
+        })
 
         return pageChildren;
     }
@@ -212,8 +243,11 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
     public executePublishContentFlow = async (id: string, versionId: string, userId: string, host: string): Promise<IPageDocument & IPageVersionDocument> => {
         await this.throwIfUrlSegmentDuplicated(id, versionId);
         const publishedContent = await super.executePublishContentFlow(id, versionId, userId);
+        const siteDefinition = await this.siteDefinitionService.getCurrentSiteDefinition(host);
         const { _id, parentPath, urlSegment, language } = publishedContent;
-        publishedContent.linkUrl = await this.buildLinkUrl(_id.toString(), parentPath, urlSegment, language, host);
+        const linkTuple = await this.buildLinkUrlTuple(_id.toString(), parentPath, urlSegment, language, siteDefinition);
+        publishedContent.linkUrl = linkTuple[1];
+
         return publishedContent;
     }
 

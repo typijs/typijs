@@ -1,5 +1,12 @@
-import { Property, UIHint, SelectItem, ISelectionFactory } from '@angular-cms/core';
 import { Observable, of } from 'rxjs';
+import { ISelectionFactory, SelectItem } from '../bases/selection-factory';
+import { Property } from '../decorators/property.decorator';
+import { ContentReference } from './content-reference';
+import { ImageReference } from './image-reference';
+import { UIHint } from './ui-hint';
+
+export type LinkType = 'page' | 'media' | 'email' | 'external';
+export type LinkTarget = '_blank' | '_self';
 
 export class LinkTypeSelectionFactory implements ISelectionFactory {
     getSelectItems(): Observable<SelectItem[]> {
@@ -39,20 +46,20 @@ export class UrlItem {
         displayType: UIHint.Dropdown,
         selectionFactory: LinkTargetSelectionFactory
     })
-    target: string;
+    target: LinkTarget;
 
     @Property({
         displayName: 'Link type',
         displayType: UIHint.Dropdown,
         selectionFactory: LinkTypeSelectionFactory
     })
-    urlType: string;
+    urlType: LinkType;
 
     @Property()
-    page: any;
+    page: ContentReference;
 
     @Property()
-    media: any;
+    media: ImageReference;
 
     @Property()
     email: any;

@@ -51,6 +51,7 @@ export * from './services/content/media.service';
 export * from './services/content/page.service';
 export * from './services/content/content-loader.service';
 export * from './services/site-definition';
+export * from './services/link.service';
 
 export * from './services/content/models/block.model';
 export * from './services/content/models/content-data';
@@ -59,9 +60,12 @@ export * from './services/content/models/media.model';
 export * from './services/content/models/page.model';
 export * from './types';
 export * from './types/content-reference';
+export * from './types/image-reference';
 export * from './types/content-type';
 export * from './types/module-config';
 export * from './types/ui-hint';
+export * from './types/url-item';
+
 export * from './utils/app-injector';
 export * from './utils/route-reuse-strategy';
 export * from './utils/undetected.event';

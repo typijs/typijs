@@ -11,9 +11,7 @@ import { Component, Injectable, Injector } from '@angular/core';
     </div>
   `
 })
-export class UrlListProperty extends CmsProperty {
-
-}
+export class UrlListProperty extends CmsProperty { }
 
 @Injectable()
 export class UrlListPropertyFactory extends CmsPropertyFactory {

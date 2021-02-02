@@ -1,9 +1,9 @@
+import { ClassOf, UrlItem } from '@angular-cms/core';
 import { AfterViewInit, Component, Input, ViewChild } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { Observable, ReplaySubject } from 'rxjs';
 import { startWith, take } from 'rxjs/operators';
 import { DynamicFormComponent } from '../../shared/form/dynamic-form.component';
-import { UrlItem } from './url.model';
 
 @Component({
     selector: 'url-details',
@@ -70,7 +70,7 @@ export class UrlDetailsComponent implements AfterViewInit {
 
     @Input() title: string;
     @Input() urlData: UrlItem;
-    @Input() itemType: new () => any = UrlItem;
+    @Input() itemType: ClassOf<UrlItem> = UrlItem;
 
     @ViewChild('formId', { static: true }) urlForm: DynamicFormComponent;
 

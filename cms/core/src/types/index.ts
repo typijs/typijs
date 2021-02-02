@@ -30,15 +30,6 @@ export type CmsTab = {
 };
 
 /**
- * Contains information to reference `Cms Image` instance
- */
-export type CmsImage = {
-    src: string,
-    alt: string,
-    thumbnail: string
-};
-
-/**
  * Contains information to reference `Cms Url` instance
  */
 export type CmsUrl = {

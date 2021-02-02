@@ -29,4 +29,10 @@ export class PageController extends ContentController<IPageDocument, IPageLangua
     const item = await this.pageService.getPublishedPageByUrl(req.params.url);
     res.status(httpStatus.OK).json(item);
   }
+
+  async getPageUrls(req: express.Request, res: express.Response) {
+    const { language } = req as any;
+    const items = await this.pageService.getPageUrls(req.body, language, req.query.host);
+    res.status(httpStatus.OK).json(items);
+  }
 }

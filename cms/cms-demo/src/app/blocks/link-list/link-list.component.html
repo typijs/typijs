@@ -1,18 +1,10 @@
-<div class="span_1_of_3">
-    <h3>Latest Posts</h3>
-    <a href="">
-        <h5 class="fountain">Starting a new journey today</h5>
-    </a>
-    <a href="">
-        <h5 class="fountain">The life of a web designer</h5>
-    </a>
-    <a href="">
-        <h5 class="fountain">Your guide to navigating Around to wordoress</h5>
-    </a>
-    <a href="">
-        <h5 class="fountain">introduction to HTML5 and CSS3</h5>
-    </a>
-    <a href="">
-        <h5 class="fountain">The life of a web designer</h5>
-    </a>
+<div class="ftco-footer-widget mb-4 ml-md-5">
+  <h2 class="ftco-heading-2">{{currentContent.header}}</h2>
+  <ul class="list-unstyled">
+    <li *ngFor="let link of currentContent.linkItems">
+      <a [cmsUrl]="link" class="py-2 d-block">
+        {{link.text}}
+      </a>
+    </li>
+  </ul>
 </div>

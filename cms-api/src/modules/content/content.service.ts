@@ -22,6 +22,24 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         this.contentVersionService = new ContentVersionService<V>(contentVersionModel);
     }
 
+    async getPublishedContentItems(id: string[], language: string, isPopulate: boolean = false): Promise<Array<T & P>> {
+        Validator.throwIfNullOrEmpty('language', language);
+        const contents = await this.find({ _id: { $in: id }, isDeleted: false } as any, { lean: true })
+            .populate({
+                path: 'contentLanguages',
+                match: { language: language },
+                populate: isPopulate ? this.deepPopulate(5, language) : undefined
+            }).exec();
+
+        const publishedContents: Array<T & P> = [];
+        contents.forEach(content => {
+            const publishedLang = content.contentLanguages.find((contentLang: P) => contentLang.language === language && contentLang.status == VersionStatus.Published) as P;
+            publishedContents.push(this.mergeToContentLanguage(content, publishedLang));
+        })
+
+        return publishedContents;
+    }
+
     /**
      * Get content version detail with deep populate the child reference items. 
      * 
@@ -46,8 +64,7 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
                 match: { isDeleted: false },
                 populate: {
                     path: 'contentLanguages',
-                    match: { language: language },
-                    populate: this.deepPopulate(5, language)
+                    match: { language: language }
                 }
             }).exec();
 
@@ -71,8 +88,7 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         const currentContent = await this.findOne({ _id: id, isDeleted: false } as any, { lean: true })
             .populate({
                 path: 'contentLanguages',
-                match: { language: language },
-                populate: this.deepPopulate(5, language)
+                match: { language: language }
             })
             .exec();
         Validator.throwIfNotFound('Content', currentContent, { _id: id, isDeleted: false });
