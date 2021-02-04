@@ -8,14 +8,14 @@ import {
 import { AfterViewInit, ChangeDetectorRef, Component, ComponentRef, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, UrlSegment } from '@angular/router';
-import { combineLatest, Observable, of } from 'rxjs';
-import { auditTime, catchError, concatMap, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { combineLatest, Observable, of, merge } from 'rxjs';
+import { auditTime, catchError, concatMap, debounceTime, distinctUntilChanged, filter, map, mapTo, switchMap, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import { DynamicFormService } from '../../shared/form/dynamic-form.service';
 import { SubjectService } from '../../shared/services/subject.service';
 import { SubscriptionDestroy } from '../../shared/subscription-destroy';
 import { ContentCrudService, ContentCrudServiceResolver, ContentInfo } from '../content-crud.service';
 
-export type ContentExt = Content & { urlSegment?: string, linkUrl?: string }
+export type ContentExt = Content & { urlSegment?: string, linkUrl?: string };
 
 @Component({
     templateUrl: './content-update.component.html',
@@ -80,11 +80,12 @@ export class ContentUpdateComponent extends SubscriptionDestroy implements OnIni
                 takeUntil(this.unsubscribe$))
             .subscribe(() => {
                 this.subjectService.fireContentSelected(this.typeOfContent, this.currentContent);
-                this.handleFormChangesToAutoSave(this.contentFormGroup)
+                this.handleFormChangesToAutoSave(this.contentFormGroup);
             });
 
         this.subjectService.portalLayoutChanged$
             .pipe(
+                distinctUntilChanged(),
                 tap((showIframeHider: boolean) => this.showIframeHider = showIframeHider),
                 takeUntil(this.unsubscribe$)
             )
@@ -131,12 +132,32 @@ export class ContentUpdateComponent extends SubscriptionDestroy implements OnIni
 
     /**
      * Subscribe the form value changes to trigger the save action
+     *
+     * https://stackoverflow.com/questions/45777683/rxjs-debounce-with-regular-sampling
      */
     private handleFormChangesToAutoSave(formGroup: FormGroup) {
         // implement the auto save function
         this.saveMessage = '';
-        formGroup.valueChanges.pipe(
-            auditTime(3000),
+        const formChanges$ = formGroup.valueChanges;
+
+        // If nothing change for 1 second, trigger save action
+        const debounceSave$ = formChanges$.pipe(debounceTime(1200));
+
+        // A signal to indicate whether or not the form changing
+        const valueChanging$ = merge(
+            formChanges$.pipe(mapTo(true)),
+            debounceSave$.pipe(mapTo(false))
+        ).pipe(distinctUntilChanged());
+
+        // Every 5 seconds in while form changing, trigger save action
+        const auditSave$ = formChanges$.pipe(
+            auditTime(5000),
+            withLatestFrom(valueChanging$),
+            filter(([values, changing]) => changing),
+            map(([values]) => values)
+        );
+
+        merge(debounceSave$, auditSave$).pipe(
             tap(() => this.saveMessage = 'Saving...'),
             concatMap(formValues => this.updateContent(formValues)),
             takeUntil(this.unsubscribe$)
