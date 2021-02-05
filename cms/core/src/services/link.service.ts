@@ -20,9 +20,9 @@ export class LinkService implements OnDestroy {
     constructor(private pageService: PageService) {
         this.pageIdSubject.pipe(
             distinct(),
+            filter(pageId => !this.fetchedPageIds.includes(pageId)),
             debounceTime(1000),
-            filter(pageId => this.fetchedPageIds.indexOf(pageId) === -1),
-            switchMap(() => this.pageService.getPageUrls(this.pageIds.filter(x => this.fetchedPageIds.indexOf(x) === -1))),
+            switchMap(() => this.pageService.getPageUrls(this.pageIds.filter(pageId => !this.fetchedPageIds.includes(pageId)))),
             takeUntil(this.destroy$)
         ).subscribe((pages: Page[]) => {
             this.fetchedPageIds = this.fetchedPageIds.concat(pages.map(x => x._id));
@@ -39,7 +39,7 @@ export class LinkService implements OnDestroy {
      * Push the page Id into array to prepare fetch the page urls
      */
     pushToFetchPageUrl(pageId: string): Observable<Page[]> {
-        if (this.pageIds.indexOf(pageId) === -1) {
+        if (!this.pageIds.includes(pageId)) {
             this.pageIds.push(pageId);
             this.pageIdSubject.next(pageId);
         }
