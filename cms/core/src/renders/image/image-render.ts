@@ -13,7 +13,7 @@ import { CmsPropertyRenderFactory } from '../property-render.factory';
 })
 export class ImagePropertyRender extends CmsPropertyRender<CmsImage> implements OnInit {
     @HostBinding('attr.src') src: SafeUrl;
-    @HostBinding('attr.alt') alt;
+    @HostBinding('attr.alt') alt: string;
 
     constructor(private configService: ConfigService, private sanitizer: DomSanitizer) { super(); }
 

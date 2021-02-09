@@ -6,7 +6,7 @@ import { ImageReference } from './image-reference';
 import { UIHint } from './ui-hint';
 
 export type LinkType = 'page' | 'media' | 'email' | 'external';
-export type LinkTarget = '_blank' | '_self';
+export type LinkTarget = '_blank ' | '_self' | '_parent' | '_top';
 
 export class LinkTypeSelectionFactory implements ISelectionFactory {
     getSelectItems(): Observable<SelectItem[]> {
