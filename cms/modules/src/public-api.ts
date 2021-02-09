@@ -43,6 +43,7 @@ export * from './properties/content-area/content-area.property';
 export * from './properties/content-reference/content-reference.property';
 export * from './properties/image-reference/image-reference.property';
 export * from './properties/url-list/url-list.property';
+export * from './properties/url/url.property';
 
 export * from './page/page.module';
 export * from './page/page-tree.component';

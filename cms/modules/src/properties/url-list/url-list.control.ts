@@ -2,7 +2,7 @@ import { Component, forwardRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 import { CmsListControl } from '../cms-list.control';
-import { UrlDetailsComponent } from './url-details.component';
+import { UrlDetailsComponent } from '../url/url-details.component';
 
 const URL_LIST_VALUE_ACCESSOR = {
     provide: NG_VALUE_ACCESSOR,
@@ -55,7 +55,7 @@ export class UrlListControl extends CmsListControl {
         const initialState = {
             urlData: item ?? {},
             title: item ? 'Edit url' : 'Create url'
-        }
+        };
         const config: ModalOptions = {
             initialState,
             backdrop: true, // Show backdrop
@@ -63,7 +63,7 @@ export class UrlListControl extends CmsListControl {
             ignoreBackdropClick: true, // Backdrop click to hide,
             animated: false,
             class: 'modal-md'
-        }
+        };
 
         this.modalService.show(UrlDetailsComponent, config).content.getResult().subscribe(editedItem => {
             this.insertOrUpdateItem(editedItem);

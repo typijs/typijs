@@ -1,6 +1,10 @@
 import { Injectable, OnDestroy } from '@angular/core';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Observable, ReplaySubject, Subject } from 'rxjs';
-import { debounceTime, distinct, filter, switchMap, takeUntil } from 'rxjs/operators';
+import { concatMap, debounceTime, distinct, filter, takeUntil } from 'rxjs/operators';
+import { ConfigService } from '../config/config.service';
+import { isUrlAbsolute } from '../helpers/common';
+import { UrlItem } from '../types/url-item';
 import { Page } from './content/models/page.model';
 import { PageService } from './content/page.service';
 
@@ -17,22 +21,20 @@ export class LinkService implements OnDestroy {
     private pageIds: string[] = [];
     private fetchedPageIds: string[] = [];
 
-    constructor(private pageService: PageService) {
+    constructor(
+        private pageService: PageService,
+        private sanitizer: DomSanitizer,
+        private configService: ConfigService) {
         this.pageIdSubject.pipe(
             distinct(),
             filter(pageId => !this.fetchedPageIds.includes(pageId)),
             debounceTime(1000),
-            switchMap(() => this.pageService.getPageUrls(this.pageIds.filter(pageId => !this.fetchedPageIds.includes(pageId)))),
+            concatMap(() => this.pageService.getPageUrls(this.pageIds.filter(pageId => !this.fetchedPageIds.includes(pageId)))),
             takeUntil(this.destroy$)
         ).subscribe((pages: Page[]) => {
             this.fetchedPageIds = this.fetchedPageIds.concat(pages.map(x => x._id));
             this.pageUrlsSubject.next(pages);
         });
-    }
-
-    ngOnDestroy(): void {
-        this.destroy$.next();
-        this.destroy$.complete();
     }
 
     /**
@@ -44,5 +46,24 @@ export class LinkService implements OnDestroy {
             this.pageIdSubject.next(pageId);
         }
         return this.pageUrls$;
+    }
+
+    getHrefFromUrlItem(urlItem: UrlItem): SafeUrl {
+        switch (urlItem.urlType) {
+            case 'media':
+                const imgSrc = isUrlAbsolute(urlItem.media?.src) ? urlItem.media?.src : `${this.configService.baseApiUrl}${urlItem.media?.src}`;
+                return this.sanitizer.bypassSecurityTrustUrl(imgSrc);
+            case 'email':
+                return `mailto:${urlItem.email}`;
+            case 'external':
+                return this.sanitizer.bypassSecurityTrustUrl(urlItem.external);
+            default:
+                return '';
+        }
+    }
+
+    ngOnDestroy(): void {
+        this.destroy$.next();
+        this.destroy$.complete();
     }
 }

@@ -1,9 +1,7 @@
 import { Directive, ElementRef, HostBinding, HostListener, Injector, Input, OnInit } from '@angular/core';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { SafeUrl } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { first } from 'rxjs/operators';
-import { ConfigService } from '../../config/config.service';
-import { isUrlAbsolute } from '../../helpers/common';
 import { LinkService } from '../../services/link.service';
 import { LinkTarget, UrlItem } from '../../types/url-item';
 import { PropertyDirectiveBase } from '../property-directive.base';
@@ -21,10 +19,8 @@ export class UrlRenderDirective extends PropertyDirectiveBase implements OnInit 
     constructor(
         injector: Injector,
         private router: Router,
-        private configService: ConfigService,
         private linkService: LinkService,
-        private linkRef: ElementRef,
-        private sanitizer: DomSanitizer) {
+        private linkRef: ElementRef) {
         super(injector, linkRef);
     }
 
@@ -45,7 +41,7 @@ export class UrlRenderDirective extends PropertyDirectiveBase implements OnInit 
                     }
                 });
             } else {
-                this.href = this.getHrefFromUrlItem(this.urlItem);
+                this.href = this.linkService.getHrefFromUrlItem(this.urlItem);
             }
         }
     }
@@ -57,19 +53,5 @@ export class UrlRenderDirective extends PropertyDirectiveBase implements OnInit 
             return false;
         }
         return true;
-    }
-
-    private getHrefFromUrlItem(urlItem: UrlItem): SafeUrl {
-        switch (urlItem.urlType) {
-            case 'media':
-                const imgSrc = isUrlAbsolute(urlItem.media?.src) ? urlItem.media?.src : `${this.configService.baseApiUrl}${urlItem.media?.src}`;
-                return this.sanitizer.bypassSecurityTrustUrl(imgSrc);
-            case 'email':
-                return `mailto:${urlItem.email}`;
-            case 'external':
-                return this.sanitizer.bypassSecurityTrustUrl(urlItem.external);
-            default:
-                return '';
-        }
     }
 }
