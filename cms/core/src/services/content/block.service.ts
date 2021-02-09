@@ -15,6 +15,7 @@ export class BlockService extends ContentService<Block> {
     }
 
     isMatching(typeOfContent: string) {
+        this.typeOfContent = typeOfContent;
         return typeOfContent === TypeOfContentEnum.Block || typeOfContent === TypeOfContentEnum.FolderBlock;
     }
 

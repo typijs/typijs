@@ -1,20 +1,20 @@
 import { Injector } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { BrowserLocationService } from '../../browser/browser-location.service';
 import { convertObjectToUrlQueryString } from '../../helpers/common';
 import { TypeOfContent } from '../../types';
 import { FolderService } from './folder.service';
 import { Content } from './models/content.model';
 
-
 export abstract class ContentService<T extends Content> extends FolderService<T> {
 
     protected locationService: BrowserLocationService
+    protected typeOfContent: TypeOfContent;
     constructor(injector: Injector) {
         super(injector);
         this.locationService = injector.get(BrowserLocationService);
     }
-
     abstract isMatching(typeOfContent: TypeOfContent);
     abstract getContentData(content: T);
 
@@ -42,7 +42,9 @@ export abstract class ContentService<T extends Content> extends FolderService<T>
 
     getContentItems(contentIds: string[], language?: string): Observable<T[]> {
         const query = convertObjectToUrlQueryString({ language });
-        return this.httpClient.post<T[]>(`${this.apiUrl}/getContentItems?${query}`, contentIds);
+        return this.httpClient.post<T[]>(`${this.apiUrl}/getContentItems?${query}`, contentIds).pipe(
+            map((contents: T[]) => contents.map(content => Object.assign(content, { type: this.typeOfContent })))
+        );
     }
 
     getContentChildren(parentId: string, language?: string): Observable<T[]> {

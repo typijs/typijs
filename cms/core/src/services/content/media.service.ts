@@ -18,6 +18,7 @@ export class MediaService extends ContentService<Media> {
     }
 
     isMatching(typeOfContent: string) {
+        this.typeOfContent = typeOfContent;
         return typeOfContent === TypeOfContentEnum.Media || typeOfContent === TypeOfContentEnum.FolderMedia
     }
 

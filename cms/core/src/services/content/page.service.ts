@@ -18,6 +18,7 @@ export class PageService extends ContentService<Page> {
     }
 
     isMatching(typeOfContent: string) {
+        this.typeOfContent = typeOfContent;
         return typeOfContent === TypeOfContentEnum.Page;
     }
 
