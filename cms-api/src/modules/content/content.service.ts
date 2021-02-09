@@ -22,26 +22,8 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         this.contentVersionService = new ContentVersionService<V>(contentVersionModel);
     }
 
-    async getPublishedContentItems(id: string[], language: string, isPopulate: boolean = false): Promise<Array<T & P>> {
-        Validator.throwIfNullOrEmpty('language', language);
-        const contents = await this.find({ _id: { $in: id }, isDeleted: false } as any, { lean: true })
-            .populate({
-                path: 'contentLanguages',
-                match: { language: language },
-                populate: isPopulate ? this.deepPopulate(5, language) : undefined
-            }).exec();
-
-        const publishedContents: Array<T & P> = [];
-        contents.forEach(content => {
-            const publishedLang = content.contentLanguages.find((contentLang: P) => contentLang.language === language && contentLang.status == VersionStatus.Published) as P;
-            publishedContents.push(this.mergeToContentLanguage(content, publishedLang));
-        })
-
-        return publishedContents;
-    }
-
     /**
-     * Get content version detail with deep populate the child reference items. 
+     * Get content version detail 
      * 
      * If the version Id is not provided, the primary version based on language will be used instead
      * @param id (`Required`) The content's id
@@ -79,87 +61,125 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
     }
 
     /**
-     * Get published content by id and language code
-     * @param id The content's id
+     * Get content detail without deep populate the child reference items
+     * @param id The content id
      * @param language The language code (ex 'en', 'de'...)
+     * @param statuses The array of statuses VersionStatus[]
+     * @param fieldsSelect The Mongoose select field syntax (for example: `'_id name created'`)
      */
-    public getPublishedContentById = async (id: string, language: string): Promise<T & P> => {
+    public getContent = async (id: string, language: string, statuses?: number[], fieldsSelect?: string): Promise<T & P> => {
+        Validator.throwIfNull('contentId', id);
 
-        const currentContent = await this.findOne({ _id: id, isDeleted: false } as any, { lean: true })
-            .populate({
-                path: 'contentLanguages',
-                match: { language: language }
-            })
-            .exec();
-        Validator.throwIfNotFound('Content', currentContent, { _id: id, isDeleted: false });
+        if (!language) { language = this.EMPTY_LANGUAGE };
+        const filter = { _id: id, isDeleted: false }
+        const populateMatch = statuses ? { language, status: { $in: statuses } } : { language };
 
-        const publishedLang = currentContent.contentLanguages.find((contentLang: P) => contentLang.language === language && contentLang.status == VersionStatus.Published) as P;
-        Validator.throwIfNotFound('ContentLanguage', publishedLang, { language, status: VersionStatus.Published });
+        let queryBuilder = this.findOne(filter as any, { lean: true });
+        if (fieldsSelect) {
+            queryBuilder = queryBuilder.select(fieldsSelect);
+        }
 
-        return this.mergeToContentLanguage(currentContent, publishedLang);
+        queryBuilder = queryBuilder.populate({
+            path: 'contentLanguages',
+            match: populateMatch,
+            select: fieldsSelect
+        })
+
+        const currentContent = await queryBuilder.exec();
+        Validator.throwIfNotFound('Content', currentContent, { _id: id, isDeleted: false, status: statuses });
+
+        const contentLanguage = currentContent.contentLanguages.find((contentLang: P) => contentLang.language === language);
+        Validator.throwIfNotFound('ContentLanguage', contentLanguage, { _id: id, isDeleted: false });
+
+        return this.mergeToContentLanguage(currentContent, contentLanguage);
     }
 
-    private deepPopulate = (level: number, language: string): { path: string, match: any, populate?: any } => {
+    /**
+     * Gets content children by parent id
+     * @param parentId 
+     * @param language 
+     * @param [host] optional
+     * @param [fieldsSelect] optional - The Mongoose select field syntax (for example: `'_id name created'`)
+     * @returns The array of children 
+     */
+    async getContentChildren(parentId: string, language: string, host?: string, fieldsSelect?: string): Promise<Array<T & P>> {
+        if (parentId == '0') parentId = null;
+
+        const filter = { parentId: parentId, contentType: { $ne: null }, isDeleted: false };
+        let queryBuilder = this.find(filter as any, { lean: true });
+        if (fieldsSelect) {
+            queryBuilder = queryBuilder.select(fieldsSelect);
+        }
+
+        queryBuilder = queryBuilder.populate({
+            path: 'contentLanguages',
+            match: { language },
+            select: fieldsSelect
+        })
+
+        const contentChildren = await queryBuilder.exec();
+
+        return contentChildren.map(x => {
+            const contentLanguage = x.contentLanguages.find(contentLang => contentLang.language === language);
+            return this.mergeToContentLanguage(x, contentLanguage);
+        })
+    }
+
+    async getContentItems(id: string[], language: string, statuses?: number[], fieldsSelect?: string, isDeepPopulate: boolean = false): Promise<Array<T & P>> {
+        Validator.throwIfNullOrEmpty('language', language);
+
+        const filter = { _id: { $in: id }, isDeleted: false };
+        const populateMatch = statuses ? { language, status: { $in: statuses } } : { language };
+
+        let queryBuilder = this.find(filter as any, { lean: true });
+        if (fieldsSelect) {
+            queryBuilder = queryBuilder.select(fieldsSelect);
+        }
+
+        queryBuilder = queryBuilder.populate({
+            path: 'contentLanguages',
+            match: populateMatch,
+            populate: isDeepPopulate ? this.deepPopulate(5, language) : undefined,
+            select: fieldsSelect
+        });
+        const contents = await queryBuilder.exec();
+
+        const publishedContents: Array<T & P> = [];
+        contents.forEach(content => {
+            const publishedLang = content.contentLanguages.find((contentLang: P) => contentLang.language === language) as P;
+            publishedContents.push(this.mergeToContentLanguage(content, publishedLang));
+        })
+
+        return publishedContents;
+    }
+
+    private deepPopulate = (level: number, language: string, statuses?: number[], fieldsSelect?: string): { path: string, match: any, select?: string, populate?: any } => {
+        const populateMatch = statuses ? { language, status: { $in: statuses } } : { language };
         if (level > 1) {
             return {
                 path: 'childItems.content',
                 match: { isDeleted: false },
+                select: fieldsSelect,
                 populate: {
                     path: 'contentLanguages',
-                    match: { language: language },
-                    populate: this.deepPopulate(--level, language)
+                    match: populateMatch,
+                    populate: this.deepPopulate(--level, language, statuses, fieldsSelect),
+                    select: fieldsSelect
                 }
             }
         } else if (level == 1) {
             return {
                 path: 'childItems.content',
                 match: { isDeleted: false },
+                select: fieldsSelect,
                 populate: {
                     path: 'contentLanguages',
-                    match: { language: language }
+                    match: populateMatch,
+                    select: fieldsSelect
                 }
             }
         }
-        return null
-    }
-
-    /**
-     * Get content without deep populate the child reference items
-     * @param id 
-     * @param language 
-     */
-    public getContent = async (id: string, language: string): Promise<T & P> => {
-
-        const currentContent = await this.findOne({ _id: id, isDeleted: false } as any, { lean: true })
-            .populate({
-                path: 'contentLanguages',
-                match: { $or: [{ language: language }, { language: this.EMPTY_LANGUAGE }] }
-            })
-            .exec();
-        Validator.throwIfNotFound('Simple Content', currentContent, { _id: id, isDeleted: false });
-
-        const contentLanguage = currentContent.contentLanguages.find((contentLang: P) =>
-            contentLang.language === language || contentLang.language === this.EMPTY_LANGUAGE);
-        Validator.throwIfNotFound('Simple Content Language', contentLanguage, { _id: id, isDeleted: false });
-
-        return this.mergeToContentLanguage(currentContent, contentLanguage);
-    }
-
-
-    async getContentChildren(parentId: string, language: string, host?: string): Promise<Array<T & P>> {
-        if (parentId == '0') parentId = null;
-
-        const contentChildren = await this.find({ parentId: parentId, isDeleted: false, contentType: { $ne: null } } as any, { lean: true })
-            .populate({
-                path: 'contentLanguages',
-                match: { language: language }
-            })
-            .exec();
-
-        return contentChildren.map(x => {
-            const contentLanguage = x.contentLanguages.find(contentLang => contentLang.language === language);
-            return this.mergeToContentLanguage(x, contentLanguage);
-        })
+        return null;
     }
 
     /**

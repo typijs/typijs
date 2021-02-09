@@ -27,8 +27,36 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         super(PageModel, PageLanguageModel, PageVersionModel);
     }
 
+    /**
+     * Get page version detail
+     * 
+     * If the version Id is not provided, the primary version based on language will be used instead
+     * @param id (`Required`) The content's id
+     * @param versionId (`Required` but null is allowed)  the version id, if value is null, the primary version based on language will be used
+     * @param language (`Required`) The language code (ex 'en', 'de'...)
+     * @param host (`Required`) The host name
+     */
+    async getContentVersion(id: string, versionId: string, language: string, host: string): Promise<IPageDocument & IPageVersionDocument> {
+        const primaryVersion = await super.getContentVersion(id, versionId, language);
+        const siteDefinition = await this.siteDefinitionService.getCurrentSiteDefinition(host);
+        const { _id, parentPath, urlSegment } = primaryVersion;
+        const linkTuple = await this.buildLinkUrlTuple(_id.toString(), parentPath, urlSegment, language, siteDefinition);
+        primaryVersion.linkUrl = linkTuple[1];
+        return primaryVersion;
+    }
+
+    /**
+     * Gets link urls of multi pages
+     * @param id 
+     * @param language 
+     * @param host 
+     * @returns page with url
+     */
     async getPageUrls(id: string[], language: string, host: string): Promise<Array<IPageDocument & IPageLanguageDocument>> {
-        const resultPages = await this.getPublishedContentItems(id, language);
+
+        const statuses = [VersionStatus.Published];
+        const fieldsSelect = '_id parentPath language urlSegment';
+        const resultPages = await this.getContentItems(id, language, statuses, fieldsSelect, false);
 
         const linkArray: Array<[string, string]> = await this.buildManyLinkTuples(resultPages, language, host);
 
@@ -84,39 +112,13 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         return [currentId, `/${urlSegments.filter(segment => !isNullOrWhiteSpace(segment)).join('/')}`];
     }
 
-
-    /**
-     * Get page version detail with deep populate the child reference items. 
-     * 
-     * If the version Id is not provided, the primary version based on language will be used instead
-     * @param id (`Required`) The content's id
-     * @param versionId (`Required` but null is allowed)  the version id, if value is null, the primary version based on language will be used
-     * @param language (`Required`) The language code (ex 'en', 'de'...)
-     * @param host (`Required`) The host name
-     */
-    async getContentVersion(id: string, versionId: string, language: string, host: string): Promise<IPageDocument & IPageVersionDocument> {
-        const primaryVersion = await super.getContentVersion(id, versionId, language);
-        const siteDefinition = await this.siteDefinitionService.getCurrentSiteDefinition(host);
-        const { _id, parentPath, urlSegment } = primaryVersion;
-        const linkTuple = await this.buildLinkUrlTuple(_id.toString(), parentPath, urlSegment, language, siteDefinition);
-        primaryVersion.linkUrl = linkTuple[1];
-        return primaryVersion;
-    }
-
     @Cache({
         prefixKey: PageService.PrefixCacheKey,
         suffixKey: (args) => `${args[0]}:${args[1]}`
     })
     private async getUrlSegmentByPageId(id: string, language: string): Promise<string> {
-        const currentContent = await this.contentLanguageService.findOne({ contentId: id, language } as any, { lean: true })
-            .select('contentId urlSegment')
-            .populate({
-                path: 'contentId',
-                match: { isDeleted: false },
-                select: 'urlSegment'
-            })
-            .exec()
-
+        const fieldsSelect = '_id contentId language urlSegment';
+        const currentContent = await this.getContent(id, language, null, fieldsSelect)
         return currentContent.urlSegment;
     }
 
@@ -124,7 +126,7 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
      * Resolve page data via url
      * @param encodedUrl 
      */
-    public getPublishedPageByUrl = async (encodedUrl: string): Promise<IPageDocument & IPageLanguageDocument> => {
+    getPublishedPageByUrl = async (encodedUrl: string): Promise<IPageDocument & IPageLanguageDocument> => {
         //get domain from url
         const url = Buffer.from(encodedUrl, 'base64').toString();
         const urlObj = new URL(url); // --> https://www.example.org:80/abc/xyz?123
@@ -154,20 +156,22 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
     }
 
     private resolvePageContentFromUrlSegments = async (startPageId: string, segments: string[], language: string): Promise<IPageDocument & IPageLanguageDocument> => {
-        if (!segments || segments.length == 0) return await this.getPublishedContentById(startPageId, language);
+        if (!segments || segments.length == 0) return await this.getContent(startPageId, language, [VersionStatus.Published]);
 
         return await this.recursiveResolvePageByUrlSegment(startPageId, segments, language, 0);
     }
 
     private recursiveResolvePageByUrlSegment = async (parentPageId: string, segments: string[], language: string, index: number): Promise<IPageDocument & IPageLanguageDocument> => {
         // get page children
-        const childrenPage = (await this.getContentChildren(parentPageId, language)).filter(x => x.status == VersionStatus.Published);
+        const fieldsSelect: string = '_id urlSegment language status';
+        const childrenPage = (await super.getContentChildren(parentPageId, language, null, fieldsSelect))
+            .filter(x => x.status == VersionStatus.Published);
         if (!childrenPage || childrenPage.length == 0) return null;
 
         const matchPage = childrenPage.find(page => page.urlSegment == segments[index]);
         if (!matchPage) return null;
 
-        if (index == segments.length - 1) return await this.getPublishedContentById(matchPage._id, language);
+        if (index == segments.length - 1) return await this.getContent(matchPage._id.toString(), language, [VersionStatus.Published]);
 
         return await this.recursiveResolvePageByUrlSegment(matchPage._id.toString(), segments, language, index + 1);
     }
@@ -192,10 +196,18 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         return langDoc ? langDoc.language : undefined;
     }
 
-    async getContentChildren(parentId: string, language: string, host?: string): Promise<Array<IPageDocument & IPageLanguageDocument>> {
+    /**
+     * Gets page children by parent id
+     * @param parentId 
+     * @param language 
+     * @param [host] 
+     * @param [fieldSelect] The Mongoose select field syntax (for example: `'_id name created'`)
+     * @returns The array of children 
+     */
+    async getContentChildren(parentId: string, language: string, host?: string, fieldSelect?: string): Promise<Array<IPageDocument & IPageLanguageDocument>> {
         if (parentId == '0') parentId = null;
 
-        const pageChildren = await super.getContentChildren(parentId, language)
+        const pageChildren = await super.getContentChildren(parentId, language, host, fieldSelect)
         if (pageChildren.length == 0) return [];
 
         const linkArray: Array<[string, string]> = await this.buildManyLinkTuples(pageChildren, language, host);
