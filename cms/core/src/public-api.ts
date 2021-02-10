@@ -74,3 +74,4 @@ export * from './pipes/map.pipe';
 export * from './pipes/safe.pipe';
 export * from './pipes/to-img-src.pipe';
 export * from './pipes/to-page-url.pipe';
+export * from './pipes/call-function.pipe';

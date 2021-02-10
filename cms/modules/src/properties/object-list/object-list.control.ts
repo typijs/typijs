@@ -19,7 +19,7 @@ const OBJECT_LIST_VALUE_ACCESSOR = {
             <ng-template #itemTemplate let-item>
                 <div class="d-flex align-items-center">
                     <fa-icon class="mr-1" [icon]="['fas', 'hashtag']"></fa-icon>
-                    <div *ngFor="let field of getItems(item)" class="mr-2">
+                    <div *ngFor="let field of getKeyValues | call:item" class="mr-2">
                         <span>{{field.value}}</span>
                     </div>
                     <div class="hover-menu ml-auto" dropdown container="body">
@@ -64,7 +64,7 @@ export class ObjectListControl extends CmsListControl {
             itemType: this.itemType,
             itemData: item ?? {},
             title: item ? 'Item Detail' : 'Create Item'
-        }
+        };
         const config: ModalOptions = {
             initialState,
             backdrop: true, // Show backdrop
@@ -72,19 +72,19 @@ export class ObjectListControl extends CmsListControl {
             ignoreBackdropClick: true, // Backdrop click to hide,
             animated: false,
             class: 'modal-md'
-        }
+        };
 
         this.modalService.show(ObjectDetailsComponent, config).content.getResult().subscribe(editedItem => {
             this.insertOrUpdateItem(editedItem);
         });
     }
 
-    getItems(control): any[] {
-        const items = Object.keys(control).filter(key => key !== 'guid').map(key => ({
+    getKeyValues(objectItem): { key: string, value: any }[] {
+        const keyValues = Object.keys(objectItem).filter(key => key !== 'guid').map(key => ({
             key,
-            value: control[key]
+            value: objectItem[key]
         }));
 
-        return items;
+        return keyValues;
     }
 }
