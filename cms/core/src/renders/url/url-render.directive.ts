@@ -1,8 +1,7 @@
 import { Directive, ElementRef, HostBinding, HostListener, Injector, Input, OnInit } from '@angular/core';
 import { SafeUrl } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-import { first } from 'rxjs/operators';
-import { LinkService } from '../../services/link.service';
+import { UrlResolveService } from '../../services/url-resolve.service';
 import { LinkTarget, UrlItem } from '../../types/url-item';
 import { PropertyDirectiveBase } from '../property-directive.base';
 
@@ -19,7 +18,7 @@ export class UrlRenderDirective extends PropertyDirectiveBase implements OnInit 
     constructor(
         injector: Injector,
         private router: Router,
-        private linkService: LinkService,
+        private urlResolve: UrlResolveService,
         private linkRef: ElementRef) {
         super(injector, linkRef);
     }
@@ -31,17 +30,14 @@ export class UrlRenderDirective extends PropertyDirectiveBase implements OnInit 
             if (target) { this.target = target; }
 
             if (urlType === 'page' && page) {
-                this.linkService.pushToFetchPageUrl(page.id).pipe(
-                    first((pages) => pages.some(x => x._id === page.id))
-                ).subscribe((pages) => {
-                    const matchPage = pages.find(x => x._id === page.id);
-                    if (matchPage) {
-                        this.url = matchPage.linkUrl;
-                        setTimeout(() => this.renderer.setProperty(this.linkRef.nativeElement, 'href', matchPage.linkUrl), 0);
+                this.urlResolve.getPageUrl(page.id).subscribe((pageUrl) => {
+                    if (pageUrl) {
+                        this.url = pageUrl;
+                        setTimeout(() => this.renderer.setProperty(this.linkRef.nativeElement, 'href', pageUrl), 0);
                     }
                 });
             } else {
-                this.href = this.linkService.getHrefFromUrlItem(this.urlItem);
+                this.href = this.urlResolve.getHrefFromUrlItem(this.urlItem);
             }
         }
     }
