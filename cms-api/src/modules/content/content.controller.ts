@@ -10,7 +10,6 @@ import { FolderController } from '../folder/folder.controller';
 import { ContentVersionService } from './content-version.service';
 import { IContentDocument, IContentVersionDocument, IContentLanguageDocument } from './content.model';
 import { ContentService } from './content.service';
-import { VersionStatus } from './version-status';
 
 export abstract class ContentController<T extends IContentDocument, P extends IContentLanguageDocument, V extends IContentVersionDocument> extends FolderController<T, P> {
 
@@ -30,6 +29,12 @@ export abstract class ContentController<T extends IContentDocument, P extends IC
     const { language } = req as any;
     const { statuses, fieldsSelect } = req.query;
     const items = await this.contentService.getContentItems(req.body, language, statuses, fieldsSelect, true);
+    res.status(httpStatus.OK).json(items);
+  }
+
+  async queryContent(req: express.Request, res: express.Response) {
+    const { filter, page, limit, sort, select } = req.body;
+    const items = await this.contentService.queryContent(filter, page, limit, sort, select);
     res.status(httpStatus.OK).json(items);
   }
 

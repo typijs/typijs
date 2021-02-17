@@ -10,7 +10,7 @@ export class BaseService<T extends IBaseDocument> {
     }
 
     private static get defaultPaginateOptions(): PaginateOptions {
-        return { limit: 10, page: 1 }
+        return { limit: 1000, page: 1 }
     }
 
     constructor(mongooseModel: IBaseModel<T>) {
@@ -108,11 +108,11 @@ export class BaseService<T extends IBaseDocument> {
             const [totalResults, results] = values;
             const totalPages = Math.ceil(totalResults / limit);
             const result: PaginateResult = {
-                results,
+                docs: results,
                 page,
                 limit,
-                totalPages,
-                totalResults,
+                pages: totalPages,
+                total: totalResults,
             };
             return Promise.resolve(result);
         });
@@ -162,11 +162,11 @@ export class BaseService<T extends IBaseDocument> {
         return this.mongooseModel.deleteMany(filter)
     }
 
-    private getQueryOptions = (options?: QueryOptions): QueryOptions => {
-        return { ...BaseService.defaultOptions, ...(options || {}), };
+    protected getPaginateOptions = (paginateOptions?: PaginateOptions): PaginateOptions => {
+        return { ...BaseService.defaultPaginateOptions, ... (paginateOptions || {}) }
     }
 
-    private getPaginateOptions = (paginateOptions?: PaginateOptions): PaginateOptions => {
-        return { ...BaseService.defaultPaginateOptions, ... (paginateOptions || {}) }
+    private getQueryOptions = (options?: QueryOptions): QueryOptions => {
+        return { ...BaseService.defaultOptions, ...(options || {}), };
     }
 }

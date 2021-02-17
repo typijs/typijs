@@ -27,6 +27,8 @@ export class PageRouter {
         page.post('/getUrls', this.langGuard.checkEnabled(), this.pageController.getPageUrls.bind(this.pageController));
         //get content items
         page.post('/getContentItems', this.langGuard.checkEnabled(), this.pageController.getContentItems.bind(this.pageController));
+        //query contents
+        page.post('/query', this.langGuard.checkEnabled(), this.pageController.queryContent.bind(this.pageController));
         //create the page
         page.post('/', this.langGuard.checkEnabled(), this.pageController.createContent.bind(this.pageController));
 

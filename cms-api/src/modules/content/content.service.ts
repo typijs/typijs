@@ -1,7 +1,9 @@
+import { FilterQuery } from 'mongoose';
 import { DocumentNotFoundException } from '../../error';
 import { pick } from '../../utils';
 import { Validator } from '../../validation/validator';
 import { FolderService } from '../folder/folder.service';
+import { PaginateOptions, PaginateResult, QueryOptions } from '../shared/base.model';
 import { ContentLanguageService } from './content-language.service';
 import { ContentVersionService } from './content-version.service';
 import {
@@ -16,7 +18,7 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
     protected contentLanguageService: ContentLanguageService<P>;
     protected contentVersionService: ContentVersionService<V>;
 
-    constructor(contentModel: IContentModel<T>, contentLanguageModel: IContentLanguageModel<P>, contentVersionModel: IContentVersionModel<V>) {
+    constructor(contentModel: IContentModel<T>, protected contentLanguageModel: IContentLanguageModel<P>, contentVersionModel: IContentVersionModel<V>) {
         super(contentModel, contentLanguageModel);
         this.contentLanguageService = new ContentLanguageService<P>(contentLanguageModel);
         this.contentVersionService = new ContentVersionService<V>(contentVersionModel);
@@ -67,7 +69,7 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
      * @param statuses The array of statuses VersionStatus[]
      * @param fieldsSelect The Mongoose select field syntax (for example: `'_id name created'`)
      */
-    public getContent = async (id: string, language: string, statuses?: number[], fieldsSelect?: string): Promise<T & P> => {
+    async getContent(id: string, language: string, statuses?: number[], fieldsSelect?: string): Promise<T & P> {
         Validator.throwIfNull('contentId', id);
 
         if (!language) { language = this.EMPTY_LANGUAGE };
@@ -180,6 +182,72 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
             }
         }
         return null;
+    }
+
+    /**
+     * Query content using aggregation function -> paginated results and a total count.
+     * @param filter {FilterQuery<T & P>} The filter to query content
+     * @param page {Number} Current page (default = 1)
+     * @param limit {Number} Last row to return in results
+     * @param sort {Object} sort query object such as `{ firstName: 'asc', lastName: -1 }`
+     * @returns {Object} Object -> `{ rows, count }`
+     */
+    async queryContent(
+        filter: FilterQuery<T & P>,
+        page: number,
+        limit: number,
+        sort: { [key: string]: 'asc' | 'desc' | 1 | -1 },
+        select?: string): Promise<Partial<PaginateResult>> {
+        const skip = (page - 1) * limit;
+        // IContent filter
+        const { parentId, parentPath, contentType, isDeleted, deletedBy } = filter;
+        // IContentLanguage filter
+        const { contentId, versionId, language, name, properties, status } = filter;
+        // aggregation query
+        const queryBuilder = this.Model.aggregate<PaginateResult>()
+            .match({ isDeleted, parentPath: { $regex: new RegExp(parentPath) } })
+            .lookup({
+                from: this.contentLanguageModel.collection.name,
+                foreignField: 'contentId',
+                localField: '_id',
+                as: 'languageBranch'
+            })
+            .unwind('$languageBranch')
+            .match({ "languageBranch.language": language })
+            .project({ "contentLanguages": 0 })
+            .facet({
+                metadata: [{ $count: 'total' }],
+                docs: [
+                    // Since the name can be duplicated, adding createdAt to making sort is stable
+                    { $sort: { "languageBranch.name": 1, createdAt: -1 } },
+                    { $skip: skip },
+                    { $limit: limit },
+                    // merge language branch into the original document
+                    { $replaceRoot: { newRoot: { $mergeObjects: ["$languageBranch", "$$ROOT"] } } },
+                    { $project: { "languageBranch": 0 } }
+                ]
+            })
+            // after $facet, its output {metadata: [ { total: 10000 } ],docs: [ { x }, { y }, ... ]}
+            .unwind('$metadata')
+            .project({
+                docs: 1,
+                // Get total from the first element of the metadata array 
+                // total: { $arrayElemAt: [ '$metadata.total', 0 ] }
+                total: '$metadata.total',
+                pages: {
+                    $ceil: {
+                        $divide: ['$metadata.total', limit]
+                    }
+                }
+            });
+
+        //  [{ total: 10000, pages: 35,  docs: [ { x }, { y }, ... ]  }] // output
+        const result = await queryBuilder;
+        return result && result.length > 0 ? result[0] : {
+            docs: [],
+            total: 0,
+            pages: 0
+        }
     }
 
     /**

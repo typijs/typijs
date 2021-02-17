@@ -11,6 +11,11 @@ export type QueryOptions = {
      * Default = false
      */
     lean?: boolean;
+
+    /**
+     * The Mongoose select field syntax (for example: `'_id name created'`)
+     */
+    select?: string;
 }
 
 /**
@@ -18,15 +23,15 @@ export type QueryOptions = {
  * @param {Document[]} results - Results found
  * @param {number} page - Current page
  * @param {number} limit - Maximum number of results per page
- * @param {number} totalPages - Total number of pages
- * @param {number} totalResults - Total number of documents
+ * @param {number} pages - Total number of pages
+ * @param {number} total - Total number of documents
  */
 export type PaginateResult = {
-    results: Document[]
+    docs: Document[]
     page: number
     limit: number
-    totalPages: number
-    totalResults: number
+    pages: number
+    total: number
 }
 
 /**
