@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { Observable, ReplaySubject, Subject } from 'rxjs';
+import { Observable, of, ReplaySubject, Subject } from 'rxjs';
 import { concatMap, debounceTime, distinct, first, map, scan, takeUntil } from 'rxjs/operators';
 import { ConfigService } from '../config/config.service';
 import { isUrlAbsolute } from '../helpers/common';
@@ -47,6 +47,8 @@ export class UrlResolveService implements OnDestroy {
      * @returns The publish link url based on host and language
      */
     getPageUrl(pageId: string): Observable<string> {
+        if (!pageId) { return of(''); }
+
         this.pageIdSubject.next(pageId);
         return this.pageUrls$.pipe(
             first((pages) => pages.some(x => x._id === pageId)),

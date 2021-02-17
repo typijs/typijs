@@ -22,15 +22,9 @@ export class LayoutComponent implements OnInit, AfterViewInit {
         @Inject(DOCUMENT) private document: Document) { }
 
     ngOnInit() {
-        const siteDefinition$ = this.siteDefinition.current().pipe(
-            publishReplay(1),// this tells Rx to cache the latest emitted
-            refCount() // and this tells Rx to keep the Observable alive as long as there are any Subscribers
-        )
-        this.startPage$ = siteDefinition$.pipe(
-            switchMap(([startPageId, language]) => this.contentLoader.get<HomePage>(startPageId, language))
-        );
-        this.menuItems$ = siteDefinition$.pipe(
-            switchMap(([startPageId, language]) => this.contentLoader.getChildren<PageData>(startPageId, { language }))
+        this.startPage$ = this.siteDefinition.getStartPage<HomePage>();
+        this.menuItems$ = this.startPage$.pipe(
+            switchMap((startPage: HomePage) => this.contentLoader.getChildren<PageData>(startPage.contentLink, { language: startPage.language }))
         );
     }
 

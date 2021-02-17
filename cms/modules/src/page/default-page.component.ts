@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SiteDefinition } from '@angular-cms/core'
+import { SiteDefinition } from '@angular-cms/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -9,8 +9,8 @@ export class DefaultPageComponent implements OnInit {
     constructor(private router: Router, private route: ActivatedRoute, private siteDefinition: SiteDefinition) { }
 
     ngOnInit() {
-        this.siteDefinition.current().subscribe(([startPageId, language]) => {
-            if (startPageId.id !== '0') this.router.navigate(['content/page', startPageId.id], { relativeTo: this.route });
-        })
+        this.siteDefinition.getSiteDefinition().subscribe(([startPageId, language]) => {
+            if (startPageId.id !== '0') { this.router.navigate(['content/page', startPageId.id], { relativeTo: this.route }); }
+        });
     }
 }

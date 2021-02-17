@@ -1,4 +1,5 @@
 import { Property, PageType, UIHint, PageData, CmsImage, ContentReference } from '@angular-cms/core';
+import { GroupName } from '../../shared/group-name';
 import { HomeComponent } from './home.component';
 
 @PageType({
@@ -12,28 +13,28 @@ export class HomePage extends PageData {
     @Property({
         displayName: 'Text Logo',
         displayType: UIHint.Text,
-        groupName: 'Header'
+        groupName: GroupName.HEADER
     })
     textLogo: string;
 
     @Property({
         displayName: 'Phone number',
         displayType: UIHint.Text,
-        groupName: 'Header'
+        groupName: GroupName.HEADER
     })
     phone: string;
 
     @Property({
         displayName: 'Email',
         displayType: UIHint.Text,
-        groupName: 'Header'
+        groupName: GroupName.HEADER
     })
     email: string;
 
     @Property({
         displayName: 'Header Shipping Text',
         displayType: UIHint.Text,
-        groupName: 'Header'
+        groupName: GroupName.HEADER
     })
     headerShippingText: string;
 
@@ -46,7 +47,7 @@ export class HomePage extends PageData {
     @Property({
         displayName: 'Footer Content',
         displayType: UIHint.ContentArea,
-        groupName: 'Footer'
+        groupName: GroupName.FOOTER
     })
     footerContent: any[];
 
@@ -54,7 +55,25 @@ export class HomePage extends PageData {
         displayName: 'Footer Text',
         description: 'This is footer text to show the copyright',
         displayType: UIHint.XHtml,
-        groupName: 'Footer'
+        groupName: GroupName.FOOTER
     })
     footerText: string;
+
+    @Property({
+        displayName: 'Shopping Cart Page',
+        description: 'Shopping Cart Page',
+        displayType: UIHint.ContentReference,
+        allowedTypes: ['CartPage'],
+        groupName: GroupName.COMMERCE
+    })
+    shoppingCartPage: ContentReference;
+
+    @Property({
+        displayName: 'Checkout Page',
+        description: 'Checkout Page',
+        displayType: UIHint.ContentReference,
+        allowedTypes: ['CheckoutPage'],
+        groupName: GroupName.COMMERCE
+    })
+    checkoutPage: ContentReference;
 }
