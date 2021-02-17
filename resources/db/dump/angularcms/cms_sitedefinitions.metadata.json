@@ -1,1 +1,0 @@
-{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"angularcms.cms_sitedefinitions"},{"v":{"$numberInt":"2"},"unique":true,"key":{"siteUrl":{"$numberInt":"1"}},"name":"siteUrl_1","ns":"angularcms.cms_sitedefinitions","background":true}],"uuid":"c0e6d74a26d24d82af522f720f7e8d9a"}

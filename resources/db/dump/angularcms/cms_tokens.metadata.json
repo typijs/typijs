@@ -1,1 +1,0 @@
-{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"angularcms.cms_tokens"},{"v":{"$numberInt":"2"},"key":{"token":{"$numberInt":"1"}},"name":"token_1","ns":"angularcms.cms_tokens","background":true}],"uuid":"0f548ba1258a485c8c3aed8d37056f95"}
