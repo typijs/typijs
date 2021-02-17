@@ -1,6 +1,6 @@
 import * as httpStatus from 'http-status';
 import { Roles } from '../../constants/roles';
-import { DocumentNotFoundException, EmailDuplicateException, Exception } from '../../error/exceptions';
+import { EmailDuplicateException, Exception } from '../../error/exceptions';
 import { BaseService } from "../shared/base.service";
 import { IUserDocument, UserModel } from "./user.model";
 
@@ -10,20 +10,9 @@ export class UserService extends BaseService<IUserDocument>{
         super(UserModel);
     }
 
-    public create = (doc: Partial<IUserDocument>): Promise<IUserDocument> => {
-        const userDoc = this.createModel(doc);
-        return this.createUser(userDoc);
-    }
-
-    public updateById = (id: string, doc: Partial<IUserDocument>): Promise<IUserDocument> => {
-        //TODO: need to remove the username, password, isActive, roles properties from doc
-        return this.updateUserById(id, doc);
-    }
-
-    public createAdminUser = async (doc: Partial<IUserDocument>): Promise<IUserDocument> => {
-        const userDoc = this.createModel(doc);
+    public createAdminUser = async (userDoc: Partial<IUserDocument>): Promise<IUserDocument> => {
         userDoc.username = 'admin';
-        userDoc.roles = [Roles.Admin, Roles.Editor]
+        userDoc.roles = [Roles.Admin, Roles.Editor];
         const admin = await this.createUser(userDoc);
         if (admin) {
             //TODO: Create default roles (admin, editor)
@@ -36,7 +25,7 @@ export class UserService extends BaseService<IUserDocument>{
      * @param {IUserDocument} user
      * @returns {Promise<IUserDocument>}
      */
-    private createUser = async (user: IUserDocument): Promise<IUserDocument> => {
+    public createUser = async (user: Partial<IUserDocument>): Promise<IUserDocument> => {
         if (await this.isEmailTaken(user.email)) {
             throw new EmailDuplicateException(user.email);
         }
@@ -45,20 +34,17 @@ export class UserService extends BaseService<IUserDocument>{
             throw new Exception(httpStatus.BAD_REQUEST, `Username ${user.username} already taken`);
         }
 
-        const savedUser = await user.save();
-        return savedUser;
+        return this.create(user);
     };
 
-    private updateUserById = async (userId: string, userDoc: Partial<IUserDocument>): Promise<IUserDocument> => {
-        const user = await this.findById(userId).exec();
-        if (!user) throw new DocumentNotFoundException(userId);
-
+    public updateUserById = async (userId: string, userDoc: Partial<IUserDocument>): Promise<IUserDocument> => {
         if (userDoc.email && (await this.isEmailTaken(userDoc.email, userId))) {
             throw new EmailDuplicateException(userDoc.email);
         }
-
-        Object.assign(user, userDoc);
-        return await user.save();
+        delete userDoc.username;
+        delete userDoc.password;
+        delete userDoc.roles;
+        return await this.updateById(userId, userDoc);
     }
 
     public getUserByUsername = (username: string): Promise<IUserDocument> => {

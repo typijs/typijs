@@ -1,0 +1,2 @@
+export const TABLE_METADATA_KEY = Symbol('TABLE_METADATA_KEY');
+export const TABLE_INDICATOR = Symbol('TABLE_INDICATOR');

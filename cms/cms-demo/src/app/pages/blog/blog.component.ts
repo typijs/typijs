@@ -1,13 +1,19 @@
+import { CmsComponent, ContentLoader } from '@angular-cms/core';
 import { Component, OnInit } from '@angular/core';
-import { CmsComponent } from '@angular-cms/core';
+import { Observable } from 'rxjs';
+import { ArticlePage } from '../article/article.pagetype';
 import { BlogPage } from './blog.pagetype';
 
 @Component({
     templateUrl: 'blog.component.html'
 })
+export class BlogComponent extends CmsComponent<BlogPage> implements OnInit {
 
-export class BlogComponent extends CmsComponent<BlogPage> {
-    constructor() {
-        super();
+    articles$: Observable<ArticlePage[]>;
+
+    constructor(private contentLoader: ContentLoader) { super(); }
+
+    ngOnInit() {
+        this.articles$ = this.contentLoader.getChildren<ArticlePage>(this.currentContent.contentLink);
     }
 }

@@ -12,24 +12,22 @@ import { SubscriptionDestroy } from '../../subscription-destroy';
     template: `
             <div class="tree">
                 <div class="tree-item">
-                    <tree-node 
+                    <tree-node
                         class="node-root"
-                        [node]="root" 
-                        [config]="config" 
+                        [node]="root"
+                        [config]="config"
                         [templates]="templates"
-                        (selectNode)="selectNode($event)"
+                        (selectNode)="setSelectedNode($event)"
                         (menuItemSelected)="handleNodeMenuItemSelected($event)"
-                        (nodeOnBlur)="nodeOnBlur($event)"
                         (submitInlineNode)="submitInlineNode($event)"
                         (cancelInlineNode)="cancelInlineNode($event)">
                     </tree-node>
-                    <tree-children 
-                        [root]="root" 
-                        [config]="config" 
+                    <tree-children
+                        [root]="root"
+                        [config]="config"
                         [templates]="templates"
-                        (selectNode)="selectNode($event)"
+                        (selectNode)="setSelectedNode($event)"
                         (menuItemSelected)="handleNodeMenuItemSelected($event)"
-                        (nodeOnBlur)="nodeOnBlur($event)"
                         (submitInlineNode)="submitInlineNode($event)"
                         (cancelInlineNode)="cancelInlineNode($event)">
                     </tree-children>
@@ -56,7 +54,7 @@ export class TreeComponent extends SubscriptionDestroy implements OnInit {
     @Output() nodePasted: EventEmitter<any> = new EventEmitter();
     @Output() menuItemSelected: EventEmitter<TreeMenuActionEvent> = new EventEmitter();
 
-    public templates: TreeNodeTemplate;
+    templates: TreeNodeTemplate;
 
     constructor(private treeStore: TreeStore) { super(); }
 
@@ -64,24 +62,23 @@ export class TreeComponent extends SubscriptionDestroy implements OnInit {
         this.templates = {
             loadingTemplate: this.loadingTemplate,
             treeNodeTemplate: this.treeNodeTemplate
-        }
-        if (this.config) {
-            if (!this.config.service) throw new Error("The TreeService is undefined");
-            this.treeStore.treeService = this.config.service;
-
-            this.subscribeAndEmitNodeMenuItemSelectedEvent();
-        }
+        };
+        this.subscribeAndEmitNodeMenuItemSelectedEvent();
     }
 
-    //Set node.isSelected = true when node is clicked and fire node selected event
-    selectNode(node: Partial<TreeNode>) {
-        this.treeStore.setSelectedNode(node);
-        this.treeStore.fireNodeSelectedInner(node);
-        this.nodeSelected.emit(node);
-    }
-
-    nodeOnBlur(node: TreeNode) {
-        if (!node.name) this.cancelInlineNode(node);
+    /**
+     * Set the tree node is selected and fire node selected event
+     *
+     * It is the same as node is clicked
+     * @param node
+     */
+    setSelectedNode(node: Partial<TreeNode>) {
+        const selectedNode = this.treeStore.getSelectedNode()
+        if (!selectedNode || selectedNode.id !== node.id) {
+            this.treeStore.setSelectedNode(node);
+            this.treeStore.fireNodeSelectedInner(node);
+            this.nodeSelected.emit(node);
+        }
     }
 
     submitInlineNode(node: TreeNode) {
@@ -96,9 +93,10 @@ export class TreeComponent extends SubscriptionDestroy implements OnInit {
         }
     }
 
-    cancelInlineNode(node: TreeNode) {
+    cancelInlineNode(cancelData: { parentNode: TreeNode, node: TreeNode }) {
+        const node = cancelData.node;
         if (node.isNew) {
-            this.treeStore.cancelNewNodeInline(this.root, node);
+            this.treeStore.cancelNewNodeInline(cancelData.parentNode, node);
             return;
         }
 
@@ -108,16 +106,21 @@ export class TreeComponent extends SubscriptionDestroy implements OnInit {
         }
     }
 
-    //Reload the node data
-    //Reload node's children
-    //@nodeId: Mongoose ObjectId
+    /**
+     * Reload whole the sub tree including tree node children and parent node
+     * @param subTreeRootId
+     */
     reloadSubTree(subTreeRootId: string) {
         this.treeStore.reloadTreeChildrenData(subTreeRootId);
     }
 
-    locateToSelectedNode(node: TreeNode) {
-        this.treeStore.locateToSelectedNode(node).subscribe(nodeId => {
-            console.log(`locateToSelectedNode has id = ${nodeId}`)
+    /**
+     * Expand the tree to target node
+     * @param newSelectedNode
+     */
+    expandTreeToSelectedNode(node: TreeNode) {
+        this.treeStore.expandTreeToSelectedNode(node).subscribe(nodeId => {
+            console.log(`expandTreeToSelectedNode has id = ${nodeId}`);
         });
     }
 

@@ -1,34 +1,51 @@
+import { BaseModel } from '../../base.model';
+
 export type ChildItemRef = {
     _id?: string;
     refPath: string;
     content: string | any;
-}
+};
 
-export class Content {
-    //mongoose id
-    _id?: string;
-    //Common
-    name?: string;
-    //IHierarchyContent
+export interface Content extends BaseModel {
+    // mongoose id
+    _id: string;
+    // IHierarchyContent
     parentId: string;
     parentPath: string;
     ancestors: string[];
     hasChildren: boolean;
-    //IPublishableContent
-    published: Date;
-    publishedBy: any;
-
-    isPublished: boolean;
-    //IContentHasChildItems
-    childItems: ChildItemRef[];
-    publishedChildItems: ChildItemRef[];
-
-    //IContent
+    childOrderRule: number;
+    peerOrder: number;
+    // ISoftDeletedContent
+    isDeleted: boolean;
+    deletedAt: Date;
+    deletedBy: string;
+    // IContent
     contentType: string;
-    //contain all property's values which are defined as property (using decorator @Property) of content type
-    //@key will be property name of content type
+    masterLanguageId: string;
+    // IContentLanguage
+    name: string;
+    language: string;
+    versionId: string;
+    // contain all property's values which are defined as property (using decorator @Property) of content type
+    // @key will be property name of content type
     properties: { [key: string]: any };
+    status: number;
+    // IPublishContent
+    startPublish: Date;
+    stopPublish: Date;
+    delayPublishUntil: Date;
+    publishedBy: string;
 
-    isDirty: boolean;
-    [propName: string]: any;
+    // IContentVersion
+    contentId: string | Content;
+    masterVersionId: string;
+    savedAt: Date;
+    savedBy: string;
+    // IContentHasChildItems
+    childItems: ChildItemRef[];
+
+    // Extension properties
+    isPublished: boolean; // VersionStatus status == Published
+    // [propName: string]: any;
 }

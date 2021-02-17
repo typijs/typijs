@@ -1,40 +1,40 @@
-import Quill from 'quill'
+import Quill from 'quill';
 
-const DirectionAttribute = Quill.import('attributors/attribute/direction');
-Quill.register(DirectionAttribute, true);
+const directionAttribute = Quill.import('attributors/attribute/direction');
+Quill.register(directionAttribute, true);
 
-const AlignClass = Quill.import('attributors/class/align');
-Quill.register(AlignClass, true);
+const alignClass = Quill.import('attributors/class/align');
+Quill.register(alignClass, true);
 
-const BackgroundClass = Quill.import('attributors/class/background');
-Quill.register(BackgroundClass, true);
+const backgroundClass = Quill.import('attributors/class/background');
+Quill.register(backgroundClass, true);
 
-const ColorClass = Quill.import('attributors/class/color');
-Quill.register(ColorClass, true);
+const colorClass = Quill.import('attributors/class/color');
+Quill.register(colorClass, true);
 
-const DirectionClass = Quill.import('attributors/class/direction');
-Quill.register(DirectionClass, true);
+const directionClass = Quill.import('attributors/class/direction');
+Quill.register(directionClass, true);
 
-const FontClass = Quill.import('attributors/class/font');
-Quill.register(FontClass, true);
+const fontClass = Quill.import('attributors/class/font');
+Quill.register(fontClass, true);
 
-const SizeClass = Quill.import('attributors/class/size');
-Quill.register(SizeClass, true);
+const sizeClass = Quill.import('attributors/class/size');
+Quill.register(sizeClass, true);
 
-const AlignStyle = Quill.import('attributors/style/align');
-Quill.register(AlignStyle, true);
+const alignStyle = Quill.import('attributors/style/align');
+Quill.register(alignStyle, true);
 
-const BackgroundStyle = Quill.import('attributors/style/background');
-Quill.register(BackgroundStyle, true);
+const backgroundStyle = Quill.import('attributors/style/background');
+Quill.register(backgroundStyle, true);
 
-const ColorStyle = Quill.import('attributors/style/color');
-Quill.register(ColorStyle, true);
+const colorStyle = Quill.import('attributors/style/color');
+Quill.register(colorStyle, true);
 
-const DirectionStyle = Quill.import('attributors/style/direction');
-Quill.register(DirectionStyle, true);
+const directionStyle = Quill.import('attributors/style/direction');
+Quill.register(directionStyle, true);
 
-const FontStyle = Quill.import('attributors/style/font');
-Quill.register(FontStyle, true);
+const fontStyle = Quill.import('attributors/style/font');
+Quill.register(fontStyle, true);
 
-const SizeStyle = Quill.import('attributors/style/size');
-Quill.register(SizeStyle, true);
+const sizeStyle = Quill.import('attributors/style/size');
+Quill.register(sizeStyle, true);

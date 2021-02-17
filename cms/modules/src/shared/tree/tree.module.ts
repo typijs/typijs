@@ -1,29 +1,22 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
-import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faBars, faCaretDown, faCaretRight, faMinusSquare, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
-
-import { CoreModule } from '@angular-cms/core';
-import { CmsBsDropdownModule } from '../libs/ngx-bootstrap/bs-dropdown.module';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { DndModule } from '../drag-drop/dnd.module';
-
-import { TreeNodeComponent } from './components/tree-node.component';
 import { TreeChildrenComponent } from './components/tree-children.component';
+import { TreeNodeComponent } from './components/tree-node.component';
 import { TreeComponent } from './components/tree.component';
 
 @NgModule({
     imports: [
         CommonModule,
-        HttpClientModule,
         FormsModule,
         ReactiveFormsModule,
         FontAwesomeModule,
-        CmsBsDropdownModule,
+        BsDropdownModule,
 
-        CoreModule,
         DndModule
     ],
     declarations: [
@@ -36,7 +29,7 @@ import { TreeComponent } from './components/tree.component';
     ]
 })
 export class TreeModule {
-    constructor(private library: FaIconLibrary) {
+    constructor(library: FaIconLibrary) {
         library.addIcons(faBars, faCaretDown, faCaretRight, faMinusSquare, faPlusSquare);
     }
 }

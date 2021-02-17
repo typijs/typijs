@@ -1,7 +1,12 @@
 import { Content } from './content.model';
 
-export class Media extends Content {
+export interface Media extends Content {
+    urlSegment: string;
+    linkUrl: string;
+    thumbnail: string;
+
     mimeType: string;
     size: number;
-    thumbnail: string;
+    cloudId: string;
+    deleteHash: string;
 }

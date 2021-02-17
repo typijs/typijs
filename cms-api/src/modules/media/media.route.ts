@@ -1,46 +1,47 @@
-import 'reflect-metadata';
 import { Router } from 'express';
 import { Injectable } from 'injection-js';
-
-import { requiredAdminOrEditor } from '../../constants/roles';
+import 'reflect-metadata';
+import { AdminOrEditor } from '../../constants';
 import { asyncRouterErrorHandler } from '../../error';
-import { validate } from '../../validation/validate.middleware';
-import { authGuard } from '../auth/auth.middleware';
-import { cutOrCopyContent, requiredContentId } from '../content/content.validation';
-import { createFolder, requiredParentId, updateFolderName } from '../folder/folder.validation';
+import { AuthGuard } from '../auth';
+import { LanguageGuard } from '../language';
 import { MediaController } from './media.controller';
-import { getMediaById } from './media.validation';
 
 @Injectable()
 export class MediaRouter {
-    constructor(private mediaController: MediaController) { }
+    constructor(private mediaController: MediaController, private authGuard: AuthGuard, private langGuard: LanguageGuard) { }
 
     get router(): Router {
         const media: Router = asyncRouterErrorHandler(Router());
 
-        media.get('/folders/:parentId?', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredParentId), this.mediaController.getFoldersByParentId);
+        media.get('/folders/:parentId?', this.mediaController.getFoldersByParentId.bind(this.mediaController));
 
-        media.get('/children/:parentId?', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredParentId), this.mediaController.getContentsByFolder);
+        media.get('/children/:parentId?', this.langGuard.checkEnabled(), this.mediaController.getContentChildren.bind(this.mediaController));
 
-        media.post('/folder', authGuard.checkRoles(requiredAdminOrEditor), validate(createFolder), this.mediaController.createFolderContent);
+        media.post('/folder', this.mediaController.createFolderContent.bind(this.mediaController));
 
-        media.put('/folder/:id', authGuard.checkRoles(requiredAdminOrEditor), validate(updateFolderName), this.mediaController.updateFolderName);
+        media.put('/folder/:id', this.mediaController.updateFolderName.bind(this.mediaController));
 
-        media.post('/upload/:parentId?', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredParentId), this.mediaController.storeMediaInDisk('file'), this.mediaController.processMedia)
+        media.get('/:id', this.langGuard.checkEnabled(), this.mediaController.getContent.bind(this.mediaController));
 
-        media.post('/cut', authGuard.checkRoles(requiredAdminOrEditor), validate(cutOrCopyContent), this.mediaController.cut);
+        media.post('/upload/:parentId?', this.authGuard.checkRoles(AdminOrEditor), this.langGuard.checkEnabled(), this.mediaController.handleFormData('file'), this.mediaController.processMedia.bind(this.mediaController))
 
-        media.post('/copy', authGuard.checkRoles(requiredAdminOrEditor), validate(cutOrCopyContent), this.mediaController.copy);
+        media.post('/cut', this.mediaController.cut.bind(this.mediaController));
 
-        media.get('/:id', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.mediaController.get);
+        media.post('/copy', this.mediaController.copy.bind(this.mediaController));
 
-        media.delete('/:id', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.mediaController.delete);
+        //TODO need to revisit
+        media.get('/:id', this.mediaController.getVersion.bind(this.mediaController));
+        //move to trash
+        media.put('/trash/:id', this.mediaController.moveToTrash.bind(this.mediaController));
+
+        media.delete('/:id', this.mediaController.deleteContent.bind(this.mediaController));
         return media
     }
 
     get assetRouter(): Router {
         const asset: Router = asyncRouterErrorHandler(Router());
-        asset.get('/:fileId/:fileName', validate(getMediaById), this.mediaController.getMediaById);
+        asset.get('/:fileId/:fileName', this.mediaController.getMediaById.bind(this.mediaController));
         return asset;
     }
 }

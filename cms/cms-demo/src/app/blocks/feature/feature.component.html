@@ -1,13 +1,11 @@
 <div class="banner-division d_img">
-    <ng-container [cmsProperty]="getProperty('image')"></ng-container>
+    <img [cmsImage]="currentContent.image" />
 </div>
 
 <div class="banner-division">
-    <h3>
-        <ng-container [cmsProperty]="getProperty('header')"></ng-container>
+    <h3 [cmsProperty]="getProperty('header')">
     </h3>
-    <div>
-        <ng-container [cmsProperty]="getProperty('summary')"></ng-container>
+    <div [cmsProperty]="getProperty('summary')">
     </div>
     <a [href]="currentContent.link">Read more</a>
 </div>

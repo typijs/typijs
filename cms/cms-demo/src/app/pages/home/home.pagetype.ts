@@ -1,52 +1,79 @@
 import { Property, PageType, UIHint, PageData, CmsImage, ContentReference } from '@angular-cms/core';
+import { GroupName } from '../../shared/group-name';
 import { HomeComponent } from './home.component';
 
 @PageType({
-    displayName: "Home Page",
+    displayName: 'Start Page',
     componentRef: HomeComponent,
-    description: "This is home page type"
+    order: 5,
+    description: 'This is start page type'
 })
 export class HomePage extends PageData {
 
     @Property({
-        displayName: "Logo",
-        displayType: UIHint.Image
+        displayName: 'Text Logo',
+        displayType: UIHint.Text,
+        groupName: GroupName.HEADER
     })
-    logo: CmsImage;
+    textLogo: string;
 
     @Property({
-        displayName: "Projects Page Root",
-        displayType: UIHint.ContentReference,
-        allowedTypes: ['PortfolioPage'],
+        displayName: 'Phone number',
+        displayType: UIHint.Text,
+        groupName: GroupName.HEADER
     })
-    latestProjectRoot: ContentReference;
+    phone: string;
 
     @Property({
-        displayName: "Highlight Features",
-        description: "This is highlight feature will be in banner area",
+        displayName: 'Email',
+        displayType: UIHint.Text,
+        groupName: GroupName.HEADER
+    })
+    email: string;
+
+    @Property({
+        displayName: 'Header Shipping Text',
+        displayType: UIHint.Text,
+        groupName: GroupName.HEADER
+    })
+    headerShippingText: string;
+
+    @Property({
+        displayName: 'Main Content',
         displayType: UIHint.ContentArea,
-        allowedTypes: ['FeatureBlock', 'PortfolioBlock'],
-        newProperty: 'abc'
     })
-    features: Array<any>;
+    mainContent: any[];
 
     @Property({
-        displayName: "Highlight Portfolios",
+        displayName: 'Footer Content',
         displayType: UIHint.ContentArea,
-        allowedTypes: ['PortfolioBlock']
+        groupName: GroupName.FOOTER
     })
-    portfolios: Array<any>;
+    footerContent: any[];
 
     @Property({
-        displayName: "Footer",
-        displayType: UIHint.ContentArea
-    })
-    footer: Array<any>;
-
-    @Property({
-        displayName: "Footer Text",
-        description: "This is footer text to show the copyright",
-        displayType: UIHint.XHtml
+        displayName: 'Footer Text',
+        description: 'This is footer text to show the copyright',
+        displayType: UIHint.XHtml,
+        groupName: GroupName.FOOTER
     })
     footerText: string;
+
+    @Property({
+        displayName: 'Shopping Cart Page',
+        description: 'Shopping Cart Page',
+        displayType: UIHint.ContentReference,
+        allowedTypes: ['CartPage'],
+        groupName: GroupName.COMMERCE
+    })
+    shoppingCartPage: ContentReference;
+
+    @Property({
+        displayName: 'Checkout Page',
+        description: 'Checkout Page',
+        displayType: UIHint.ContentReference,
+        allowedTypes: ['CheckoutPage'],
+        groupName: GroupName.COMMERCE
+    })
+    checkoutPage: ContentReference;
 }

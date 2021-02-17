@@ -1,21 +1,35 @@
-import "reflect-metadata";
+import 'reflect-metadata';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { NgModule, ModuleWithProviders } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faChevronRight, faChevronLeft, faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 
-import { CMS, CoreModule } from '@angular-cms/core';
+import { CoreModule } from '@angular-cms/core';
+import { AngularSplitModule } from 'angular-split';
+import { TabsModule } from 'ngx-bootstrap/tabs';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { ButtonsModule } from 'ngx-bootstrap/buttons';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { ProgressbarModule } from 'ngx-bootstrap/progressbar';
+import { PaginationModule } from 'ngx-bootstrap/pagination';
+import { QuillModule } from 'ngx-quill';
+
 import {
-  CmsAngularSplitModule,
-  CmsBsDropdownModule,
-  CmsButtonsModule,
-  CmsTabsModule,
-  CmsProgressbarModule,
-  CmsModalModule,
-  DndModule
+    CmsModalModule,
+    CmsFormModule,
+    ContentModalModule,
+    DndModule,
+    PageModule,
+    MediaModule,
+    BlockModule,
+    PropertiesModule,
+    ContentModule,
+    SiteDefinitionModule,
+    ContentTypeModule,
+    ContentVersionModule,
+    ICONS
 } from '@angular-cms/modules';
 
 import { CmsHeaderComponent } from './shared/components/cms-header/cms-header.component';
@@ -27,43 +41,57 @@ import { EditorComponent } from './editor/editor.component';
 import { WidgetService } from './services/widget.service';
 import { PortalComponent } from './portal.component';
 import { PortalRoutingModule } from './portal.routing';
-import { QuillModule } from 'ngx-quill';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    HttpClientModule,
-    FormsModule,
-    ReactiveFormsModule,
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
 
-    FontAwesomeModule,
-    CmsAngularSplitModule.forRoot(),
-    CmsTabsModule.forRoot(),
-    CmsBsDropdownModule.forRoot(),
-    CmsButtonsModule.forRoot(),
-    CmsProgressbarModule.forRoot(),
-    CmsModalModule.forRoot(),
-    QuillModule.forRoot(),
+        FontAwesomeModule,
+        AngularSplitModule.forRoot(),
+        TabsModule.forRoot(),
+        BsDropdownModule.forRoot(),
+        ButtonsModule.forRoot(),
+        ProgressbarModule.forRoot(),
+        ModalModule.forRoot(),
+        PaginationModule.forRoot(),
+        QuillModule.forRoot(),
 
-    DndModule.forRoot(),
-
-    ...CMS.NG_MODULES,
-    CoreModule.forChild(),
-    PortalRoutingModule
-  ],
-  declarations: [
-    PortalComponent,
-    CmsLayoutComponent,
-    CmsHeaderComponent,
-    ReplaceDirective,
-    DashboardComponent,
-    AdminComponent,
-    EditorComponent
-  ],
-  providers: [WidgetService]
+        CmsModalModule.forRoot(),
+        CmsFormModule.forRoot(),
+        ContentModalModule.forRoot(),
+        DndModule.forRoot(),
+        CoreModule.forRoot(),
+        PropertiesModule.forRoot(),
+        ContentModule.forRoot(),
+        PageModule.forRoot(),
+        MediaModule.forRoot(),
+        BlockModule.forRoot(),
+        SiteDefinitionModule.forRoot(),
+        ContentTypeModule.forRoot(),
+        ContentVersionModule.forRoot(),
+        PortalRoutingModule
+    ],
+    declarations: [
+        PortalComponent,
+        CmsLayoutComponent,
+        CmsHeaderComponent,
+        ReplaceDirective,
+        DashboardComponent,
+        AdminComponent,
+        EditorComponent
+    ]
 })
 export class CmsPortalModule {
-  constructor(library: FaIconLibrary) {
-    library.addIcons(faChevronRight, faChevronLeft, faAngleUp, faAngleDown);
-  }
+    constructor(library: FaIconLibrary) {
+        library.addIcons(...ICONS, faChevronRight, faChevronLeft, faAngleUp, faAngleDown);
+    }
+
+    static forRoot(): ModuleWithProviders<CmsPortalModule> {
+        return {
+            ngModule: CmsPortalModule,
+            providers: [WidgetService]
+        };
+    }
 }

@@ -1,30 +1,60 @@
 import 'reflect-metadata';
+import { BlockData, ContentData, PageData } from '../services/content/models/content-data';
+import { ClassOf } from '../types';
 import {
-    PAGE_TYPE_METADATA_KEY,
-    PAGE_TYPE_INDICATOR,
-    BLOCK_TYPE_METADATA_KEY,
     BLOCK_TYPE_INDICATOR,
+    BLOCK_TYPE_METADATA_KEY,
     MEDIA_TYPE_INDICATOR,
-    MEDIA_TYPE_METADATA_KEY
+    MEDIA_TYPE_METADATA_KEY,
+    PAGE_TYPE_INDICATOR,
+    PAGE_TYPE_METADATA_KEY
 } from './metadata-key';
 
-export type ContentTypeMetadata = {
+/**
+ * The metadata class used to identify the attributes of content types.
+ */
+export interface ContentTypeMetadata {
+    /**
+     * The display name for the corresponding ContentType
+     */
     displayName?: string;
+    /**
+     * The description for the corresponding ContentType
+     */
     description?: string;
+    /**
+     * The sort order or the ContentType, default value is 0
+     */
+    order?: number;
+
+    /**
+     * Gets or sets a value that is used to group fields
+     */
+    groupName?: string;
+    /**
+     * The component which is used to render the content
+     */
     componentRef?: any;
+};
+
+export interface PageTypeMetadata extends ContentTypeMetadata {
+    /**
+     * The component which is used to render the page in Content Area
+     */
+    partialComponentRef?: any;
 }
 
-//https://www.laurivan.com/scan-decorated-classes-in-typescript/
+// https://www.laurivan.com/scan-decorated-classes-in-typescript/
 /**
  * The PageType decorator factory
- * 
+ *
  * The factory, is just a function that receives any parameters you want and returns a function with a decorator signature
- * 
+ *
  * https://www.typescriptlang.org/docs/handbook/decorators.html#decorator-factories
- * @param metadata 
+ * @param metadata
  */
-export function PageType(metadata: ContentTypeMetadata) {
-    function pageTypeDecorator(target: Function) {
+export function PageType(metadata: PageTypeMetadata) {
+    function pageTypeDecorator<T extends PageData>(target: ClassOf<T>) {
         registerPageTypeDecorator(target);
         Reflect.defineMetadata(PAGE_TYPE_METADATA_KEY, metadata, target);
     }
@@ -37,14 +67,14 @@ function registerPageTypeDecorator(target: any) {
 
 /**
  * The BlockType decorator factory
- * 
+ *
  * The factory, is just a function that receives any parameters you want and returns a function with a decorator signature
- * 
+ *
  * https://www.typescriptlang.org/docs/handbook/decorators.html#decorator-factories
- * @param metadata 
+ * @param metadata
  */
 export function BlockType(metadata: ContentTypeMetadata) {
-    function blockTypeDecorator(target: Function) {
+    function blockTypeDecorator<T extends BlockData>(target: ClassOf<T>) {
         registerBlockTypeDecorator(target);
         Reflect.defineMetadata(BLOCK_TYPE_METADATA_KEY, metadata, target);
     }
@@ -58,14 +88,14 @@ function registerBlockTypeDecorator(target: any) {
 
 /**
  * The MediaType decorator factory
- * 
+ *
  * The factory, is just a function that receives any parameters you want and returns a function with a decorator signature
- * 
+ *
  * https://www.typescriptlang.org/docs/handbook/decorators.html#decorator-factories
- * @param metadata 
+ * @param metadata
  */
 export function MediaType(metadata: ContentTypeMetadata) {
-    function mediaTypeDecorator(target: Function) {
+    function mediaTypeDecorator<T extends ContentData>(target: ClassOf<T>) {
         registerMediaTypeDecorator(target);
         Reflect.defineMetadata(MEDIA_TYPE_METADATA_KEY, metadata, target);
     }

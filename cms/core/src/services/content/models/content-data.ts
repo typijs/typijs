@@ -1,44 +1,65 @@
-import { Page } from './page.model';
+import { TypeOfContent, TypeOfContentEnum } from '../../../types';
+import { ContentReference } from '../../../types/content-reference';
 import { Block } from './block.model';
+import { Page } from './page.model';
 
 export abstract class ContentData {
-    public id: string;
-    public parentId?: string;
-    public contentType: string;
-    public name: string;
-    public type: 'page' | 'block';
+    id: string;
+    versionId: string;
+    parentId?: string;
+
+    isDeleted: boolean;
+    status: number;
+    language: string;
+
+    contentType: string;
+    contentLink: ContentReference;
+    name: string;
+    type: TypeOfContent;
 }
 
 export class BlockData extends ContentData {
     constructor(block: Partial<Block>) {
         super();
-        const blockData = Object.assign(<BlockData>{
+        const blockData: BlockData = {
+            ...block.properties,
             id: block._id,
+            versionId: block.versionId,
             parentId: block.parentId,
+            isDeleted: block.isDeleted,
+            status: block.status,
+            language: block.language,
             contentType: block.contentType,
+            contentLink: { id: block._id, versionId: block.versionId, type: TypeOfContentEnum.Block, contentType: block.contentType },
             name: block.name,
-            type: 'block'
-        }, block.properties);
+            type: TypeOfContentEnum.Block
+        };
 
         Object.assign(this, blockData);
     }
 }
 
 export class PageData extends ContentData {
-    public linkUrl: string;
-    public urlSegment: string;
+    linkUrl: string;
+    urlSegment: string;
 
     constructor(page: Partial<Page>) {
         super();
-        const pageData = Object.assign(<PageData>{
+        const pageData: PageData = {
+            ...page.properties,
             id: page._id,
-            linkUrl: page.publishedLinkUrl,
+            versionId: page.versionId,
+            linkUrl: page.linkUrl,
             parentId: page.parentId,
+            isDeleted: page.isDeleted,
+            status: page.status,
+            language: page.language,
             urlSegment: page.urlSegment,
             contentType: page.contentType,
+            contentLink: { id: page._id, versionId: page.versionId, type: TypeOfContentEnum.Page, contentType: page.contentType },
             name: page.name,
-            type: 'page'
-        }, page.properties);
+            type: TypeOfContentEnum.Page
+        };
 
         Object.assign(this, pageData);
     }

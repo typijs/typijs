@@ -1,50 +1,71 @@
-import { Injectable, ComponentFactoryResolver, ComponentRef, InjectionToken, Injector, Inject } from '@angular/core';
+import { Injectable, ComponentFactoryResolver, ComponentRef, InjectionToken, Injector, Inject, Optional } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
-import { CMS } from '../cms';
 import { CmsProperty } from './cms-property';
-import { ClassOf } from '../types';
+import { ClassOf, TypeOfContent } from '../types';
 import { ContentTypeProperty } from '../types/content-type';
+import { UIHint } from '../types/ui-hint';
+import { Content, ChildItemRef } from '../services/content/models/content.model';
+import { PAGE_TYPE, BLOCK_TYPE, FOLDER_BLOCK, MEDIA_TYPE, FOLDER_MEDIA } from '../constants';
 
 // https://stackoverflow.com/questions/51824125/injection-of-multiple-instances-in-angular
-export const PROPERTY_PROVIDERS_TOKEN: InjectionToken<CmsPropertyFactory[]> = new InjectionToken<CmsPropertyFactory[]>('PROPERTY_PROVIDERS_TOKEN');
-
-export function getCmsPropertyFactory(propertyUIHint: string) {
-    return (injector: Injector): CmsPropertyFactory => {
-        return new CmsPropertyFactory(propertyUIHint, injector)
-    };
-};
+export const PROPERTY_FACTORIES: InjectionToken<CmsPropertyFactory[]> = new InjectionToken<CmsPropertyFactory[]>('PROPERTY_FACTORIES');
+// tslint:disable-next-line: max-line-length
+export const DEFAULT_PROPERTY_FACTORIES: InjectionToken<CmsPropertyFactory[]> = new InjectionToken<CmsPropertyFactory[]>('DEFAULT_PROPERTY_FACTORIES');
 
 export class CmsPropertyFactory {
-    protected propertyUIHint: string;
     protected componentFactoryResolver: ComponentFactoryResolver;
-    protected injector: Injector;
 
-    constructor(propertyUIHint: string, injector: Injector) {
-        this.propertyUIHint = propertyUIHint;
-        this.injector = injector;
+    constructor(protected injector: Injector, protected propertyUIHint: string, protected propertyCtor: ClassOf<CmsProperty>) {
         this.componentFactoryResolver = injector.get(ComponentFactoryResolver);
     }
 
     isMatching(propertyUIHint: string): boolean {
-        return this.propertyUIHint == propertyUIHint;
+        return this.propertyUIHint === propertyUIHint;
     }
 
+    /**
+     * Creates property component for content edit
+     * @param property
+     * @param formGroup
+     * @returns property component
+     */
     createPropertyComponent(property: ContentTypeProperty, formGroup: FormGroup): ComponentRef<any> {
         return this.createDefaultCmsPropertyComponent(property, formGroup);
     }
 
-    protected getRegisteredPropertyComponent(): ClassOf<CmsProperty> {
-        if (!CMS.PROPERTIES[this.propertyUIHint])
-            throw new Error(`The CMS don't have the property with UIHint of ${this.propertyUIHint}`);
+    /**
+     * Fill up the data for the reference property which need to be populated such as ContentArea
+     * @param contentData The current content
+     * @param property The property info
+     * @returns The value which is populated for reference property
+     */
+    getPopulatedReferenceProperty(contentData: Content, property: ContentTypeProperty): any {
+        return contentData.properties[property.name];
+    }
 
-        return CMS.PROPERTIES[this.propertyUIHint];
+    /**
+     * Extract child items ref from some special properties such as content area
+     * @param contentData The current content
+     * @returns child items ref
+     */
+    getChildItemsRef(contentData: Content, property: ContentTypeProperty): ChildItemRef[] {
+        return [];
+    }
+
+    protected getRefPathFromContentType(typeOfContent: TypeOfContent): 'cms_Block' | 'cms_Page' | 'cms_Media' {
+        switch (typeOfContent) {
+            case PAGE_TYPE: return 'cms_Page';
+            case BLOCK_TYPE: return 'cms_Block';
+            case FOLDER_BLOCK: return 'cms_Block';
+            case MEDIA_TYPE: return 'cms_Media';
+            case FOLDER_MEDIA: return 'cms_Media';
+            default: return null;
+        }
     }
 
     protected createDefaultCmsPropertyComponent(property: ContentTypeProperty, formGroup: FormGroup): ComponentRef<any> {
-        const propertyComponentClass = this.getRegisteredPropertyComponent();
-
-        const propertyFactory = this.componentFactoryResolver.resolveComponentFactory(propertyComponentClass);
+        const propertyFactory = this.componentFactoryResolver.resolveComponentFactory(this.propertyCtor);
 
         const propertyComponent = propertyFactory.create(this.injector);
 
@@ -55,22 +76,34 @@ export class CmsPropertyFactory {
     }
 }
 
-//TODO: In Angular 9, should use the providerIn: 'any' for this service. Detail: https://indepth.dev/angulars-root-and-any-provider-scopes/
+// TODO: In Angular 9, should use the providerIn: 'any' for this service. Detail: https://indepth.dev/angulars-root-and-any-provider-scopes/
 /**
  * In Angular 9, should use the providerIn: 'any' for this service
- * 
+ *
  * Detail: https://indepth.dev/angulars-root-and-any-provider-scopes/
  */
 @Injectable()
 export class CmsPropertyFactoryResolver {
-    constructor(@Inject(PROPERTY_PROVIDERS_TOKEN) private propertyFactories: CmsPropertyFactory[]) { }
+    constructor(
+        @Inject(DEFAULT_PROPERTY_FACTORIES) private defaultPropertyFactories: CmsPropertyFactory[],
+        @Optional() @Inject(PROPERTY_FACTORIES) private propertyFactories?: CmsPropertyFactory[]) { }
 
     resolvePropertyFactory(uiHint: string): CmsPropertyFactory {
-        //TODO: Need to get last element to allow override factory
-        const propertyFactory = this.propertyFactories.find(x => x.isMatching(uiHint));
-        if (!propertyFactory)
-            throw new Error(`The CMS can not resolve the Property Factor for the property with UIHint of ${uiHint}`);
+        let lastIndex = -1;
+        if (this.propertyFactories) {
+            lastIndex = this.propertyFactories.map(x => x.isMatching(uiHint)).lastIndexOf(true);
+            if (lastIndex !== -1) { return this.propertyFactories[lastIndex]; }
+        }
 
-        return propertyFactory;
+        lastIndex = this.defaultPropertyFactories.map(x => x.isMatching(uiHint)).lastIndexOf(true);
+        if (lastIndex !== -1) { return this.defaultPropertyFactories[lastIndex]; }
+
+        // Fallback to Text Property factory
+        // tslint:disable-next-line: no-console
+        console.warn(`The CMS can not resolve the Property Factory for the property with UIHint of ${uiHint}.\nThe default Text Factory will be returned`);
+        lastIndex = this.defaultPropertyFactories.map(x => x.isMatching(UIHint.Text)).lastIndexOf(true);
+        if (lastIndex === -1) { throw new Error(`The CMS can not resolve the Property Factory for the property with UIHint of ${UIHint.Text}`); }
+
+        return this.defaultPropertyFactories[lastIndex];
     }
 }

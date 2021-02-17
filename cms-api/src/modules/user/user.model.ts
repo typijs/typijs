@@ -1,7 +1,6 @@
 import * as bcrypt from 'bcryptjs';
 import * as mongoose from 'mongoose';
 import { IBaseDocument, IBaseModel, BaseSchema } from '../shared/base.model';
-import { paginate } from '../../db/plugins/paginate';
 
 export interface IUser {
     firstName: string;
@@ -61,8 +60,6 @@ UserSchema.methods.comparePassword = async function (candidatePassword: string):
     const user: IUserDocument = this as IUserDocument;
     return bcrypt.compare(candidatePassword, user.password)
 };
-
-UserSchema.plugin(paginate)
 
 export const cmsUser = 'cms_User';
 export const UserModel: IUserModel = mongoose.model<IUserDocument, IUserModel>(cmsUser, UserSchema);

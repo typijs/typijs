@@ -1,17 +1,18 @@
 
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes, Route, ROUTES } from '@angular/router';
 
-import { CMS, Roles, AuthGuard } from '@angular-cms/core';
+import { EDITOR_ROUTES, ADMIN_ROUTES, Roles, AuthGuard } from '@angular-cms/core';
 
-import './cms-module-register';
 import { PortalComponent } from './portal.component';
 import { EditorComponent } from './editor/editor.component';
 import { AdminComponent } from './admin/admin.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 
-const cmsRoutes: Routes = [
-    {
+export function getPortalRoutes(editorRoutes: Routes[], adminRoutes: Routes[]): Route[] {
+    const childEditorRoutes: Route[] = editorRoutes.reduce((a, b) => a.concat(b), []);
+    const childAdminRoutes: Route[] = adminRoutes.reduce((a, b) => a.concat(b), []);
+    return [{
         path: '', component: PortalComponent,
         children: [
             {
@@ -37,7 +38,7 @@ const cmsRoutes: Routes = [
                 data: {
                     role: Roles.Editor
                 },
-                children: CMS.EDITOR_ROUTES()
+                children: childEditorRoutes
             },
             {
                 path: 'admin',
@@ -46,18 +47,26 @@ const cmsRoutes: Routes = [
                 data: {
                     role: Roles.Admin
                 },
-                children: CMS.ADMIN_ROUTES()
+                children: childAdminRoutes
             }
         ]
-    }
-];
+    }];
+}
 
 @NgModule({
     imports: [
-        RouterModule.forChild(cmsRoutes)
+        RouterModule.forChild([])
     ],
     exports: [
         RouterModule
+    ],
+    providers: [
+        {
+            provide: ROUTES,
+            useFactory: getPortalRoutes,
+            deps: [EDITOR_ROUTES, ADMIN_ROUTES],
+            multi: true
+        }
     ]
 })
 export class PortalRoutingModule { }

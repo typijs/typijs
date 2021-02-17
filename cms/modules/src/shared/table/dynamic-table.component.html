@@ -1,0 +1,67 @@
+<!-- Table Toolbar -->
+<div class="d-flex align-items-center">
+  <div class="mr-auto">
+    <ng-container *ngIf="toolbarDirective && toolbarDirective.template" [ngTemplateOutlet]="toolbarDirective.template"
+      [ngTemplateOutletContext]="{rows: rows}">
+    </ng-container>
+  </div>
+  <!-- <div>
+    <label>Search:</label>
+  </div>
+  <div>
+    <input type="search" class="form-control form-control-sm" (change)="keyword$.next($event.target.value)" />
+  </div> -->
+</div>
+<!-- Table -->
+<div class="d-flex mt-1 mb-1">
+  <table class="table table-sm">
+    <!-- Table Header -->
+    <thead>
+      <tr *ngIf="columns">
+        <th *ngFor="let col of columns" scope="col" (click)="sort(col)">
+          <div class="d-flex">
+            <ng-container *ngIf="!columnTemplates || !columnTemplates[col.name]?.headerTemplate">{{col.displayName}}
+            </ng-container>
+            <ng-container *ngIf="columnTemplates && columnTemplates[col.name]?.headerTemplate"
+              [ngTemplateOutlet]="columnTemplates[col.name].headerTemplate" [ngTemplateOutletContext]="{column: col}">
+            </ng-container>
+            <fa-icon *ngIf="col.sort" class="ml-auto" [icon]="col.desc ? ['fas', 'sort-down'] : ['fas', 'sort-up']">
+            </fa-icon>
+          </div>
+        </th>
+      </tr>
+    </thead>
+    <!-- Table Body -->
+    <tbody>
+      <ng-container *ngIf="rows">
+        <tr *ngFor="let row of rows" (click)="rowClick.emit(row)">
+          <td *ngFor="let col of columns" scope="col">
+            <ng-container *ngIf="!columnTemplates || !columnTemplates[col.name]?.cellTemplate">{{row[col.name]}}
+            </ng-container>
+            <ng-container *ngIf="columnTemplates && columnTemplates[col.name]?.cellTemplate"
+              [ngTemplateOutlet]="columnTemplates[col.name].cellTemplate"
+              [ngTemplateOutletContext]="{ row: row, column: col, value: row[col.name]}">
+            </ng-container>
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+</div>
+<!-- Table Paging -->
+<div class="d-flex justify-content-between align-items-center">
+  <div>
+    <select class="form-control" (change)="pageSize$.next($event.target.value)">
+      <option selected value="10">10</option>
+      <option value="20">20</option>
+      <option value="30">30</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+    </select>
+  </div>
+  <div>Showing {{(currentPage - 1) * itemsPerPage + 1}} to {{currentPage * itemsPerPage}} of {{totalItems}} items</div>
+  <div>
+    <pagination [itemsPerPage]="itemsPerPage" [totalItems]="totalItems" [boundaryLinks]="true" previousText="&lsaquo;"
+      nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;" (pageChanged)="pageNumber$.next($event)"></pagination>
+  </div>
+</div>

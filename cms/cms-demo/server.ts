@@ -1,18 +1,16 @@
 import 'zone.js/dist/zone-node';
 import 'reflect-metadata';
 
-import { enableProdMode } from '@angular/core';
 import { ngExpressEngine, RenderOptions } from '@nguniversal/express-engine';
 import * as express from 'express';
 import { join } from 'path';
 
-import { provideModuleMap } from '@nguniversal/module-map-ngfactory-loader';
 
 export function detectBot(userAgent: string): boolean {
-    if (!userAgent) return false;
+    if (!userAgent) { return false; }
 
-    //See more at https://user-agents.net/bots 
-    //or https://github.com/monperrus/crawler-user-agents/blob/master/crawler-user-agents.json
+    // See more at https://user-agents.net/bots
+    // or https://github.com/monperrus/crawler-user-agents/blob/master/crawler-user-agents.json
     const bots = [
         'googlebot', 'Google-Site-Verification', 'google page speed', 'lighthouse',
         'AdsBot', 'APIs-Google', 'Feedfetcher-Google', 'Mediapartners-Google', 'HeadlessChrome', 'developers.google.com/+/web/snippet',
@@ -35,7 +33,24 @@ export function detectBot(userAgent: string): boolean {
     return false;
 }
 
-// The Express app is exported so that it can be used by serverless Functions.
+/**
+ * The Express app is exported so that it can be used by serverless Functions.
+ *
+ * Note:
+ *
+ * if you faced the problem in which there are the strange GET requests to /json and /json/version were sent by chrome inspector.
+ *
+ * So, the solution (in my case) is:
+ *
+ * Go to chrome://inspect.
+ *
+ * Click the link "Open dedicated DevTools for Node";
+ *
+ * Open Connection tab.
+ *
+ * Remove your endpoint from the list.
+ *
+ */
 export function app() {
     const server = express();
 
@@ -45,21 +60,15 @@ export function app() {
     server.engine('html', (_, options: RenderOptions, callback) => {
         const protocol = options.req.protocol;
         const host = options.req.get('host');
-
+        console.log('The current url ' + `${protocol}://${host}${options.req.originalUrl}`)
         const engine = ngExpressEngine({
             bootstrap: AppServerModuleNgFactory,
             providers: [
-                provideModuleMap(LAZY_MODULE_MAP),
                 { provide: 'APP_BASE_URL', useFactory: () => `${protocol}://${host}`, deps: [] },
             ]
         });
         engine(_, options, callback);
     });
-
-    // server.engine('html', ngExpressEngine({
-    //     bootstrap: AppServerModuleNgFactory,
-    //     providers: [provideModuleMap(LAZY_MODULE_MAP)]
-    // }));
 
     // register the template engine
     server.set('view engine', 'html');
@@ -86,14 +95,18 @@ export function app() {
         }
     });
 
+    // server.get('*', (req, res) => {
+    //     res.render('index', { req, res });
+    // });
+
     return server;
 }
 
-//enableProdMode();
+// enableProdMode();
 const port = process.env.PORT || 4200;
 
 // Start up the Node server
-const server = app();
-server.listen(port, () => {
+const serverRender = app();
+serverRender.listen(port, () => {
     console.log(`Node Express for SSR  listening on http://localhost:${port}`);
 });

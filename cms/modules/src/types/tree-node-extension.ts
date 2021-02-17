@@ -7,18 +7,21 @@ import { TypeOfContent } from '.';
  */
 declare module '../shared/tree/interfaces/tree-node' {
     interface TreeNode {
-        type: TypeOfContent
-        contentType: string
-        isPublished: boolean
-        linkUrl?: string
+        type: TypeOfContent;
+        contentType: string;
+        isPublished: boolean;
+        linkUrl?: string;
+        alt?: string;
+        thumbnail?: string;
+        src?: string;
     }
 
     namespace TreeNode {
         /**
          * Create TreeNode object from Content object
-         * 
-         * @param content 
-         * @param type 
+         *
+         * @param content
+         * @param type
          */
         export function createInstanceFromContent(content: Content, type: TypeOfContent): TreeNode;
     }
@@ -37,6 +40,9 @@ TreeNode.createInstanceFromContent = (content: Content, type: TypeOfContent): Tr
         type: type,
         contentType: content.contentType,
         isPublished: content.isPublished,
-        linkUrl: content.linkUrl
-    })
-}
+        linkUrl: content['linkUrl'],
+        alt: content.name,
+        src: content['linkUrl'],
+        thumbnail: content['thumbnail'],
+    });
+};

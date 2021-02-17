@@ -1,14 +1,12 @@
-import { TreeService } from "./tree-service";
-import { TreeMenuItem } from "./tree-menu";
 import { TemplateRef } from '@angular/core';
+import { TreeMenuItem } from './tree-menu';
 
-export interface TreeConfig {
+export type TreeConfig = {
     shouldShowRootNode?: boolean;
-    service: TreeService;
     menuItems?: TreeMenuItem[];
-}
+};
 
-export interface TreeNodeTemplate {
-    loadingTemplate: TemplateRef<any>,
-    treeNodeTemplate: TemplateRef<any>
-}
+export type TreeNodeTemplate = {
+    loadingTemplate: TemplateRef<any>;
+    treeNodeTemplate: TemplateRef<any>;
+};

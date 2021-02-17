@@ -1,60 +1,86 @@
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 
 import { CmsPropertyFactoryResolver } from './bases/cms-property.factory';
-import { CMS } from './cms';
-import { CmsContentRender } from './infrastructure/rendering/cms-content';
-import { ContentAreaRender } from './infrastructure/rendering/content-area/content-area';
-import { ContentAreaDirective } from './infrastructure/rendering/content-area/content-area.directive';
-import { InsertPointDirective } from './infrastructure/rendering/insert-point.directive';
-import { CmsPropertyDirective } from './infrastructure/rendering/property/cms-property.directive';
-import { ImageRender, ObjectListRender, TextRender, UrlListRender, UrlRender, XHtmlRender } from './infrastructure/rendering/property/property-render';
+import { ToImgSrcPipe } from './pipes/to-img-src.pipe';
+import { MapPipe } from './pipes/map.pipe';
 import { SafePipe } from './pipes/safe.pipe';
+import { CmsPropertyDirective } from './renders/cms-property.directive';
+import { ContentAreaPropertyRender } from './renders/content-area/content-area';
+import { ContentAreaRenderDirective } from './renders/content-area/content-area-as-directive';
+import { ContentAreaDirective } from './renders/content-area/content-area.directive';
+import { ImagePropertyRender } from './renders/image/image-render';
+import { ImageRenderDirective } from './renders/image/image-render.directive';
+import { InsertPointDirective } from './renders/insert-point.directive';
+import { ObjectListPropertyRender } from './renders/object-list/object-list-render';
+import { CmsPageRender } from './renders/page-render';
+import { TextPropertyRender } from './renders/text/text-render';
+import { UrlListPropertyRender } from './renders/url-list/url-list-render';
+import { UrlPropertyRender } from './renders/url/url-render';
+import { XHtmlPropertyRender } from './renders/xhtml/xhtml-render';
+import { TextRenderDirective } from './renders/text/text-render-as-directive';
+import { UrlRenderDirective } from './renders/url/url-render.directive';
+import { UrlListRenderDirective } from './renders/url-list/url-list-render-as-directive';
+import { XHtmlRenderDirective } from './renders/xhtml/xhtml-render.directive';
+import { ToPageUrlPipe } from './pipes/to-page-url.pipe';
+import { CallFunctionPipe } from './pipes/call-function.pipe';
+
+export const PIPES = [
+    ToImgSrcPipe,
+    ToPageUrlPipe,
+    MapPipe,
+    SafePipe,
+    CallFunctionPipe
+];
+
+export const PROPERTY_DIRECTIVES = [
+    ContentAreaRenderDirective,
+    ImageRenderDirective,
+    TextRenderDirective,
+    XHtmlRenderDirective,
+    UrlRenderDirective,
+    UrlListRenderDirective
+];
+
+export const CORE_PROPERTY_RENDERS = [
+    ContentAreaPropertyRender,
+    ImagePropertyRender,
+    ObjectListPropertyRender,
+
+    TextPropertyRender,
+    XHtmlPropertyRender,
+    UrlPropertyRender,
+    UrlListPropertyRender
+];
 
 @NgModule({
-  imports: [
-    CommonModule,
-    HttpClientModule
-  ],
-  declarations: [
-    SafePipe,
+    imports: [
+        CommonModule
+    ],
+    declarations: [
+        ...PIPES,
+        ...PROPERTY_DIRECTIVES,
+        ...CORE_PROPERTY_RENDERS,
+        CmsPageRender,
+        InsertPointDirective,
+        CmsPropertyDirective,
 
-    InsertPointDirective,
-    CmsContentRender,
-    CmsPropertyDirective,
-    ContentAreaDirective,
+        ContentAreaDirective
+    ],
+    exports: [
+        ...PIPES,
+        ...PROPERTY_DIRECTIVES,
 
-    ContentAreaRender,
-    TextRender,
-    XHtmlRender,
-    ImageRender,
-    UrlRender,
-    UrlListRender,
-    ObjectListRender
-  ],
-  exports: [
-    SafePipe,
-    CmsContentRender,
-    InsertPointDirective,
-    CmsPropertyDirective,
-    ContentAreaDirective
-  ],
-  entryComponents: [
-    ContentAreaRender,
-    TextRender,
-    XHtmlRender,
-    ImageRender,
-    UrlRender,
-    UrlListRender,
-    ObjectListRender
-  ]
+        CmsPageRender,
+        InsertPointDirective,
+        CmsPropertyDirective
+    ]
 })
 export class CoreModule {
-  public static forChild(): ModuleWithProviders<CoreModule> {
-    return {
-      ngModule: CoreModule,
-      providers: [...CMS.PROPERTY_PROVIDERS, CmsPropertyFactoryResolver]
-    };
-  }
+    static forRoot(): ModuleWithProviders<CoreModule> {
+        return {
+            ngModule: CoreModule,
+            providers: [CmsPropertyFactoryResolver]
+        };
+    }
 }

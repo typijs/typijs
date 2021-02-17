@@ -2,24 +2,70 @@ import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
 import * as express from 'express';
-
+import { Provider } from 'injection-js';
+import { CacheInjectorProviders } from "./caching";
 import { config } from './config/config';
 import { Database } from './db/database';
 import { errorMiddleware } from './error';
-import { injector } from './injector';
-import { loggingMiddleware } from './logging';
-import { AppRouter } from './routes';
+import { EventInjectorProviders } from "./event";
+import { Container } from './injector';
+import { logger, LoggerProviders, loggingMiddleware } from './logging';
+import { AuthProviders } from "./modules/auth";
+import { BlockProviders } from './modules/block';
+import { LanguageGuard, LanguageProviders } from "./modules/language";
+import { MediaProviders, StorageProviders } from './modules/media';
+import { PageProviders } from './modules/page';
+import { SiteDefinitionProviders } from "./modules/site-definition";
+import { UserProviders } from "./modules/user";
+import { CmsApiRouter } from './routes';
 
-export class App {
+export type CmsAppOptions = {
+  provides?: Provider[]
+}
+
+export class CmsApp {
   public express: express.Application;
 
-  constructor() {
+  constructor(appOptions: CmsAppOptions = {}) {
     this.express = express();
-    this.express.set('injector', injector);
+    this.setProviders(appOptions.provides)
     this.setDatabaseConnection();
     this.setMiddlewares();
     this.setRoutes();
     this.setErrorHandling();
+  }
+
+  public start(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.express.listen(config.app.port, () => {
+        console.log(`Angular CMS listening on port ${config.app.port}`);
+        resolve('Start successfully!');
+      }).on('error', (err: any) => {
+        logger.error('Server can not start', err);
+        reject(err);
+      });
+    });
+  }
+
+  private setProviders(providers: Provider[]) {
+    let appProviders = [
+      ...LoggerProviders,
+      ...EventInjectorProviders,
+      ...CacheInjectorProviders,
+      ...LanguageProviders,
+      ...StorageProviders,
+      ...UserProviders,
+      ...AuthProviders,
+      ...SiteDefinitionProviders,
+      ...BlockProviders,
+      ...MediaProviders,
+      ...PageProviders,
+      CmsApiRouter
+    ];
+    if (providers) {
+      appProviders = [...appProviders, ...providers];
+    }
+    Container.set(appProviders);
   }
 
   private setDatabaseConnection() {
@@ -44,9 +90,8 @@ export class App {
   }
 
   private setRoutes(): void {
-    const appInjector = this.express.get('injector');
-    const appRouter = <AppRouter>appInjector.get(AppRouter);
-    this.express.use('/api', appRouter.router);
+    const apiRouter = Container.get(CmsApiRouter);
+    this.express.use('/api', apiRouter.router);
   }
 
   private setErrorHandling(): void {

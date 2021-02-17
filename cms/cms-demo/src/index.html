@@ -1,44 +1,68 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <title>Angular Cms</title>
+  <title>Vegefoods - Powered By Angular Cms</title>
   <base href="/">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <!-- google fonts -->
-  <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-  <link href='http://fonts.googleapis.com/css?family=Pontano+Sans' rel='stylesheet' type='text/css'>
-  <link href='http://fonts.googleapis.com/css?family=Shadows+Into+Light' rel='stylesheet' type='text/css'>
+  <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800&display=swap"
+    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Lora:400,400i,700,700i&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Amatic+SC:400,700&display=swap" rel="stylesheet">
 
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link href="assets/css/style.css" rel="stylesheet" type="text/css" media="all" />
+  <link rel="stylesheet" href="assets/css/open-iconic-bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/animate.css">
+
+  <link rel="stylesheet" href="assets/css/owl.carousel.min.css">
+  <link rel="stylesheet" href="assets/css/owl.theme.default.min.css">
+  <link rel="stylesheet" href="assets/css/magnific-popup.css">
+
+  <link rel="stylesheet" href="assets/css/aos.css">
+
+  <link rel="stylesheet" href="assets/css/ionicons.min.css">
+
+  <link rel="stylesheet" href="assets/css/bootstrap-datepicker.css">
+  <link rel="stylesheet" href="assets/css/jquery.timepicker.css">
+
+
+  <link rel="stylesheet" href="assets/css/flaticon.css">
+  <link rel="stylesheet" href="assets/css/icomoon.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script>
+    var pathname = window.location.pathname;
+    if (pathname.startsWith('/cms')) {
+      var links = document.querySelectorAll("link[href*='assets/css']")
+      for (var i = 0; i < links.length; i++) {
+        links[i].remove();
+      }
+    }
+  </script>
 </head>
 
-<body>
-  <!--nav-->
+<body class="goto-here">
+  <!-- loader -->
+  <div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px">
+      <circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee" />
+      <circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10"
+        stroke="#F96D00" />
+    </svg></div>
+
   <script src="assets/js/jquery.min.js"></script>
-  <script>
-    $(function () {
-      var pull = $('#pull');
-      menu = $('nav ul');
-      menuHeight = menu.height();
-
-      $(pull).on('click', function (e) {
-        e.preventDefault();
-        menu.slideToggle();
-      });
-
-      $(window).resize(function () {
-        var w = $(window).width();
-        if (w > 320 && menu.is(':hidden')) {
-          menu.removeAttr('style');
-        }
-      });
-    });
-  </script>
+  <script src="assets/js/jquery-migrate-3.0.1.min.js"></script>
+  <script src="assets/js/popper.min.js"></script>
+  <script src="assets/js/bootstrap.min.js"></script>
+  <script src="assets/js/jquery.easing.1.3.js"></script>
+  <script src="assets/js/jquery.stellar.min.js"></script>
+  <script src="assets/js/owl.carousel.min.js"></script>
+  <script src="assets/js/jquery.magnific-popup.min.js"></script>
+  <script src="assets/js/aos.js"></script>
+  <script src="assets/js/jquery.animateNumber.min.js"></script>
+  <script src="assets/js/bootstrap-datepicker.js"></script>
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
+  <script src="assets/js/google-map.js"></script>
 </body>
 
 </html>

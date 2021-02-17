@@ -7,6 +7,7 @@ export type CmsPropertyUIType = {
     ObjectList: string;
     XHtml: string;
     Checkbox: string;
+    CheckboxList: string;
     RadioButtons: string;
     ContentArea: string;
     ContentReference: string;
@@ -17,9 +18,10 @@ export type CmsPropertyUIType = {
     Datepicker: string;
     Timepicker: string;
     [key: string]: string;
-}
+};
 
-//build-in property types
+// build-in property types
+// tslint:disable-next-line: variable-name
 export const UIHint: CmsPropertyUIType = {
     Text: 'Text',
     Number: 'Number',
@@ -29,6 +31,7 @@ export const UIHint: CmsPropertyUIType = {
     ObjectList: 'ObjectList',
     XHtml: 'XHtml',
     Checkbox: 'Checkbox',
+    CheckboxList: 'CheckboxList',
     RadioButtons: 'RadioButtons',
     ContentArea: 'ContentArea',
     ContentReference: 'ContentReference',

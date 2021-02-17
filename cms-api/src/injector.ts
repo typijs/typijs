@@ -1,23 +1,28 @@
-import { ReflectiveInjector } from "injection-js";
+import { InjectionToken, Provider, ReflectiveInjector, Type } from "injection-js";
+import { Validator } from "./validation";
 
-import { ResolveCacheProviders } from "./caching";
-import { ResolveAuthProviders } from "./modules/auth/auth.provider";
-import { ResolveBlockProviders } from './modules/block/block.providers';
-import { ResolveMediaProviders } from './modules/media/media.providers';
-import { ResolvePageProviders } from './modules/page/page.providers';
-import { ResolveSiteDefinitionProviders } from "./modules/site-definition/site-definition.provider";
-import { ResolveUserProviders } from "./modules/user/user.provider";
-import { AppRouter } from "./routes";
+export class CmsInjector {
+    private _providers: Provider[] = [];
+    private _injector: ReflectiveInjector = ReflectiveInjector.fromResolvedProviders([]);
 
+    set(providers: Provider[]) {
+        this._providers = [...this._providers, ...providers];
+        this._injector = ReflectiveInjector.fromResolvedProviders([...ReflectiveInjector.resolve([...this._providers])]);
+    }
 
-//TODO: should has the setting providers in app express to allow override
-export const injector = ReflectiveInjector.fromResolvedProviders([
-    ...ReflectiveInjector.resolve([AppRouter]),
-    ...ResolveCacheProviders,
-    ...ResolvePageProviders,
-    ...ResolveBlockProviders,
-    ...ResolveMediaProviders,
-    ...ResolveSiteDefinitionProviders,
-    ...ResolveUserProviders,
-    ...ResolveAuthProviders
-]);
+    get<T>(token: Type<T> | InjectionToken<T>, notFoundValue?: T): T {
+        Validator.throwIfNull('_injector', this._injector);
+        return this._injector.get(token, notFoundValue);
+    }
+}
+
+export class Container {
+    public static readonly globalInstance: CmsInjector = new CmsInjector();
+
+    static get<T>(token: Type<T> | InjectionToken<T>, notFoundValue?: T): T {
+        return this.globalInstance.get(token, notFoundValue);
+    }
+    static set(providers?: Provider[]): void {
+        this.globalInstance.set(providers);
+    }
+}

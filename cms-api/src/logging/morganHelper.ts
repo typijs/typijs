@@ -48,7 +48,7 @@ class MorganStream {
         const messageObj: MorganToken = JSON.parse(message);
 
         const httpStatus = messageObj.status;
-        const errorMessage = `${httpStatus} - ${messageObj.method} - ${messageObj.url}`;
+        const errorMessage = `${messageObj.method} ${messageObj.url} - ${httpStatus} - ${messageObj.responseTime} - ${messageObj.contentLength}`;
         if (httpStatus < 400) {
             logger.info(errorMessage);
         }

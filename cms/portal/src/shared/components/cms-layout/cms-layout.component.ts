@@ -1,4 +1,4 @@
-import { Input, ViewChildren, Component, QueryList } from '@angular/core';
+import { Input, ViewChildren, Component, QueryList, OnInit } from '@angular/core';
 
 import { CmsTab, InsertPointDirective, BrowserStorageService } from '@angular-cms/core';
 import { SubjectService } from '@angular-cms/modules';
@@ -6,12 +6,12 @@ import { SubjectService } from '@angular-cms/modules';
 type PanelConfig = {
     visible: boolean,
     size: number | string
-}
+};
 
 type LayoutConfig = {
     headerSize: number
     panels: PanelConfig[]
-}
+};
 
 const defaultPanelConfigs: PanelConfig[] = [
     {
@@ -26,17 +26,17 @@ const defaultPanelConfigs: PanelConfig[] = [
         visible: true,
         size: 300
     }
-]
+];
 
 @Component({
     selector: 'cms-layout',
     templateUrl: './cms-layout.component.html'
 })
-export class CmsLayoutComponent {
+export class CmsLayoutComponent implements OnInit {
     @ViewChildren(InsertPointDirective) insertPoints: QueryList<InsertPointDirective>;
 
-    @Input() rightTabs: Array<CmsTab> = [];
-    @Input() leftTabs: Array<CmsTab> = [];
+    @Input() rightTabs: CmsTab[] = [];
+    @Input() leftTabs: CmsTab[] = [];
 
     layoutConfig: LayoutConfig;
     private readonly layoutConfigKey: string = 'cms-layout-config-key';
@@ -48,14 +48,14 @@ export class CmsLayoutComponent {
 
     ngOnInit() {
         if (this.storageService.get(this.layoutConfigKey)) {
-            this.layoutConfig = JSON.parse(this.storageService.get(this.layoutConfigKey))
+            this.layoutConfig = JSON.parse(this.storageService.get(this.layoutConfigKey));
         } else {
             this.resetConfig();
         }
     }
 
     private resetConfig() {
-        this.layoutConfig = Object.assign({}, { headerSize: this.headerSizeDefault, panels: defaultPanelConfigs });
+        this.layoutConfig = { headerSize: this.headerSizeDefault, panels: defaultPanelConfigs };
 
         this.storageService.remove(this.layoutConfigKey);
     }
@@ -75,15 +75,15 @@ export class CmsLayoutComponent {
         this.saveLocalStorage();
     }
 
-    onDragEnd(eventData: { gutterNum: number, sizes: Array<number> }) {
-        this.subjectService.portalLayoutChanged$.next(false);
+    onDragEnd(eventData: { gutterNum: number, sizes: number[] }) {
+        this.subjectService.firePortalLayoutChanged(false);
         // Set size for all visible columns
-        this.layoutConfig.panels.filter(x => x.visible == true).forEach((row, index) => row.size = eventData.sizes[index])
+        this.layoutConfig.panels.filter(x => x.visible === true).forEach((row, index) => row.size = eventData.sizes[index]);
         this.saveLocalStorage();
     }
 
     onDragStart() {
-        this.subjectService.portalLayoutChanged$.next(true);
+        this.subjectService.firePortalLayoutChanged(true);
     }
 
     private saveLocalStorage() {

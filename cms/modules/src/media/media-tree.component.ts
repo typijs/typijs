@@ -1,135 +1,151 @@
-import { Component, ViewChild } from '@angular/core';
-
-import { Media, MediaService, MEDIA_TYPE } from '@angular-cms/core';
-import { takeUntil } from 'rxjs/operators';
-
+import { Media, MediaService, MEDIA_TYPE, VersionStatus } from '@angular-cms/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
+import { BehaviorSubject, merge, Observable, Subject } from 'rxjs';
+import { distinctUntilKeyChanged, map, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
+import { CmsModalService } from '../shared/modal/modal.service';
 import { SubjectService } from '../shared/services/subject.service';
 import { SubscriptionDestroy } from '../shared/subscription-destroy';
-//import { TreeComponent, TreeConfig, TreeNode, NodeMenuItemAction, TreeMenuActionEvent } from '../shared/tree';
 import { TreeComponent } from '../shared/tree/components/tree.component';
 import { TreeConfig } from '../shared/tree/interfaces/tree-config';
 import { NodeMenuItemAction, TreeMenuActionEvent } from '../shared/tree/interfaces/tree-menu';
 import { TreeNode } from '../shared/tree/interfaces/tree-node';
-
+import { TreeService } from '../shared/tree/interfaces/tree-service';
 import { MediaTreeService } from './media-tree.service';
-import { UploadService } from './upload/upload.service';
 import { FileModalComponent } from './upload/file-modal.component';
+import { FileUploadProgress, UploadService } from './upload/upload.service';
 
-const MediaMenuItemAction = {
-    DeleteFolder: 'DeleteFolder',
-    NewFileUpload: 'NewFile'
-}
+const MEDIA_MENU_ACTION = {
+    NewFileUpload: 'NewFile',
+    DeleteFolder: 'DeleteFolder'
+};
 
 @Component({
     template: `
         <div dragOver class="media-container">
             <div class="drop-zone" dragLeave>
-                <file-drop [uploadFieldName]='"files"' [targetFolder]="selectedFolder"></file-drop>
+                <file-drop (filesDropped)="onFilesDropped($event)"></file-drop>
             </div>
             <as-split direction="vertical" gutterSize="4">
                 <as-split-area size="50">
-                    <cms-tree 
-                        class="tree-root pl-1 pt-2 d-block" 
-                        [root]="root"
-                        [config]="treeConfig"
-                        (nodeSelected)="folderSelected($event)"
-                        (nodeInlineCreated)="createMediaFolder($event)"
-                        (nodeInlineUpdated)="updateMediaFolder($event)"
-                        (menuItemSelected)="menuItemSelected($event)">
-                        <ng-template #treeNodeTemplate let-node>
-                            <span [ngClass]="{'media-node': node.id != '0', 'border-bottom': node.isSelected && node.id != '0'}">
-                                <fa-icon class="mr-1" *ngIf="node.id == 0" [icon]="['fas', 'photo-video']"></fa-icon>
-                                <fa-icon class="mr-1" *ngIf="node.id != 0" [icon]="['fas', 'folder']"></fa-icon>
-                                <span class="node-name">{{node.name}}</span>
-                                <button type="button" class="btn btn-xs btn-secondary float-right mr-1" *ngIf="node.id == '0'" (click)="clickToCreateFolder(node)">
-                                    <fa-icon [icon]="['fas', 'folder-plus']"></fa-icon>
-                                </button>
-                            </span>
-                        </ng-template>
-                    </cms-tree>
+                    <div class="position-relative">
+                        <cms-tree
+                            class="tree-root pl-1 pt-2 d-block"
+                            [root]="root"
+                            [config]="treeConfig"
+                            (nodeSelected)="folderSelected$.next($event)"
+                            (nodeInlineCreated)="createMediaFolder($event)"
+                            (nodeInlineUpdated)="updateMediaFolder($event)"
+                            (menuItemSelected)="menuItemSelected($event)">
+                            <ng-template #treeNodeTemplate let-node>
+                                <span [ngClass]="{'media-node': node.id != '0', 'border-bottom': node.isSelected && node.id != '0'}">
+                                    <fa-icon class="mr-1" *ngIf="node.id == 0" [icon]="['fas', 'photo-video']"></fa-icon>
+                                    <fa-icon class="mr-1" *ngIf="node.id != 0" [icon]="['fas', 'folder']"></fa-icon>
+                                    <span class="node-name">{{node.name}}</span>
+
+                                </span>
+                            </ng-template>
+                        </cms-tree>
+                        <div class='toolbar mt-2 mr-1'>
+                            <button type="button"
+                                class="btn btn-xs btn-secondary float-right mr-1"
+                                (click)="clickToCreateFolder(root)">
+                                <fa-icon [icon]="['fas', 'folder-plus']"></fa-icon>
+                            </button>
+                        </div>
+                    </div>
                 </as-split-area>
                 <as-split-area size="50">
-                    <div class="list-group list-media"  *ngIf="medias" #mediaItem>
-                        <a *ngFor="let media of medias" 
-                            [draggable] 
-                            [dragData]="media"  
-                            class="list-group-item list-group-item-action flex-column align-items-start p-1" 
-                            [routerLink]="['content/media', media._id]">
+                    <div class="list-group list-media"  *ngIf="medias$ |async as medias" #mediaItem>
+                        <a *ngFor="let media of medias"
+                            [draggable]
+                            [dragData]="media"
+                            href="javascript:void(0)"
+                            class="list-group-item list-group-item-action p-2">
                             <div class="d-flex align-items-center">
-                                <img class="mr-1" [src]='media.path'/>
-                                <div class="w-100 mr-2 text-truncate">{{media.name}}</div>
-                                <fa-icon class="ml-auto" [icon]="['fas', 'bars']"></fa-icon>
+                                <img width='50' class="mr-1" [src]='media.thumbnail | toImgSrc' [routerLink]="['content/media', media._id]"/>
+                                <div class="w-100 mr-2 text-truncate" [routerLink]="['content/media', media._id]">{{media.name}}</div>
+                                <div class="hover-menu ml-auto" dropdown container="body">
+                                    <fa-icon class="mr-1" [icon]="['fas', 'bars']" dropdownToggle></fa-icon>
+                                    <div class="cms-dropdown-menu dropdown-menu dropdown-menu-right"
+                                        *dropdownMenu
+                                        aria-labelledby="simple-dropdown">
+                                        <a class="dropdown-item p-2" href="javascript:void(0)" [routerLink]="['content/media', media._id]">
+                                            Edit
+                                        </a>
+                                        <a class="dropdown-item p-2" href="javascript:void(0)">
+                                            Delete
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </a>
                     </div>
                 </as-split-area>
             </as-split>
-            <file-modal></file-modal>
         </div>
         `,
     styleUrls: ['./media-tree.scss'],
-    providers: [MediaTreeService]
+    providers: [MediaTreeService, { provide: TreeService, useExisting: MediaTreeService }]
 })
-export class MediaTreeComponent extends SubscriptionDestroy {
+export class MediaTreeComponent extends SubscriptionDestroy implements OnInit {
 
-    @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
-    @ViewChild(FileModalComponent, { static: false }) fileModal: FileModalComponent;
+    @ViewChild(TreeComponent, { static: true }) cmsTree: TreeComponent;
 
-    medias: Array<Media>;
+    folderSelected$: BehaviorSubject<Partial<TreeNode>>;
+    refreshFolder$: Subject<Partial<TreeNode>>;
+    medias$: Observable<Media[]>;
+
     root: TreeNode;
-    treeConfig: TreeConfig;
     selectedFolder: Partial<TreeNode>;
+    treeConfig: TreeConfig;
 
     constructor(
-        private mediaTreeService: MediaTreeService,
         private mediaService: MediaService,
+        private dialogService: CmsModalService,
+        private modalService: BsModalService,
         private subjectService: SubjectService,
         private uploadService: UploadService) {
         super();
         this.root = new TreeNode({ id: '0', name: 'Media', hasChildren: true });
+        this.selectedFolder = this.root;
         this.treeConfig = this.initTreeConfiguration();
+
+        this.folderSelected$ = new BehaviorSubject<Partial<TreeNode>>(this.root);
+        this.refreshFolder$ = new Subject<Partial<TreeNode>>();
     }
 
     ngOnInit() {
         this.subjectService.mediaFolderCreated$
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(createdFolder => {
-                this.cmsTree.selectNode({ id: createdFolder._id, isNeedToScroll: true })
+                this.cmsTree.setSelectedNode({ id: createdFolder._id, isNeedToScroll: true });
                 this.cmsTree.reloadSubTree(createdFolder.parentId);
             });
 
         this.uploadService.uploadComplete$
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe(nodeId => {
-                //Reload current node
-                if (this.selectedFolder.id == nodeId) this.reloadSelectedFolder(nodeId);
+                // Reload current node
+                if (this.selectedFolder.id === nodeId) { this.refreshFolder$.next(this.selectedFolder); }
             });
 
-        this.folderSelected(this.root);
-    }
-
-    folderSelected(node: Partial<TreeNode>) {
-        this.selectedFolder = node;
-        this.reloadSelectedFolder(node.id);
-    }
-
-    private reloadSelectedFolder(folderId: string) {
-        //load child block in folder
-        this.mediaService.getContentInFolder(folderId).subscribe(childMedias => {
-            childMedias.forEach(media => Object.assign(media, {
+        const setFolderSelected$ = this.folderSelected$.pipe(
+            distinctUntilKeyChanged('id'),
+            tap(node => this.selectedFolder = node)
+        );
+        this.medias$ = merge(setFolderSelected$, this.refreshFolder$).pipe(
+            switchMap(node => this.mediaService.getContentInFolder(node.id)),
+            map((medias: Media[]) => medias.map(media => Object.assign(media, {
                 type: MEDIA_TYPE,
                 contentType: media.contentType,
-                isPublished: media.isPublished
-            }));
-            this.medias = childMedias;
-            this.medias.forEach(file => {
-                file.path = `${this.mediaService.getImageUrl(file._id, file.name)}?w=50&h=50`;
-            })
-        })
+                isPublished: media.status === VersionStatus.Published
+            })))
+        );
     }
 
     clickToCreateFolder(node: TreeNode) {
-        this.cmsTree.handleNodeMenuItemSelected({ action: NodeMenuItemAction.NewNodeInline, node: node })
+        this.cmsTree.handleNodeMenuItemSelected({ action: NodeMenuItemAction.NewNodeInline, node });
     }
 
     createMediaFolder(node: TreeNode) {
@@ -147,52 +163,79 @@ export class MediaTreeComponent extends SubscriptionDestroy {
     menuItemSelected(nodeAction: TreeMenuActionEvent) {
         const { action, node } = nodeAction;
         switch (action) {
-            case MediaMenuItemAction.NewFileUpload:
-                this.fileModal.openFileUploadModal(node);
+            case MEDIA_MENU_ACTION.NewFileUpload:
+                this.openFileUploadModal({ uploadFolder: node });
                 break;
-            case MediaMenuItemAction.DeleteFolder:
+            case MEDIA_MENU_ACTION.DeleteFolder:
                 this.folderDelete(node);
                 break;
         }
     }
 
+    onFilesDropped(files: File[]) {
+        this.uploadService.uploadFiles(files, this.selectedFolder)
+            .subscribe(uploadProgress => {
+                this.openFileUploadModal(uploadProgress);
+            });
+    }
+
+    private openFileUploadModal(uploadProgress: FileUploadProgress) {
+        const config: ModalOptions = {
+            initialState: uploadProgress,
+            backdrop: true, // Show backdrop
+            keyboard: false, // Esc button option
+            ignoreBackdropClick: true, // Backdrop click to hide,
+            animated: false,
+            class: 'modal-md'
+        }
+
+        this.modalService.show(FileModalComponent, config);
+    }
+
     private folderDelete(nodeToDelete: TreeNode) {
-        if (nodeToDelete.id == '0') return;
-        this.mediaService.softDeleteContent(nodeToDelete.id).subscribe(([folderToDelete, deleteResult]: [Media, any]) => {
-            console.log(deleteResult);
-            this.cmsTree.reloadSubTree(nodeToDelete.parentId);
-        });
+        if (nodeToDelete.id == '0') { return; }
+
+        this.dialogService.confirm(`Delete ${nodeToDelete.name}`, `Do you want to delete the folder ${nodeToDelete.name}?`).pipe(
+            takeWhile(confirm => confirm),
+        ).subscribe(() => {
+            this.mediaService.moveContentToTrash(nodeToDelete.id).subscribe(folderToDelete => {
+                if (folderToDelete.isDeleted) {
+                    // if the deleted node is selected then need to set the parent node is the new selected node
+                    if (nodeToDelete.isSelected) this.cmsTree.setSelectedNode({ id: folderToDelete.parentId, isNeedToScroll: true });
+                    this.cmsTree.reloadSubTree(folderToDelete.parentId);
+                }
+            });
+        })
     }
 
     private initTreeConfiguration(): TreeConfig {
         return {
-            service: this.mediaTreeService,
             menuItems: [
                 {
                     action: NodeMenuItemAction.NewNodeInline,
-                    name: "New Folder"
+                    name: 'New Folder'
                 },
                 {
-                    action: MediaMenuItemAction.NewFileUpload,
-                    name: "Upload"
+                    action: MEDIA_MENU_ACTION.NewFileUpload,
+                    name: 'Upload'
                 },
                 {
                     action: NodeMenuItemAction.EditNowInline,
-                    name: "Rename"
+                    name: 'Rename'
                 },
                 {
                     action: NodeMenuItemAction.Copy,
-                    name: "Copy"
+                    name: 'Copy'
                 },
                 {
                     action: NodeMenuItemAction.Paste,
-                    name: "Paste"
+                    name: 'Paste'
                 },
                 {
-                    action: MediaMenuItemAction.DeleteFolder,
-                    name: "Delete"
+                    action: MEDIA_MENU_ACTION.DeleteFolder,
+                    name: 'Delete'
                 },
             ]
-        }
+        };
     }
 }

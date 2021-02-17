@@ -1,47 +1,54 @@
-import { Property, PageType, UIHint, ValidationTypes, PageData, CmsImage } from '@angular-cms/core';
+import { CmsImage, PageType, Property, UIHint, ValidationTypes } from '@angular-cms/core';
+import { BasePage } from '../base.pagetype';
 import { ArticleComponent } from './article.component';
 
 @PageType({
-    displayName: "Article Page",
+    displayName: 'Article Page',
     componentRef: ArticleComponent,
-    description: "This is article page type"
+    description: 'This is article page type'
 })
-export class ArticlePage extends PageData {
+export class ArticlePage extends BasePage {
 
     @Property({
-        displayName: "Title",
+        displayName: 'Title',
         displayType: UIHint.Text,
-        validates: [ValidationTypes.required("This field is required")]
+        validates: [ValidationTypes.required('This field is required')]
     })
     title: string;
 
     @Property({
-        displayName: "Author",
-        displayType: UIHint.Text
+        displayName: 'Tags',
+        displayType: UIHint.Text,
     })
-    author: string;
+    tags: string;
 
     @Property({
-        displayName: "Image Teaser",
+        displayName: 'Author',
+        displayType: UIHint.ContentArea
+    })
+    author: any[];
+
+    @Property({
+        displayName: 'Image Teaser',
         displayType: UIHint.Image
     })
     image: CmsImage;
 
     @Property({
-        displayName: "Summary",
+        displayName: 'Summary',
         displayType: UIHint.XHtml,
-        validates: [ValidationTypes.required("This field is required")]
+        validates: [ValidationTypes.required('This field is required')]
     })
     summary: string;
 
     @Property({
-        displayName: "Content",
+        displayName: 'Content',
         displayType: UIHint.XHtml
     })
     content: string;
 
     @Property({
-        displayName: "Published Date",
+        displayName: 'Published Date',
         displayType: UIHint.Text
     })
     publishedDate: string;

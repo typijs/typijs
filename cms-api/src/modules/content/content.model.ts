@@ -1,10 +1,13 @@
 import * as mongoose from 'mongoose';
 import { cmsUser } from '../user/user.model';
 import { IBaseDocument, IBaseModel, BaseSchema } from '../shared/base.model';
-
 export type RefContent = {
     refPath: string;
     content: any;
+}
+
+export interface IContentHasChildItems {
+    childItems: RefContent[];
 }
 
 export interface IHierarchyContent {
@@ -12,80 +15,75 @@ export interface IHierarchyContent {
     parentPath: string;
     ancestors: string[];
     hasChildren: boolean;
+    childOrderRule: number;
+    peerOrder: number;
 }
 
 export interface ISoftDeletedContent {
     isDeleted: boolean;
+    deletedAt: Date;
+    deletedBy: string;
 }
 
-export interface IPublishableContent {
-    publishedAt: Date;
-    publishedBy: any;
-
-    isPublished: boolean;
+export interface IPublishContent {
+    startPublish: Date;
+    stopPublish: Date;
+    delayPublishUntil: Date;
+    publishedBy: string;
 }
 
-export interface IContentHasChildItems {
-    childItems: RefContent[];
-    publishedChildItems: RefContent[];
-}
-
-export interface IFolder extends ISoftDeletedContent, IHierarchyContent {
-    name: string;
-}
-
-export interface IContent extends IContentHasChildItems, IPublishableContent, ISoftDeletedContent, IHierarchyContent {
-    name: string;
-
+export interface IContent extends ISoftDeletedContent, IHierarchyContent {
     contentType: string;
-    properties: any;
-
+    masterLanguageId: string;
+    contentLanguages: any[];
     //not map to db
-    isDirty: boolean;
+    versionId: string; //contain corresponding version id
 }
-
-export interface IContentVersion extends IContent {
-    contentId: any;
-}
-
-export interface IPublishedContent extends IContentVersion {
-    contentVersionId: any;
-}
-
-export interface IFolderDocument extends IFolder, IBaseDocument { }
-
 export interface IContentDocument extends IContent, IBaseDocument { }
-
-export interface IContentVersionDocument extends IContentVersion, IBaseDocument { }
-
-export interface IPublishedContentDocument extends IPublishedContent, IBaseDocument { }
-
 export interface IContentModel<T extends IContentDocument> extends IBaseModel<T> { }
 
+export interface IContentLanguage extends IPublishContent, IContentHasChildItems {
+    contentId: string | IContentDocument;
+    language: string;
+    versionId: string;
+    name: string;
+    properties: { [key: string]: any };
+    /**
+     * Ref to @VersionStatus
+     */
+    status: number;
+    [key: string]: any;
+}
+export interface IContentLanguageDocument extends IContentLanguage, IBaseDocument { }
+export interface IContentLanguageModel<T extends IContentLanguageDocument> extends IBaseModel<T> { }
+
+export interface IContentVersion extends IPublishContent, IContentHasChildItems {
+    contentId: string | IContentDocument;
+    masterVersionId: string;
+    language: string;
+    childOrderRule: number;
+    peerOrder: number;
+    name: string;
+    properties: any;
+    isPrimary: boolean;
+    savedAt: Date;
+    savedBy: string;
+    /**
+     * Ref to @VersionStatus
+     */
+    status: number;
+    [key: string]: any;
+}
+
+export interface IContentVersionDocument extends IContentVersion, IBaseDocument { }
 export interface IContentVersionModel<T extends IContentVersionDocument> extends IBaseModel<T> { }
 
-export interface IPublishedContentModel<T extends IPublishedContentDocument> extends IBaseModel<T> { }
-
-export const ContentSchema = new mongoose.Schema({
-    ...BaseSchema.obj,
-
-    publishedAt: Date,
-    publishedBy: { type: mongoose.Schema.Types.ObjectId, ref: cmsUser },
-
-    name: { type: String, required: true },
-    contentType: { type: String, required: false },
-
-    parentId: { type: String, default: null },
-    //https://docs.mongodb.com/manual/tutorial/model-tree-structures-with-materialized-paths/
-    parentPath: { type: String, required: false, index: true }, // ex ",parent1_id,parent2_id,parent3_id,"
-    //https://docs.mongodb.com/manual/tutorial/model-tree-structures-with-ancestors-array/
-    ancestors: { type: [String], required: false }, // ex [parent1_id, parent2_id, parent3_id]
-    hasChildren: { type: Boolean, required: true, default: false },
-
-    isPublished: { type: Boolean, required: true, default: false },
-    isDeleted: { type: Boolean, required: true, default: false },
-
-    properties: mongoose.Schema.Types.Mixed
+export const PublishContentSchema = new mongoose.Schema({
+    //IPublishContent Implements
+    startPublish: { type: Date },
+    stopPublish: { type: Date },
+    delayPublishUntil: { type: Date },
+    publishedBy: { type: mongoose.Schema.Types.ObjectId, ref: cmsUser }
 });
 
 export const ContentHasChildItemsSchema = new mongoose.Schema({
@@ -93,10 +91,44 @@ export const ContentHasChildItemsSchema = new mongoose.Schema({
     childItems: [{
         refPath: { type: String, required: true },
         content: { type: mongoose.Schema.Types.ObjectId, refPath: 'childItems.refPath' }
-    }],
-    //contain all reference Ids of all published contents which be used in page such as block, media, page
-    publishedChildItems: [{
-        refPath: { type: String, required: true },
-        content: { type: mongoose.Schema.Types.ObjectId, refPath: 'publishedChildItems.refPath' }
     }]
 })
+
+export const ContentSchema = new mongoose.Schema({
+    ...BaseSchema.obj,
+    contentType: { type: String, required: false },
+    masterLanguageId: { type: String },
+    //IHierarchyContent Implements
+    parentId: { type: mongoose.Schema.Types.ObjectId, default: null },
+    //https://docs.mongodb.com/manual/tutorial/model-tree-structures-with-materialized-paths/
+    parentPath: { type: String, required: false, index: true }, // ex ",parent1_id,parent2_id,parent3_id,"
+    //https://docs.mongodb.com/manual/tutorial/model-tree-structures-with-ancestors-array/
+    ancestors: { type: [String], required: false }, // ex [parent1_id, parent2_id, parent3_id]
+    hasChildren: { type: Boolean, required: true, default: false },
+    childOrderRule: { type: Number, required: true, default: 1 },
+    peerOrder: { type: Number, required: true, default: 100 },
+
+    //ISoftDeletedContent Implements
+    deletedAt: { type: Date },
+    deletedBy: { type: mongoose.Schema.Types.ObjectId, ref: cmsUser },
+    isDeleted: { type: Boolean, required: true, default: false },
+});
+
+export const ContentLanguageSchema = new mongoose.Schema({
+    ...BaseSchema.obj,
+    ...PublishContentSchema.obj,
+    ...ContentHasChildItemsSchema.obj,
+    language: { type: String, required: true },
+    name: { type: String, required: true },
+    properties: mongoose.Schema.Types.Mixed,
+    status: { type: Number, required: true, default: 2 }
+});
+
+export const ContentVersionSchema = new mongoose.Schema({
+    ...ContentLanguageSchema.obj,
+    childOrderRule: { type: Number, required: true, default: 1 },
+    peerOrder: { type: Number, required: true, default: 100 },
+    isPrimary: { type: Boolean, required: true, default: false },
+    savedAt: { type: Date },
+    savedBy: { type: mongoose.Schema.Types.ObjectId, ref: cmsUser }
+});

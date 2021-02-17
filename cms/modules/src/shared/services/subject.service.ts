@@ -1,53 +1,87 @@
 import { Injectable } from '@angular/core';
-import { Subject, BehaviorSubject } from 'rxjs';
-import { Page, Block, Media } from '@angular-cms/core';
+import { Subject, BehaviorSubject, Observable } from 'rxjs';
+import { Page, Block, Media, TypeOfContent } from '@angular-cms/core';
 import { ContentAreaItem } from '../../properties/content-area/content-area.model';
 
 @Injectable({
-  // we declare that this service should be created
-  // by the root application injector.
-  providedIn: 'root',
+    // we declare that this service should be created
+    // by the root application injector.
+    providedIn: 'root',
 })
 export class SubjectService {
 
-  blockFolderCreated$: Subject<Block> = new Subject<Block>();
-  blockCreated$: Subject<Block> = new Subject<Block>();
+    blockFolderCreated$: Observable<Block>;
+    blockCreated$: Observable<Block>;
+    mediaFolderCreated$: Observable<Media>;
+    mediaCreated$: Observable<Media>;
+    pageCreated$: Observable<Page>;
+    pageSelected$: Observable<Page>;
+    contentDropFinished$: Observable<Partial<ContentAreaItem>>;
+    portalLayoutChanged$: Observable<boolean>;
+    contentSelected$: Observable<[TypeOfContent, Page | Block | Media]>;
+    contentStatusChanged$: Observable<[TypeOfContent, Page | Block | Media]>;
 
-  mediaFolderCreated$: Subject<Media> = new Subject<Media>();
-  mediaCreated$: Subject<Media> = new Subject<Media>();
+    private _blockFolderCreated$: Subject<Block> = new Subject<Block>();
+    private _blockCreated$: Subject<Block> = new Subject<Block>();
+    private _mediaFolderCreated$: Subject<Media> = new Subject<Media>();
+    private _mediaCreated$: Subject<Media> = new Subject<Media>();
+    private _pageCreated$: Subject<Page> = new Subject<Page>();
+    private _pageSelected$: Subject<Page> = new Subject<Page>();
+    private _contentSelected$: Subject<[TypeOfContent, Page | Block | Media]> = new Subject<[TypeOfContent, Page | Block | Media]>();
+    private _contentStatusChanged$: Subject<[TypeOfContent, Page | Block | Media]> = new Subject<[TypeOfContent, Page | Block | Media]>();
+    private _contentDropFinished$: Subject<Partial<ContentAreaItem>> = new Subject<Partial<ContentAreaItem>>();
+    private _portalLayoutChanged$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  pageCreated$: Subject<Page> = new Subject<Page>();
-  pageSelected$: Subject<Page> = new Subject<Page>();
+    constructor() {
+        this.blockFolderCreated$ = this._blockFolderCreated$.asObservable();
+        this.blockCreated$ = this._blockCreated$.asObservable();
+        this.mediaFolderCreated$ = this._mediaFolderCreated$.asObservable();
+        this.mediaCreated$ = this._mediaCreated$.asObservable();
+        this.pageCreated$ = this._pageCreated$.asObservable();
+        this.pageSelected$ = this._pageSelected$.asObservable();
+        this.contentSelected$ = this._contentSelected$.asObservable();
+        this.contentStatusChanged$ = this._contentStatusChanged$.asObservable();
+        this.contentDropFinished$ = this._contentDropFinished$.asObservable();
+        this.portalLayoutChanged$ = this._portalLayoutChanged$.asObservable();
+    }
 
-  contentDropFinished$: Subject<Partial<ContentAreaItem>> = new Subject<Partial<ContentAreaItem>>();
+    fireBlockFolderCreated(createdBlockFolder: Block) {
+        this._blockFolderCreated$.next(createdBlockFolder);
+    }
 
-  portalLayoutChanged$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    fireBlockCreated(createdBlock: Block) {
+        this._blockCreated$.next(createdBlock);
+    }
 
-  fireBlockFolderCreated(createdBlockFolder: Block) {
-    this.blockFolderCreated$.next(createdBlockFolder);
-  }
+    fireMediaFolderCreated(createdMediaFolder: Media) {
+        this._mediaFolderCreated$.next(createdMediaFolder);
+    }
 
-  fireBlockCreated(createdBlock: Block) {
-    this.blockCreated$.next(createdBlock);
-  }
+    fireMediaCreated(createdMedia: Media) {
+        this._mediaCreated$.next(createdMedia);
+    }
 
-  fireMediaFolderCreated(createdMediaFolder: Media) {
-    this.mediaFolderCreated$.next(createdMediaFolder);
-  }
+    firePageCreated(createdPage: Page) {
+        this._pageCreated$.next(createdPage);
+    }
 
-  fireMediaCreated(createdMedia: Media) {
-    this.mediaCreated$.next(createdMedia);
-  }
+    firePageSelected(selectedPage: Page) {
+        this._pageSelected$.next(selectedPage);
+    }
 
-  firePageCreated(createdPage: Page) {
-    this.pageCreated$.next(createdPage);
-  }
+    fireContentSelected(type: TypeOfContent, selectedContent: Page | Block | Media) {
+        this._contentSelected$.next([type, selectedContent]);
+    }
 
-  firePageSelected(selectedPage: Page) {
-    this.pageSelected$.next(selectedPage);
-  }
+    fireContentStatusChanged(type: TypeOfContent, selectedContent: Page | Block | Media) {
+        this._contentStatusChanged$.next([type, selectedContent]);
+    }
 
-  fireContentDropFinished(contentAreaItem: Partial<ContentAreaItem>) {
-    this.contentDropFinished$.next(contentAreaItem);
-  }
+    fireContentDropFinished(contentAreaItem: Partial<ContentAreaItem>) {
+        this._contentDropFinished$.next(contentAreaItem);
+    }
+
+    firePortalLayoutChanged(isLayoutChanging: boolean) {
+        this._portalLayoutChanged$.next(isLayoutChanging);
+    }
 }

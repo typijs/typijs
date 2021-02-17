@@ -1,4 +1,7 @@
-import { Directive, ElementRef, HostListener, Input, Output, EventEmitter, OnInit, HostBinding, Renderer2, NgZone, OnDestroy, ViewChild } from '@angular/core';
+import {
+    Directive, ElementRef, EventEmitter, HostBinding, HostListener,
+    Input, NgZone, OnDestroy, Output, Renderer2, ViewChild
+} from '@angular/core';
 import { DndService } from '../dnd.service';
 import { DragHandle } from './drag-handle.directive';
 
@@ -24,7 +27,7 @@ export class Draggable implements OnDestroy {
     /**
      * Defines compatible drag drop pairs. Values must match both in draggable and droppable.dropScope.
      */
-    @Input() dragScope: string | Array<string> = 'default';
+    @Input() dragScope: string | string[] = 'default';
 
     /**
      * CSS class applied on the source draggable element while being dragged.
@@ -39,41 +42,44 @@ export class Draggable implements OnDestroy {
     /**
      * The url to image that will be used as custom drag image when the draggable is being dragged.
      */
-    @Input() set dragImage(value: string) {
+    @Input()
+    get dragImage() {
+        return this._dragImage;
+    }
+    set dragImage(value: string) {
         this._dragImage = value;
         this.dragImageElement = new Image();
         this.dragImageElement.src = this.dragImage;
-    }
-
-    get dragImage() {
-        return this._dragImage;
     }
 
     /**
      * Defines if drag is enabled. `true` by default.
      */
     @HostBinding('draggable')
-    @Input() set dragEnabled(value: boolean) {
-        this._dragEnabled = value;
-    };
-
+    @Input()
     get dragEnabled() {
         return this._dragEnabled;
+    }
+    set dragEnabled(value: boolean) {
+        this._dragEnabled = value;
     }
 
     /**
      * Event fired when Drag is started
      */
+    // tslint:disable-next-line: no-output-on-prefix
     @Output() onDragStart: EventEmitter<any> = new EventEmitter();
 
     /**
      * Event fired while the element is being dragged
      */
+    // tslint:disable-next-line: no-output-on-prefix
     @Output() onDrag: EventEmitter<any> = new EventEmitter();
 
     /**
      * Event fired when drag ends
      */
+    // tslint:disable-next-line: no-output-on-prefix
     @Output() onDragEnd: EventEmitter<any> = new EventEmitter();
 
     /**
@@ -135,7 +141,7 @@ export class Draggable implements OnDestroy {
 
             e.stopPropagation();
             this.onDragStart.emit(e);
-            this.dndService.onDragStart.next();
+            this.dndService.dragStart$.next();
 
             this.zone.runOutsideAngular(() => {
                 this.unbindDragListener = this.renderer.listen(this.hostElement.nativeElement, 'drag', (dragEvent) => {
@@ -155,7 +161,7 @@ export class Draggable implements OnDestroy {
     dragEnd(e: Event) {
         this.unbindDragListeners();
         this.renderer.removeClass(this.hostElement.nativeElement, this.dragClass);
-        this.dndService.onDragEnd.next();
+        this.dndService.dragEnd$.next();
         this.onDragEnd.emit(e);
         e.stopPropagation();
         e.preventDefault();

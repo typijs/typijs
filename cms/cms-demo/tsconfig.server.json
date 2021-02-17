@@ -2,7 +2,7 @@
   "extends": "./tsconfig.app.json",
   "compilerOptions": {
     "outDir": "../out-tsc/app-server",
-    "module": "commonjs"
+    "target": "es2016"
   },
   "files": [
     "src/main.server.ts"
@@ -10,5 +10,8 @@
   "angularCompilerOptions": {
     "entryModule": "./src/app/app.server.module#AppServerModule",
     "fullTemplateTypeCheck": false
-  }
+  },
+  "include": [
+    "cms-demo/src/**/*.d.ts"
+  ]
 }
