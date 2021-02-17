@@ -1,23 +1,25 @@
-import { ADMIN_WIDGETS, CmsWidgetPosition, CoreModule, EDITOR_ROUTES, EDITOR_WIDGETS } from '@angular-cms/core';
+import { CmsWidgetPosition, CoreModule, EDITOR_ROUTES, EDITOR_WIDGETS } from '@angular-cms/core';
 import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
-import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faFile, faFolder, faPlus, faSitemap } from '@fortawesome/free-solid-svg-icons';
-import { ContentFormEditComponent } from '../content/content-form-edit/content-form-edit.component';
-import { CONTENT_FORM_SERVICES } from '../content/content-form.service';
-import { ContentTypeListComponent } from '../content/content-type-list/content-type-list.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { ContentUpdateComponent } from '../content/content-update/content-update.component';
+import { CONTENT_CRUD_SERVICES } from '../content/content-crud.service';
+import { ContentCreateComponent } from '../content/content-create/content-create.component';
 import { DndModule } from '../shared/drag-drop/dnd.module';
 import { TreeModule } from '../shared/tree/tree.module';
-import { PageFormService } from './page-form.service';
-import { PageTreeReadonlyComponent } from './page-tree-readonly.component';
+import { PageCrudService } from './page-crud.service';
 import { PageTreeComponent } from './page-tree.component';
+import { CONTENT_VERSION_SERVICES } from '../content-version/content-version.service';
+import { PageVersionService } from './page-version.service';
+import { DefaultPageComponent } from './default-page.component';
 
 const pageRoutes: Routes = [
-    { path: `new/page`, component: ContentTypeListComponent },
-    { path: `new/page/:parentId`, component: ContentTypeListComponent },
-    { path: `content/page/:id`, component: ContentFormEditComponent }
+    { path: '', component: DefaultPageComponent },
+    { path: `new/page`, component: ContentCreateComponent },
+    { path: `new/page/:parentId`, component: ContentCreateComponent },
+    { path: `content/page/:id`, component: ContentUpdateComponent }
 ];
 
 @NgModule({
@@ -33,35 +35,20 @@ const pageRoutes: Routes = [
         DndModule
     ],
     declarations: [
+        DefaultPageComponent,
         PageTreeComponent,
-        PageTreeReadonlyComponent
-    ],
-    entryComponents: [
-        PageTreeComponent,
-        PageTreeReadonlyComponent
     ]
 })
 export class PageModule {
-    constructor(library: FaIconLibrary) {
-        library.addIcons(faFolder, faSitemap, faFile, faPlus);
-    }
-
     static forRoot(): ModuleWithProviders<PageModule> {
         return {
             ngModule: PageModule,
             providers: [
-                { provide: CONTENT_FORM_SERVICES, useClass: PageFormService, multi: true },
+                { provide: CONTENT_CRUD_SERVICES, useClass: PageCrudService, multi: true },
+                { provide: CONTENT_VERSION_SERVICES, useClass: PageVersionService, multi: true },
                 { provide: EDITOR_ROUTES, useValue: pageRoutes, multi: true },
                 {
-                    provide: EDITOR_WIDGETS, useValue: [
-                        { group: 'Pages', position: CmsWidgetPosition.Left, component: PageTreeComponent }
-                    ],
-                    multi: true
-                },
-                {
-                    provide: ADMIN_WIDGETS, useValue: [
-                        { group: 'Pages', position: CmsWidgetPosition.Right, component: PageTreeReadonlyComponent }
-                    ],
+                    provide: EDITOR_WIDGETS, useValue: { group: 'Pages', position: CmsWidgetPosition.Left, component: PageTreeComponent, order: 10 },
                     multi: true
                 }
             ]

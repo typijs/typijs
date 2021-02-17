@@ -76,14 +76,14 @@ export class CmsLayoutComponent implements OnInit {
     }
 
     onDragEnd(eventData: { gutterNum: number, sizes: number[] }) {
-        this.subjectService.portalLayoutChanged$.next(false);
+        this.subjectService.firePortalLayoutChanged(false);
         // Set size for all visible columns
-        this.layoutConfig.panels.filter(x => x.visible == true).forEach((row, index) => row.size = eventData.sizes[index]);
+        this.layoutConfig.panels.filter(x => x.visible === true).forEach((row, index) => row.size = eventData.sizes[index]);
         this.saveLocalStorage();
     }
 
     onDragStart() {
-        this.subjectService.portalLayoutChanged$.next(true);
+        this.subjectService.firePortalLayoutChanged(true);
     }
 
     private saveLocalStorage() {

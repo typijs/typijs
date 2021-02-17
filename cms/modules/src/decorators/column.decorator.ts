@@ -1,8 +1,6 @@
 import 'reflect-metadata';
 import { Property, PropertyMetadata } from '@angular-cms/core';
 
-
-
 export interface ColumnMetadata extends PropertyMetadata {
     sort?: boolean;
     editable?: boolean;
@@ -16,6 +14,6 @@ export interface ColumnMetadata extends PropertyMetadata {
  * https://www.typescriptlang.org/docs/handbook/decorators.html#decorator-factories
  * @param metadata
  */
-export function Column(metadata: ColumnMetadata): PropertyDecorator {
+export function Column(metadata?: ColumnMetadata): PropertyDecorator {
     return Property(metadata);
 }

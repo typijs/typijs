@@ -79,10 +79,11 @@ export class TokenService extends BaseService<ITokenDocument>{
      */
     private generateToken = (user: IUserDocument, expiry: moment.Moment, secret: jwt.Secret = config.jwt.secret): string => {
         const payload: TokenPayload = {
-            roles: user.roles,
             sub: user.id,
             iat: moment().unix(),
             exp: expiry.unix(),
+            username: user.username,
+            roles: user.roles
         };
         return jwt.sign(payload, secret);
     };
@@ -97,13 +98,13 @@ export class TokenService extends BaseService<ITokenDocument>{
      * @returns {Promise<Token>}
      */
     private saveToken = (token: string, userId: string, expiry: moment.Moment, type: TokenType, blacklisted: boolean = false): Promise<ITokenDocument> => {
-        const tokenDoc: ITokenDocument = this.createModel({
+        const tokenDoc: Partial<ITokenDocument> = {
             token,
             user: userId,
             expiry: expiry.toDate(),
             type,
             blacklisted,
-        });
-        return tokenDoc.save();
+        };
+        return this.create(tokenDoc);
     };
 }

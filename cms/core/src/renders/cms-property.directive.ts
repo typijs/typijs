@@ -8,6 +8,19 @@ import { CmsPropertyRenderFactoryResolver } from './property-render.factory';
 import { InsertPointDirective } from './insert-point.directive';
 import { PropertyDirectiveBase } from './property-directive.base';
 
+/**
+ * The component to render property on content template.
+ * This component will be used as a structure directive
+ *
+ * Note: Don't use this in ng-container as below
+ * `<ng-container [cmsProperty]="getProperty('header')"></ng-container>
+ *
+ * How usage:
+ * ```html
+ * <h3 [cmsProperty]="getProperty('header')"></h3>
+ * <div [cmsProperty]="getProperty('summary')"></div>
+ * ```
+ */
 @Component({
     selector: '[cmsProperty]',
     exportAs: 'cmsProperty',
@@ -16,20 +29,9 @@ import { PropertyDirectiveBase } from './property-directive.base';
 })
 export class CmsPropertyDirective extends PropertyDirectiveBase implements OnInit, OnDestroy {
 
-    @ViewChild(InsertPointDirective, { static: true }) pageEditHost: InsertPointDirective;
+    @ViewChild(InsertPointDirective, { static: true, read: ViewContainerRef }) viewContainerRef: ViewContainerRef;
 
-    ngEditMode: boolean = false;
-
-    @Input('cmsProperty')
-    get model(): PropertyModel {
-        return this._model;
-    }
-    set model(value: PropertyModel) {
-        this._model = value;
-
-    }
-    private _model: PropertyModel;
-    private viewContainerRef: ViewContainerRef;
+    @Input('cmsProperty') model: PropertyModel;
     private componentRefs: ComponentRef<any>[] = [];
 
     constructor(
@@ -41,7 +43,6 @@ export class CmsPropertyDirective extends PropertyDirectiveBase implements OnIni
 
     ngOnInit() {
         super.ngOnInit();
-        this.viewContainerRef = this.pageEditHost.viewContainerRef;
         this.viewContainerRef.clear();
         this.renderProperty();
     }

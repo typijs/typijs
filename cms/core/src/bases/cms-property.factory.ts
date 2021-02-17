@@ -2,13 +2,12 @@ import { Injectable, ComponentFactoryResolver, ComponentRef, InjectionToken, Inj
 import { FormGroup } from '@angular/forms';
 
 import { CmsProperty } from './cms-property';
-import { ClassOf } from '../types';
+import { ClassOf, TypeOfContent } from '../types';
 import { ContentTypeProperty } from '../types/content-type';
 import { UIHint } from '../types/ui-hint';
 import { Content, ChildItemRef } from '../services/content/models/content.model';
 import { PAGE_TYPE, BLOCK_TYPE, FOLDER_BLOCK, MEDIA_TYPE, FOLDER_MEDIA } from '../constants';
 
-export type TypeOfContent = 'page' | 'block' | 'media' | 'folder_block' | 'folder_media' | string;
 // https://stackoverflow.com/questions/51824125/injection-of-multiple-instances-in-angular
 export const PROPERTY_FACTORIES: InjectionToken<CmsPropertyFactory[]> = new InjectionToken<CmsPropertyFactory[]>('PROPERTY_FACTORIES');
 // tslint:disable-next-line: max-line-length
@@ -97,14 +96,13 @@ export class CmsPropertyFactoryResolver {
         }
 
         lastIndex = this.defaultPropertyFactories.map(x => x.isMatching(uiHint)).lastIndexOf(true);
-        if (lastIndex === -1) { throw new Error(`The CMS can not resolve the Property Factor for the property with UIHint of ${uiHint}`); }
-        if (lastIndex === -1) {
-            // tslint:disable-next-line: no-console
-            console.warn(`The CMS can not resolve the Property Factor for the property with UIHint of ${uiHint}.\n
-            The default Text Factory will be returned`);
-            lastIndex = this.defaultPropertyFactories.map(x => x.isMatching(UIHint.Text)).lastIndexOf(true);
-            return this.defaultPropertyFactories[lastIndex];
-        }
+        if (lastIndex !== -1) { return this.defaultPropertyFactories[lastIndex]; }
+
+        // Fallback to Text Property factory
+        // tslint:disable-next-line: no-console
+        console.warn(`The CMS can not resolve the Property Factory for the property with UIHint of ${uiHint}.\nThe default Text Factory will be returned`);
+        lastIndex = this.defaultPropertyFactories.map(x => x.isMatching(UIHint.Text)).lastIndexOf(true);
+        if (lastIndex === -1) { throw new Error(`The CMS can not resolve the Property Factory for the property with UIHint of ${UIHint.Text}`); }
 
         return this.defaultPropertyFactories[lastIndex];
     }

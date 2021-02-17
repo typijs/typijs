@@ -1,18 +1,14 @@
-import { Component, Input } from '@angular/core';
-import { BsModalService } from 'ngx-bootstrap/modal';
-import { takeUntil } from 'rxjs/operators';
-
-import { ModalComponent } from '../../shared/modal.component';
+import { Component } from '@angular/core';
+import { BsModalRef } from 'ngx-bootstrap/modal';
 import { TreeNode } from '../../shared/tree/interfaces/tree-node';
 import { UploadProgress, UploadService } from './upload.service';
 
 @Component({
     selector: 'file-modal',
     template: `
-    <ng-template #modalTemplate>
         <div class="modal-header">
-            <h4 class="modal-title">Upload To {{targetFolder?.name}}</h4>
-            <button type="button" class="close pull-right" aria-label="Close" (click)="hideModal()">
+            <h4 class="modal-title">Upload To {{uploadFolder?.name}}</h4>
+            <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
@@ -21,15 +17,15 @@ import { UploadProgress, UploadService } from './upload.service';
                 <div class="custom-file col-5">
                     <input type="file" id="modalInputFile" class="custom-file-input" multiple
                         cmsFileSelect
-                        (fileSelected)="filesSelected($event)"/>
+                        (fileSelected)="onUploadFiles($event)"/>
                     <label class="custom-file-label" for="modalInputFile">Choose files</label>
                 </div>
                 <span class="align-middle"> Or drop files here</span>
             </div>
             <div class="drop-zone" dragLeave>
-                <file-drop [uploadFieldName]='"files"' [targetFolder]="targetFolder"></file-drop>
+                <file-drop (filesDropped)="onUploadFiles($event)"></file-drop>
             </div>
-            <table *ngIf="chooseFiles && chooseFiles.length > 0" class="table table-hover table-sm under-drop-area">
+            <table *ngIf="files && files.length > 0" class="table table-hover table-sm under-drop-area">
                 <thead>
                     <tr>
                         <th scope="col">Name</th>
@@ -38,23 +34,25 @@ import { UploadProgress, UploadService } from './upload.service';
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let file of chooseFiles">
+                    <tr *ngFor="let file of files">
                         <td><div>{{file.name}}</div></td>
                         <td><div>{{file.size/1000}}</div></td>
                         <td>
                             <progressbar
-                                *ngIf="progress"
+                                *ngIf="uploadProgress"
                                 [animate]="true"
-                                [value]="progress[file.name].progress | async">
-                                <b>{{progress[file.name].progress | async}}%</b>
+                                [value]="uploadProgress[file.name].progress | async">
+                                <b>{{uploadProgress[file.name].progress | async}}%</b>
                             </progressbar>
                         </td>
                     </tr>
                 </tbody>
             </table>
-            <div *ngIf="!chooseFiles || chooseFiles.length == 0" class="drop-zone-fake under-drop-area"></div>
+            <div *ngIf="!files || files.length == 0" class="drop-zone-fake under-drop-area"></div>
         </div>
-    </ng-template>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">Close</button>
+        </div>
     `,
     styles: [`
 
@@ -85,34 +83,17 @@ import { UploadProgress, UploadService } from './upload.service';
     `]
 })
 
-export class FileModalComponent extends ModalComponent {
-    @Input() targetFolder: Partial<TreeNode>;
-    progress: UploadProgress;
-    chooseFiles: File[];
+export class FileModalComponent {
+    files: File[] = [];
+    uploadProgress: UploadProgress = {};
+    uploadFolder: Partial<TreeNode>;
 
-    constructor(modalService: BsModalService, private uploadService: UploadService) {
-        super(modalService);
-        this.config = {
-            ignoreBackdropClick: true
-        };
-        this.uploadService.fileUploadProgress$
-            .pipe(takeUntil(this.unsubscribe$))
-            .subscribe(data => {
-                this.targetFolder = data.folder;
-                this.progress = data.uploadProgress;
-                this.chooseFiles = data.files;
-                if (!this.isModalShown) { this.showModal(); }
-            });
-    }
+    constructor(private uploadService: UploadService, public bsModalRef: BsModalRef) { }
 
-    filesSelected(files: File[]) {
-        this.uploadService.uploadFiles(files, this.targetFolder);
-    }
-
-    openFileUploadModal(folder: Partial<TreeNode>) {
-        this.targetFolder = folder;
-        this.progress = {};
-        this.chooseFiles = [];
-        this.showModal();
+    onUploadFiles(files: File[]) {
+        this.uploadService.uploadFiles(files, this.uploadFolder).subscribe(result => {
+            this.files = this.files.concat(result.files);
+            this.uploadProgress = Object.assign(this.uploadProgress, result.uploadProgress);
+        });
     }
 }

@@ -1,20 +1,34 @@
+import { AngularCms } from '@angular-cms/core';
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-
-import { AngularCms } from '@angular-cms/core';
-
-import { HomeComponent } from './home/home.component';
+import { RouterModule } from '@angular/router';
+import { HeroBannerComponent } from '../shared/hero-banner/hero-banner.component';
 import { ArticleComponent } from './article/article.component';
 import { BlogComponent } from './blog/blog.component';
-import { PortfolioComponent } from './portfolio/portfolio.component';
-import { RouterModule } from '@angular/router';
+import { CartComponent } from './cart/cart.component';
+import { CheckoutComponent } from './checkout/checkout.component';
+import { ContactComponent } from './contact/contact.component';
+import { HomeComponent } from './home/home.component';
+import { ProductListingComponent } from './product/product-listing.component';
+import { ProductPartialComponent } from './product/product-partial.component';
+import { ProductComponent } from './product/product.component';
+import { StandardPageComponent } from './standard/standard.component';
+import { WishlistComponent } from './wishlist/wishlist.component';
 
 const PAGES_COMPONENT = [
-    HomeComponent,
     ArticleComponent,
     BlogComponent,
-    PortfolioComponent
+    ContactComponent,
+    HomeComponent,
+    ProductComponent,
+    ProductPartialComponent,
+    ProductListingComponent,
+    CartComponent,
+    CheckoutComponent,
+    WishlistComponent,
+    StandardPageComponent,
+    HeroBannerComponent
 ];
 
 @NgModule({
@@ -23,9 +37,6 @@ const PAGES_COMPONENT = [
         FormsModule,
         RouterModule,
         AngularCms
-    ],
-    entryComponents: [
-        ...PAGES_COMPONENT
     ],
     declarations: [
         ...PAGES_COMPONENT

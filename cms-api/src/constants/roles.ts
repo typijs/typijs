@@ -6,4 +6,4 @@ export enum Roles {
     Editor = 'Editor'
 }
 
-export const requiredAdminOrEditor = [[Roles.Admin], [Roles.Editor]];
+export const AdminOrEditor = [Roles.Admin, Roles.Editor];

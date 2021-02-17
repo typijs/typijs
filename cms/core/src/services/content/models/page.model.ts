@@ -1,11 +1,11 @@
 import { Content } from './content.model';
 
-export class Page extends Content {
+export interface Page extends Content {
+    // IPage
+    visibleInMenu: boolean;
+    // IPageLanguage
     urlSegment: string;
-    linkUrl: string;
-    publishedLinkUrl?: string;
+    simpleAddress: string;
 
-    isVisibleOnSite: boolean;
-    sortIndex: number;
-    childrenSortCriteria: string;
+    linkUrl: string;
 }

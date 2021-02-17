@@ -1,6 +1,7 @@
 import { Provider } from 'injection-js';
-import { CacheManager } from './cache.manager';
+import { CacheProvider, NodeCacheProvider } from './cache.provider';
 import { CacheService } from './cache.service';
 
-const CacheProviders: Provider[] = [CacheManager, CacheService]
-export { CacheManager, CacheService, CacheProviders }
+const CacheInjectorProviders: Provider[] = [CacheService, { provide: CacheProvider, useClass: NodeCacheProvider }]
+export { CacheProvider, CacheService, CacheInjectorProviders }
+export * from './cache.decorator';

@@ -1,18 +1,13 @@
+import { Component, ComponentRef, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import 'reflect-metadata';
-import { Component, ComponentFactoryResolver, ComponentRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-
-import { CmsComponent } from '../bases/cms-component';
+import { BrowserLocationService } from '../browser/browser-location.service';
 import { ngEditMode, ngId } from '../constants';
-import { ContentTypeMetadata } from '../decorators/content-type.decorator';
-import { clone } from '../helpers/common';
-import { ContentTypeService } from '../services/content-type.service';
-import { PageData } from '../services/content/models/content-data';
 import { Page } from '../services/content/models/page.model';
 import { PageService } from '../services/content/page.service';
-import { ContentTypeProperty } from '../types/content-type';
-import { UIHint } from '../types/ui-hint';
-import { BrowserLocationService } from '../browser/browser-location.service';
+import { TypeOfContentEnum } from '../types';
+import { CmsContentRenderFactoryResolver } from './content-render.factory';
 import { InsertPointDirective } from './insert-point.directive';
+
 
 @Component({
     selector: 'cms-page',
@@ -21,11 +16,10 @@ import { InsertPointDirective } from './insert-point.directive';
 export class CmsPageRender implements OnInit, OnDestroy {
 
     private pageComponentRef: ComponentRef<any>;
-    @ViewChild(InsertPointDirective, { static: true }) pageEditHost: InsertPointDirective;
+    @ViewChild(InsertPointDirective, { static: true, read: ViewContainerRef }) pageContainerRef: ViewContainerRef;
 
     constructor(
-        private componentFactoryResolver: ComponentFactoryResolver,
-        private contentTypeService: ContentTypeService,
+        private cmsContentRenderFactoryResolver: CmsContentRenderFactoryResolver,
         private locationService: BrowserLocationService,
         private pageService: PageService) { }
 
@@ -37,7 +31,7 @@ export class CmsPageRender implements OnInit, OnDestroy {
         // Step 5: Else get data by url
         const params = this.locationService.getURLSearchParams();
         if (params.get(ngEditMode) && params.get(ngId)) {
-            this.resolveContentDataById(params.get(ngId));
+            this.resolveContentDataById(params.get(ngId), params.get('versionId'), params.get('language'));
         } else {
             this.resolveContentDataByUrl();
         }
@@ -49,12 +43,10 @@ export class CmsPageRender implements OnInit, OnDestroy {
         }
     }
 
-    private resolveContentDataById(id: string) {
-        this.pageService.getContent(id).subscribe((currentPage: Page) => {
+    private resolveContentDataById(id: string, versionId: string, language: string) {
+        this.pageService.getContentVersion(id, versionId, language).subscribe((currentPage: Page) => {
             if (currentPage) {
-                const pageType = this.contentTypeService.getPageType(currentPage.contentType);
-                pageType.properties.forEach(property => this.populateReferenceProperty(currentPage, property));
-                this.pageComponentRef = this.createPageComponent(currentPage, pageType.metadata);
+                this.pageComponentRef = this.createPageComponent(currentPage);
             }
         });
     }
@@ -62,45 +54,16 @@ export class CmsPageRender implements OnInit, OnDestroy {
     private resolveContentDataByUrl() {
         const location = this.locationService.getLocation();
         const currentUrl = `${location.origin}${location.pathname}`;
-        this.pageService.getPublishedPage(currentUrl).subscribe((currentPage: Page) => {
+        this.pageService.getPageByLinkUrl(currentUrl).subscribe((currentPage: Page) => {
             if (currentPage) {
-                const pageType = this.contentTypeService.getPageType(currentPage.contentType);
-                pageType.properties.forEach(property => this.populateReferenceProperty(currentPage, property));
-                this.pageComponentRef = this.createPageComponent(currentPage, pageType.metadata);
+                this.pageComponentRef = this.createPageComponent(currentPage);
             }
         });
     }
 
-    private populateReferenceProperty(currentPage: Page, property: ContentTypeProperty): void {
-        if (!currentPage.properties) { return; }
-
-        const childItems = currentPage.publishedChildItems;
-        const fieldType = property.metadata.displayType;
-        switch (fieldType) {
-            case UIHint.ContentArea:
-                const fieldValue = currentPage.properties[property.name];
-                if (Array.isArray(fieldValue)) {
-                    for (let i = 0; i < fieldValue.length; i++) {
-                        const matchItem = childItems.find(x => x.content && x.content._id == fieldValue[i]._id);
-                        if (matchItem) {
-                            fieldValue[i] = clone(matchItem.content);
-                        }
-                    }
-                    currentPage.properties[property.name] = fieldValue;
-                }
-                break;
-        }
-    }
-
-    private createPageComponent(page: Page, pageMetadata: ContentTypeMetadata): ComponentRef<any> {
-        if (pageMetadata) {
-            const viewContainerRef = this.pageEditHost.viewContainerRef;
-            viewContainerRef.clear();
-
-            const pageFactory = this.componentFactoryResolver.resolveComponentFactory(pageMetadata.componentRef);
-            const pageComponentRef = viewContainerRef.createComponent(pageFactory);
-            (<CmsComponent<PageData>>pageComponentRef.instance).currentContent = new PageData(page);
-            return pageComponentRef;
-        }
+    private createPageComponent(page: Page): ComponentRef<any> {
+        this.pageContainerRef.clear();
+        const pageRenderFactory = this.cmsContentRenderFactoryResolver.resolveContentRenderFactory(TypeOfContentEnum.Page);
+        return pageRenderFactory.createContentComponent(page, this.pageContainerRef);
     }
 }

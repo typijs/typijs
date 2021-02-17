@@ -11,6 +11,9 @@ declare module '../shared/tree/interfaces/tree-node' {
         contentType: string;
         isPublished: boolean;
         linkUrl?: string;
+        alt?: string;
+        thumbnail?: string;
+        src?: string;
     }
 
     namespace TreeNode {
@@ -37,6 +40,9 @@ TreeNode.createInstanceFromContent = (content: Content, type: TypeOfContent): Tr
         type: type,
         contentType: content.contentType,
         isPublished: content.isPublished,
-        linkUrl: content.linkUrl
+        linkUrl: content['linkUrl'],
+        alt: content.name,
+        src: content['linkUrl'],
+        thumbnail: content['thumbnail'],
     });
 };

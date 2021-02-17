@@ -19,7 +19,8 @@ const CONTENT_AREA_VALUE_ACCESSOR: Provider = {
     template: `
             <div class="content-area border">
                 <div class="list-group p-2" droppable [dropScope]="isDropAllowed" (onDrop)="onDropItem($event)">
-                    <a class="list-group-item list-group-item-action rounded mb-1 p-2" href="javascript:void(0)"
+                    <a class="list-group-item list-group-item-action rounded mb-1 p-2"
+                        href="javascript:void(0)"
                         *ngFor="let item of model;"
                         draggable
                         [dragData]="item">
@@ -77,7 +78,7 @@ export class ContentAreaControl extends CmsControl {
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe((item: ContentAreaItem) => {
                 // Handle swap item between content area by drag and drop
-                if (item.owner == this.propertyName) {
+                if (item.owner === this.propertyName) {
                     this.removeItem(item);
                 }
             });
@@ -88,8 +89,9 @@ export class ContentAreaControl extends CmsControl {
     }
 
     isDropAllowed = (dragData) => {
-        if (!this.allowedTypes) { return true; }
-        const { contentType } = dragData;
+        const { contentType, type } = dragData;
+        if (!this.allowedTypes) { return contentType && type; }
+
         return this.allowedTypes.indexOf(contentType) > -1;
     }
 
@@ -114,14 +116,13 @@ export class ContentAreaControl extends CmsControl {
             isPublished: isPublished
         };
 
-        if (item.owner == this.propertyName) {
+        if (item.owner === this.propertyName) {
             // Sort item in content area by dnd
             const itemGuid = item.guid;
             // Insert new item
             this.insertItemToModel(itemIndex, item);
-            if (this.removeItemFromModel(itemGuid)) {
-                this.onChange(this._model);
-            }
+            this.removeItemFromModel(itemGuid);
+            this.onChange(this._model);
         } else {
             // Fire event to handle swap item between Content area
             if (item.owner && item.guid) { this.subjectService.fireContentDropFinished(item); }
@@ -139,7 +140,7 @@ export class ContentAreaControl extends CmsControl {
 
     private removeItemFromModel(itemGuid: string): boolean {
         const existIndex = this._model.findIndex(x => x.guid == itemGuid);
-        if (existIndex == -1) { return false; }
+        if (existIndex === -1) { return false; }
 
         this._model.splice(existIndex, 1);
         return true;

@@ -1,48 +1,38 @@
-import 'reflect-metadata';
+import * as Joi from '@hapi/joi';
 import * as express from 'express';
 import * as httpStatus from 'http-status';
 import { Injectable } from 'injection-js';
-
+import 'reflect-metadata';
+import { Profiler } from '../../logging';
+import { ValidateParams } from '../../validation/validate.decorator';
 import { ContentController } from '../content/content.controller';
-import { PageService } from './page.service';
-
-import { IPageDocument } from './models/page.model';
+import { IPageLanguageDocument } from './models/page-language.model';
 import { IPageVersionDocument } from './models/page-version.model';
-import { IPublishedPageDocument } from './models/published-page.model';
+import { IPageDocument } from './models/page.model';
+import { PageService, PageVersionService } from './page.service';
 
 @Injectable()
-export class PageController extends ContentController<IPageDocument, IPageVersionDocument, IPublishedPageDocument> {
+export class PageController extends ContentController<IPageDocument, IPageLanguageDocument, IPageVersionDocument> {
 
-  private pageService: PageService;
-  constructor(pageService: PageService) {
-    super(pageService);
-    this.pageService = pageService;
+  constructor(private pageService: PageService, pageVersionService: PageVersionService) {
+    super(pageService, pageVersionService);
   }
 
-  getByUrl = async (req: express.Request, res: express.Response) => {
+  /*------------------------PAGE-----------------------*/
+  @Profiler({
+    outputConsole: true,
+    thresholdInMs: 200,
+    parametersAsString: (args) => args[0].params.url
+  })
+  @ValidateParams({ url: Joi.string().required() })
+  async getByUrl(req: express.Request, res: express.Response) {
     const item = await this.pageService.getPublishedPageByUrl(req.params.url);
     res.status(httpStatus.OK).json(item);
   }
 
-  getPublishedPageChildren = async (req: express.Request, res: express.Response) => {
-    const items = await this.pageService.getPublishedPageChildren(req.params.parentId)
+  async getPageUrls(req: express.Request, res: express.Response) {
+    const { language } = req as any;
+    const items = await this.pageService.getPageUrls(req.body, language, req.query.host);
     res.status(httpStatus.OK).json(items);
-  }
-
-  getPageChildren = async (req: express.Request, res: express.Response, ) => {
-    const items = await this.pageService.getPageChildren(req.params.parentId)
-    res.status(httpStatus.OK).json(items);
-  }
-
-  //Override insert base
-  create = async (req: express.Request, res: express.Response) => {
-    const item = await this.pageService.executeCreatePageFlow(req.body)
-    res.status(httpStatus.OK).json(item)
-  }
-
-  update = async (req: express.Request, res: express.Response) => {
-    const pageDocument = this.pageService.createModel(req.body);
-    const savedPage = await this.pageService.updateAndPublishContent(req.params.id, pageDocument)
-    res.status(httpStatus.OK).json(savedPage)
   }
 }

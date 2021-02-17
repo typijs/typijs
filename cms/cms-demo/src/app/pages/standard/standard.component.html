@@ -1,0 +1,6 @@
+<hero-banner *ngIf="currentContent.heroImage" [image]="currentContent.heroImage.src" [text]="currentContent.header">
+</hero-banner>
+
+<div [cmsContentArea]="currentContent.topContent"></div>
+<div [cmsContentArea]="currentContent.mainContent"></div>
+<div [cmsContentArea]="currentContent.bottomContent"></div>

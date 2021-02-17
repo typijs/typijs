@@ -1,67 +1,76 @@
 <div class="cms-layout app">
-    <as-split gutterSize="4" unit="pixel" direction="vertical" (gutterClick)="toggleHeader()">
-        <!-- cms header -->
-        <as-split-area [size]="layoutConfig.headerSize" lockSize="true">
-            <cms-header>
-                <ng-template [cmsInsertPoint]="'top'"></ng-template>
-            </cms-header>
+  <as-split gutterSize="4" unit="pixel" direction="vertical" (gutterClick)="toggleHeader()">
+    <!-- cms header -->
+    <as-split-area [size]="layoutConfig.headerSize" lockSize="true">
+      <cms-header>
+        <ng-template [cmsInsertPoint]="'top'"></ng-template>
+      </cms-header>
+    </as-split-area>
+    <!-- cms main body -->
+    <as-split-area size="*">
+      <as-split unit="pixel" gutterSize="2" (dragStart)="onDragStart()" (dragEnd)="onDragEnd($event)">
+        <!-- cms left panel -->
+        <as-split-area [size]="layoutConfig.panels[0].size" order="1" [visible]="layoutConfig.panels[0].visible">
+          <tabset *ngIf="leftTabs && leftTabs.length > 0" class="tab-container-left">
+            <tab *ngFor="let tabz of leftTabs" [heading]="tabz.title">
+              <as-split direction="vertical" gutterSize="4">
+                <ng-container *ngFor="let empty of [].constructor(tabz.areas); let i = index">
+                  <as-split-area>
+                    <ng-template [cmsInsertPoint]="tabz.name"></ng-template>
+                  </as-split-area>
+                </ng-container>
+              </as-split>
+            </tab>
+          </tabset>
         </as-split-area>
-        <!-- cms main body -->
-        <as-split-area size="*">
-            <as-split unit="pixel" gutterSize="2" (dragStart)="onDragStart()" (dragEnd)="onDragEnd($event)">
-                <!-- cms left panel -->
-                <as-split-area [size]="layoutConfig.panels[0].size" order="1"
-                    [visible]="layoutConfig.panels[0].visible">
-                    <tabset *ngIf="leftTabs && leftTabs.length > 0" class="tab-container-left">
-                        <tab *ngFor="let tabz of leftTabs" [heading]="tabz.title">
-                            <ng-template [cmsInsertPoint]="tabz.name"></ng-template>
-                        </tab>
-                    </tabset>
-                </as-split-area>
-                <!-- end of cms left panel -->
-                <!-- cms main content -->
-                <as-split-area size="*" order="2">
-                    <as-split class="has-lock-area" gutterSize="0" unit="pixel" direction="vertical">
-                        <!-- header in main content -->
-                        <as-split-area size="40" lockSize="true">
-                            <div class='d-flex'>
-                                <button type="button" class="btn btn-sm btn-primary" (click)="toggleLeftPanel()">
-                                    <fa-icon *ngIf='layoutConfig.panels[0].visible' [icon]="['fas', 'chevron-left']">
-                                    </fa-icon>
-                                    <fa-icon *ngIf='!layoutConfig.panels[0].visible' [icon]="['fas', 'chevron-right']">
-                                    </fa-icon>
-                                </button>
-                                <button type="button" class="btn btn-sm btn-primary ml-auto"
-                                    (click)="toggleRightPanel()">
-                                    <fa-icon *ngIf='!layoutConfig.panels[2].visible' [icon]="['fas', 'chevron-left']">
-                                    </fa-icon>
-                                    <fa-icon *ngIf='layoutConfig.panels[2].visible' [icon]="['fas', 'chevron-right']">
-                                    </fa-icon>
-                                </button>
-                            </div>
-                        </as-split-area>
-                        <!-- header in main content -->
-                        <as-split-area size="*">
-                            <main class="main h-100">
-                                <ng-content></ng-content>
-                                <router-outlet></router-outlet>
-                            </main>
-                        </as-split-area>
-                    </as-split>
-                </as-split-area>
-                <!-- end of cms main content -->
-                <!-- cms right panel -->
-                <as-split-area [size]="layoutConfig.panels[2].size" order="3"
-                    [visible]="layoutConfig.panels[2].visible">
-                    <tabset *ngIf="rightTabs && rightTabs.length > 0" class="tab-container-right">
-                        <tab *ngFor="let tabz of rightTabs" [heading]="tabz.title">
-                            <ng-template [cmsInsertPoint]="tabz.name"></ng-template>
-                        </tab>
-                    </tabset>
-                </as-split-area>
-                <!-- end of cms right panel -->
-            </as-split>
+        <!-- end of cms left panel -->
+        <!-- cms main content -->
+        <as-split-area size="*" order="2">
+          <as-split class="has-lock-area" gutterSize="0" unit="pixel" direction="vertical">
+            <!-- header in main content -->
+            <as-split-area size="40" lockSize="true">
+              <div class='d-flex'>
+                <button type="button" class="btn btn-sm btn-primary" (click)="toggleLeftPanel()">
+                  <fa-icon *ngIf='layoutConfig.panels[0].visible' [icon]="['fas', 'chevron-left']">
+                  </fa-icon>
+                  <fa-icon *ngIf='!layoutConfig.panels[0].visible' [icon]="['fas', 'chevron-right']">
+                  </fa-icon>
+                </button>
+                <button type="button" class="btn btn-sm btn-primary ml-auto" (click)="toggleRightPanel()">
+                  <fa-icon *ngIf='!layoutConfig.panels[2].visible' [icon]="['fas', 'chevron-left']">
+                  </fa-icon>
+                  <fa-icon *ngIf='layoutConfig.panels[2].visible' [icon]="['fas', 'chevron-right']">
+                  </fa-icon>
+                </button>
+              </div>
+            </as-split-area>
+            <!-- header in main content -->
+            <as-split-area size="*">
+              <main class="main h-100">
+                <ng-content></ng-content>
+                <router-outlet></router-outlet>
+              </main>
+            </as-split-area>
+          </as-split>
         </as-split-area>
-        <!-- end of cms main body -->
-    </as-split>
+        <!-- end of cms main content -->
+        <!-- cms right panel -->
+        <as-split-area [size]="layoutConfig.panels[2].size" order="3" [visible]="layoutConfig.panels[2].visible">
+          <tabset *ngIf="rightTabs && rightTabs.length > 0" class="tab-container-right">
+            <tab *ngFor="let tabz of rightTabs" [heading]="tabz.title">
+              <as-split direction="vertical" gutterSize="4">
+                <ng-container *ngFor="let empty of [].constructor(tabz.areas); let i = index">
+                  <as-split-area>
+                    <ng-template [cmsInsertPoint]="tabz.name"></ng-template>
+                  </as-split-area>
+                </ng-container>
+              </as-split>
+            </tab>
+          </tabset>
+        </as-split-area>
+        <!-- end of cms right panel -->
+      </as-split>
+    </as-split-area>
+    <!-- end of cms main body -->
+  </as-split>
 </div>

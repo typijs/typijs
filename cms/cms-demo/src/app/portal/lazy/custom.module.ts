@@ -24,10 +24,6 @@ const customRoutes: Routes = [
     declarations: [
         CustomEntryComponent,
         CustomComponent
-    ],
-    entryComponents: [
-        CustomEntryComponent,
-        CustomComponent
     ]
 })
 export class CustomModule {
@@ -37,13 +33,11 @@ export class CustomModule {
             providers: [
                 { provide: ADMIN_ROUTES, useValue: customRoutes, multi: true },
                 {
-                    provide: ADMIN_WIDGETS, useValue: [
-                        {
+                    provide: ADMIN_WIDGETS, useValue: {
                             component: CustomEntryComponent,
                             position: CmsWidgetPosition.Left,
                             group: 'Test'
-                        }
-                    ],
+                        },
                     multi: true
                 }
             ]

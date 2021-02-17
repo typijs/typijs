@@ -1,15 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, ModuleWithProviders } from '@angular/core';
-import { CrudModule } from '../shared/crud/crud.module';
-import { ContentTypeListMenu } from './content-type-list';
-import { ContentTypePropertiesComponent } from './content-type-properties';
+import { CmsTableModule } from '../shared/table/table.module';
+import { ContentTypeListComponent } from './content-type-list.component';
+import { ContentTypeDetailComponent } from './content-type-detail.component';
 import { Routes, RouterModule } from '@angular/router';
 import { ADMIN_ROUTES, ADMIN_WIDGETS, CmsWidgetPosition, CoreModule } from '@angular-cms/core';
 
 const contentTypeRoutes: Routes = [
-    { path: `content-type/page/:name`, component: ContentTypePropertiesComponent },
-    { path: `content-type/block/:name`, component: ContentTypePropertiesComponent },
-    { path: `content-type/media/:name`, component: ContentTypePropertiesComponent }
+    { path: `content-type/page/:name`, component: ContentTypeDetailComponent },
+    { path: `content-type/block/:name`, component: ContentTypeDetailComponent },
+    { path: `content-type/media/:name`, component: ContentTypeDetailComponent }
 ];
 
 @NgModule({
@@ -17,10 +17,9 @@ const contentTypeRoutes: Routes = [
         CommonModule,
         RouterModule,
         CoreModule,
-        CrudModule
+        CmsTableModule
     ],
-    entryComponents: [ContentTypePropertiesComponent, ContentTypeListMenu],
-    declarations: [ContentTypePropertiesComponent, ContentTypeListMenu]
+    declarations: [ContentTypeDetailComponent, ContentTypeListComponent]
 })
 export class ContentTypeModule {
     static forRoot(): ModuleWithProviders<ContentTypeModule> {
@@ -29,13 +28,12 @@ export class ContentTypeModule {
             providers: [
                 { provide: ADMIN_ROUTES, useValue: contentTypeRoutes, multi: true },
                 {
-                    provide: ADMIN_WIDGETS, useValue: [
-                        {
-                            component: ContentTypeListMenu,
-                            position: CmsWidgetPosition.Left,
-                            group: 'Content Type'
-                        }
-                    ],
+                    provide: ADMIN_WIDGETS, useValue: {
+                        component: ContentTypeListComponent,
+                        position: CmsWidgetPosition.Left,
+                        group: 'Content Type',
+                        order: 10
+                    },
                     multi: true
                 }
             ]

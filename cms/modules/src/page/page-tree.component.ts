@@ -1,6 +1,6 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, distinctUntilKeyChanged, takeWhile } from 'rxjs/operators';
 
 import { Page, PageService } from '@angular-cms/core';
 import { TreeNode } from '../shared/tree/interfaces/tree-node';
@@ -12,6 +12,7 @@ import { PageTreeService } from './page-tree.service';
 import { SubscriptionDestroy } from '../shared/subscription-destroy';
 import { SubjectService } from '../shared/services/subject.service';
 import { TreeService } from '../shared/tree/interfaces/tree-service';
+import { CmsModalService } from '../shared/modal/modal.service';
 
 const PAGE_MENU_ACTION = {
     DeletePage: 'DeletePage',
@@ -20,6 +21,7 @@ const PAGE_MENU_ACTION = {
 
 @Component({
     template: `
+    <div class='position-relative'>
         <cms-tree
             class="tree-root pl-1 pt-2 d-block"
             [root]="root"
@@ -31,27 +33,29 @@ const PAGE_MENU_ACTION = {
                     <fa-icon class="mr-1" *ngIf="node.id == '0'" [icon]="['fas', 'sitemap']"></fa-icon>
                     <fa-icon class="mr-1" *ngIf="node.id != '0'" [icon]="['fas', 'file']"></fa-icon>
                     <span>{{node.name}}</span>
-                    <a role="button"
-                        class="btn btn-xs btn-secondary mr-1 float-right"
-                        href="javascript:void(0)"
-                        *ngIf="node.id == '0'" [routerLink]="['new/page']">
-                        <fa-icon [icon]="['fas', 'plus']"></fa-icon>
-                    </a>
                 </span>
             </ng-template>
         </cms-tree>
+        <a role="button"
+            class="btn btn-xs btn-secondary mt-2 mr-1 new-page-link"
+            href="javascript:void(0)"
+            [routerLink]="['new/page']">
+            <fa-icon [icon]="['fas', 'plus']"></fa-icon>
+        </a>
+    </div>
         `,
     styleUrls: ['./page-tree.scss'],
     providers: [PageTreeService, { provide: TreeService, useExisting: PageTreeService }]
 })
 export class PageTreeComponent extends SubscriptionDestroy implements OnInit {
-    @ViewChild(TreeComponent, { static: false }) cmsTree: TreeComponent;
+    @ViewChild(TreeComponent) cmsTree: TreeComponent;
 
     root: TreeNode;
     treeConfig: TreeConfig;
 
     constructor(
         private pageService: PageService,
+        private dialogService: CmsModalService,
         private subjectService: SubjectService,
         private router: Router,
         private route: ActivatedRoute) {
@@ -66,14 +70,17 @@ export class PageTreeComponent extends SubscriptionDestroy implements OnInit {
             .subscribe((createdPage: Page) => {
                 // Reload parent page
                 // Reload the children of parent to update the created page
-                this.cmsTree.selectNode({ id: createdPage._id, isNeedToScroll: true });
+                this.cmsTree.setSelectedNode({ id: createdPage._id, isNeedToScroll: true });
                 this.cmsTree.reloadSubTree(createdPage.parentId);
             });
 
         this.subjectService.pageSelected$
-            .pipe(takeUntil(this.unsubscribe$))
+            .pipe(
+                distinctUntilKeyChanged('_id'),
+                takeUntil(this.unsubscribe$)
+            )
             .subscribe((selectedPage: Page) => {
-                this.cmsTree.locateToSelectedNode(new TreeNode({
+                this.cmsTree.expandTreeToSelectedNode(new TreeNode({
                     id: selectedPage._id,
                     isNeedToScroll: true,
                     name: selectedPage.name,
@@ -107,10 +114,17 @@ export class PageTreeComponent extends SubscriptionDestroy implements OnInit {
 
     private pageDelete(nodeToDelete: TreeNode) {
         if (nodeToDelete.id == '0') { return; }
-        this.pageService.softDeleteContent(nodeToDelete.id).subscribe(([pageToDelete, deleteResult]: [Page, any]) => {
-            console.log(deleteResult);
-            this.cmsTree.selectNode({ id: pageToDelete.parentId, isNeedToScroll: true });
-            this.cmsTree.reloadSubTree(pageToDelete.parentId);
+
+        this.dialogService.confirm(`Delete the ${nodeToDelete.name}`, `Do you want to delete the page ${nodeToDelete.name}?`).pipe(
+            takeWhile(confirm => confirm)
+        ).subscribe(() => {
+            this.pageService.moveContentToTrash(nodeToDelete.id).subscribe((pageToDelete: Page) => {
+                if (pageToDelete.isDeleted) {
+                    // if the deleted node is selected then need to set the parent node is the new selected node
+                    if (nodeToDelete.isSelected) this.cmsTree.setSelectedNode({ id: pageToDelete.parentId, isNeedToScroll: true });
+                    this.cmsTree.reloadSubTree(pageToDelete.parentId);
+                }
+            });
         });
     }
 

@@ -1,4 +1,4 @@
-import { Input } from '@angular/core';
+import { AfterViewInit, InjectionToken, Input, Directive, InjectFlags } from '@angular/core';
 
 import { ContentData } from '../services/content/models/content-data';
 import { ContentTypeService } from '../services/content-type.service';
@@ -6,18 +6,27 @@ import { AppInjector } from '../utils/app-injector';
 import { PropertyModel, ContentTypeProperty } from '../types/content-type';
 import { PAGE_TYPE, BLOCK_TYPE } from '../constants';
 
-export abstract class CmsComponent<T extends ContentData> {
+/**
+ * A function that will be executed when an Page Component is initialized.
+ *
+ * The function can be return the promise
+ */
+export const PAGE_AFTER_INIT: InjectionToken<(() => void)[]> = new InjectionToken<(() => void)[]>('PAGE_AFTER_INIT');
+@Directive()
+export abstract class CmsComponent<T extends ContentData> implements AfterViewInit {
+
     @Input() currentContent: T;
     protected contentTypeService: ContentTypeService = AppInjector.get(ContentTypeService);
+    protected pageAfterInitFuncs: (() => void)[] = AppInjector.get(PAGE_AFTER_INIT, undefined, InjectFlags.Optional);
 
     getProperty<K extends keyof T>(propertyName: K): PropertyModel {
         const contentType = this.currentContent.contentType;
         const type = this.currentContent.type;
         let propertyInfo: ContentTypeProperty = null;
 
-        if (type == PAGE_TYPE) {
+        if (type === PAGE_TYPE) {
             propertyInfo = this.contentTypeService.getPageTypeProperty(contentType, propertyName.toString());
-        } else if (type == BLOCK_TYPE) {
+        } else if (type === BLOCK_TYPE) {
             propertyInfo = this.contentTypeService.getBlockTypeProperty(contentType, propertyName.toString());
         }
 
@@ -48,6 +57,16 @@ export abstract class CmsComponent<T extends ContentData> {
             value: this.currentContent[propertyName],
             property: propertyInfo
         };
+    }
+
+    ngAfterViewInit(): void {
+        const type = this.currentContent.type;
+        if (type === PAGE_TYPE && this.pageAfterInitFuncs) {
+            this.pageAfterInitFuncs.forEach(func => {
+                const result: any = func();
+                if (result instanceof Promise) { Promise.all([result]); }
+            });
+        }
     }
 
     /**

@@ -3,17 +3,13 @@ import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faDesktop, faExternalLinkAlt, faFileExport, faList, faSave } from '@fortawesome/free-solid-svg-icons';
-import 'reflect-metadata';
-import { PropertiesModule } from '../properties/properties.module';
-// import { CmsAngularSplitModule, CmsTabsModule } from '../shared/libs';
-import { CmsAngularSplitModule } from '../shared/libs/angular-split/module';
-import { CmsButtonsModule } from '../shared/libs/ngx-bootstrap/buttons.module';
-import { CmsTabsModule } from '../shared/libs/ngx-bootstrap/tabs.module';
-import { ContentFormEditComponent } from './content-form-edit/content-form-edit.component';
-import { ContentFormServiceResolver } from './content-form.service';
-import { ContentTypeListComponent } from './content-type-list/content-type-list.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { AngularSplitModule } from 'angular-split';
+import { TabsModule } from 'ngx-bootstrap/tabs';
+import { ButtonsModule } from 'ngx-bootstrap/buttons';
+import { ContentCreateComponent } from './content-create/content-create.component';
+import { ContentCrudServiceResolver } from './content-crud.service';
+import { ContentUpdateComponent } from './content-update/content-update.component';
 
 @NgModule({
     imports: [
@@ -23,35 +19,26 @@ import { ContentTypeListComponent } from './content-type-list/content-type-list.
         RouterModule,
         FontAwesomeModule,
 
-        CmsAngularSplitModule,
-        CmsButtonsModule,
-        CmsTabsModule,
+        AngularSplitModule,
+        ButtonsModule,
+        TabsModule,
 
-        CoreModule,
-        PropertiesModule,
+        CoreModule
     ],
     declarations: [
-        ContentFormEditComponent,
-        ContentTypeListComponent
+        ContentUpdateComponent,
+        ContentCreateComponent
     ],
     exports: [
-        ContentFormEditComponent,
-        ContentTypeListComponent
-    ],
-    entryComponents: [
-        ContentTypeListComponent,
-        ContentFormEditComponent
+        ContentUpdateComponent,
+        ContentCreateComponent
     ]
 })
 export class ContentModule {
-    constructor(library: FaIconLibrary) {
-        library.addIcons(faList, faDesktop, faSave, faFileExport, faExternalLinkAlt);
-    }
-
     static forRoot(): ModuleWithProviders<ContentModule> {
         return {
             ngModule: ContentModule,
-            providers: [ContentFormServiceResolver]
+            providers: [ContentCrudServiceResolver]
         };
     }
 }

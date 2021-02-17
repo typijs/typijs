@@ -1,4 +1,4 @@
-import { ContentTypeMetadata } from '../decorators/content-type.decorator';
+import { ContentTypeMetadata, PageTypeMetadata } from '../decorators/content-type.decorator';
 import { PropertyMetadata } from '../decorators/property.decorator';
 
 /**
@@ -17,7 +17,7 @@ export interface ContentTypeProperty {
 
 export type ContentType = {
     name: string
-    metadata: ContentTypeMetadata
+    metadata: ContentTypeMetadata & PageTypeMetadata
     properties: ContentTypeProperty[]
 };
 

@@ -37,6 +37,9 @@
       true,
       "object"
     ],
+    "deprecation": {
+      "severity": "warning"
+    },
     "no-duplicate-variable": true,
     "no-eval": true,
     "no-arg": true,

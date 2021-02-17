@@ -1,41 +1,58 @@
-import 'reflect-metadata';
 import { Router } from 'express';
 import { Injectable } from 'injection-js';
-
-import { requiredAdminOrEditor } from '../../constants/roles';
+import 'reflect-metadata';
 import { asyncRouterErrorHandler } from '../../error';
-import { validate } from '../../validation/validate.middleware';
-import { authGuard } from '../auth/auth.middleware';
-import { cutOrCopyContent, insertContent, requiredContentId } from '../content/content.validation';
-import { requiredParentId } from '../folder/folder.validation';
+import { LanguageGuard } from '../language';
 import { PageController } from './page.controller';
-import { requiredUrl } from './page.validation';
 
 @Injectable()
 export class PageRouter {
-    constructor(private pageController: PageController) { }
+    constructor(private pageController: PageController, private langGuard: LanguageGuard) { }
 
     get router(): Router {
         const page: Router = asyncRouterErrorHandler(Router());
 
-        //get published children of page
-        page.get('/published/children/:parentId', validate(requiredParentId), this.pageController.getPublishedPageChildren);
         //get published page by url
-        page.get('/published/:url', validate(requiredUrl), this.pageController.getByUrl);
+        page.get('/published/:url', this.pageController.getByUrl.bind(this.pageController));
         //get children of page
-        page.get('/children/:parentId', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredParentId), this.pageController.getPageChildren);
-        //get page details
-        page.get('/:id', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.pageController.get);
+        page.get('/children/:parentId', this.langGuard.checkEnabled(), this.pageController.getContentChildren.bind(this.pageController));
+
+        //get page without populate
+        page.get('/:id', this.langGuard.checkEnabled(), this.pageController.getContent.bind(this.pageController));
         //move page from parent to another one
-        page.post('/cut', authGuard.checkRoles(requiredAdminOrEditor), validate(cutOrCopyContent), this.pageController.cut);
+        page.post('/cut', this.pageController.cut.bind(this.pageController));
         //copy page from parent to another one
-        page.post('/copy', authGuard.checkRoles(requiredAdminOrEditor), validate(cutOrCopyContent), this.pageController.copy);
+        page.post('/copy', this.pageController.copy.bind(this.pageController));
+        //get page url
+        page.post('/getUrls', this.langGuard.checkEnabled(), this.pageController.getPageUrls.bind(this.pageController));
+        //get content items
+        page.post('/getContentItems', this.langGuard.checkEnabled(), this.pageController.getContentItems.bind(this.pageController));
+        //query contents
+        page.post('/query', this.langGuard.checkEnabled(), this.pageController.queryContent.bind(this.pageController));
         //create the page
-        page.post('/', authGuard.checkRoles(requiredAdminOrEditor), validate(insertContent), this.pageController.create);
-        //update pate
-        page.put('/:id', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.pageController.update);
-        //soft delete page
-        page.delete('/:id', authGuard.checkRoles(requiredAdminOrEditor), validate(requiredContentId), this.pageController.delete)
+        page.post('/', this.langGuard.checkEnabled(), this.pageController.createContent.bind(this.pageController));
+
+        //move to trash
+        page.put('/trash/:id', this.pageController.moveToTrash.bind(this.pageController));
+        //delete page
+        page.delete('/:id', this.pageController.deleteContent.bind(this.pageController))
+        return page;
+    }
+
+    get versionRouter(): Router {
+        const page: Router = asyncRouterErrorHandler(Router());
+        //get all versions of content
+        page.get('/list/:id', this.pageController.getAllVersionsOfContent.bind(this.pageController));
+        //get version detail
+        page.get('/:id', this.langGuard.checkEnabled(), this.pageController.getVersion.bind(this.pageController));
+        //update version
+        page.put('/:id', this.pageController.updateVersion.bind(this.pageController));
+        //set version is primary
+        page.put('/set-primary/:versionId', this.pageController.setVersionIsPrimary.bind(this.pageController));
+        //publish version
+        page.put('/publish/:id', this.pageController.publishVersion.bind(this.pageController));
+        //delete version
+        page.delete('/:versionId', this.pageController.deleteContent.bind(this.pageController))
         return page;
     }
 }

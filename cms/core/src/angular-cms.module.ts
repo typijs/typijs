@@ -23,6 +23,11 @@ import { ImageRenderFactory } from './renders/image/image-render';
 import { UrlRenderFactory } from './renders/url/url-render';
 import { UrlListRenderFactory } from './renders/url-list/url-list-render';
 import { ObjectListRenderFactory } from './renders/object-list/object-list-render';
+import { BlockRenderFactory, CONTENT_RENDERS, MediaRenderFactory, PagePartialRenderFactory, PageRenderFactory } from './renders/content-render.factory';
+import { CONTENT_SERVICE_PROVIDER } from './services/content/content-loader.service';
+import { PageService } from './services/content/page.service';
+import { MediaService } from './services/content/media.service';
+import { BlockService } from './services/content/block.service';
 
 /**
  * Re-export Core Module to used on client
@@ -43,6 +48,7 @@ export class AngularCms {
                 { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
                 { provide: EVENT_MANAGER_PLUGINS, useClass: UndetectedEventPlugin, multi: true },
                 { provide: RouteReuseStrategy, useClass: CustomRouteReuseStrategy },
+                // Register Property Render Factories
                 { provide: DEFAULT_PROPERTY_RENDERS, useClass: ContentAreaRenderFactory, multi: true },
                 { provide: DEFAULT_PROPERTY_RENDERS, useClass: TextRenderFactory, multi: true },
                 { provide: DEFAULT_PROPERTY_RENDERS, useClass: TextareaRenderFactory, multi: true },
@@ -50,7 +56,16 @@ export class AngularCms {
                 { provide: DEFAULT_PROPERTY_RENDERS, useClass: ImageRenderFactory, multi: true },
                 { provide: DEFAULT_PROPERTY_RENDERS, useClass: UrlRenderFactory, multi: true },
                 { provide: DEFAULT_PROPERTY_RENDERS, useClass: UrlListRenderFactory, multi: true },
-                { provide: DEFAULT_PROPERTY_RENDERS, useClass: ObjectListRenderFactory, multi: true }
+                { provide: DEFAULT_PROPERTY_RENDERS, useClass: ObjectListRenderFactory, multi: true },
+                // Register Content Render Factories
+                { provide: CONTENT_RENDERS, useClass: PageRenderFactory, multi: true },
+                { provide: CONTENT_RENDERS, useClass: PagePartialRenderFactory, multi: true },
+                { provide: CONTENT_RENDERS, useClass: BlockRenderFactory, multi: true },
+                { provide: CONTENT_RENDERS, useClass: MediaRenderFactory, multi: true },
+                // Register Content Providers
+                { provide: CONTENT_SERVICE_PROVIDER, useClass: PageService, multi: true },
+                { provide: CONTENT_SERVICE_PROVIDER, useClass: MediaService, multi: true },
+                { provide: CONTENT_SERVICE_PROVIDER, useClass: BlockService, multi: true }
             ]
         };
     }

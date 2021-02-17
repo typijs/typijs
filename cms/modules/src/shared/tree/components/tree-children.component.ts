@@ -18,7 +18,6 @@ import { TreeBaseComponent } from './tree-base.component';
                 [templates]="templates"
                 (selectNode)="selectNode($event)"
                 (menuItemSelected)="menuItemSelected($event)"
-                (nodeOnBlur)="nodeOnBlur($event)"
                 (submitInlineNode)="submitInlineNode($event)"
                 (cancelInlineNode)="cancelInlineNode($event)">
             </tree-node>
@@ -28,7 +27,6 @@ import { TreeBaseComponent } from './tree-base.component';
                 [templates]="templates"
                 (selectNode)="selectNode($event)"
                 (menuItemSelected)="menuItemSelected($event)"
-                (nodeOnBlur)="nodeOnBlur($event)"
                 (submitInlineNode)="submitInlineNode($event)"
                 (cancelInlineNode)="cancelInlineNode($event)">
             </tree-children>
@@ -46,7 +44,7 @@ export class TreeChildrenComponent extends TreeBaseComponent implements OnInit {
     constructor(private treeStore: TreeStore) { super(); }
 
     ngOnInit() {
-        this.treeStore.getTreeNodesSubjectByKey$(this.root.id)
+        this.treeStore.getSubjectOfNodeChildren(this.root.id)
             .pipe(takeUntil(this.unsubscribe$))
             .subscribe((nodes: TreeNode[]) => {
                 // Trigger render the the sub tree
@@ -69,9 +67,15 @@ export class TreeChildrenComponent extends TreeBaseComponent implements OnInit {
             });
         });
 
-        this.treeStore.getTreeChildrenData(this.root.id).subscribe((nodeChildren: TreeNode[]) => {
-            this.treeStore.getTreeNodesSubjectByKey$(this.root.id).next(nodeChildren);
+        this.treeStore.getNodeChildren(this.root.id).subscribe((nodeChildren: TreeNode[]) => {
+            this.treeStore.getSubjectOfNodeChildren(this.root.id).next(nodeChildren);
         });
+    }
+
+    cancelInlineNode(cancelData: { parentNode: TreeNode, node: TreeNode }) {
+        if (!cancelData.parentNode) { cancelData.parentNode = this.root; }
+
+        this.cancelInlineNodeEvent.emit(cancelData);
     }
 
     private setExpandStateForNewNodeChildren(newNodes: TreeNode[]) {

@@ -8,6 +8,7 @@ export * from './bases/cms-property.factory';
 export * from './bases/selection-factory';
 export * from './cms';
 export * from './constants';
+export * from './constants/version-status';
 export * from './core.module';
 
 export * from './decorators/content-type.decorator';
@@ -43,19 +44,34 @@ export * from './renders/cms-property.directive';
 export * from './renders/property-render.factory';
 
 export * from './services/base.service';
+export * from './services/language.service';
 export * from './services/content-type.service';
 export * from './services/content/block.service';
 export * from './services/content/media.service';
+export * from './services/content/page.service';
+export * from './services/content/content-loader.service';
+export * from './services/site-definition';
+export * from './services/url-resolve.service';
+
 export * from './services/content/models/block.model';
 export * from './services/content/models/content-data';
 export * from './services/content/models/content.model';
 export * from './services/content/models/media.model';
 export * from './services/content/models/page.model';
-export * from './services/content/page.service';
 export * from './types';
+export * from './types/content-reference';
+export * from './types/image-reference';
 export * from './types/content-type';
 export * from './types/module-config';
 export * from './types/ui-hint';
+export * from './types/url-item';
+
 export * from './utils/app-injector';
 export * from './utils/route-reuse-strategy';
 export * from './utils/undetected.event';
+
+export * from './pipes/map.pipe';
+export * from './pipes/safe.pipe';
+export * from './pipes/to-img-src.pipe';
+export * from './pipes/to-page-url.pipe';
+export * from './pipes/call-function.pipe';

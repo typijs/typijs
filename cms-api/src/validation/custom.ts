@@ -3,7 +3,7 @@
  * 
  * Usage:
  * ```javascript
- * const Joi = require('@hapi/joi');
+ * const * as Joi from'@hapi/joi';
  * const { objectId } = require('./custom.validation');
  * 
  * Joi.object().keys({

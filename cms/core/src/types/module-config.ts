@@ -1,11 +1,3 @@
-import { Routes } from '@angular/router';
-import { CmsObject } from './index';
-
-export enum CmsModuleRoot {
-    Editor = 'Editor',
-    Admin = 'Admin'
-}
-
 export enum CmsWidgetPosition {
     Top,
     Left,
@@ -14,17 +6,8 @@ export enum CmsWidgetPosition {
 
 export type CmsComponentConfig = {
     component: any,
-    position: CmsWidgetPosition,
     group?: string
-};
-
-export type CmsRootConfig = {
-    name: CmsModuleRoot,
-    routes?: Routes,
-    widgets?: CmsComponentConfig[]
-};
-
-export type CmsModuleConfig = {
-    module: CmsObject,
-    roots: CmsRootConfig[],
+    order: number,
+    position: CmsWidgetPosition,
+    isSplit?: boolean
 };

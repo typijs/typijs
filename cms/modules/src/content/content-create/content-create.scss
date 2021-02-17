@@ -1,0 +1,16 @@
+/* Where magic happens */
+.content-type-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-gap: 15px;
+
+  .content-type-item {
+    cursor: pointer;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, .08), 0 0 6px rgba(0, 0, 0, .05);
+
+    &:hover {
+      transform: scale(1.02);
+      border-color: #20a8d8;
+    }
+  }
+}

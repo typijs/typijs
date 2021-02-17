@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 
 import { CmsPropertyFactoryResolver } from './bases/cms-property.factory';
-import { AbsolutePipe } from './pipes/absolute.pipe';
+import { ToImgSrcPipe } from './pipes/to-img-src.pipe';
 import { MapPipe } from './pipes/map.pipe';
 import { SafePipe } from './pipes/safe.pipe';
 import { CmsPropertyDirective } from './renders/cms-property.directive';
@@ -22,65 +22,58 @@ import { TextRenderDirective } from './renders/text/text-render-as-directive';
 import { UrlRenderDirective } from './renders/url/url-render.directive';
 import { UrlListRenderDirective } from './renders/url-list/url-list-render-as-directive';
 import { XHtmlRenderDirective } from './renders/xhtml/xhtml-render.directive';
+import { ToPageUrlPipe } from './pipes/to-page-url.pipe';
+import { CallFunctionPipe } from './pipes/call-function.pipe';
 
 export const PIPES = [
-    AbsolutePipe,
+    ToImgSrcPipe,
+    ToPageUrlPipe,
     MapPipe,
-    SafePipe
+    SafePipe,
+    CallFunctionPipe
 ];
+
+export const PROPERTY_DIRECTIVES = [
+    ContentAreaRenderDirective,
+    ImageRenderDirective,
+    TextRenderDirective,
+    XHtmlRenderDirective,
+    UrlRenderDirective,
+    UrlListRenderDirective
+];
+
+export const CORE_PROPERTY_RENDERS = [
+    ContentAreaPropertyRender,
+    ImagePropertyRender,
+    ObjectListPropertyRender,
+
+    TextPropertyRender,
+    XHtmlPropertyRender,
+    UrlPropertyRender,
+    UrlListPropertyRender
+];
+
 @NgModule({
     imports: [
         CommonModule
     ],
     declarations: [
         ...PIPES,
-        InsertPointDirective,
+        ...PROPERTY_DIRECTIVES,
+        ...CORE_PROPERTY_RENDERS,
         CmsPageRender,
+        InsertPointDirective,
         CmsPropertyDirective,
 
-        ContentAreaDirective,
-        ContentAreaRenderDirective,
-        ContentAreaPropertyRender,
-
-        ImageRenderDirective,
-        ImagePropertyRender,
-
-        ObjectListPropertyRender,
-
-        TextRenderDirective,
-        TextPropertyRender,
-
-        XHtmlRenderDirective,
-        XHtmlPropertyRender,
-
-        UrlPropertyRender,
-        UrlRenderDirective,
-
-        UrlListPropertyRender,
-        UrlListRenderDirective,
+        ContentAreaDirective
     ],
     exports: [
         ...PIPES,
-        ContentAreaRenderDirective,
-        ImageRenderDirective,
-        TextRenderDirective,
-        XHtmlRenderDirective,
-        UrlRenderDirective,
-        UrlListRenderDirective,
+        ...PROPERTY_DIRECTIVES,
 
         CmsPageRender,
         InsertPointDirective,
         CmsPropertyDirective
-    ],
-    entryComponents: [
-        ContentAreaPropertyRender,
-        ImagePropertyRender,
-        ObjectListPropertyRender,
-
-        TextPropertyRender,
-        XHtmlPropertyRender,
-        UrlPropertyRender,
-        UrlListPropertyRender,
     ]
 })
 export class CoreModule {

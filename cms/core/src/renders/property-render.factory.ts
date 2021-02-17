@@ -4,6 +4,7 @@ import { ClassOf } from '../types';
 import { ContentTypeProperty } from '../types/content-type';
 import { CmsPropertyRender } from './property-render';
 import { UIHint } from '../types/ui-hint';
+import { Content } from '../services/content/models/content.model';
 
 // https://stackoverflow.com/questions/51824125/injection-of-multiple-instances-in-angular
 // tslint:disable-next-line: max-line-length
@@ -36,6 +37,16 @@ export class CmsPropertyRenderFactory {
 
         return propertyComponent;
     }
+
+    /**
+     * Fill up the data for the reference property which need to be populated such as ContentArea
+     * @param contentData The current content
+     * @param property The property info
+     * @returns The value which is populated for reference property
+     */
+    getPopulatedReferenceProperty(contentData: Content, property: ContentTypeProperty): any {
+        return contentData.properties[property.name];
+    }
 }
 
 @Injectable({
@@ -54,12 +65,13 @@ export class CmsPropertyRenderFactoryResolver {
         }
 
         lastIndex = this.defaultPropertyRenderFactories.map(x => x.isMatching(uiHint)).lastIndexOf(true);
-        if (lastIndex === -1) {
-            // tslint:disable-next-line: max-line-length
-            console.warn(`The CMS can not resolve the Property Render Factor for the property with UIHint of ${uiHint}. The default Text Render will be returned`);
-            lastIndex = this.defaultPropertyRenderFactories.map(x => x.isMatching(UIHint.Text)).lastIndexOf(true);
-            return this.defaultPropertyRenderFactories[lastIndex];
-        }
+        if (lastIndex !== -1) { return this.defaultPropertyRenderFactories[lastIndex]; }
+
+        // Fallback to Text Property Render Factory
+        // tslint:disable-next-line: max-line-length
+        console.warn(`The CMS can not resolve the Property Render Factory for the property with UIHint of ${uiHint}.\nThe default Text Render will be returned`);
+        lastIndex = this.defaultPropertyRenderFactories.map(x => x.isMatching(UIHint.Text)).lastIndexOf(true);
+        if (lastIndex === -1) { throw new Error(`The CMS can not resolve the Property Factory for the property with UIHint of ${UIHint.Text}`); }
 
         return this.defaultPropertyRenderFactories[lastIndex];
     }

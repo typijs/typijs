@@ -1,11 +1,10 @@
-import { Component, Input, ElementRef, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
-
-import { TreeNode } from '../interfaces/tree-node';
 import { TreeConfig } from '../interfaces/tree-config';
 import { NodeMenuItemAction, TreeMenuItem } from '../interfaces/tree-menu';
-import { TreeBaseComponent } from './tree-base.component';
+import { TreeNode } from '../interfaces/tree-node';
 import { TreeStore } from '../tree-store';
+import { TreeBaseComponent } from './tree-base.component';
 
 @Component({
     selector: 'tree-node',
@@ -17,7 +16,7 @@ import { TreeStore } from '../tree-store';
         <span *ngIf="!node.hasChildren" class="no-children mr-2"></span>
         <span *ngIf="!(node.isNew || node.isEditing)"
             (click)="selectNode(node)"
-            [ngClass]="{'font-weight-bold': node.isSelected && node.id != '0'}">
+            [ngClass]="{'font-weight-bold': node.isSelected}">
             <span *ngIf="!templates?.treeNodeTemplate" >{{ node.name }}</span>
             <ng-container   [ngTemplateOutlet]="templates.treeNodeTemplate"
                             [ngTemplateOutletContext]="{ $implicit: node, node: node}">
@@ -27,9 +26,10 @@ import { TreeStore } from '../tree-store';
         <div *ngIf="node.isNew || node.isEditing" class="form-group row d-inline-block mb-2">
             <form class="form-inline" (ngSubmit)="submitInlineNode(node)" #inlineNodeForm="ngForm">
                 <div class="form-group mx-sm-3">
-                    <input type="text" required autofocus class="form-control form-control-sm"
-                    (blur)="nodeOnBlur(node)"
-                    [(ngModel)]="node.name" name="name" #name="ngModel"/>
+                    <input #nodeInlineInput type="text" class="form-control form-control-sm"
+                        required
+                        (blur)="nodeOnBlur(node)"
+                        [(ngModel)]="nodeName" name="name" #name="ngModel"/>
                 </div>
                 <button type="submit" class="btn btn-success btn-sm" [disabled]="!inlineNodeForm.form.valid">Save</button>
                 <button type="button" class="btn btn-default btn-sm" (click)="cancelInlineNode(node)">Cancel</button>
@@ -52,11 +52,21 @@ import { TreeStore } from '../tree-store';
     `
 })
 export class TreeNodeComponent extends TreeBaseComponent implements OnInit {
+    // https://netbasal.com/autofocus-that-works-anytime-in-angular-apps-68cb89a3f057
+    @ViewChild('nodeInlineInput', { static: false })
+    set nodeInlineInput(element: ElementRef<HTMLInputElement>) {
+        if (element) {
+            element.nativeElement.focus()
+        }
+    }
+
     @Input() node: TreeNode;
     @Input() config: TreeConfig;
     @Input() templates: any = {};
 
     menuItems: TreeMenuItem[];
+    nodeName: string;
+    private blurTimer: any;
 
     constructor(
         private treeStore: TreeStore,
@@ -71,12 +81,40 @@ export class TreeNodeComponent extends TreeBaseComponent implements OnInit {
                 if (scrollToNode.id == this.node.id) { this.scrollIntoNode(); }
             });
 
-        if (this.config) {
-            this.menuItems = this.config.menuItems;
+        if (this.config) { this.menuItems = this.config.menuItems; }
+        if (this.node) { this.nodeName = this.node.name; }
+    }
+
+    nodeOnBlur(node: TreeNode) {
+        this.blurTimer = setTimeout(() => {
+            if (this.nodeName) {
+                this.submitInlineNode(node);
+            } else {
+                this.cancelInlineNode(node);
+            }
+        }, 200);
+    }
+
+    submitInlineNode(node: TreeNode) {
+        if (this.blurTimer) clearTimeout(this.blurTimer);
+
+        const newName = this.nodeName ? this.nodeName.trim() : null;
+        if (newName && newName !== node.name) {
+            node.name = newName;
+            this.submitInlineNodeEvent.emit(node);
+        } else {
+            this.cancelInlineNode(node);
         }
     }
 
-    scrollIntoNode() {
+    cancelInlineNode(node: TreeNode) {
+        if (this.blurTimer) clearTimeout(this.blurTimer);
+
+        this.nodeName = node.name;
+        this.cancelInlineNodeEvent.emit({ parentNode: null, node });
+    }
+
+    private scrollIntoNode() {
         // scroll to middle of viewport
         this.hostElement.nativeElement.scrollIntoView({
             behavior: 'auto',
@@ -86,7 +124,7 @@ export class TreeNodeComponent extends TreeBaseComponent implements OnInit {
     }
 
     onMenuItemSelected(action: NodeMenuItemAction, node: TreeNode) {
-        this.menuItemSelected({ action: action, node: node });
+        this.menuItemSelected({ action, node });
     }
 
     onMenuOpenChange(isOpened: boolean, node: TreeNode): void {

@@ -1,22 +1,23 @@
-import { Input } from '@angular/core';
+import { Input, Directive } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 import { generateUUID } from '../helpers/common';
 import { ContentTypeProperty } from '../types/content-type';
 
+@Directive()
 export abstract class CmsProperty {
     @Input() label: string;
     @Input() propertyName: string;
     @Input() formGroup: FormGroup;
 
     @Input()
+    get property(): ContentTypeProperty {
+        return this._property;
+    }
     set property(value: ContentTypeProperty) {
         this._property = value;
         this.label = value ? value.metadata.displayName : '';
         this.propertyName = value ? value.name : '';
-    }
-    get property(): ContentTypeProperty {
-        return this._property;
     }
     private _property: ContentTypeProperty;
 

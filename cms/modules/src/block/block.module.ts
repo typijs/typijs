@@ -3,23 +3,24 @@ import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
-import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faBars, faCube, faCubes, faFolder, faFolderPlus, faPlus, faPlusSquare } from '@fortawesome/free-solid-svg-icons';
-import { ContentFormEditComponent } from '../content/content-form-edit/content-form-edit.component';
-import { CONTENT_FORM_SERVICES } from '../content/content-form.service';
-import { ContentTypeListComponent } from '../content/content-type-list/content-type-list.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { AngularSplitModule } from 'angular-split';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { CONTENT_VERSION_SERVICES } from '../content-version/content-version.service';
+import { ContentCreateComponent } from '../content/content-create/content-create.component';
+import { CONTENT_CRUD_SERVICES } from '../content/content-crud.service';
+import { ContentUpdateComponent } from '../content/content-update/content-update.component';
 import { DndModule } from '../shared/drag-drop/dnd.module';
-import { CmsAngularSplitModule } from '../shared/libs/angular-split/module';
-import { CmsBsDropdownModule } from '../shared/libs/ngx-bootstrap/bs-dropdown.module';
 import { TreeModule } from '../shared/tree/tree.module';
-import { BlockFormService } from './block-form.service';
+import { BlockCrudService } from './block-crud.service';
 import { BlockTreeComponent } from './block-tree.component';
+import { BlockVersionService } from './block-version.service';
 
 
 const blockRoutes: Routes = [
-    { path: `new/block`, component: ContentTypeListComponent },
-    { path: `new/block/:parentId`, component: ContentTypeListComponent },
-    { path: `content/block/:id`, component: ContentFormEditComponent }
+    { path: `new/block`, component: ContentCreateComponent },
+    { path: `new/block/:parentId`, component: ContentCreateComponent },
+    { path: `content/block/:id`, component: ContentUpdateComponent }
 ];
 
 @NgModule({
@@ -29,33 +30,30 @@ const blockRoutes: Routes = [
         ReactiveFormsModule,
         RouterModule,
         FontAwesomeModule,
-        CmsAngularSplitModule,
-        CmsBsDropdownModule,
+        AngularSplitModule,
+        BsDropdownModule,
         TreeModule,
         DndModule
     ],
     declarations: [
         BlockTreeComponent
-    ],
-    entryComponents: [
-        BlockTreeComponent
     ]
 })
 export class BlockModule {
-    constructor(library: FaIconLibrary) {
-        library.addIcons(faFolder, faCubes, faCube, faFolderPlus, faPlusSquare, faBars, faPlus);
-    }
-
     static forRoot(): ModuleWithProviders<BlockModule> {
         return {
             ngModule: BlockModule,
             providers: [
-                { provide: CONTENT_FORM_SERVICES, useClass: BlockFormService, multi: true },
+                { provide: CONTENT_CRUD_SERVICES, useClass: BlockCrudService, multi: true },
+                { provide: CONTENT_VERSION_SERVICES, useClass: BlockVersionService, multi: true },
                 { provide: EDITOR_ROUTES, useValue: blockRoutes, multi: true },
                 {
-                    provide: EDITOR_WIDGETS, useValue: [
-                        { group: 'Blocks', position: CmsWidgetPosition.Right, component: BlockTreeComponent }
-                    ],
+                    provide: EDITOR_WIDGETS, useValue: {
+                        group: 'Blocks',
+                        position: CmsWidgetPosition.Right,
+                        component: BlockTreeComponent,
+                        order: 10
+                    },
                     multi: true
                 }
             ]

@@ -1,4 +1,5 @@
-import { Property, PageType, UIHint, ValidationTypes, PageData, CmsImage } from '@angular-cms/core';
+import { CmsImage, PageType, Property, UIHint, ValidationTypes } from '@angular-cms/core';
+import { BasePage } from '../base.pagetype';
 import { ArticleComponent } from './article.component';
 
 @PageType({
@@ -6,7 +7,7 @@ import { ArticleComponent } from './article.component';
     componentRef: ArticleComponent,
     description: 'This is article page type'
 })
-export class ArticlePage extends PageData {
+export class ArticlePage extends BasePage {
 
     @Property({
         displayName: 'Title',
@@ -16,10 +17,16 @@ export class ArticlePage extends PageData {
     title: string;
 
     @Property({
-        displayName: 'Author',
-        displayType: UIHint.Text
+        displayName: 'Tags',
+        displayType: UIHint.Text,
     })
-    author: string;
+    tags: string;
+
+    @Property({
+        displayName: 'Author',
+        displayType: UIHint.ContentArea
+    })
+    author: any[];
 
     @Property({
         displayName: 'Image Teaser',

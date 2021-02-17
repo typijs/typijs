@@ -5,7 +5,6 @@ import { ngExpressEngine, RenderOptions } from '@nguniversal/express-engine';
 import * as express from 'express';
 import { join } from 'path';
 
-import { provideModuleMap } from '@nguniversal/module-map-ngfactory-loader';
 
 export function detectBot(userAgent: string): boolean {
     if (!userAgent) { return false; }
@@ -34,7 +33,24 @@ export function detectBot(userAgent: string): boolean {
     return false;
 }
 
-// The Express app is exported so that it can be used by serverless Functions.
+/**
+ * The Express app is exported so that it can be used by serverless Functions.
+ *
+ * Note:
+ *
+ * if you faced the problem in which there are the strange GET requests to /json and /json/version were sent by chrome inspector.
+ *
+ * So, the solution (in my case) is:
+ *
+ * Go to chrome://inspect.
+ *
+ * Click the link "Open dedicated DevTools for Node";
+ *
+ * Open Connection tab.
+ *
+ * Remove your endpoint from the list.
+ *
+ */
 export function app() {
     const server = express();
 
@@ -44,21 +60,15 @@ export function app() {
     server.engine('html', (_, options: RenderOptions, callback) => {
         const protocol = options.req.protocol;
         const host = options.req.get('host');
-
+        console.log('The current url ' + `${protocol}://${host}${options.req.originalUrl}`)
         const engine = ngExpressEngine({
             bootstrap: AppServerModuleNgFactory,
             providers: [
-                provideModuleMap(LAZY_MODULE_MAP),
                 { provide: 'APP_BASE_URL', useFactory: () => `${protocol}://${host}`, deps: [] },
             ]
         });
         engine(_, options, callback);
     });
-
-    // server.engine('html', ngExpressEngine({
-    //     bootstrap: AppServerModuleNgFactory,
-    //     providers: [provideModuleMap(LAZY_MODULE_MAP)]
-    // }));
 
     // register the template engine
     server.set('view engine', 'html');
@@ -84,6 +94,10 @@ export function app() {
             res.sendFile(join(distFolder, 'index.html'));
         }
     });
+
+    // server.get('*', (req, res) => {
+    //     res.render('index', { req, res });
+    // });
 
     return server;
 }

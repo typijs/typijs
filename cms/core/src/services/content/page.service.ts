@@ -1,35 +1,38 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable, Injector } from '@angular/core';
+import { convertObjectToUrlQueryString } from '../../helpers/common';
 import { Observable } from 'rxjs';
-
-import { Page } from './models/page.model';
-import { ContentService } from './content.service';
-import { BrowserLocationService } from '../../browser/browser-location.service';
 import { btoa } from '../../helpers/base64';
+import { TypeOfContentEnum } from '../../types';
+import { ContentService } from './content.service';
+import { PageData } from './models/content-data';
+import { Page } from './models/page.model';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class PageService extends ContentService<Page> {
+    protected apiUrl: string = `${this.baseApiUrl}/page`;
 
-  protected apiUrl: string = `${this.baseApiUrl}/page`;
-  constructor(
-    private locationService: BrowserLocationService,
-    httpClient: HttpClient) {
-    super(httpClient);
-  }
+    constructor(injector: Injector) {
+        super(injector);
+    }
 
-  getStartPage(hostName?: string): Observable<Page> {
-    const startPageUrl = hostName ? hostName : this.locationService.getLocation().origin;
-    return this.httpClient.get<Page>(`${this.apiUrl}/published/${btoa(startPageUrl)}`);
-  }
+    isMatching(typeOfContent: string) {
+        this.typeOfContent = typeOfContent;
+        return typeOfContent === TypeOfContentEnum.Page;
+    }
 
-  getPublishedPage(linkUrl: string): Observable<Page> {
-    return this.httpClient.get<Page>(`${this.apiUrl}/published/${btoa(linkUrl)}`);
-  }
+    getContentData(content: Page): PageData {
+        return new PageData(content);
+    }
 
-  getPublishedPageChildren(parentId: string): Observable<Page[]> {
-    return this.httpClient.get<Page[]>(`${this.apiUrl}/published/children/${parentId}`);
-  }
+    getPageByLinkUrl(linkUrl: string): Observable<Page> {
+        return this.httpClient.get<Page>(`${this.apiUrl}/published/${btoa(linkUrl)}`);
+    }
 
+    getPageUrls(pageIds: string[], language?: string): Observable<Page[]> {
+        const host = this.locationService.getLocation().host;
+        const query = convertObjectToUrlQueryString({ language, host });
+        return this.httpClient.post<Page[]>(`${this.apiUrl}/getUrls?${query}`, pageIds);
+    }
 }
