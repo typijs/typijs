@@ -32,18 +32,7 @@ export interface IPublishContent {
     publishedBy: string;
 }
 
-export interface IContent extends ISoftDeletedContent, IHierarchyContent {
-    contentType: string;
-    masterLanguageId: string;
-    contentLanguages: any[];
-    //not map to db
-    versionId: string; //contain corresponding version id
-}
-export interface IContentDocument extends IContent, IBaseDocument { }
-export interface IContentModel<T extends IContentDocument> extends IBaseModel<T> { }
-
 export interface IContentLanguage extends IPublishContent, IContentHasChildItems {
-    contentId: string | IContentDocument;
     language: string;
     versionId: string;
     name: string;
@@ -55,7 +44,16 @@ export interface IContentLanguage extends IPublishContent, IContentHasChildItems
     [key: string]: any;
 }
 export interface IContentLanguageDocument extends IContentLanguage, IBaseDocument { }
-export interface IContentLanguageModel<T extends IContentLanguageDocument> extends IBaseModel<T> { }
+
+export interface IContent extends ISoftDeletedContent, IHierarchyContent {
+    contentType: string;
+    masterLanguageId: string;
+    contentLanguages: Partial<IContentLanguageDocument>[];
+    //not map to db
+    versionId: string; //contain corresponding version id
+}
+export interface IContentDocument extends IContent, IBaseDocument { }
+export interface IContentModel<T extends IContentDocument> extends IBaseModel<T> { }
 
 export interface IContentVersion extends IPublishContent, IContentHasChildItems {
     contentId: string | IContentDocument;

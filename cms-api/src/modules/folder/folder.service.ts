@@ -1,17 +1,15 @@
 import { DocumentNotFoundException } from '../../error';
 import { slugify } from '../../utils';
-import { IContentDocument, IContentLanguageDocument, IContentLanguageModel, IContentModel } from "../content/content.model";
+import { IContentDocument, IContentLanguageDocument, IContentModel } from "../content/content.model";
 import { VersionStatus } from "../content/version-status";
 import { BaseService } from '../shared/base.service';
 
 export abstract class FolderService<T extends IContentDocument, P extends IContentLanguageDocument> extends BaseService<T>{
 
     protected readonly EMPTY_LANGUAGE: string = '0';
-    private folderLanguageService: BaseService<P>;
 
-    constructor(folderModel: IContentModel<T>, folderLanguageModel: IContentLanguageModel<P>) {
+    constructor(folderModel: IContentModel<T>) {
         super(folderModel);
-        this.folderLanguageService = new BaseService<P>(folderLanguageModel);
     }
 
     /**
@@ -25,50 +23,52 @@ export abstract class FolderService<T extends IContentDocument, P extends IConte
             contentType: null,
             properties: null,
             masterLanguageId: this.EMPTY_LANGUAGE,
+            contentLanguages: [],
             createdBy: userId
         });
+
+        //Step2: Create folder in default language
+        const folderLang: Partial<P> = {
+            language: this.EMPTY_LANGUAGE,
+            status: VersionStatus.Published,
+            startPublish: new Date(),
+            createdBy: userId
+        } as Partial<P>;
+
+        //Step3: Update content language array
+        contentFolder.contentLanguages.push(folderLang);
 
         const parentFolder = await this.findById(contentFolder.parentId).exec();
         const savedFolder = await this.createContent(contentFolder, parentFolder, userId);
         if (savedFolder) await this.updateHasChildren(parentFolder);
 
-        //Step2: Create folder in default language
-        const folderLang = this.folderLanguageService.createModel(contentFolder);
-        folderLang.contentId = savedFolder._id;
-        folderLang.language = this.EMPTY_LANGUAGE;
-        folderLang.status = VersionStatus.Published;
-        folderLang.startPublish = new Date();
-        folderLang.createdBy = userId;
-        const savedFolderLang = await folderLang.save();
-
-        //Step3: Update content language array
-        savedFolder.contentLanguages = [];
-        savedFolder.contentLanguages.push(savedFolderLang._id);
-        await savedFolder.save();
-
-        return this.mergeToContentLanguage(savedFolder, savedFolderLang);
+        return this.mergeToContentLanguage(savedFolder, folderLang);
     }
 
     /**
      * Update folder name of block or media folder
      */
-    public updateFolderName = async (id: string, name: string, userId: string): Promise<P> => {
-        const currentFolderLang = await this.folderLanguageService.findOne({ contentId: id } as any).exec();
-        if (!currentFolderLang) throw new DocumentNotFoundException(id);
+    public updateFolderName = async (id: string, name: string, userId: string): Promise<T & P> => {
+        const currentFolder = await this.findOne({ _id: id, contentLanguages: { $type: 'array', $ne: [] } } as any).exec();
+        if (!currentFolder) throw new DocumentNotFoundException(id);
 
-        currentFolderLang.name = name;
-        currentFolderLang.updatedBy = userId;
-        return this.folderLanguageService.updateById(currentFolderLang._id, currentFolderLang);
+        const currentLang = currentFolder.contentLanguages[0];
+        currentLang.name = name;
+        currentLang.updatedBy = userId;
+
+        const savedFolder = await currentFolder.save();
+        return this.mergeToContentLanguage(savedFolder, savedFolder.contentLanguages[0]);
     }
 
     public getFolderChildren = async (parentId: string): Promise<Array<T & P>> => {
         if (parentId == '0') parentId = null;
 
-        const folderChildren = await this.find({ parentId: parentId, isDeleted: false, contentType: null } as any, { lean: true })
-            .populate({
-                path: 'contentLanguages',
-                match: { language: this.EMPTY_LANGUAGE }
-            })
+        const folderChildren = await this.find({
+            parentId: parentId,
+            isDeleted: false,
+            contentType: null,
+            'contentLanguages.language': this.EMPTY_LANGUAGE
+        } as any, { lean: true })
             .exec();
 
         return folderChildren.map(x => {
@@ -77,7 +77,7 @@ export abstract class FolderService<T extends IContentDocument, P extends IConte
         })
     }
 
-    protected mergeToContentLanguage(content: T, contentLang: P): T & P {
+    protected mergeToContentLanguage(content: T, contentLang: Partial<IContentLanguageDocument>): T & P {
         const contentJson: T = content && typeof content.toJSON === 'function' ? content.toJSON() : content;
         const contentLangJson: P = contentLang && typeof contentLang.toJSON === 'function' ? contentLang.toJSON() : contentLang;
 
@@ -92,7 +92,6 @@ export abstract class FolderService<T extends IContentDocument, P extends IConte
         const contentLanguageData: T & P = Object.assign(contentLangJson ?? {} as any, contentJson);
 
         delete contentLanguageData.contentLanguages;
-        delete contentLanguageData.contentId;
         return contentLanguageData;
     }
 

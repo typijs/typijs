@@ -4,23 +4,20 @@ import { pick } from '../../utils';
 import { Validator } from '../../validation/validator';
 import { FolderService } from '../folder/folder.service';
 import { PaginateOptions, PaginateResult, QueryOptions } from '../shared/base.model';
-import { ContentLanguageService } from './content-language.service';
 import { ContentVersionService } from './content-version.service';
 import {
     IContentDocument,
     IContentLanguageDocument,
-    IContentLanguageModel, IContentModel, IContentVersionDocument,
+    IContentModel, IContentVersionDocument,
     IContentVersionModel
 } from './content.model';
 import { VersionStatus } from "./version-status";
 
 export class ContentService<T extends IContentDocument, P extends IContentLanguageDocument, V extends IContentVersionDocument> extends FolderService<T, P> {
-    protected contentLanguageService: ContentLanguageService<P>;
     protected contentVersionService: ContentVersionService<V>;
 
-    constructor(contentModel: IContentModel<T>, protected contentLanguageModel: IContentLanguageModel<P>, contentVersionModel: IContentVersionModel<V>) {
-        super(contentModel, contentLanguageModel);
-        this.contentLanguageService = new ContentLanguageService<P>(contentLanguageModel);
+    constructor(contentModel: IContentModel<T>, contentVersionModel: IContentVersionModel<V>) {
+        super(contentModel);
         this.contentVersionService = new ContentVersionService<V>(contentVersionModel);
     }
 
@@ -45,11 +42,7 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         const currentVersion = await this.contentVersionService.findOne(query, { lean: true })
             .populate({
                 path: 'childItems.content',
-                match: { isDeleted: false },
-                populate: {
-                    path: 'contentLanguages',
-                    match: { language: language }
-                }
+                match: { isDeleted: false, 'contentLanguages.language': language },
             }).exec();
 
         if (currentVersion.childItems) {
@@ -73,27 +66,28 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         Validator.throwIfNull('contentId', id);
 
         if (!language) { language = this.EMPTY_LANGUAGE };
-        const filter = { _id: id, isDeleted: false }
-        const populateMatch = statuses ? { language, status: { $in: statuses } } : { language };
+        const arrayLanguagesFilter = statuses ? { language, status: { $in: statuses } } : { language };
+        const filter = { _id: id, isDeleted: false, contentLanguages: { $elemMatch: arrayLanguagesFilter } }
 
-        let queryBuilder = this.findOne(filter as any, { lean: true });
+        const nestedLanguagesFilter = {};
+        Object.keys(arrayLanguagesFilter).forEach(key => {
+            nestedLanguagesFilter[`contentLanguages.${key}`] = arrayLanguagesFilter[key];
+        })
+        let queryBuilder = this.Model.aggregate<T & P>()
+            .match(filter)
+            .unwind('$contentLanguages')
+            .match(nestedLanguagesFilter)
+            .replaceRoot({ $mergeObjects: ["$contentLanguages", "$$ROOT"] });
+
         if (fieldsSelect) {
-            queryBuilder = queryBuilder.select(fieldsSelect);
+            queryBuilder = queryBuilder.project(fieldsSelect);
         }
 
-        queryBuilder = queryBuilder.populate({
-            path: 'contentLanguages',
-            match: populateMatch,
-            select: fieldsSelect
-        })
+        const currentContent = await queryBuilder;
+        if (currentContent.length == 0)
+            Validator.throwIfNotFound('Content', null, { _id: id, isDeleted: false, status: statuses });
 
-        const currentContent = await queryBuilder.exec();
-        Validator.throwIfNotFound('Content', currentContent, { _id: id, isDeleted: false, status: statuses });
-
-        const contentLanguage = currentContent.contentLanguages.find((contentLang: P) => contentLang.language === language);
-        Validator.throwIfNotFound('ContentLanguage', contentLanguage, { _id: id, isDeleted: false });
-
-        return this.mergeToContentLanguage(currentContent, contentLanguage);
+        return currentContent[0];
     }
 
     /**
@@ -107,43 +101,50 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
     async getContentChildren(parentId: string, language: string, host?: string, fieldsSelect?: string): Promise<Array<T & P>> {
         if (parentId == '0') parentId = null;
 
-        const filter = { parentId: parentId, contentType: { $ne: null }, isDeleted: false };
-        let queryBuilder = this.find(filter as any, { lean: true });
+        const filter = { parentId: parentId, contentType: { $ne: null }, isDeleted: false, contentLanguages: { language } };
+
+        let queryBuilder = this.Model.aggregate<T & P>()
+            .match(filter)
+            .unwind('$contentLanguages')
+            .match({ 'contentLanguages.language': language })
+            .replaceRoot({ $mergeObjects: ["$contentLanguages", "$$ROOT"] })
+            .project({ contentLanguages: 0 });
+
         if (fieldsSelect) {
-            queryBuilder = queryBuilder.select(fieldsSelect);
+            queryBuilder = queryBuilder.project(fieldsSelect);
         }
 
-        queryBuilder = queryBuilder.populate({
-            path: 'contentLanguages',
-            match: { language },
-            select: fieldsSelect
-        })
-
-        const contentChildren = await queryBuilder.exec();
-
-        return contentChildren.map(x => {
-            const contentLanguage = x.contentLanguages.find(contentLang => contentLang.language === language);
-            return this.mergeToContentLanguage(x, contentLanguage);
-        })
+        const contentChildren = await queryBuilder;
+        return contentChildren;
     }
 
     async getContentItems(id: string[], language: string, statuses?: number[], fieldsSelect?: string, isDeepPopulate: boolean = false): Promise<Array<T & P>> {
         Validator.throwIfNullOrEmpty('language', language);
 
-        const filter = { _id: { $in: id }, isDeleted: false };
-        const populateMatch = statuses ? { language, status: { $in: statuses } } : { language };
+        const arrayLanguagesFilter = statuses ? { language, status: { $in: statuses } } : { language };
+        const filter = { _id: { $in: id }, isDeleted: false, contentLanguages: { $elemMatch: arrayLanguagesFilter } };
 
-        let queryBuilder = this.find(filter as any, { lean: true });
+        const nestedLanguagesFilter = {};
+        Object.keys(arrayLanguagesFilter).forEach(key => {
+            nestedLanguagesFilter[`contentLanguages.${key}`] = arrayLanguagesFilter[key];
+        })
+
+        let queryBuilder = this.find(filter as any, { lean: true })
+            .select({
+                _id: 1,
+                parentId: 1,
+                parentPath: 1,
+                contentType: 1,
+                isDeleted: 1,
+                deletedBy: 1,
+                contentLanguages: { $elemMatch: arrayLanguagesFilter }
+            });
+
         if (fieldsSelect) {
             queryBuilder = queryBuilder.select(fieldsSelect);
         }
 
-        queryBuilder = queryBuilder.populate({
-            path: 'contentLanguages',
-            match: populateMatch,
-            populate: isDeepPopulate ? this.deepPopulate(5, language) : undefined,
-            select: fieldsSelect
-        });
+        queryBuilder = queryBuilder.populate(isDeepPopulate ? this.deepPopulate(5, language) : undefined);
         const contents = await queryBuilder.exec();
 
         const publishedContents: Array<T & P> = [];
@@ -155,30 +156,21 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         return publishedContents;
     }
 
-    private deepPopulate = (level: number, language: string, statuses?: number[], fieldsSelect?: string): { path: string, match: any, select?: string, populate?: any } => {
+    private deepPopulate = (level: number, language: string, statuses?: number[], fieldsSelect?: string): { path: string, match: any, select?: any, populate?: any } => {
         const populateMatch = statuses ? { language, status: { $in: statuses } } : { language };
+        const populatePath = 'contentLanguages.childItems.content';
         if (level > 1) {
             return {
-                path: 'childItems.content',
-                match: { isDeleted: false },
-                select: fieldsSelect,
-                populate: {
-                    path: 'contentLanguages',
-                    match: populateMatch,
-                    populate: this.deepPopulate(--level, language, statuses, fieldsSelect),
-                    select: fieldsSelect
-                }
+                path: populatePath,
+                match: { isDeleted: false, contentLanguages: { $elemMatch: populateMatch } },
+                select: { _id: 1, contentType: 1, parentPath: 1, contentLanguages: { $elemMatch: populateMatch } },
+                populate: this.deepPopulate(--level, language, statuses, fieldsSelect),
             }
         } else if (level == 1) {
             return {
-                path: 'childItems.content',
-                match: { isDeleted: false },
-                select: fieldsSelect,
-                populate: {
-                    path: 'contentLanguages',
-                    match: populateMatch,
-                    select: fieldsSelect
-                }
+                path: populatePath,
+                match: { isDeleted: false, contentLanguages: { $elemMatch: populateMatch } },
+                select: { _id: 1, contentType: 1, parentPath: 1, contentLanguages: { $elemMatch: populateMatch } }
             }
         }
         return null;
@@ -206,25 +198,18 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         // aggregation query
         const queryBuilder = this.Model.aggregate<PaginateResult>()
             .match({ isDeleted, parentPath: { $regex: new RegExp(parentPath) } })
-            .lookup({
-                from: this.contentLanguageModel.collection.name,
-                foreignField: 'contentId',
-                localField: '_id',
-                as: 'languageBranch'
-            })
-            .unwind('$languageBranch')
-            .match({ "languageBranch.language": language })
-            .project({ "contentLanguages": 0 })
+            .unwind('$contentLanguages')
+            .match({ "contentLanguages.language": language })
             .facet({
                 metadata: [{ $count: 'total' }],
                 docs: [
                     // Since the name can be duplicated, adding createdAt to making sort is stable
-                    { $sort: { "languageBranch.name": 1, createdAt: -1 } },
+                    { $sort: { "contentLanguages.name": 1, createdAt: -1 } },
                     { $skip: skip },
                     { $limit: limit },
                     // merge language branch into the original document
-                    { $replaceRoot: { newRoot: { $mergeObjects: ["$languageBranch", "$$ROOT"] } } },
-                    { $project: { "languageBranch": 0 } }
+                    { $replaceRoot: { newRoot: { $mergeObjects: ["$contentLanguages", "$$ROOT"] } } },
+                    { $project: { "contentLanguages": 0 } }
                 ]
             })
             // after $facet, its output {metadata: [ { total: 10000 } ],docs: [ { x }, { y }, ... ]}
@@ -232,7 +217,6 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
             .project({
                 docs: 1,
                 // Get total from the first element of the metadata array 
-                // total: { $arrayElemAt: [ '$metadata.total', 0 ] }
                 total: '$metadata.total',
                 pages: {
                     $ceil: {

@@ -10,9 +10,8 @@ import { ContentService } from '../content/content.service';
 import { VersionStatus } from "../content/version-status";
 import { LanguageService } from '../language';
 import { SiteDefinitionService } from '../site-definition/site-definition.service';
-import { IPageLanguageDocument, PageLanguageModel } from './models/page-language.model';
 import { IPageVersionDocument, PageVersionModel } from "./models/page-version.model";
-import { IPageDocument, PageModel } from "./models/page.model";
+import { IPageDocument, IPageLanguageDocument, PageModel } from "./models/page.model";
 
 export class PageVersionService extends ContentVersionService<IPageVersionDocument> {
     constructor() {
@@ -24,7 +23,7 @@ export class PageVersionService extends ContentVersionService<IPageVersionDocume
 export class PageService extends ContentService<IPageDocument, IPageLanguageDocument, IPageVersionDocument> {
     private static readonly PrefixCacheKey: string = 'Page';
     constructor(private siteDefinitionService: SiteDefinitionService, private languageService: LanguageService, private cacheService: CacheService) {
-        super(PageModel, PageLanguageModel, PageVersionModel);
+        super(PageModel, PageVersionModel);
     }
 
     /**
