@@ -47,16 +47,16 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
 
     /**
      * Gets link urls of multi pages
-     * @param id 
+     * @param ids 
      * @param language 
      * @param host 
      * @returns page with url
      */
-    async getPageUrls(id: string[], language: string, host: string): Promise<Array<IPageDocument & IPageLanguageDocument>> {
+    async getPageUrls(ids: string[], language: string, host: string): Promise<Array<IPageDocument & IPageLanguageDocument>> {
 
         const statuses = [VersionStatus.Published];
         const fieldsSelect = '_id parentPath language urlSegment';
-        const resultPages = await this.getContentItems(id, language, statuses, fieldsSelect, false);
+        const resultPages = await this.getContentItems(ids, language, statuses, fieldsSelect, false);
 
         const linkArray: Array<[string, string]> = await this.buildManyLinkTuples(resultPages, language, host);
 
@@ -103,6 +103,7 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         if (defaultLang !== language) { urlSegments.push(language); }
 
         const matchStartIndex = parentIds.indexOf(startPageId);
+        // TODO: should use the getContentItems method
         for (let i = matchStartIndex + 1; i < parentIds.length; i++) {
             const urlSegment = await this.getUrlSegmentByPageId(parentIds[i], language);
             urlSegments.push(urlSegment);
