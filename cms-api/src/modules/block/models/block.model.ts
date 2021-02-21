@@ -16,7 +16,7 @@ export interface IBlockDocument extends IContentDocument {
 }
 export interface IBlockModel extends IContentModel<IBlockDocument> { }
 
-export const BlockSchema = new mongoose.Schema({
+export const BlockSchema = new mongoose.Schema<IBlockDocument, IBlockModel>({
   ...ContentSchema.obj,
   parentId: { type: mongoose.Schema.Types.ObjectId, ref: cmsBlock },
   contentLanguages: [BlockLanguageSchema],

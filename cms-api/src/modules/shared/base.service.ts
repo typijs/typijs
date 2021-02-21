@@ -124,7 +124,7 @@ export class BaseService<T extends IBaseDocument> {
     }
 
     public insertMany = (docs: Partial<T>[]): Promise<T[]> => {
-        return this.mongooseModel.insertMany(docs)
+        return this.mongooseModel.insertMany(docs as T[])
     }
 
     public updateById = async (id: string, doc: Partial<T>): Promise<T> => {
@@ -142,7 +142,7 @@ export class BaseService<T extends IBaseDocument> {
      * @param updateQuery
      * @returns 
      */
-    public updateMany = (filter: FilterQuery<T>, updateQuery: UpdateQuery<T>): Query<any> => {
+    public updateMany = (filter: FilterQuery<T>, updateQuery: UpdateQuery<T>): Query<any, T> => {
         return this.mongooseModel.updateMany(filter, updateQuery)
     }
 
@@ -158,7 +158,7 @@ export class BaseService<T extends IBaseDocument> {
         return await document.remove();
     }
 
-    public deleteMany = (filter: FilterQuery<T>): Query<any> => {
+    public deleteMany = (filter: FilterQuery<T>): Query<any, T> => {
         return this.mongooseModel.deleteMany(filter)
     }
 

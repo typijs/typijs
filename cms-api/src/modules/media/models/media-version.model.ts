@@ -15,8 +15,7 @@ export interface IMediaVersion extends IContentVersion {
 export interface IMediaVersionDocument extends IMediaVersion, IContentVersionDocument { }
 export interface IMediaVersionModel extends IContentVersionModel<IMediaVersionDocument> { }
 
-export const cmsMediaVersion = 'cms_MediaVersion'
-export const MediaVersionSchema = new mongoose.Schema({
+export const MediaVersionSchema = new mongoose.Schema<IMediaVersionDocument, IMediaVersionModel>({
     ...ContentVersionSchema.obj,
     contentId: { type: mongoose.Schema.Types.ObjectId, ref: cmsMedia, required: true },
     masterVersionId: { type: mongoose.Schema.Types.ObjectId, ref: cmsMediaVersion },

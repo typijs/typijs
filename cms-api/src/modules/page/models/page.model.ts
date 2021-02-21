@@ -25,7 +25,7 @@ export interface IPageDocument extends IPage, IContentDocument {
   contentLanguages: Partial<IPageLanguageDocument>[];
 }
 export interface IPageModel extends IContentModel<IPageDocument> { }
-export const PageSchema = new mongoose.Schema({
+export const PageSchema = new mongoose.Schema<IPageDocument, IPageModel>({
   ...ContentSchema.obj,
   parentId: { type: mongoose.Schema.Types.ObjectId, ref: cmsPage },
   contentLanguages: [PageLanguageSchema],

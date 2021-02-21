@@ -11,7 +11,7 @@ export interface IPageVersion extends IContentVersion {
 }
 export interface IPageVersionDocument extends IPageVersion, IContentVersionDocument { }
 export interface IPageVersionModel extends IContentVersionModel<IPageVersionDocument> { }
-export const PageVersionSchema = new mongoose.Schema({
+export const PageVersionSchema = new mongoose.Schema<IPageVersionDocument, IPageVersionModel>({
     ...ContentVersionSchema.obj,
     contentId: { type: mongoose.Schema.Types.ObjectId, ref: cmsPage, required: true },
     masterVersionId: { type: mongoose.Schema.Types.ObjectId, ref: cmsPageVersion },

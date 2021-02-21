@@ -35,7 +35,7 @@ const HostDefinitionSchema = new mongoose.Schema({
     isHttps: { type: Boolean, required: true, default: false }
 }, { timestamps: true });
 
-const SiteDefinitionSchema = new mongoose.Schema({
+const SiteDefinitionSchema = new mongoose.Schema<ISiteDefinitionDocument, ISiteDefinitionModel>({
     ...BaseSchema.obj,
     startPage: { type: mongoose.Schema.Types.ObjectId, ref: cmsPage, required: true, unique: true },
     name: { type: String, unique: true, trim: true, required: true, lowercase: true },

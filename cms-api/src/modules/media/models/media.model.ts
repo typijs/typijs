@@ -36,7 +36,7 @@ export interface IMediaDocument extends IContentDocument {
     contentLanguages: Partial<IMediaLanguageDocument>[];
 }
 export interface IMediaModel extends IContentModel<IMediaDocument> { }
-export const MediaSchema = new mongoose.Schema({
+export const MediaSchema = new mongoose.Schema<IMediaDocument, IMediaModel>({
     ...ContentSchema.obj,
     parentId: { type: mongoose.Schema.Types.ObjectId, ref: cmsMedia },
     contentLanguages: [MediaLanguageSchema]

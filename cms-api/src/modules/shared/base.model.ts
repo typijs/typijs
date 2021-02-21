@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import { Document, Model, FilterQuery, DocumentQuery } from 'mongoose';
+import { Document, Model, Query } from 'mongoose';
 
 export type QueryOptions = {
     /**
@@ -64,5 +64,5 @@ export const BaseSchema = new mongoose.Schema({
     updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'cms_User', required: false }
 })
 
-export type QueryList<T extends IBaseDocument> = DocumentQuery<T[], T>;
-export type QueryItem<T extends IBaseDocument> = DocumentQuery<T, T>;
+export type QueryList<T extends IBaseDocument> = Query<T[], T>;
+export type QueryItem<T extends IBaseDocument> = Query<T, T>;
