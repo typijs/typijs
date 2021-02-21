@@ -54,8 +54,8 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
     async getPageUrls(ids: string[], language: string, host: string): Promise<Array<IPageDocument & IPageLanguageDocument>> {
 
         const statuses = [VersionStatus.Published];
-        const fieldsSelect = '_id parentPath language urlSegment';
-        const resultPages = await this.getContentItems(ids, language, statuses, fieldsSelect, false);
+        const project = { _id: 1, parentPath: 1, language: 1, urlSegment: 0 };
+        const resultPages = await this.getContentItems(ids, language, statuses, project, false);
 
         const linkArray: Array<[string, string]> = await this.buildManyLinkTuples(resultPages, language, host);
 
@@ -117,8 +117,8 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         suffixKey: (args) => `${args[0]}:${args[1]}`
     })
     private async getUrlSegmentByPageId(id: string, language: string): Promise<string> {
-        const fieldsSelect = '_id contentId language urlSegment';
-        const currentContent = await this.getContent(id, language, null, fieldsSelect)
+        const project = { _id: 1, contentId: 1, language: 1, urlSegment: 0 };
+        const currentContent = await this.getContent(id, language, null, project)
         return currentContent.urlSegment;
     }
 
@@ -163,8 +163,8 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
 
     private recursiveResolvePageByUrlSegment = async (parentPageId: string, segments: string[], language: string, index: number): Promise<IPageDocument & IPageLanguageDocument> => {
         // get page children
-        const fieldsSelect: string = '_id urlSegment language status';
-        const childrenPage = (await super.getContentChildren(parentPageId, language, null, fieldsSelect))
+        const project = { _id: 1, urlSegment: 1, language: 1, status: 1 };
+        const childrenPage = (await super.getContentChildren(parentPageId, language, null, project))
             .filter(x => x.status == VersionStatus.Published);
         if (!childrenPage || childrenPage.length == 0) return null;
 
@@ -201,13 +201,12 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
      * @param parentId 
      * @param language 
      * @param [host] 
-     * @param [fieldSelect] The Mongoose select field syntax (for example: `'_id name created'`)
+     * @param project (Optional) The Mongodb $project select field syntax (for example: `{_id: 1,  username: 1, password: 0}`)
      * @returns The array of children 
      */
-    async getContentChildren(parentId: string, language: string, host?: string, fieldSelect?: string): Promise<Array<IPageDocument & IPageLanguageDocument>> {
-        if (parentId == '0') parentId = null;
+    async getContentChildren(parentId: string, language: string, host?: string, project?: { [key: string]: number }): Promise<Array<IPageDocument & IPageLanguageDocument>> {
 
-        const pageChildren = await super.getContentChildren(parentId, language, host, fieldSelect)
+        const pageChildren = await super.getContentChildren(parentId, language, host, project)
         if (pageChildren.length == 0) return [];
 
         const linkArray: Array<[string, string]> = await this.buildManyLinkTuples(pageChildren, language, host);
@@ -236,17 +235,14 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
 
         const urlSegment = generatedNameInUrl ? generatedNameInUrl : originalUrl;
         //Find existing page has the same url segment
-        const existPages = await this.contentLanguageService.find({ urlSegment, language }, { lean: true })
-            .select('contentId')
-            .populate({
-                path: 'contentId',
-                match: { isDeleted: false },
-                select: 'parentId'
-            }).exec();
+        const existPages = await this.find({
+            isDeleted: false,
+            contentLanguages: { $elemMatch: { urlSegment, language } }
+        }, { lean: true })
+            .select('parentId')
+            .exec();
 
-        const count = existPages.map(x => x.contentId as IPageDocument)
-            .filter(x => x)
-            .filter(x => (!x.parentId && !parentId) || (x.parentId && x.parentId!.toString() == parentId)).length;
+        const count = existPages.filter(x => (!x.parentId && !parentId) || (x.parentId && x.parentId!.toString() == parentId)).length;
         if (count <= 0) return generatedNameInUrl ? generatedNameInUrl : originalUrl;
 
         return await this.generateUrlSegment(seed + 1, originalUrl, parentId, language, `${originalUrl}${seed + 1}`);
@@ -269,22 +265,26 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         const { language, urlSegment } = pageVersion;
 
         //Find published page has the same url segment
-        const existPages = await this.contentLanguageService.find({ contentId: { $ne: pageId }, urlSegment, language, status: VersionStatus.Published }, { lean: true })
-            .select('contentId name')
-            .populate({
-                path: 'contentId',
-                match: { isDeleted: false },
-                select: 'parentId'
-            }).exec();
+        const existPages = await this.find({
+            _id: { $ne: pageId },
+            isDeleted: false,
+            contentLanguages: {
+                $elemMatch: { urlSegment, language, status: VersionStatus.Published }
+            }
+        }, { lean: true })
+            .exec();
 
         const parentId = pageContent.parentId;
         const duplicatedUrlSegmentPages = existPages.filter(x =>
-            JSON.stringify((x.contentId as IPageDocument).parentId) === JSON.stringify(parentId)
+            JSON.stringify(x.parentId) === JSON.stringify(parentId)
         );
 
         if (duplicatedUrlSegmentPages.length > 0) {
-            const pageInfo = JSON.stringify(duplicatedUrlSegmentPages.map(x => ({ id: (x.contentId as IPageDocument)._id, name: x.name })));
-            const message = `The url segment ${urlSegment} has been used in pages ${pageInfo}`;
+            const pageInfo = duplicatedUrlSegmentPages.map(x => {
+                const pageLang = x.contentLanguages.find(y => y.language == language && y.urlSegment == urlSegment);
+                return { id: x._id, name: pageLang?.name }
+            });
+            const message = `The url segment ${urlSegment} has been used in pages ${JSON.stringify(pageInfo)}`;
             throw new Exception(httpStatus.BAD_REQUEST, message);
         }
     }

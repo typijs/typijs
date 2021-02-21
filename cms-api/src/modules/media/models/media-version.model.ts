@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 import { ContentVersionSchema, IContentVersion, IContentVersionDocument, IContentVersionModel } from '../../content/content.model';
-import { cmsMedia } from './media.model';
+import { cmsMedia, cmsMediaVersion } from './media.model';
 
 export interface IMediaVersion extends IContentVersion {
     urlSegment: string;

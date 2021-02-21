@@ -6,9 +6,8 @@ import 'reflect-metadata';
 import { Profiler } from '../../logging';
 import { ValidateParams } from '../../validation/validate.decorator';
 import { ContentController } from '../content/content.controller';
-import { IPageLanguageDocument } from './models/page-language.model';
 import { IPageVersionDocument } from './models/page-version.model';
-import { IPageDocument } from './models/page.model';
+import { IPageDocument, IPageLanguageDocument } from './models/page.model';
 import { PageService, PageVersionService } from './page.service';
 
 @Injectable()

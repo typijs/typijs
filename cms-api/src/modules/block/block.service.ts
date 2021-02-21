@@ -1,8 +1,7 @@
 import { ContentVersionService } from "../content/content-version.service";
 import { ContentService } from "../content/content.service";
-import { BlockLanguageModel, IBlockLanguageDocument } from "./models/block-language.model";
 import { BlockVersionModel, IBlockVersionDocument } from "./models/block-version.model";
-import { BlockModel, IBlockDocument } from "./models/block.model";
+import { BlockModel, IBlockDocument, IBlockLanguageDocument } from "./models/block.model";
 
 export class BlockVersionService extends ContentVersionService<IBlockVersionDocument> {
     constructor() {
@@ -11,6 +10,6 @@ export class BlockVersionService extends ContentVersionService<IBlockVersionDocu
 }
 export class BlockService extends ContentService<IBlockDocument, IBlockLanguageDocument, IBlockVersionDocument> {
     constructor() {
-        super(BlockModel, BlockLanguageModel, BlockVersionModel);
+        super(BlockModel, BlockVersionModel);
     }
 }

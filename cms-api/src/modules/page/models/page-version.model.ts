@@ -1,8 +1,7 @@
 import * as mongoose from 'mongoose';
 import { ContentVersionSchema, IContentVersion, IContentVersionDocument, IContentVersionModel } from '../../content/content.model';
-import { cmsPage } from './page.model';
+import { cmsPage, cmsPageVersion } from './page.model';
 
-export const cmsPageVersion = 'cms_PageVersion';
 export interface IPageVersion extends IContentVersion {
     urlSegment: string;
     simpleAddress: string;

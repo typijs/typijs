@@ -1,4 +1,6 @@
 import { FilterQuery } from 'mongoose';
+import * as mongoose from 'mongoose';
+
 import { DocumentNotFoundException } from '../../error';
 import { pick } from '../../utils';
 import { Validator } from '../../validation/validator';
@@ -12,6 +14,7 @@ import {
     IContentVersionModel
 } from './content.model';
 import { VersionStatus } from "./version-status";
+const ObjectId = mongoose.Types.ObjectId;
 
 export class ContentService<T extends IContentDocument, P extends IContentLanguageDocument, V extends IContentVersionDocument> extends FolderService<T, P> {
     protected contentVersionService: ContentVersionService<V>;
@@ -42,7 +45,13 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         const currentVersion = await this.contentVersionService.findOne(query, { lean: true })
             .populate({
                 path: 'childItems.content',
-                match: { isDeleted: false, 'contentLanguages.language': language },
+                match: {
+                    isDeleted: false,
+                    contentLanguages: { $elemMatch: { language } }
+                },
+                select: {
+                    contentLanguages: { $elemMatch: { language } }
+                }
             }).exec();
 
         if (currentVersion.childItems) {
@@ -60,14 +69,14 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
      * @param id The content id
      * @param language The language code (ex 'en', 'de'...)
      * @param statuses The array of statuses VersionStatus[]
-     * @param fieldsSelect The Mongoose select field syntax (for example: `'_id name created'`)
+     * @param project The Mongodb $project select field syntax (for example: `{_id: 1,  username: 1, password: 0}`)
      */
-    async getContent(id: string, language: string, statuses?: number[], fieldsSelect?: string): Promise<T & P> {
+    async getContent(id: string, language: string, statuses?: number[], project?: { [key: string]: any }): Promise<T & P> {
         Validator.throwIfNull('contentId', id);
 
         if (!language) { language = this.EMPTY_LANGUAGE };
         const arrayLanguagesFilter = statuses ? { language, status: { $in: statuses } } : { language };
-        const filter = { _id: id, isDeleted: false, contentLanguages: { $elemMatch: arrayLanguagesFilter } }
+        const filter = { _id: ObjectId(id), isDeleted: false, contentLanguages: { $elemMatch: arrayLanguagesFilter } }
 
         const nestedLanguagesFilter = {};
         Object.keys(arrayLanguagesFilter).forEach(key => {
@@ -79,8 +88,8 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
             .match(nestedLanguagesFilter)
             .replaceRoot({ $mergeObjects: ["$contentLanguages", "$$ROOT"] });
 
-        if (fieldsSelect) {
-            queryBuilder = queryBuilder.project(fieldsSelect);
+        if (project) {
+            queryBuilder = queryBuilder.project(project);
         }
 
         const currentContent = await queryBuilder;
@@ -95,13 +104,18 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
      * @param parentId 
      * @param language 
      * @param [host] optional
-     * @param [fieldsSelect] optional - The Mongoose select field syntax (for example: `'_id name created'`)
+     * @param project (Optional) The Mongodb $project select field syntax (for example: `{_id: 1,  username: 1, password: 0}`)
      * @returns The array of children 
      */
-    async getContentChildren(parentId: string, language: string, host?: string, fieldsSelect?: string): Promise<Array<T & P>> {
+    async getContentChildren(parentId: string, language: string, host?: string, project?: { [key: string]: any }): Promise<Array<T & P>> {
         if (parentId == '0') parentId = null;
 
-        const filter = { parentId: parentId, contentType: { $ne: null }, isDeleted: false, contentLanguages: { language } };
+        const filter = {
+            parentId: parentId ? ObjectId(parentId) : null,
+            contentType: { $ne: null },
+            isDeleted: false,
+            contentLanguages: { $elemMatch: { language } }
+        };
 
         let queryBuilder = this.Model.aggregate<T & P>()
             .match(filter)
@@ -110,41 +124,53 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
             .replaceRoot({ $mergeObjects: ["$contentLanguages", "$$ROOT"] })
             .project({ contentLanguages: 0 });
 
-        if (fieldsSelect) {
-            queryBuilder = queryBuilder.project(fieldsSelect);
+        if (project) {
+            queryBuilder = queryBuilder.project(project);
         }
 
         const contentChildren = await queryBuilder;
         return contentChildren;
     }
 
-    async getContentItems(id: string[], language: string, statuses?: number[], fieldsSelect?: string, isDeepPopulate: boolean = false): Promise<Array<T & P>> {
+    /**
+     * Gets content items details by array of ids
+     * @param ids 
+     * @param language 
+     * @param [statuses] (Optional) 
+     * @param [project] (Optional)
+     * @param [isDeepPopulate] (Optional)
+     * @returns content items 
+     */
+    async getContentItems(ids: string[], language: string, statuses?: number[], project?: { [key: string]: any }, isDeepPopulate: boolean = false): Promise<Array<T & P>> {
         Validator.throwIfNullOrEmpty('language', language);
 
-        const arrayLanguagesFilter = statuses ? { language, status: { $in: statuses } } : { language };
-        const filter = { _id: { $in: id }, isDeleted: false, contentLanguages: { $elemMatch: arrayLanguagesFilter } };
+        const languagesFilter = statuses ? { language, status: { $in: statuses } } : { language };
+        const filter = { _id: { $in: ids }, isDeleted: false, contentLanguages: { $elemMatch: languagesFilter } };
 
-        const nestedLanguagesFilter = {};
-        Object.keys(arrayLanguagesFilter).forEach(key => {
-            nestedLanguagesFilter[`contentLanguages.${key}`] = arrayLanguagesFilter[key];
-        })
-
-        let queryBuilder = this.find(filter as any, { lean: true })
-            .select({
+        let queryBuilder = this.find(filter as any, { lean: true });
+        // project the out fields
+        if (project) {
+            queryBuilder = queryBuilder.select(project);
+        } else {
+            queryBuilder = queryBuilder.select({
                 _id: 1,
                 parentId: 1,
                 parentPath: 1,
                 contentType: 1,
                 isDeleted: 1,
                 deletedBy: 1,
-                contentLanguages: { $elemMatch: arrayLanguagesFilter }
-            });
-
-        if (fieldsSelect) {
-            queryBuilder = queryBuilder.select(fieldsSelect);
+                visibleInMenu: 1,
+                createdBy: 1,
+                createdAt: 1,
+                updatedAt: 1,
+                contentLanguages: { $elemMatch: languagesFilter }
+            })
+        }
+        // deep populate
+        if (isDeepPopulate) {
+            queryBuilder = queryBuilder.populate(this.deepPopulate(5, language));
         }
 
-        queryBuilder = queryBuilder.populate(isDeepPopulate ? this.deepPopulate(5, language) : undefined);
         const contents = await queryBuilder.exec();
 
         const publishedContents: Array<T & P> = [];
@@ -156,21 +182,23 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         return publishedContents;
     }
 
-    private deepPopulate = (level: number, language: string, statuses?: number[], fieldsSelect?: string): { path: string, match: any, select?: any, populate?: any } => {
-        const populateMatch = statuses ? { language, status: { $in: statuses } } : { language };
+    private deepPopulate = (level: number, language: string, statuses?: number[]): { path: string, match?: any, select?: any, populate?: any } => {
         const populatePath = 'contentLanguages.childItems.content';
+        const contentLangFilter = statuses ? { language, status: { $in: statuses } } : { language };
+        const populateMatch = { isDeleted: false, contentLanguages: { $elemMatch: contentLangFilter } };
+        const populateSelect = { _id: 1, contentType: 1, parentId: 1, parentPath: 1, contentLanguages: { $elemMatch: contentLangFilter } }
         if (level > 1) {
             return {
                 path: populatePath,
-                match: { isDeleted: false, contentLanguages: { $elemMatch: populateMatch } },
-                select: { _id: 1, contentType: 1, parentPath: 1, contentLanguages: { $elemMatch: populateMatch } },
-                populate: this.deepPopulate(--level, language, statuses, fieldsSelect),
+                match: populateMatch,
+                select: populateSelect,
+                populate: this.deepPopulate(--level, language, statuses),
             }
         } else if (level == 1) {
             return {
                 path: populatePath,
-                match: { isDeleted: false, contentLanguages: { $elemMatch: populateMatch } },
-                select: { _id: 1, contentType: 1, parentPath: 1, contentLanguages: { $elemMatch: populateMatch } }
+                match: populateMatch,
+                select: populateSelect
             }
         }
         return null;
@@ -189,17 +217,27 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         page: number,
         limit: number,
         sort: { [key: string]: 'asc' | 'desc' | 1 | -1 },
-        select?: string): Promise<Partial<PaginateResult>> {
+        project?: { [key: string]: any }): Promise<Partial<PaginateResult>> {
         const skip = (page - 1) * limit;
         // IContent filter
-        const { parentId, parentPath, contentType, isDeleted, deletedBy } = filter;
+        const contentFilter: { parentId: any, parentPath: any, contentType: any, isDeleted: any, deletedBy: any } = filter as any;
         // IContentLanguage filter
-        const { contentId, versionId, language, name, properties, status } = filter;
+        const contentLangFilter: { contentId: any, versionId: any, language: any, name: any, properties: any, status: any } = filter as any;
+
+        const isLangFilterNotEmpty = Object.keys(contentLangFilter).some(key => !contentLangFilter[key]);
+        if(isLangFilterNotEmpty) {
+            Object.assign(contentFilter, { contentLanguages: { $elemMatch: contentLangFilter } });
+        }
+        const nestedLanguagesFilter = {};
+        Object.keys(contentLangFilter).forEach(key => {
+            nestedLanguagesFilter[`contentLanguages.${key}`] = contentLangFilter[key];
+        })
+        
         // aggregation query
         const queryBuilder = this.Model.aggregate<PaginateResult>()
-            .match({ isDeleted, parentPath: { $regex: new RegExp(parentPath) } })
+            .match(contentFilter)
             .unwind('$contentLanguages')
-            .match({ "contentLanguages.language": language })
+            .match(nestedLanguagesFilter)
             .facet({
                 metadata: [{ $count: 'total' }],
                 docs: [
@@ -248,7 +286,9 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         //Step3: update primary version
         await this.contentVersionService.setPrimaryVersion(savedContentVersionDoc._id.toString());
         //Step3: Create content in language 
-        const savedContentLangDoc = await this.contentLanguageService.createContentLanguage(content, savedContent._id.toString(), savedContentVersionDoc._id.toString(), userId, language);
+        const contentLanguage = this.createContentLanguage(content, savedContentVersionDoc._id.toString(), userId, language);
+        savedContent.contentLanguages.push(contentLanguage);
+        await savedContent.save();
 
         return this.mergeToContentVersion(savedContent, savedContentVersionDoc);
     }
@@ -268,8 +308,25 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
             newContent.parentPath = null;
             newContent.ancestors = [];
         }
+        //init contentLanguages if it null
+        if (!newContent.contentLanguages) newContent.contentLanguages = [];
 
         return this.create(newContent);
+    }
+
+    private createContentLanguage(content: P, versionId: string, userId: string, language: string): P {
+        Validator.throwIfNull('content body', content);
+        Validator.throwIfNullOrEmpty('language', language);
+        Validator.throwIfNullOrEmpty('userId', userId);
+
+        const contentLangDoc = { ...content };
+        contentLangDoc._id = undefined;
+        contentLangDoc.versionId = versionId;
+        contentLangDoc.language = language;
+        contentLangDoc.createdBy = userId;
+        contentLangDoc.status = VersionStatus.CheckedOut;
+
+        return contentLangDoc;
     }
 
     protected updateHasChildren = async (content: IContentDocument): Promise<boolean> => {
@@ -294,12 +351,12 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         const isDraftVersion = VersionStatus.isDraftVersion(currentVersion.status);
         if (isDraftVersion) {
             //Step1: update corresponding content language if this language is not publish yet
-            const contentLanguage = await this.contentLanguageService.findOne({ contentId: id, language } as any).exec();
+            const contentLanguage = currentContent.contentLanguages.find(c => c.language == language);
             Validator.throwIfNotFound('ContentLanguage', contentLanguage, { contentId: id, language });
 
             if (VersionStatus.isDraftVersion(contentLanguage.status)) {
                 Object.assign(contentLanguage, contentObj, { updatedBy: userId });
-                await contentLanguage.save();
+                await currentContent.save();
             }
             //Step2: update current version
             Object.assign(currentVersion, contentObj, { savedAt: new Date(), updatedBy: userId, savedBy: userId });
@@ -327,8 +384,11 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
     async executePublishContentFlow(id: string, versionId: string, userId: string, host?: string): Promise<T & V> {
         //Step1: Get current version
         const currentVersion = await this.contentVersionService.getVersionById(versionId);
-        const currentContent = currentVersion.contentId as T;
-        const { language } = currentVersion;
+        const { language, contentId } = currentVersion;
+
+        const currentContent = contentId as T;
+        const contentLanguage = currentContent.contentLanguages.find(c => c.language == language);
+        Validator.throwIfNotFound('ContentLanguage', contentLanguage, { contentId: id, language });
 
         const isDraftVersion = VersionStatus.isDraftVersion(currentVersion.status);
         if (isDraftVersion) {
@@ -343,16 +403,17 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
             await currentVersion.save();
 
             //Step3: override the content language by publish version
-            const contentLanguage = await this.contentLanguageService.findOne({ contentId: id, language: language } as any).exec();
             const previousVersionId = contentLanguage.versionId;
 
             const { status, startPublish, publishedBy, name, properties, childItems, _id } = currentVersion;
             const pageObject = pick(currentVersion, ['urlSegment', 'simpleAddress', 'visibleInMenu']);
             Object.assign(contentLanguage, pageObject, { status, startPublish, publishedBy, name, properties, childItems, versionId: _id.toString() });
-            await contentLanguage.save();
+            await currentContent.save();
 
             //Step3: update previous version to PreviewPublished
-            if (previousVersionId != currentVersion._id.toString()) await this.contentVersionService.updateById(previousVersionId, { status: VersionStatus.PreviouslyPublished } as any);
+            if (previousVersionId != currentVersion._id.toString()) {
+                await this.contentVersionService.updateById(previousVersionId, { status: VersionStatus.PreviouslyPublished } as any);
+            }
         }
 
         return this.mergeToContentVersion(currentContent, currentVersion);
@@ -437,17 +498,23 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         const copyVersions = Object.entries(latestVersion).map(([language, version]: [string, V]) => version);
 
         //create copy content
-        const newContent = sourceContent.toObject();
+        const newContent = sourceContent.toObject() as any;
         newContent._id = undefined;
         newContent.parentId = targetParentId;
         const parentContent = await this.findById(targetParentId).exec();
         const copiedContent = await this.createContent(newContent, parentContent, userId);
 
         //create copy content version and content lang
+        //TODO: should use promise.all
         copyVersions.forEach(async version => {
-            const savedVersion = await this.contentVersionService.createNewVersion(version.toObject(), copiedContent._id.toString(), userId, version.language);
-            const savedContentLang = await this.contentLanguageService.createContentLanguage(version.toObject(), copiedContent._id.toString(), savedVersion._id.toString(), userId, version.language);
-        })
+            const savedVersion = await this.contentVersionService.createNewVersion(version.toObject() as any, copiedContent._id.toString(), userId, version.language);
+            const contentLanguage = this.createContentLanguage(version.toObject() as any, savedVersion._id.toString(), userId, version.language);
+            copiedContent.contentLanguages.push(contentLanguage);
+
+        });
+        if (copyVersions.length > 0) {
+            await copiedContent.save();
+        }
 
         return copiedContent;
     }
@@ -455,6 +522,7 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
     private createCopiedChildrenContent = async (sourceContentId: string, copiedContent: T, userId: string): Promise<any> => {
         //get children
         const children = await this.find({ parentId: sourceContentId } as any, { lean: true }).exec();
+        //TODO: should use promise.all
         children.forEach(async childContent => {
             await this.executeCopyContentFlow(childContent._id, copiedContent._id, userId)
         })
@@ -540,7 +608,7 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
 
     protected mergeToContentVersion(content: T, contentVersion: V): T & V {
         const contentJson = content && typeof content.toJSON === 'function' ? content.toJSON() : content;
-        const contentVersionJson = contentVersion && typeof contentVersion.toJSON === 'function' ? contentVersion.toJSON() : contentVersion;
+        const contentVersionJson: any = contentVersion && typeof contentVersion.toJSON === 'function' ? contentVersion.toJSON() : contentVersion;
         const contentVersionData: T & V = Object.assign(contentVersionJson ?? {}, contentJson, { versionId: contentVersionJson?._id?.toString() });
         delete contentVersionData.contentLanguages;
         delete contentVersionData.contentId;

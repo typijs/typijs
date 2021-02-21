@@ -88,7 +88,7 @@ export const ContentHasChildItemsSchema = new mongoose.Schema({
     //contain all reference Ids of all current contents which be used in page such as block, media, page
     childItems: [{
         refPath: { type: String, required: true },
-        content: { type: mongoose.Schema.Types.ObjectId, refPath: 'childItems.refPath' }
+        content: { type: mongoose.Schema.Types.ObjectId, refPath: 'contentLanguages.childItems.refPath' }
     }]
 })
 

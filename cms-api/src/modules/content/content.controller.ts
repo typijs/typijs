@@ -27,14 +27,14 @@ export abstract class ContentController<T extends IContentDocument, P extends IC
 
   async getContentItems(req: express.Request, res: express.Response) {
     const { language } = req as any;
-    const { statuses, fieldsSelect } = req.query;
-    const items = await this.contentService.getContentItems(req.body, language, statuses, fieldsSelect, true);
+    const { ids, statuses, project, isDeepPopulate } = req.body;
+    const items = await this.contentService.getContentItems(ids, language, statuses, project, isDeepPopulate);
     res.status(httpStatus.OK).json(items);
   }
 
   async queryContent(req: express.Request, res: express.Response) {
-    const { filter, page, limit, sort, select } = req.body;
-    const items = await this.contentService.queryContent(filter, page, limit, sort, select);
+    const { filter, page, limit, sort, project } = req.body;
+    const items = await this.contentService.queryContent(filter, page, limit, sort, project);
     res.status(httpStatus.OK).json(items);
   }
 

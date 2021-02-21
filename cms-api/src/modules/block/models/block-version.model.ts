@@ -1,8 +1,8 @@
 import * as mongoose from 'mongoose';
 import { ContentVersionSchema, IContentVersion, IContentVersionDocument, IContentVersionModel } from '../../content/content.model';
-import { cmsBlock } from './block.model';
+import { cmsBlock, cmsBlockVersion } from './block.model';
 
-export const cmsBlockVersion = 'cms_BlockVersion'
+
 export interface IBlockVersion extends IContentVersion { }
 export interface IBlockVersionDocument extends IBlockVersion, IContentVersionDocument { }
 export interface IBlockVersionModel extends IContentVersionModel<IBlockVersionDocument> { }

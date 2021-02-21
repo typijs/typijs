@@ -18,22 +18,24 @@ export abstract class FolderService<T extends IContentDocument, P extends IConte
     public createContentFolder = async (contentFolder: T & P, userId: string): Promise<T & P> => {
         //Step1: Create content folder
         Object.assign(contentFolder, {
-            urlSegment: slugify(contentFolder.name),
-            linkUrl: slugify(contentFolder.name),
             contentType: null,
-            properties: null,
             masterLanguageId: this.EMPTY_LANGUAGE,
             contentLanguages: [],
             createdBy: userId
         });
 
         //Step2: Create folder in default language
-        const folderLang: Partial<P> = {
+        const folderLang: unknown = {
+            name: contentFolder.name,
+            //for media folder
+            urlSegment: slugify(contentFolder.name),
+            //for media folder
+            linkUrl: slugify(contentFolder.name),
             language: this.EMPTY_LANGUAGE,
             status: VersionStatus.Published,
             startPublish: new Date(),
             createdBy: userId
-        } as Partial<P>;
+        };
 
         //Step3: Update content language array
         contentFolder.contentLanguages.push(folderLang);
@@ -68,8 +70,7 @@ export abstract class FolderService<T extends IContentDocument, P extends IConte
             isDeleted: false,
             contentType: null,
             'contentLanguages.language': this.EMPTY_LANGUAGE
-        } as any, { lean: true })
-            .exec();
+        } as any, { lean: true }).exec();
 
         return folderChildren.map(x => {
             const contentLanguage = x.contentLanguages.find(contentLang => contentLang.language === this.EMPTY_LANGUAGE);
@@ -78,8 +79,8 @@ export abstract class FolderService<T extends IContentDocument, P extends IConte
     }
 
     protected mergeToContentLanguage(content: T, contentLang: Partial<IContentLanguageDocument>): T & P {
-        const contentJson: T = content && typeof content.toJSON === 'function' ? content.toJSON() : content;
-        const contentLangJson: P = contentLang && typeof contentLang.toJSON === 'function' ? contentLang.toJSON() : contentLang;
+        const contentJson: any = content && typeof content.toJSON === 'function' ? content.toJSON() : content;
+        const contentLangJson: any = contentLang && typeof contentLang.toJSON === 'function' ? contentLang.toJSON() : contentLang;
 
         if (contentLangJson && contentLangJson.childItems) {
             const language = contentLangJson.language;

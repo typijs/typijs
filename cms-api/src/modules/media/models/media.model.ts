@@ -1,12 +1,11 @@
 import * as mongoose from 'mongoose';
-import { IContentDocument, IContent, ContentSchema, IContentModel, ContentLanguageSchema, IContentLanguage, IContentLanguageDocument } from '../../content/content.model';
-import { cmsMediaVersion } from './media-version.model';
+import { ContentLanguageSchema, ContentSchema, IContentDocument, IContentLanguageDocument, IContentModel } from '../../content/content.model';
 
 export const ImageContent = 'ImageContent';
 export const VideoContent = 'VideoContent';
 export const FileContent = 'FileContent';
 export const cmsMedia = 'cms_Media';
-export const cmsMediaLanguage = 'cms_MediaLanguage';
+export const cmsMediaVersion = 'cms_MediaVersion'
 
 export interface IMediaLanguage {
     urlSegment: string;

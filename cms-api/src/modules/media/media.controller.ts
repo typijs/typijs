@@ -10,12 +10,12 @@ import { ValidateBody, ValidateParams } from '../../validation/validate.decorato
 import { ContentVersionService } from '../content/content-version.service';
 import { ContentController } from '../content/content.controller';
 import { MediaService } from './media.service';
-import { IMediaLanguageDocument } from './models/media-language.model';
 import { IMediaVersionDocument, MediaVersionModel } from './models/media-version.model';
 import {
     FileContent,
     ImageContent,
     IMediaDocument,
+    IMediaLanguageDocument,
     VideoContent
 } from './models/media.model';
 import { Multer } from './multer';

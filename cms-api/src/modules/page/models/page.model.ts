@@ -1,9 +1,8 @@
 import * as mongoose from 'mongoose';
-import { ContentLanguageSchema, ContentSchema, IContent, IContentDocument, IContentLanguage, IContentLanguageDocument, IContentModel } from '../../content/content.model';
-import { cmsPageVersion } from './page-version.model';
+import { ContentLanguageSchema, ContentSchema, IContentDocument, IContentLanguageDocument, IContentModel } from '../../content/content.model';
 
 export const cmsPage = 'cms_Page';
-export const cmsPageLanguage = 'cms_PageLanguage';
+export const cmsPageVersion = 'cms_PageVersion';
 
 export interface IPageLanguage {
   urlSegment: string;
