@@ -54,17 +54,23 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
     async getPageUrls(ids: string[], language: string, host: string): Promise<Array<IPageDocument & IPageLanguageDocument>> {
 
         const statuses = [VersionStatus.Published];
-        const project = { _id: 1, parentPath: 1, language: 1, urlSegment: 0 };
-        const resultPages = await this.getContentItems(ids, language, statuses, project, false);
+        const project = { _id: 1, parentPath: 1, language: 1, urlSegment: 1 };
+        //const resultPages = await this.getContentItems(ids, language, statuses, project, false);
+        const filter = {
+            _id: { $in: ids },
+            status: { $in: statuses },
+            language
+        }
+        const resultPages = await this.queryContent(filter, 1, 1000, {}, project);
 
-        const linkArray: Array<[string, string]> = await this.buildManyLinkTuples(resultPages, language, host);
+        const linkArray: Array<[string, string]> = await this.buildManyLinkTuples(resultPages.docs, language, host);
 
-        resultPages.forEach(page => {
+        resultPages.docs.forEach(page => {
             const linkItem = linkArray.find(x => x[0] == page._id.toString());
             if (linkItem) page.linkUrl = linkItem[1];
         })
 
-        return resultPages;
+        return resultPages.docs;
     }
 
     private async buildManyLinkTuples(pages: Array<IPageDocument & IPageLanguageDocument>, language: string, host: string): Promise<Array<[string, string]>> {

@@ -29,6 +29,9 @@ export class BlockRouter {
 
         block.post('/copy', this.blockController.copy.bind(this.blockController));
 
+        //query contents
+        block.post('/query', this.langGuard.checkEnabled(), this.blockController.queryContent.bind(this.blockController));
+
         block.post('/', this.langGuard.checkEnabled(), this.blockController.createContent.bind(this.blockController));
 
         //move to trash

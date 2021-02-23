@@ -10,5 +10,5 @@
  * @param props 
  */
 export const pick = (obj, props: string[]) => {
-    return { ...props.filter(prop => obj[prop]).map(prop => ({ [prop]: obj[prop] })) };
+    return Object.assign({}, ...props.filter(prop => obj.hasOwnProperty(prop)).map(prop => ({ [prop]: obj[prop] })));
 }

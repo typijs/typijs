@@ -4,6 +4,7 @@ import { TypeOfContentEnum } from '../../types';
 import { CmsContentRenderFactoryResolver } from '../content-render.factory';
 import { ContentLoader } from '../../services/content/content-loader.service';
 import { Content } from '../../services/content/models/content.model';
+import { VersionStatus } from '../../constants/version-status';
 
 @Directive({
     selector: '[contentArea]'
@@ -25,7 +26,7 @@ export class ContentAreaDirective implements OnInit, OnDestroy {
             const firstItem = this.contentAreaItems[0];
             const mustFetchItems: boolean = !firstItem.status;
             if (mustFetchItems) {
-                this.contentLoader.getItems(this.contentAreaItems).subscribe((contents: Content[]) => {
+                this.contentLoader.getItems(this.contentAreaItems, null, [VersionStatus.Published], true).subscribe((contents: Content[]) => {
 
                     this.contentAreaItems.forEach(item => {
                         const matchContent = contents.find(x => item._id === x._id);

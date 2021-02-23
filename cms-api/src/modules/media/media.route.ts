@@ -30,6 +30,8 @@ export class MediaRouter {
 
         media.post('/copy', this.mediaController.copy.bind(this.mediaController));
 
+        //query contents
+        media.post('/query', this.langGuard.checkEnabled(), this.mediaController.queryContent.bind(this.mediaController));
         //TODO need to revisit
         media.get('/:id', this.mediaController.getVersion.bind(this.mediaController));
         //move to trash

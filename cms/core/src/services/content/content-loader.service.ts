@@ -63,7 +63,7 @@ export class ContentLoader {
         throw new Error('Not implemented');
     }
 
-    getItems(contentLinks: ContentReference[], loaderOptions?: LoaderOptions): Observable<Content[]> {
+    getItems(contentLinks: ContentReference[], language?: string, statuses?: number[], isDeepPopulate?: boolean): Observable<Content[]> {
 
         const contentLinksGroup = groupBy(contentLinks, 'type');
         const getContentItemsArray: Observable<Content[]>[] = [];
@@ -72,7 +72,7 @@ export class ContentLoader {
             const contentIds = contentLinksGroup[key].map(x => x._id);
             if (contentService && contentIds && contentIds.length > 0) {
                 getContentItemsArray.push(
-                    contentService.getContentItems(contentIds).pipe(catchError(() => []))
+                    contentService.getContentItems(contentIds, language, statuses, isDeepPopulate).pipe(catchError(() => []))
                 );
             }
         });

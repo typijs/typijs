@@ -40,9 +40,22 @@ export abstract class ContentService<T extends Content> extends FolderService<T>
         return this.httpClient.get<T>(`${this.apiUrl}/${contentId}?${query}`);
     }
 
-    getContentItems(contentIds: string[], language?: string): Observable<T[]> {
+    /**
+     * Gets content items details by array of ids
+     * @param ids
+     * @param language (Optional)
+     * @param [statuses] (Optional)
+     * @param [isDeepPopulate] (Optional) if true, the content child items will be populated
+     * @returns content items
+     */
+    getContentItems(ids: string[], language?: string, statuses?: number[], isDeepPopulate?: boolean): Observable<T[]> {
         const query = convertObjectToUrlQueryString({ language });
-        return this.httpClient.post<T[]>(`${this.apiUrl}/getContentItems?${query}`, contentIds).pipe(
+        const bodyReq = {
+            ids,
+            statuses,
+            isDeepPopulate
+        }
+        return this.httpClient.post<T[]>(`${this.apiUrl}/getContentItems?${query}`, bodyReq).pipe(
             map((contents: T[]) => contents.map(content => Object.assign(content, { type: this.typeOfContent })))
         );
     }

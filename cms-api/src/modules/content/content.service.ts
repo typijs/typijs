@@ -2,7 +2,7 @@ import { FilterQuery } from 'mongoose';
 import * as mongoose from 'mongoose';
 
 import { DocumentNotFoundException } from '../../error';
-import { pick } from '../../utils';
+import { pick } from '../../utils/pick';
 import { Validator } from '../../validation/validator';
 import { FolderService } from '../folder/folder.service';
 import { PaginateOptions, PaginateResult, QueryOptions } from '../shared/base.model';
@@ -15,6 +15,7 @@ import {
 } from './content.model';
 import { VersionStatus } from "./version-status";
 const ObjectId = mongoose.Types.ObjectId;
+export type MongoDbSort = { [key: string]: 'asc' | 'desc' | 1 | -1 };
 
 export class ContentService<T extends IContentDocument, P extends IContentLanguageDocument, V extends IContentVersionDocument> extends FolderService<T, P> {
     protected contentVersionService: ContentVersionService<V>;
@@ -150,6 +151,7 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         let queryBuilder = this.find(filter as any, { lean: true });
         // project the out fields
         if (project) {
+            if (!project.hasOwnProperty('contentLanguages')) { Object.assign(project, { contentLanguages: { $elemMatch: languagesFilter } }); }
             queryBuilder = queryBuilder.select(project);
         } else {
             queryBuilder = queryBuilder.select({
@@ -216,33 +218,27 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         filter: FilterQuery<T & P>,
         page: number,
         limit: number,
-        sort: { [key: string]: 'asc' | 'desc' | 1 | -1 },
+        sort: MongoDbSort,
         project?: { [key: string]: any }): Promise<Partial<PaginateResult>> {
         const skip = (page - 1) * limit;
+        const contentSort = this.getCombineContentSort(sort);
         // IContent filter
-        const contentFilter: { parentId: any, parentPath: any, contentType: any, isDeleted: any, deletedBy: any } = filter as any;
+        const contentFilter = this.getContentFilter(filter);
         // IContentLanguage filter
-        const contentLangFilter: { contentId: any, versionId: any, language: any, name: any, properties: any, status: any } = filter as any;
-
-        const isLangFilterNotEmpty = Object.keys(contentLangFilter).some(key => !contentLangFilter[key]);
-        if(isLangFilterNotEmpty) {
-            Object.assign(contentFilter, { contentLanguages: { $elemMatch: contentLangFilter } });
-        }
-        const nestedLanguagesFilter = {};
-        Object.keys(contentLangFilter).forEach(key => {
-            nestedLanguagesFilter[`contentLanguages.${key}`] = contentLangFilter[key];
-        })
-        
+        const contentLangFilter = this.getContentLanguageFilter(filter);
+        // project
+        const contentProject = this.getContentProjection(project);
         // aggregation query
         const queryBuilder = this.Model.aggregate<PaginateResult>()
             .match(contentFilter)
             .unwind('$contentLanguages')
-            .match(nestedLanguagesFilter)
+            .match(contentLangFilter)
+            .project(contentProject)
             .facet({
                 metadata: [{ $count: 'total' }],
                 docs: [
                     // Since the name can be duplicated, adding createdAt to making sort is stable
-                    { $sort: { "contentLanguages.name": 1, createdAt: -1 } },
+                    { $sort: contentSort },
                     { $skip: skip },
                     { $limit: limit },
                     // merge language branch into the original document
@@ -265,11 +261,145 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
 
         //  [{ total: 10000, pages: 35,  docs: [ { x }, { y }, ... ]  }] // output
         const result = await queryBuilder;
-        return result && result.length > 0 ? result[0] : {
+        return result && result.length > 0 ? Object.assign(result[0], { page, limit }) : {
             docs: [],
             total: 0,
-            pages: 0
+            pages: 0,
+            page,
+            limit
         }
+    }
+
+    private getContentProjection(project) {
+
+        let contentProject = pick(project, [
+            'ancestors',
+            'hasChildren',
+            'childOrderRule',
+            'peerOrder',
+            'isDeleted',
+            'visibleInMenu',
+            'contentType',
+            'masterLanguageId',
+            'createdBy',
+            'createdAt',
+            'updatedBy',
+            'updatedAt',
+            'parentId',
+            'parentPath']);
+        const resultProject = this.removeNilProperties(contentProject);
+
+        let contentLangProject = pick(project, [
+            'name',
+            'urlSegment',
+            'language',
+            'status',
+            'startPublish',
+            'updatedAt',
+            'createdBy',
+            'versionId',
+            'childItems',
+            'createdAt',
+            'updatedBy',
+            'publishedBy',
+            'properties']);
+        contentLangProject = this.removeNilProperties(contentLangProject);
+        Object.keys(contentLangProject).forEach(key => {
+            resultProject[`contentLanguages.${key}`] = contentLangProject[key];
+        })
+        return Object.keys(resultProject).length > 0 ? resultProject : { _v: 0 }
+    }
+
+    private getContentFilter(filter): FilterQuery<T & P> {
+        // IContent filter
+        let contentFilter = pick(filter, ['_id', 'hasChildren', 'parentId', 'parentPath', 'contentType', 'createdBy', 'isDeleted', 'deletedBy']);
+        contentFilter = this.removeNilProperties(contentFilter);
+        contentFilter = this.convertToMongoDbFilter(contentFilter, ['_id', 'parentId', 'createdBy', 'deletedBy']);
+
+        let contentLangFilter = pick(filter, ['name', 'urlSegment', 'language', 'status', 'startPublish', 'updatedAt']);
+        contentLangFilter = this.removeNilProperties(contentLangFilter);
+        contentLangFilter = this.convertToMongoDbFilter(contentLangFilter);
+        if (Object.keys(contentLangFilter).length > 0)
+            Object.assign(contentFilter, { contentLanguages: { $elemMatch: contentLangFilter } });
+
+        return contentFilter;
+    }
+
+    private getContentLanguageFilter(filter): FilterQuery<T & P> {
+        let contentFilter = pick(filter, ['name', 'urlSegment', 'language', 'status', 'startPublish', 'updatedAt', 'properties']);
+
+        contentFilter = this.removeNilProperties(contentFilter);
+        const contentLanguageFilter = {};
+        Object.keys(contentFilter).forEach(key => {
+            if (key === 'properties') {
+                Object.keys(contentFilter['properties']).forEach(field => {
+                    contentLanguageFilter[`contentLanguages.properties.${field}`] = contentFilter['properties'][field];
+                })
+            } else {
+                contentLanguageFilter[`contentLanguages.${key}`] = contentFilter[key];
+            }
+
+        })
+        return this.convertToMongoDbFilter(contentLanguageFilter);
+    }
+
+    private convertToMongoDbFilter(contentFilter, mongoObjectIdFields: string[] = []): any {
+        Object.keys(contentFilter).forEach(key => {
+            // convert string to ObjectId
+            if (mongoObjectIdFields.indexOf(key) !== -1) {
+                if (typeof contentFilter[key] === 'string') {
+                    contentFilter[key] = ObjectId(contentFilter[key]);
+                } else if (contentFilter[key].hasOwnProperty('$in')) {
+                    const ids = contentFilter[key]['$in'];
+                    contentFilter[key]['$in'] = Array.from(ids).map(id => ObjectId(id));
+                }
+            }
+        })
+
+        return contentFilter;
+    }
+
+    private getCombineContentSort(sort: MongoDbSort): MongoDbSort {
+        const contentSort = this.getContentSort(sort);
+        const languageSort = this.getContentLanguageSort(sort);
+        const combinedSort = { ...contentSort, ...languageSort };
+        const isHasCreatedAtSort = Object.keys(combinedSort).some(key => key === 'createdAt');
+        if (!isHasCreatedAtSort) {
+            combinedSort['createdAt'] = -1;
+        }
+        return combinedSort;
+    }
+
+    private getContentSort(sort: MongoDbSort): MongoDbSort {
+        const contentSort = pick(sort, ['parentId', 'parentPath', 'contentType', 'createdAt', 'updatedAt', 'deletedBy']);
+        return this.removeNilProperties(contentSort);
+    }
+
+    private getContentLanguageSort(sort: MongoDbSort): MongoDbSort {
+        let contentSort = pick(sort, ['name', 'urlSegment', 'language', 'status', 'startPublish', 'updatedAt', 'properties']);
+        contentSort = this.removeNilProperties(contentSort);
+        const contentLanguageSort = {};
+        Object.keys(contentSort).forEach(key => {
+            if (key === 'properties') {
+                Object.keys(contentSort['properties']).forEach(field => {
+                    contentLanguageSort[`contentLanguages.properties.${field}`] = contentSort['properties'][field];
+                })
+            } else {
+                contentLanguageSort[`contentLanguages.${key}`] = contentSort[key];
+            }
+
+        })
+        return contentLanguageSort;
+    }
+
+    private removeNilProperties(obj) {
+        //remove the undefined property
+        Object.keys(obj).forEach(key => {
+            if (obj[key] === null || obj[key] === undefined) {
+                delete obj[key];
+            }
+        })
+        return obj;
     }
 
     /**
