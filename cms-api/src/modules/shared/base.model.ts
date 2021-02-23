@@ -1,6 +1,8 @@
 import * as mongoose from 'mongoose';
 import { Document, Model, Query } from 'mongoose';
 
+export type QuerySort = { [key: string]: 'asc' | 'desc' | 1 | -1 };
+
 export type QueryOptions = {
     /**
      * The lean option tells Mongoose to skip hydrating the result documents. 
@@ -19,19 +21,19 @@ export type QueryOptions = {
 }
 
 /**
- * @typedef {Object} PaginateResult
+ * @typedef {Object} QueryResult
  * @param {Document[]} results - Results found
  * @param {number} page - Current page
  * @param {number} limit - Maximum number of results per page
  * @param {number} pages - Total number of pages
  * @param {number} total - Total number of documents
  */
-export type PaginateResult = {
-    docs: Document[]
-    page: number
-    limit: number
-    pages: number
-    total: number
+export type QueryResult<T> = {
+    docs: T[]
+    page?: number
+    limit?: number
+    pages?: number
+    total?: number
 }
 
 /**
@@ -44,6 +46,7 @@ export type PaginateOptions = {
     sortBy?: string
     limit?: number
     page?: number
+    sort?: QuerySort
 }
 
 export interface ICommonMetadata {

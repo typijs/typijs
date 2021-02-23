@@ -34,7 +34,7 @@ export abstract class ContentController<T extends IContentDocument, P extends IC
 
   async queryContent(req: express.Request, res: express.Response) {
     const { filter, page, limit, sort, project } = req.body;
-    const items = await this.contentService.queryContent(filter, page, limit, sort, project);
+    const items = await this.contentService.queryContent(filter, project, { page, limit, sort });
     res.status(httpStatus.OK).json(items);
   }
 
