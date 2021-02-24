@@ -4,10 +4,19 @@ export * from './slugify';
 export * from './groupBy';
 
 /**
- * Indicates whether a specified string is null, empty, or consists only of white-space characters.
+ * Indicates whether a specified string is `null`, `undefined`, empty, or consists only of white-space characters.
  * @param str
  * @returns Return `true` if string is null, empty, or consists only of white-space characters
  */
-export function isNullOrWhiteSpace(str: string): boolean {
+export function isNilOrWhiteSpace(str: string): boolean {
     return str === null || str === undefined || str.match(/^ *$/) !== null;
+}
+
+/**
+ * Indicates whether a value is `null` or `undefined`
+ * @param str
+ * @returns Return `true` if string is `null` or `undefined`
+ */
+export function isNil(value): boolean {
+    return value === null || value === undefined;
 }

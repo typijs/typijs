@@ -3,7 +3,8 @@ import { Injectable } from 'injection-js';
 import 'reflect-metadata';
 import { Cache, CacheService } from '../../caching';
 import { DocumentNotFoundException, Exception } from '../../error';
-import { isNullOrWhiteSpace } from '../../utils';
+import { isNilOrWhiteSpace } from '../../utils';
+import { Dictionary } from '../../utils/dictionary';
 import { slugify } from '../../utils/slugify';
 import { ContentVersionService } from '../content/content-version.service';
 import { ContentService } from '../content/content.service';
@@ -99,7 +100,7 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
     })
     private async buildLinkUrlTuple(currentId: string, parentPath: string, currentUrlSegment: string, language: string, siteDefinition: [string, string]): Promise<[string, string]> {
 
-        const parentIds = parentPath ? parentPath.split(',').filter(id => !isNullOrWhiteSpace(id)) : [];
+        const parentIds = parentPath ? parentPath.split(',').filter(id => !isNilOrWhiteSpace(id)) : [];
 
         const [startPageId, defaultLang] = siteDefinition;
 
@@ -108,23 +109,35 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
 
         const matchStartIndex = parentIds.indexOf(startPageId);
         // TODO: should use the getContentItems method
+        const queryParentIds = parentIds.filter(id => parentIds.indexOf(id) > matchStartIndex);
+        const urlSegmentDic = await this.getUrlSegmentByPageIds(queryParentIds, language);
         for (let i = matchStartIndex + 1; i < parentIds.length; i++) {
-            const urlSegment = await this.getUrlSegmentByPageId(parentIds[i], language);
-            urlSegments.push(urlSegment);
+            urlSegments.push(urlSegmentDic[parentIds[i]]);
         }
 
         if (currentId != startPageId) { urlSegments.push(currentUrlSegment); }
-        return [currentId, `/${urlSegments.filter(segment => !isNullOrWhiteSpace(segment)).join('/')}`];
+        return [currentId, `/${urlSegments.filter(segment => !isNilOrWhiteSpace(segment)).join('/')}`];
     }
 
-    @Cache({
-        prefixKey: PageService.PrefixCacheKey,
-        suffixKey: (args) => `${args[0]}:${args[1]}`
-    })
-    private async getUrlSegmentByPageId(id: string, language: string): Promise<string> {
-        const project = { _id: 1, contentId: 1, language: 1, urlSegment: 0 };
-        const currentContent = await this.getContent(id, language, null, project)
-        return currentContent.urlSegment;
+    // @Cache({
+    //     prefixKey: PageService.PrefixCacheKey,
+    //     suffixKey: (args) => `${args[0]}:${args[1]}`
+    // })
+    // private async getUrlSegmentByPageId(id: string, language: string): Promise<string> {
+    //     const project = { _id: 1, language: 1, urlSegment: 0 };
+    //     const currentContent = await this.getContent(id, language, null, project);
+    //     return currentContent.urlSegment;
+    // }
+
+    private async getUrlSegmentByPageIds(ids: string[], language: string): Promise<Dictionary<string>> {
+        const project = { language: 1, urlSegment: 1 };
+        const filter = { _id: { $in: ids }, language }
+        const queryResult = await this.queryContent(filter, project);
+        const dictionaryUrl: Dictionary<string> = {};
+        queryResult.docs.forEach(page => {
+            dictionaryUrl[page._id] = page.urlSegment;
+        })
+        return dictionaryUrl;
     }
 
     /**
@@ -153,7 +166,7 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
     private splitPathNameToUrlSegments = (pathname: string, language: string): string[] => {
         if (!pathname) return [];
 
-        const paths = pathname.split('/').filter(id => !isNullOrWhiteSpace(id));
+        const paths = pathname.split('/').filter(id => !isNilOrWhiteSpace(id));
         if (paths.length == 0) return [];
 
         if (paths[0] == language) paths.splice(0, 1);
@@ -188,7 +201,7 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
      */
     private getLanguageFromUrl = async (url: URL, fallbackLanguage: string): Promise<string> => {
         const pathUrl = url.pathname; // --> /abc/xyz
-        const paths = pathUrl.split('/').filter(id => !isNullOrWhiteSpace(id));
+        const paths = pathUrl.split('/').filter(id => !isNilOrWhiteSpace(id));
 
         if (paths.length > 0) {
             const languageCode = paths[0];

@@ -1,5 +1,6 @@
 import * as mongoose from 'mongoose';
 import { FilterQuery } from "mongoose";
+import { isNil } from '../../utils';
 import { pick } from "../../utils/pick";
 import { QuerySort } from '../shared/base.model';
 const ObjectId = mongoose.Types.ObjectId;
@@ -22,7 +23,7 @@ export class QueryHelper {
             'updatedAt',
             'parentId',
             'parentPath']);
-        const resultProject = this.removeNilProperties(contentProject);
+        const resultProject = this.removeUndefinedProperties(contentProject);
 
         let contentLangProject = pick(project, [
             'name',
@@ -38,7 +39,7 @@ export class QueryHelper {
             'updatedBy',
             'publishedBy',
             'properties']);
-        contentLangProject = this.removeNilProperties(contentLangProject);
+        contentLangProject = this.removeUndefinedProperties(contentLangProject);
         Object.keys(contentLangProject).forEach(key => {
             resultProject[`contentLanguages.${key}`] = contentLangProject[key];
         })
@@ -48,11 +49,11 @@ export class QueryHelper {
     static getContentFilter(filter): FilterQuery<any> {
         // IContent filter
         let contentFilter = pick(filter, ['_id', 'hasChildren', 'parentId', 'parentPath', 'contentType', 'createdBy', 'isDeleted', 'deletedBy']);
-        contentFilter = this.removeNilProperties(contentFilter);
+        contentFilter = this.removeUndefinedProperties(contentFilter);
         contentFilter = this.convertToMongoDbFilter(contentFilter, ['_id', 'parentId', 'createdBy', 'deletedBy']);
 
         let contentLangFilter = pick(filter, ['name', 'urlSegment', 'language', 'status', 'startPublish', 'updatedAt']);
-        contentLangFilter = this.removeNilProperties(contentLangFilter);
+        contentLangFilter = this.removeUndefinedProperties(contentLangFilter);
         contentLangFilter = this.convertToMongoDbFilter(contentLangFilter);
         if (Object.keys(contentLangFilter).length > 0)
             Object.assign(contentFilter, { contentLanguages: { $elemMatch: contentLangFilter } });
@@ -63,7 +64,7 @@ export class QueryHelper {
     static getContentLanguageFilter(filter): FilterQuery<any> {
         let contentFilter = pick(filter, ['name', 'urlSegment', 'language', 'status', 'startPublish', 'updatedAt', 'properties']);
 
-        contentFilter = this.removeNilProperties(contentFilter);
+        contentFilter = this.removeUndefinedProperties(contentFilter);
         const contentLanguageFilter = {};
         Object.keys(contentFilter).forEach(key => {
             if (key === 'properties') {
@@ -91,12 +92,12 @@ export class QueryHelper {
 
     private static getContentSort(sort: QuerySort): QuerySort {
         const contentSort = pick(sort, ['parentId', 'parentPath', 'contentType', 'createdAt', 'updatedAt', 'deletedBy']);
-        return this.removeNilProperties(contentSort);
+        return this.removeUndefinedProperties(contentSort);
     }
 
     private static getContentLanguageSort(sort: QuerySort): QuerySort {
         let contentSort = pick(sort, ['name', 'urlSegment', 'language', 'status', 'startPublish', 'updatedAt', 'properties']);
-        contentSort = this.removeNilProperties(contentSort);
+        contentSort = this.removeUndefinedProperties(contentSort);
         const contentLanguageSort = {};
         Object.keys(contentSort).forEach(key => {
             if (key === 'properties') {
@@ -117,9 +118,21 @@ export class QueryHelper {
             if (mongoObjectIdFields.indexOf(key) !== -1) {
                 if (typeof contentFilter[key] === 'string') {
                     contentFilter[key] = ObjectId(contentFilter[key]);
-                } else if (contentFilter[key].hasOwnProperty('$in')) {
-                    const ids = contentFilter[key]['$in'];
-                    contentFilter[key]['$in'] = Array.from(ids).map((id: string) => ObjectId(id));
+                } else if (!isNil(contentFilter[key])) {
+                    Object.keys(contentFilter[key]).forEach(field => {
+                        switch (field) {
+                            case '$in':
+                                const ids = contentFilter[key]['$in'];
+                                contentFilter[key]['$in'] = Array.from(ids).map((id: string) => ObjectId(id));
+                                break;
+                            case '$ne':
+                            case '$eq':
+                                const id = contentFilter[key][field];
+                                contentFilter[key][field] = ObjectId(id);
+                                break;
+                        }
+                    })
+
                 }
             }
         })
@@ -127,10 +140,10 @@ export class QueryHelper {
         return contentFilter;
     }
 
-    private static removeNilProperties(obj) {
+    private static removeUndefinedProperties(obj) {
         //remove the undefined property
         Object.keys(obj).forEach(key => {
-            if (obj[key] === null || obj[key] === undefined) {
+            if (obj[key] === undefined) {
                 delete obj[key];
             }
         })

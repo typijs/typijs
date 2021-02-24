@@ -1,6 +1,6 @@
 import { DocumentNotFoundException } from "../error";
 import { ParamNullException } from "../error/exceptions/ParamNullException";
-import { isNullOrWhiteSpace } from "../utils";
+import { isNilOrWhiteSpace } from "../utils";
 
 export class Validator {
     /**
@@ -18,7 +18,7 @@ export class Validator {
      * @param value 
      */
     static throwIfNullOrEmpty(name: string, value: string): void {
-        if (isNullOrWhiteSpace(value)) throw new ParamNullException(name);
+        if (isNilOrWhiteSpace(value)) throw new ParamNullException(name);
     }
 
     /**

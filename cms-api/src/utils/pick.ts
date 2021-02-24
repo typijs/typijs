@@ -10,5 +10,6 @@
  * @param props 
  */
 export const pick = (obj, props: string[]) => {
+    if (!obj) return {};
     return Object.assign({}, ...props.filter(prop => obj.hasOwnProperty(prop)).map(prop => ({ [prop]: obj[prop] })));
 }

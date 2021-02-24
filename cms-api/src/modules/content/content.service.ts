@@ -15,6 +15,7 @@ import {
 } from './content.model';
 import { VersionStatus } from "./version-status";
 import { QueryHelper } from './query-helper';
+import { isNil } from '../../utils';
 const ObjectId = mongoose.Types.ObjectId;
 
 
@@ -77,28 +78,20 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         Validator.throwIfNull('contentId', id);
 
         if (!language) { language = this.EMPTY_LANGUAGE };
-        const arrayLanguagesFilter = statuses ? { language, status: { $in: statuses } } : { language };
-        const filter = { _id: ObjectId(id), isDeleted: false, contentLanguages: { $elemMatch: arrayLanguagesFilter } }
 
-        const nestedLanguagesFilter = {};
-        Object.keys(arrayLanguagesFilter).forEach(key => {
-            nestedLanguagesFilter[`contentLanguages.${key}`] = arrayLanguagesFilter[key];
-        })
-        let queryBuilder = this.Model.aggregate<T & P>()
-            .match(filter)
-            .unwind('$contentLanguages')
-            .match(nestedLanguagesFilter)
-            .replaceRoot({ $mergeObjects: ["$contentLanguages", "$$ROOT"] });
-
-        if (project) {
-            queryBuilder = queryBuilder.project(project);
+        const statusFilter = statuses ? { status: { $in: statuses } } : undefined;
+        const filter = {
+            _id: ObjectId(id),
+            isDeleted: false,
+            language,
+            statusFilter
         }
 
-        const currentContent = await queryBuilder;
-        if (currentContent.length == 0)
+        const queryResult = await this.queryContent(filter, project);
+        if (queryResult.docs.length == 0)
             Validator.throwIfNotFound('Content', null, { _id: id, isDeleted: false, status: statuses });
 
-        return currentContent[0];
+        return queryResult.docs[0];
     }
 
     /**
@@ -106,7 +99,7 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
      * @param parentId 
      * @param language 
      * @param [host] optional
-     * @param project (Optional) The Mongodb $project select field syntax (for example: `{_id: 1,  username: 1, password: 0}`)
+     * @param project (Optional) The Mongodb $project select field syntax (for example: `{  username: 1 }`)
      * @returns The array of children 
      */
     async getContentChildren(parentId: string, language: string, host?: string, project?: { [key: string]: any }): Promise<Array<T & P>> {
@@ -116,22 +109,11 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
             parentId: parentId ? ObjectId(parentId) : null,
             contentType: { $ne: null },
             isDeleted: false,
-            contentLanguages: { $elemMatch: { language } }
+            language
         };
 
-        let queryBuilder = this.Model.aggregate<T & P>()
-            .match(filter)
-            .unwind('$contentLanguages')
-            .match({ 'contentLanguages.language': language })
-            .replaceRoot({ $mergeObjects: ["$contentLanguages", "$$ROOT"] })
-            .project({ contentLanguages: 0 });
-
-        if (project) {
-            queryBuilder = queryBuilder.project(project);
-        }
-
-        const contentChildren = await queryBuilder;
-        return contentChildren;
+        const queryResult = await this.queryContent(filter, project);
+        return queryResult.docs;
     }
 
     /**
@@ -215,7 +197,7 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
      * @returns {Object} Return `PaginateResult` object if the `paginateOptions` param be passed otherwise return array of `Document`
      */
     async queryContent(
-        filter: FilterQuery<T & P>,
+        filter: any,
         project?: { [key: string]: any },
         paginateOptions?: PaginateOptions
     ): Promise<QueryResult<T & P>> {
@@ -233,7 +215,7 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
             .match(contentLangFilter)
             .project(contentProject)
 
-        if (paginateOptions) {
+        if (paginateOptions && !isNil(paginateOptions.page) && !isNil(paginateOptions.limit)) {
             const { page, limit, sort } = paginateOptions;
             const skip = (page - 1) * limit;
             const contentSort = QueryHelper.getCombineContentSort(sort);
@@ -272,6 +254,10 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
                 limit
             }
         } else {
+            if (paginateOptions && !isNil(paginateOptions.sort)) {
+                const contentSort = QueryHelper.getCombineContentSort(paginateOptions.sort);
+                queryBuilder = queryBuilder.sort(contentSort);
+            }
             queryBuilder = queryBuilder
                 .replaceRoot({ $mergeObjects: ["$contentLanguages", "$$ROOT"] })
                 .project({ "contentLanguages": 0 })
