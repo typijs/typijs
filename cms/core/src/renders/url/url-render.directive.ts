@@ -11,6 +11,7 @@ import { PropertyDirectiveBase } from '../property-directive.base';
 export class UrlRenderDirective extends PropertyDirectiveBase implements OnInit {
     @HostBinding('attr.href') href: SafeUrl;
     @HostBinding('attr.target') target: LinkTarget;
+    @HostBinding('attr.title') title: string;
 
     @Input('cmsUrl') urlItem: UrlItem;
     url: string;
@@ -38,6 +39,7 @@ export class UrlRenderDirective extends PropertyDirectiveBase implements OnInit 
                 });
             } else {
                 this.href = this.urlResolve.getHrefFromUrlItem(this.urlItem);
+                this.title = this.urlItem.title;
             }
         }
     }

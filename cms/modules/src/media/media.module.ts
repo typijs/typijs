@@ -58,7 +58,7 @@ export class MediaModule {
                 { provide: EDITOR_ROUTES, useValue: mediaRoutes, multi: true },
                 {
                     provide: EDITOR_WIDGETS, useValue: {
-                        group: 'Medias',
+                        group: 'Media',
                         position: CmsWidgetPosition.Right,
                         component: MediaTreeComponent,
                         order: 10

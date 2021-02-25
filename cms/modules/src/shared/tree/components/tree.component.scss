@@ -11,18 +11,18 @@
     margin: 0;
 
     .node-value {
-      line-height: 32px;
+      line-height: 23px;
       position: relative;
 
-      .tree-icon {
-        width: 10px;
+      .node-template {
+        width: calc(100% - 35px);
       }
 
       .node-menu {
         display: none;
+        cursor: pointer;
         position: absolute;
         right: 0;
-        cursor: pointer;
       }
 
       &:hover {
@@ -43,8 +43,7 @@
       }
 
       .no-children {
-        width: 10px;
-        height: 19px;
+        width: 12px;
         display: inline-block;
       }
     }
