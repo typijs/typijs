@@ -79,12 +79,11 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
 
         if (!language) { language = this.EMPTY_LANGUAGE };
 
-        const statusFilter = statuses ? { status: { $in: statuses } } : undefined;
         const filter = {
             _id: ObjectId(id),
             isDeleted: false,
             language,
-            statusFilter
+            status: statuses ? { $in: statuses } : undefined
         }
 
         const queryResult = await this.queryContent(filter, project);

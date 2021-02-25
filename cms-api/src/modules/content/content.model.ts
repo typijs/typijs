@@ -117,7 +117,7 @@ export const ContentLanguageSchema = new mongoose.Schema({
     ...PublishContentSchema.obj,
     ...ContentHasChildItemsSchema.obj,
     language: { type: String, required: true },
-    name: { type: String, required: true },
+    name: { type: String, required: true, index: true },
     properties: mongoose.Schema.Types.Mixed,
     status: { type: Number, required: true, default: 2 }
 });

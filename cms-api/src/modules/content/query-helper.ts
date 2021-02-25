@@ -38,7 +38,9 @@ export class QueryHelper {
             'createdAt',
             'updatedBy',
             'publishedBy',
-            'properties']);
+            'properties',
+            'simpleAddress',
+            'linkUrl']);
         contentLangProject = this.removeUndefinedProperties(contentLangProject);
         Object.keys(contentLangProject).forEach(key => {
             resultProject[`contentLanguages.${key}`] = contentLangProject[key];

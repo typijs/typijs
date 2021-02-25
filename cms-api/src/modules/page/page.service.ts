@@ -182,8 +182,7 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
     private recursiveResolvePageByUrlSegment = async (parentPageId: string, segments: string[], language: string, index: number): Promise<IPageDocument & IPageLanguageDocument> => {
         // get page children
         const project = { _id: 1, urlSegment: 1, language: 1, status: 1 };
-        const childrenPage = (await super.getContentChildren(parentPageId, language, null, project))
-            .filter(x => x.status == VersionStatus.Published);
+        const childrenPage = (await super.getContentChildren(parentPageId, language, null, project));
         if (!childrenPage || childrenPage.length == 0) return null;
 
         const matchPage = childrenPage.find(page => page.urlSegment == segments[index]);
