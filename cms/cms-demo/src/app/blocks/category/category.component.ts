@@ -8,7 +8,7 @@ import { CategoryBlock } from './category.blocktype';
         <div [class]="'category-wrap  img d-flex align-items-end ' + currentContent.classes"
             [ngStyle]="{ 'background-image': 'url(' + (currentContent.image | toImgSrc) + ')'}">
             <div class="text px-3 py-1">
-                <h2 class="mb-0"><a href="#" [cmsText]="currentContent.heading"></a></h2>
+                <h2 class="mb-0"><a [cmsUrl]="currentContent.link"></a></h2>
             </div>
         </div>
 `
