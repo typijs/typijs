@@ -8,12 +8,10 @@ import { TreeService } from '../shared/tree/interfaces/tree-service';
 
 @Injectable()
 export class MediaTreeReadonlyService implements TreeService {
-
     constructor(protected mediaService: MediaService, protected languageService: LanguageService) { }
 
     getNode(nodeId: string): Observable<TreeNode> {
-        const language = this.languageService.getLanguageParam();
-        return this.mediaService.getContent(nodeId, language).pipe(
+        return this.mediaService.getContent(nodeId, this.languageService.EMPTY_LANGUAGE).pipe(
             map(media => TreeNode.createInstanceFromContent(media, FOLDER_MEDIA)));
     }
 
