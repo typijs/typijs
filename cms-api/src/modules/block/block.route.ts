@@ -15,7 +15,7 @@ export class BlockRouter {
         block.get('/folders/:parentId?', this.blockController.getFoldersByParentId.bind(this.blockController));
 
         block.get('/children/:parentId?', this.langGuard.checkEnabled(), this.blockController.getContentChildren.bind(this.blockController));
-
+        block.get('/ancestors/:id', this.langGuard.checkEnabled(), this.blockController.getAncestors.bind(this.blockController));
         block.post('/folder', this.blockController.createFolderContent.bind(this.blockController));
 
         block.put('/folder/:id', this.blockController.updateFolderName.bind(this.blockController));

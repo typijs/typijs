@@ -46,6 +46,44 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
     }
 
     /**
+     * Gets page children by parent id
+     * @param parentId 
+     * @param language 
+     * @param [host] 
+     * @param select The fields select syntax like 'a,-b,c'
+     * @returns The array of children 
+     */
+    async getContentChildren(parentId: string, language: string, host?: string, select?: string): Promise<Array<IPageDocument & IPageLanguageDocument>> {
+
+        const pageChildren = await super.getContentChildren(parentId, language, host, select)
+        if (pageChildren.length == 0) return [];
+
+        const linkArray: Array<[string, string]> = await this.buildManyLinkTuples(pageChildren, language, host);
+
+        pageChildren.forEach(page => {
+            const linkTuple = linkArray.find(x => x[0] == page._id.toString());
+            if (linkTuple) page.linkUrl = linkTuple[1];
+        })
+
+        return pageChildren;
+    }
+
+
+    async getAncestors(id: string, language: string, host?: string, select?: string) {
+        const ancestors = await super.getAncestors(id, language, host, select);
+        if (ancestors.length == 0) return [];
+
+        const linkArray: Array<[string, string]> = await this.buildManyLinkTuples(ancestors, language, host);
+
+        ancestors.forEach(page => {
+            const linkTuple = linkArray.find(x => x[0] == page._id.toString());
+            if (linkTuple) page.linkUrl = linkTuple[1];
+        })
+
+        return ancestors;
+    }
+
+    /**
      * Gets link urls of multi pages
      * @param ids 
      * @param language 
@@ -211,29 +249,6 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
 
         const langDoc = await this.languageService.getLanguageByCode(fallbackLanguage);
         return langDoc ? langDoc.language : undefined;
-    }
-
-    /**
-     * Gets page children by parent id
-     * @param parentId 
-     * @param language 
-     * @param [host] 
-     * @param project (Optional) The Mongodb $project select field syntax (for example: `{_id: 1,  username: 1, password: 0}`)
-     * @returns The array of children 
-     */
-    async getContentChildren(parentId: string, language: string, host?: string, project?: { [key: string]: number }): Promise<Array<IPageDocument & IPageLanguageDocument>> {
-
-        const pageChildren = await super.getContentChildren(parentId, language, host, project)
-        if (pageChildren.length == 0) return [];
-
-        const linkArray: Array<[string, string]> = await this.buildManyLinkTuples(pageChildren, language, host);
-
-        pageChildren.forEach(page => {
-            const linkItem = linkArray.find(x => x[0] == page._id.toString());
-            if (linkItem) page.linkUrl = linkItem[1];
-        })
-
-        return pageChildren;
     }
 
     public executeCreateContentFlow = async (pageObj: IPageDocument & IPageLanguageDocument, language: string, userId: string): Promise<IPageDocument & IPageVersionDocument> => {

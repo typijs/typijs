@@ -21,7 +21,27 @@ export abstract class ContentController<T extends IContentDocument, P extends IC
 
   async getContent(req: express.Request, res: express.Response) {
     const { language } = req as any;
-    const createdContent = await this.contentService.getContent(req.params.id, language);
+    const { select } = req.query;
+    const createdContent = await this.contentService.getContent(req.params.id, language, undefined, select);
+    res.status(httpStatus.OK).json(createdContent)
+  }
+
+  @Profiler({
+    outputConsole: true,
+    thresholdInMs: 300,
+    parametersAsString: (args) => `${args[0].params.parentId}, ${args[0]['language']}, ${args[0].query.host}`
+  })
+  async getContentChildren(req: express.Request, res: express.Response) {
+    const { language } = req as any;
+    const { host, select } = req.query;
+    const items = await this.contentService.getContentChildren(req.params.parentId, language, host, select);
+    res.status(httpStatus.OK).json(items)
+  }
+
+  async getAncestors(req: express.Request, res: express.Response) {
+    const { language } = req as any;
+    const { select } = req.query;
+    const createdContent = await this.contentService.getAncestors(req.params.id, language, select);
     res.status(httpStatus.OK).json(createdContent)
   }
 
@@ -36,17 +56,6 @@ export abstract class ContentController<T extends IContentDocument, P extends IC
     const { filter, page, limit, sort, project } = req.body;
     const items = await this.contentService.queryContent(filter, project, { page, limit, sort });
     res.status(httpStatus.OK).json(items);
-  }
-
-  @Profiler({
-    outputConsole: true,
-    thresholdInMs: 300,
-    parametersAsString: (args) => `${args[0].params.parentId}, ${args[0]['language']}, ${args[0].query.host}`
-  })
-  async getContentChildren(req: express.Request, res: express.Response) {
-    const { language } = req as any;
-    const items = await this.contentService.getContentChildren(req.params.parentId, language, req.query.host);
-    res.status(httpStatus.OK).json(items)
   }
 
   @Authorize({ roles: AdminOrEditor })

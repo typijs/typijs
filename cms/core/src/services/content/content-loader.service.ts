@@ -59,8 +59,12 @@ export class ContentLoader {
         throw new Error('Not implemented');
     }
 
-    getAncestors(contentLink: ContentReference, loaderOptions?: LoaderOptions): Observable<ContentData[]> {
-        throw new Error('Not implemented');
+    getAncestors(contentLink: ContentReference, language?: string, select?: string, loaderOptions?: LoaderOptions): Observable<ContentData[]> {
+        const contentService = this.contentServiceResolver.resolveContentProviderFactory(contentLink.type);
+        return contentService.getAncestors(contentLink.id, language, select).pipe(
+            map((ancestors: Content[]) => ancestors.map(content => contentService.getContentData(content)))
+        );
+    }
     }
 
     getItems(contentLinks: ContentReference[], language?: string, statuses?: number[], isDeepPopulate?: boolean): Observable<Content[]> {

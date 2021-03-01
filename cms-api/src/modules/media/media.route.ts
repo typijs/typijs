@@ -17,7 +17,7 @@ export class MediaRouter {
         media.get('/folders/:parentId?', this.mediaController.getFoldersByParentId.bind(this.mediaController));
 
         media.get('/children/:parentId?', this.langGuard.checkEnabled(), this.mediaController.getContentChildren.bind(this.mediaController));
-
+        media.get('/ancestors/:id', this.langGuard.checkEnabled(), this.mediaController.getAncestors.bind(this.mediaController));
         media.post('/folder', this.mediaController.createFolderContent.bind(this.mediaController));
 
         media.put('/folder/:id', this.mediaController.updateFolderName.bind(this.mediaController));

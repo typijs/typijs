@@ -38,6 +38,11 @@ export abstract class ContentService<T extends Content> extends FolderService<T>
         const host = this.locationService.getLocation().host;
         const query = convertObjectToUrlQueryString({ language, host });
         return this.httpClient.get<T>(`${this.apiUrl}/${contentId}?${query}`);
+
+    getAncestors(contentId: string, language?: string, select?: string): Observable<T[]> {
+        const host = this.locationService.getLocation().host;
+        const query = convertObjectToUrlQueryString({ language, host, select });
+        return this.httpClient.get<T[]>(`${this.apiUrl}/ancestors/${contentId}?${query}`);
     }
 
     /**

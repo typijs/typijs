@@ -115,6 +115,27 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         return queryResult.docs;
     }
 
+    async getAncestors(id: string, language: string, host?: string, select?: string) {
+        const content = await this.getContent(id, language, null, '_id, parentId, parentPath, ancestors');
+        Validator.throwIfNotFound('getAncestors of content', { id, language, select });
+
+        const parentIds = content.parentPath.split(',').filter(id => !isNil(id));
+        const filter = {
+            _id: { $in: parentIds },
+            language
+        }
+        const resultQuery = await this.queryContent(filter, select);
+        const ancestors = resultQuery.docs;
+        const orderedAncestors = [];
+        parentIds.forEach(id => {
+            const ancestor = ancestors.find(x => x._id === id);
+            if (ancestor) {
+                orderedAncestors.push(ancestor);
+            }
+        });
+        return orderedAncestors;
+    }
+
     /**
      * Gets content items details by array of ids
      * @param ids 

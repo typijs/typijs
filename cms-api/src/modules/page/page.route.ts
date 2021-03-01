@@ -16,7 +16,7 @@ export class PageRouter {
         page.get('/published/:url', this.pageController.getByUrl.bind(this.pageController));
         //get children of page
         page.get('/children/:parentId', this.langGuard.checkEnabled(), this.pageController.getContentChildren.bind(this.pageController));
-
+        page.get('/ancestors/:id', this.langGuard.checkEnabled(), this.pageController.getAncestors.bind(this.pageController));
         //get page without populate
         page.get('/:id', this.langGuard.checkEnabled(), this.pageController.getContent.bind(this.pageController));
         //move page from parent to another one
