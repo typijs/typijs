@@ -1,7 +1,8 @@
 import { DocumentNotFoundException } from '../../error';
-import { slugify } from '../../utils';
+import { isNil, slugify } from '../../utils';
 import { IContentDocument, IContentLanguageDocument, IContentModel } from "../content/content.model";
 import { VersionStatus } from "../content/version-status";
+import { ObjectId, PaginateOptions, QueryResult } from '../shared/base.model';
 import { BaseService } from '../shared/base.service';
 
 export abstract class FolderService<T extends IContentDocument, P extends IContentLanguageDocument> extends BaseService<T>{
@@ -25,7 +26,7 @@ export abstract class FolderService<T extends IContentDocument, P extends IConte
         });
 
         //Step2: Create folder in default language
-        const folderLang: unknown = {
+        const folderLang = {
             name: contentFolder.name,
             //for media folder
             urlSegment: slugify(contentFolder.name),
@@ -44,7 +45,7 @@ export abstract class FolderService<T extends IContentDocument, P extends IConte
         const savedFolder = await this.createContent(contentFolder, parentFolder, userId);
         if (savedFolder) await this.updateHasChildren(parentFolder);
 
-        return this.mergeToContentLanguage(savedFolder, folderLang);
+        return this.mergeToContentLanguage(savedFolder, folderLang as any);
     }
 
     /**
@@ -59,42 +60,45 @@ export abstract class FolderService<T extends IContentDocument, P extends IConte
         currentLang.updatedBy = userId;
 
         const savedFolder = await currentFolder.save();
-        return this.mergeToContentLanguage(savedFolder, savedFolder.contentLanguages[0]);
+        return this.mergeToContentLanguage(savedFolder, savedFolder.contentLanguages[0] as any);
     }
 
-    public getFolderChildren = async (parentId: string): Promise<Array<T & P>> => {
+    public getFolderChildren = async (parentId: string, project?: { [key: string]: any }): Promise<Array<T & P>> => {
         if (parentId == '0') parentId = null;
 
-        const folderChildren = await this.find({
-            parentId: parentId,
-            isDeleted: false,
+        const filter = {
+            parentId: parentId ? ObjectId(parentId) : null,
             contentType: null,
-            'contentLanguages.language': this.EMPTY_LANGUAGE
-        } as any, { lean: true }).exec();
-
-        return folderChildren.map(x => {
-            const contentLanguage = x.contentLanguages.find(contentLang => contentLang.language === this.EMPTY_LANGUAGE);
-            return this.mergeToContentLanguage(x, contentLanguage);
-        })
-    }
-
-    protected mergeToContentLanguage(content: T, contentLang: Partial<IContentLanguageDocument>): T & P {
-        const contentJson: any = content && typeof content.toJSON === 'function' ? content.toJSON() : content;
-        const contentLangJson: any = contentLang && typeof contentLang.toJSON === 'function' ? contentLang.toJSON() : contentLang;
-
-        if (contentLangJson && contentLangJson.childItems) {
-            const language = contentLangJson.language;
-            contentLangJson.childItems.forEach(childItem => {
-                const publishedItem = childItem.content?.contentLanguages?.find((cLang: P) => cLang.language === language && cLang.status == VersionStatus.Published) as P;
-                childItem.content = this.mergeToContentLanguage(childItem.content, publishedItem);
-            });
+            isDeleted: false,
+            language: this.EMPTY_LANGUAGE
+        };
+        if (isNil(project)) {
+            project = {
+                _id: 1,
+                parentId: 1,
+                contentType: 1,
+                language: 1,
+                name: 1,
+                hasChildren: 1,
+                peerOrder: 1,
+                childOrderRule: 1
+            }
         }
 
-        const contentLanguageData: T & P = Object.assign(contentLangJson ?? {} as any, contentJson);
-
-        delete contentLanguageData.contentLanguages;
-        return contentLanguageData;
+        const queryResult = await this.queryContent(filter, project);
+        return queryResult.docs;
     }
+
+    protected abstract mergeToContentLanguage(content: T, contentLang: P): T & P;
+
+    /**
+     * Query content using aggregation function
+     * @param filter {FilterQuery<T & P>} The filter to query content
+     * @param project {{ [key: string]: any }} (Optional) project aggregation for example: { name: 1, language: 1}
+     * @param paginateOptions {PaginateOptions} (Optional) Last row to return in results
+     * @returns {Object} Return `PaginateResult` object
+     */
+    abstract queryContent(filter: any, project?: { [key: string]: any }, paginateOptions?: PaginateOptions): Promise<QueryResult<T & P>>;
 
     protected abstract createContent(newContent: T, parentContent: T, userId: string): Promise<T>;
 

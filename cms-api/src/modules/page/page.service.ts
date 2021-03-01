@@ -146,7 +146,6 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         if (defaultLang !== language) { urlSegments.push(language); }
 
         const matchStartIndex = parentIds.indexOf(startPageId);
-        // TODO: should use the getContentItems method
         const queryParentIds = parentIds.filter(id => parentIds.indexOf(id) > matchStartIndex);
         const urlSegmentDic = await this.getUrlSegmentByPageIds(queryParentIds, language);
         for (let i = matchStartIndex + 1; i < parentIds.length; i++) {
@@ -156,16 +155,6 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         if (currentId != startPageId) { urlSegments.push(currentUrlSegment); }
         return [currentId, `/${urlSegments.filter(segment => !isNilOrWhiteSpace(segment)).join('/')}`];
     }
-
-    // @Cache({
-    //     prefixKey: PageService.PrefixCacheKey,
-    //     suffixKey: (args) => `${args[0]}:${args[1]}`
-    // })
-    // private async getUrlSegmentByPageId(id: string, language: string): Promise<string> {
-    //     const project = { _id: 1, language: 1, urlSegment: 0 };
-    //     const currentContent = await this.getContent(id, language, null, project);
-    //     return currentContent.urlSegment;
-    // }
 
     private async getUrlSegmentByPageIds(ids: string[], language: string): Promise<Dictionary<string>> {
         const project = { language: 1, urlSegment: 1 };
@@ -219,8 +208,8 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
 
     private recursiveResolvePageByUrlSegment = async (parentPageId: string, segments: string[], language: string, index: number): Promise<IPageDocument & IPageLanguageDocument> => {
         // get page children
-        const project = { _id: 1, urlSegment: 1, language: 1, status: 1 };
-        const childrenPage = (await super.getContentChildren(parentPageId, language, null, project));
+        const select = '_id,urlSegment,language,status';
+        const childrenPage = (await super.getContentChildren(parentPageId, language, null, select));
         if (!childrenPage || childrenPage.length == 0) return null;
 
         const matchPage = childrenPage.find(page => page.urlSegment == segments[index]);

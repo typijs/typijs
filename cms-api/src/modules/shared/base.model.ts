@@ -1,6 +1,8 @@
 import * as mongoose from 'mongoose';
 import { Document, Model, Query } from 'mongoose';
 
+export const ObjectId = mongoose.Types.ObjectId;
+
 export type QuerySort = { [key: string]: 'asc' | 'desc' | 1 | -1 };
 
 export type QueryOptions = {

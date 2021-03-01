@@ -1,46 +1,65 @@
-import * as mongoose from 'mongoose';
 import { FilterQuery } from "mongoose";
 import { isNil } from '../../utils';
 import { pick } from "../../utils/pick";
-import { QuerySort } from '../shared/base.model';
-const ObjectId = mongoose.Types.ObjectId;
+import { ObjectId, QuerySort } from '../shared/base.model';
 
 export class QueryHelper {
-    static getContentProjection(project) {
+    static readonly contentFields: string[] = [
+        '_id',
+        'parentId',
+        'parentPath',
+        'ancestors',
+        'hasChildren',
+        'childOrderRule',
+        'peerOrder',
+        'visibleInMenu',
 
-        let contentProject = pick(project, [
-            'ancestors',
-            'hasChildren',
-            'childOrderRule',
-            'peerOrder',
-            'isDeleted',
-            'visibleInMenu',
-            'contentType',
-            'masterLanguageId',
-            'createdBy',
-            'createdAt',
-            'updatedBy',
-            'updatedAt',
-            'parentId',
-            'parentPath']);
+        'isDeleted',
+        'deletedAt',
+        'deletedBy',
+
+        'contentType',
+        'masterLanguageId',
+
+        'createdBy',
+        'createdAt',
+        'updatedBy',
+        'updatedAt'
+    ];
+
+    static readonly contentLanguageFields: string[] = [
+        'name',
+        'language',
+        'versionId',
+
+        'urlSegment',
+        'properties',
+        'childItems',
+        'status',
+
+        'updatedAt',
+        'createdBy',
+        'createdAt',
+        'updatedBy',
+
+        'startPublish',
+        'stopPublish',
+        'delayPublishUntil',
+        'publishedBy',
+
+        'simpleAddress',
+        'linkUrl'
+    ];
+
+    static getContentProjection(project: string | { [key: string]: any }) {
+        if (isNil(project)) return { _v: 0 };
+
+        const projectObj = typeof project === 'string' ? this.parseUnaries(project) : project;
+
+        let contentProject = pick(projectObj, this.contentFields);
         const resultProject = this.removeUndefinedProperties(contentProject);
 
-        let contentLangProject = pick(project, [
-            'name',
-            'urlSegment',
-            'language',
-            'status',
-            'startPublish',
-            'updatedAt',
-            'createdBy',
-            'versionId',
-            'childItems',
-            'createdAt',
-            'updatedBy',
-            'publishedBy',
-            'properties',
-            'simpleAddress',
-            'linkUrl']);
+        let contentLangProject = pick(projectObj, this.contentLanguageFields);
         contentLangProject = this.removeUndefinedProperties(contentLangProject);
         Object.keys(contentLangProject).forEach(key => {
             resultProject[`contentLanguages.${key}`] = contentLangProject[key];
@@ -48,15 +67,33 @@ export class QueryHelper {
         return Object.keys(resultProject).length > 0 ? resultProject : { _v: 0 }
     }
 
+    /**
+     * Map/reduce helper to transform list of unaries
+     * like '+a,-b,c' to {a: 1, b: -1, c: 1}
+     * 
+     * Credit: https://github.com/loris/api-query-params/blob/master/src/index.js#L105
+     */
+    static parseUnaries(unaries, values = { plus: 1, minus: -1 }): { [key: string]: number } {
+        const unariesAsArray =
+            typeof unaries === 'string' ? unaries.split(',') : unaries;
+
+        return unariesAsArray
+            .map((unary) => unary.match(/^(\+|-)?(.*)/))
+            .reduce((result, [, val, key]) => {
+                result[key.trim()] = val === '-' ? values.minus : values.plus;
+                return result;
+            }, {});
+    };
+
     static getContentFilter(filter): FilterQuery<any> {
         // IContent filter
-        let contentFilter = pick(filter, ['_id', 'hasChildren', 'parentId', 'parentPath', 'contentType', 'createdBy', 'isDeleted', 'deletedBy']);
+        let contentFilter = pick(filter, this.contentFields);
         contentFilter = this.removeUndefinedProperties(contentFilter);
-        contentFilter = this.convertToMongoDbFilter(contentFilter, ['_id', 'parentId', 'createdBy', 'deletedBy']);
+        contentFilter = this.convertToMongoDbFilter(contentFilter, ['_id', 'parentId', 'createdBy', 'updatedBy', 'deletedBy']);
 
-        let contentLangFilter = pick(filter, ['name', 'urlSegment', 'language', 'status', 'startPublish', 'updatedAt']);
+        let contentLangFilter = pick(filter, this.contentLanguageFields);
         contentLangFilter = this.removeUndefinedProperties(contentLangFilter);
-        contentLangFilter = this.convertToMongoDbFilter(contentLangFilter);
+        contentLangFilter = this.convertToMongoDbFilter(contentLangFilter, ['versionId', 'createdBy', 'updatedBy', 'publishedBy', 'deletedBy']);
         if (Object.keys(contentLangFilter).length > 0)
             Object.assign(contentFilter, { contentLanguages: { $elemMatch: contentLangFilter } });
 
@@ -64,21 +101,21 @@ export class QueryHelper {
     }
 
     static getContentLanguageFilter(filter): FilterQuery<any> {
-        let contentFilter = pick(filter, ['name', 'urlSegment', 'language', 'status', 'startPublish', 'updatedAt', 'properties']);
+        let contentLanguageFilter = pick(filter, this.contentLanguageFields);
 
-        contentFilter = this.removeUndefinedProperties(contentFilter);
-        const contentLanguageFilter = {};
-        Object.keys(contentFilter).forEach(key => {
+        contentLanguageFilter = this.removeUndefinedProperties(contentLanguageFilter);
+        const resultFilter = {};
+        Object.keys(contentLanguageFilter).forEach(key => {
             if (key === 'properties') {
-                Object.keys(contentFilter['properties']).forEach(field => {
-                    contentLanguageFilter[`contentLanguages.properties.${field}`] = contentFilter['properties'][field];
+                Object.keys(contentLanguageFilter['properties']).forEach(field => {
+                    resultFilter[`contentLanguages.properties.${field}`] = contentLanguageFilter['properties'][field];
                 })
             } else {
-                contentLanguageFilter[`contentLanguages.${key}`] = contentFilter[key];
+                resultFilter[`contentLanguages.${key}`] = contentLanguageFilter[key];
             }
 
         })
-        return this.convertToMongoDbFilter(contentLanguageFilter);
+        return this.convertToMongoDbFilter(resultFilter);
     }
 
     static getCombineContentSort(sort: QuerySort): QuerySort {
@@ -92,26 +129,48 @@ export class QueryHelper {
         return combinedSort;
     }
 
+    static deepPopulate(level: number, language: string, statuses?: number[]): { path: string, match?: any, select?: any, populate?: any } {
+        const populatePath = 'contentLanguages.childItems.content';
+        const contentLangFilter = statuses ? { language, status: { $in: statuses } } : { language };
+        const populateMatch = { isDeleted: false, contentLanguages: { $elemMatch: contentLangFilter } };
+        const populateSelect = { _id: 1, contentType: 1, parentId: 1, parentPath: 1, contentLanguages: { $elemMatch: contentLangFilter } }
+        if (level > 1) {
+            return {
+                path: populatePath,
+                match: populateMatch,
+                select: populateSelect,
+                populate: this.deepPopulate(--level, language, statuses),
+            }
+        } else if (level == 1) {
+            return {
+                path: populatePath,
+                match: populateMatch,
+                select: populateSelect
+            }
+        }
+        return null;
+    }
+
     private static getContentSort(sort: QuerySort): QuerySort {
-        const contentSort = pick(sort, ['parentId', 'parentPath', 'contentType', 'createdAt', 'updatedAt', 'deletedBy']);
+        const contentSort = pick(sort, this.contentFields);
         return this.removeUndefinedProperties(contentSort);
     }
 
     private static getContentLanguageSort(sort: QuerySort): QuerySort {
-        let contentSort = pick(sort, ['name', 'urlSegment', 'language', 'status', 'startPublish', 'updatedAt', 'properties']);
-        contentSort = this.removeUndefinedProperties(contentSort);
-        const contentLanguageSort = {};
-        Object.keys(contentSort).forEach(key => {
+        let contentLanguageSort = pick(sort, this.contentLanguageFields);
+        contentLanguageSort = this.removeUndefinedProperties(contentLanguageSort);
+        const resultSort = {};
+        Object.keys(contentLanguageSort).forEach(key => {
             if (key === 'properties') {
-                Object.keys(contentSort['properties']).forEach(field => {
-                    contentLanguageSort[`contentLanguages.properties.${field}`] = contentSort['properties'][field];
+                Object.keys(contentLanguageSort['properties']).forEach(field => {
+                    resultSort[`contentLanguages.properties.${field}`] = contentLanguageSort['properties'][field];
                 })
             } else {
-                contentLanguageSort[`contentLanguages.${key}`] = contentSort[key];
+                resultSort[`contentLanguages.${key}`] = contentLanguageSort[key];
             }
 
         })
-        return contentLanguageSort;
+        return resultSort;
     }
 
     private static convertToMongoDbFilter(contentFilter, mongoObjectIdFields: string[] = []): any {

@@ -24,7 +24,7 @@ export class LayoutComponent implements OnInit, AfterViewInit {
     ngOnInit() {
         this.startPage$ = this.siteDefinition.getStartPage<HomePage>();
         this.menuItems$ = this.startPage$.pipe(
-            switchMap((startPage: HomePage) => this.contentLoader.getChildren<PageData>(startPage.contentLink, { language: startPage.language }))
+            switchMap((startPage: HomePage) => this.contentLoader.getChildren<PageData>(startPage.contentLink, startPage.language, '_id,parentId,parentPath, language, urlSegment, name'))
         );
     }
 

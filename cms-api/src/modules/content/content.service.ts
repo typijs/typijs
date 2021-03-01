@@ -1,11 +1,8 @@
-import { FilterQuery } from 'mongoose';
-import * as mongoose from 'mongoose';
-
 import { DocumentNotFoundException } from '../../error';
 import { pick } from '../../utils/pick';
 import { Validator } from '../../validation/validator';
 import { FolderService } from '../folder/folder.service';
-import { PaginateOptions, QueryResult } from '../shared/base.model';
+import { ObjectId, PaginateOptions, QueryResult } from '../shared/base.model';
 import { ContentVersionService } from './content-version.service';
 import {
     IContentDocument,
@@ -16,8 +13,6 @@ import {
 import { VersionStatus } from "./version-status";
 import { QueryHelper } from './query-helper';
 import { isNil } from '../../utils';
-const ObjectId = mongoose.Types.ObjectId;
-
 
 export class ContentService<T extends IContentDocument, P extends IContentLanguageDocument, V extends IContentVersionDocument> extends FolderService<T, P> {
     protected contentVersionService: ContentVersionService<V>;
@@ -72,12 +67,10 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
      * @param id The content id
      * @param language The language code (ex 'en', 'de'...)
      * @param statuses The array of statuses VersionStatus[]
-     * @param project The Mongodb $project select field syntax (for example: `{_id: 1,  username: 1, password: 0}`)
+     * @param select The mongoose select syntax like 'a,-b,c'
      */
-    async getContent(id: string, language: string, statuses?: number[], project?: { [key: string]: any }): Promise<T & P> {
+    async getContent(id: string, language: string, statuses?: number[], select?: string): Promise<T & P> {
         Validator.throwIfNull('contentId', id);
-
-        if (!language) { language = this.EMPTY_LANGUAGE };
 
         const filter = {
             _id: ObjectId(id),
@@ -86,9 +79,9 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
             status: statuses ? { $in: statuses } : undefined
         }
 
-        const queryResult = await this.queryContent(filter, project);
+        const queryResult = await this.queryContent(filter, select);
         if (queryResult.docs.length == 0)
-            Validator.throwIfNotFound('Content', null, { _id: id, isDeleted: false, status: statuses });
+            Validator.throwIfNotFound('Content', null, { _id: id, isDeleted: false, status: statuses, language });
 
         return queryResult.docs[0];
     }
@@ -97,11 +90,11 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
      * Gets content children by parent id
      * @param parentId 
      * @param language 
-     * @param [host] optional
-     * @param project (Optional) The Mongodb $project select field syntax (for example: `{  username: 1 }`)
+     * @param host optional
+     * @param select The fields select syntax like 'a,-b,c'
      * @returns The array of children 
      */
-    async getContentChildren(parentId: string, language: string, host?: string, project?: { [key: string]: any }): Promise<Array<T & P>> {
+    async getContentChildren(parentId: string, language: string, host?: string, select?: string): Promise<Array<T & P>> {
         if (parentId == '0') parentId = null;
 
         const filter = {
@@ -111,7 +104,7 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
             language
         };
 
-        const queryResult = await this.queryContent(filter, project);
+        const queryResult = await this.queryContent(filter, select);
         return queryResult.docs;
     }
 
@@ -173,7 +166,7 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         }
         // deep populate
         if (isDeepPopulate) {
-            queryBuilder = queryBuilder.populate(this.deepPopulate(5, language));
+            queryBuilder = queryBuilder.populate(QueryHelper.deepPopulate(5, language));
         }
 
         const contents = await queryBuilder.exec();
@@ -187,38 +180,16 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         return publishedContents;
     }
 
-    private deepPopulate = (level: number, language: string, statuses?: number[]): { path: string, match?: any, select?: any, populate?: any } => {
-        const populatePath = 'contentLanguages.childItems.content';
-        const contentLangFilter = statuses ? { language, status: { $in: statuses } } : { language };
-        const populateMatch = { isDeleted: false, contentLanguages: { $elemMatch: contentLangFilter } };
-        const populateSelect = { _id: 1, contentType: 1, parentId: 1, parentPath: 1, contentLanguages: { $elemMatch: contentLangFilter } }
-        if (level > 1) {
-            return {
-                path: populatePath,
-                match: populateMatch,
-                select: populateSelect,
-                populate: this.deepPopulate(--level, language, statuses),
-            }
-        } else if (level == 1) {
-            return {
-                path: populatePath,
-                match: populateMatch,
-                select: populateSelect
-            }
-        }
-        return null;
-    }
-
     /**
      * Query content using aggregation function
      * @param filter {FilterQuery<T & P>} The filter to query content
-     * @param project {{ [key: string]: any }} (Optional) project aggregation for example: { name: 1, language: 1}
+     * @param project {string | { [key: string]: any }} (Optional) project aggregation for example: { name: 1, language: 1} or `'name,language'`
      * @param paginateOptions {PaginateOptions} (Optional) Last row to return in results
-     * @returns {Object} Return `PaginateResult` object if the `paginateOptions` param be passed otherwise return array of `Document`
+     * @returns {Object} Return `PaginateResult` object
      */
     async queryContent(
         filter: any,
-        project?: { [key: string]: any },
+        project?: string | { [key: string]: any },
         paginateOptions?: PaginateOptions
     ): Promise<QueryResult<T & P>> {
         // IContent filter
@@ -620,6 +591,24 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
             ancestors: newAncestors,
             parentId: parentId
         };
+    }
+
+    protected mergeToContentLanguage(content: T, contentLang: P): T & P {
+        const contentJson: any = content && typeof content.toJSON === 'function' ? content.toJSON() : content;
+        const contentLangJson: any = contentLang && typeof contentLang.toJSON === 'function' ? contentLang.toJSON() : contentLang;
+
+        if (contentLangJson && contentLangJson.childItems) {
+            const language = contentLangJson.language;
+            contentLangJson.childItems.forEach(childItem => {
+                const publishedItem = childItem.content?.contentLanguages?.find((cLang: P) => cLang.language === language && cLang.status == VersionStatus.Published) as P;
+                childItem.content = this.mergeToContentLanguage(childItem.content, publishedItem);
+            });
+        }
+
+        const contentLanguageData: T & P = Object.assign(contentLangJson ?? {} as any, contentJson);
+
+        delete contentLanguageData.contentLanguages;
+        return contentLanguageData;
     }
 
     protected mergeToContentVersion(content: T, contentVersion: V): T & V {
