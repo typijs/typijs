@@ -40,8 +40,8 @@ export abstract class ContentController<T extends IContentDocument, P extends IC
 
   async getAncestors(req: express.Request, res: express.Response) {
     const { language } = req as any;
-    const { select } = req.query;
-    const createdContent = await this.contentService.getAncestors(req.params.id, language, select);
+    const { host, select } = req.query;
+    const createdContent = await this.contentService.getAncestors(req.params.id, language, host, select);
     res.status(httpStatus.OK).json(createdContent)
   }
 

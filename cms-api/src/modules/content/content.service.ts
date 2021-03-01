@@ -12,7 +12,7 @@ import {
 } from './content.model';
 import { VersionStatus } from "./version-status";
 import { QueryHelper } from './query-helper';
-import { isNil } from '../../utils';
+import { isNil, isNilOrWhiteSpace } from '../../utils';
 
 export class ContentService<T extends IContentDocument, P extends IContentLanguageDocument, V extends IContentVersionDocument> extends FolderService<T, P> {
     protected contentVersionService: ContentVersionService<V>;
@@ -112,7 +112,7 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         const content = await this.getContent(id, language, null, '_id, parentId, parentPath, ancestors');
         Validator.throwIfNotFound('getAncestors of content', { id, language, select });
 
-        const parentIds = content.parentPath.split(',').filter(id => !isNil(id));
+        const parentIds = content.parentPath.split(',').filter(id => !isNilOrWhiteSpace(id));
         const filter = {
             _id: { $in: parentIds },
             language
@@ -120,8 +120,8 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
         const resultQuery = await this.queryContent(filter, select);
         const ancestors = resultQuery.docs;
         const orderedAncestors = [];
-        parentIds.forEach(id => {
-            const ancestor = ancestors.find(x => x._id === id);
+        parentIds.forEach(pid => {
+            const ancestor = ancestors.find(x => x._id.toString() === pid);
             if (ancestor) {
                 orderedAncestors.push(ancestor);
             }
