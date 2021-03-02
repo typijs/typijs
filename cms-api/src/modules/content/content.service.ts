@@ -2,7 +2,7 @@ import { DocumentNotFoundException } from '../../error';
 import { pick } from '../../utils/pick';
 import { Validator } from '../../validation/validator';
 import { FolderService } from '../folder/folder.service';
-import { ObjectId, PaginateOptions, QueryResult } from '../shared/base.model';
+import { ObjectId, PaginateOptions, QueryResult, QuerySort } from '../shared/base.model';
 import { ContentVersionService } from './content-version.service';
 import {
     IContentDocument,
@@ -184,13 +184,17 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
      * Query content using aggregation function
      * @param filter {FilterQuery<T & P>} The filter to query content
      * @param project {string | { [key: string]: any }} (Optional) project aggregation for example: { name: 1, language: 1} or `'name,language'`
-     * @param paginateOptions {PaginateOptions} (Optional) Last row to return in results
+     * @param {QuerySort} [sort] - Sort option in the format: `'a,b, -c'` or `{a:1, b: 'asc', c: -1}`
+     * @param {number} [page] - Current page (default = 1)
+     * @param {number} [limit] - Maximum number of results per page (default = 10)
      * @returns {Object} Return `PaginateResult` object
      */
     async queryContent(
         filter: any,
         project?: string | { [key: string]: any },
-        paginateOptions?: PaginateOptions
+        sort?: string | QuerySort,
+        page?: number,
+        limit?: number
     ): Promise<QueryResult<T & P>> {
         // IContent filter
         const contentFilter = QueryHelper.getContentFilter(filter);
@@ -206,8 +210,7 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
             .match(contentLangFilter)
             .project(contentProject)
 
-        if (paginateOptions && !isNil(paginateOptions.page) && !isNil(paginateOptions.limit)) {
-            const { page, limit, sort } = paginateOptions;
+        if (!isNil(page) && !isNil(limit)) {
             const skip = (page - 1) * limit;
             const contentSort = QueryHelper.getCombineContentSort(sort);
             queryBuilder = queryBuilder
@@ -245,8 +248,8 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
                 limit
             }
         } else {
-            if (paginateOptions && !isNil(paginateOptions.sort)) {
-                const contentSort = QueryHelper.getCombineContentSort(paginateOptions.sort);
+            if (!isNil(sort)) {
+                const contentSort = QueryHelper.getCombineContentSort(sort);
                 queryBuilder = queryBuilder.sort(contentSort);
             }
             queryBuilder = queryBuilder
@@ -386,18 +389,20 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
             currentVersion.savedAt = new Date();
             currentVersion.savedBy = userId;
             currentVersion.masterVersionId = null;
-
             await currentVersion.save();
 
             //Step3: override the content language by publish version
             const previousVersionId = contentLanguage.versionId;
-
             const { status, startPublish, publishedBy, name, properties, childItems, _id } = currentVersion;
-            const pageObject = pick(currentVersion, ['urlSegment', 'simpleAddress', 'visibleInMenu']);
+            const pageObject = pick(currentVersion, ['urlSegment', 'simpleAddress']);
             Object.assign(contentLanguage, pageObject, { status, startPublish, publishedBy, name, properties, childItems, versionId: _id.toString() });
+
+            //Step4: override the content by publish version
+            const { childOrderRule, peerOrder, visibleInMenu } = currentVersion;
+            Object.assign(currentContent, { childOrderRule, peerOrder, visibleInMenu });
             await currentContent.save();
 
-            //Step3: update previous version to PreviewPublished
+            //Step5: update previous version to PreviewPublished
             if (previousVersionId != currentVersion._id.toString()) {
                 await this.contentVersionService.updateById(previousVersionId, { status: VersionStatus.PreviouslyPublished } as any);
             }
@@ -614,7 +619,13 @@ export class ContentService<T extends IContentDocument, P extends IContentLangua
     protected mergeToContentVersion(content: T, contentVersion: V): T & V {
         const contentJson = content && typeof content.toJSON === 'function' ? content.toJSON() : content;
         const contentVersionJson: any = contentVersion && typeof contentVersion.toJSON === 'function' ? contentVersion.toJSON() : contentVersion;
-        const contentVersionData: T & V = Object.assign(contentVersionJson ?? {}, contentJson, { versionId: contentVersionJson?._id?.toString() });
+
+        const { _id, ancestors, hasChildren, isDeleted, contentType, masterLanguageId, parentId, parentPath, createdBy } = contentJson as any;
+
+        const contentVersionData: T & V = Object.assign(contentVersionJson ?? {},
+            { _id, ancestors, hasChildren, isDeleted, contentType, masterLanguageId, parentId, parentPath, createdBy },
+            { versionId: contentVersionJson?._id?.toString() });
+
         delete contentVersionData.contentLanguages;
         delete contentVersionData.contentId;
         return contentVersionData;

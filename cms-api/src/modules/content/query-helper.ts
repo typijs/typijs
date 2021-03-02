@@ -118,9 +118,13 @@ export class QueryHelper {
         return this.convertToMongoDbFilter(resultFilter);
     }
 
-    static getCombineContentSort(sort: QuerySort): QuerySort {
-        const contentSort = this.getContentSort(sort);
-        const languageSort = this.getContentLanguageSort(sort);
+    static getCombineContentSort(sort: string | QuerySort): QuerySort {
+        if (isNil(sort)) return { createdAt: -1 };
+
+        const sortObj = typeof sort === 'string' ? this.parseUnaries(sort) : sort;
+
+        const contentSort = this.getContentSort(sortObj as any);
+        const languageSort = this.getContentLanguageSort(sortObj as any);
         const combinedSort = { ...contentSort, ...languageSort };
         const isHasCreatedAtSort = Object.keys(combinedSort).some(key => key === 'createdAt');
         if (!isHasCreatedAtSort) {

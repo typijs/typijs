@@ -2,7 +2,7 @@ import { DocumentNotFoundException } from '../../error';
 import { isNil, slugify } from '../../utils';
 import { IContentDocument, IContentLanguageDocument, IContentModel } from "../content/content.model";
 import { VersionStatus } from "../content/version-status";
-import { ObjectId, PaginateOptions, QueryResult } from '../shared/base.model';
+import { ObjectId, PaginateOptions, QueryResult, QuerySort } from '../shared/base.model';
 import { BaseService } from '../shared/base.service';
 
 export abstract class FolderService<T extends IContentDocument, P extends IContentLanguageDocument> extends BaseService<T>{
@@ -94,11 +94,13 @@ export abstract class FolderService<T extends IContentDocument, P extends IConte
     /**
      * Query content using aggregation function
      * @param filter {FilterQuery<T & P>} The filter to query content
-     * @param project {{ [key: string]: any }} (Optional) project aggregation for example: { name: 1, language: 1}
-     * @param paginateOptions {PaginateOptions} (Optional) Last row to return in results
+     * @param project {string | { [key: string]: any }} (Optional) project aggregation for example: { name: 1, language: 1} or `'name,language'`
+     * @param {QuerySort} [sort] - Sort option in the format: `'a,b, -c'` or `{a:1, b: 'asc', c: -1}`
+     * @param {number} [page] - Current page (default = 1)
+     * @param {number} [limit] - Maximum number of results per page (default = 10)
      * @returns {Object} Return `PaginateResult` object
      */
-    abstract queryContent(filter: any, project?: { [key: string]: any }, paginateOptions?: PaginateOptions): Promise<QueryResult<T & P>>;
+    abstract queryContent(filter: any, project?: { [key: string]: any }, sort?: string | QuerySort, page?: number, limit?: number): Promise<QueryResult<T & P>>;
 
     protected abstract createContent(newContent: T, parentContent: T, userId: string): Promise<T>;
 

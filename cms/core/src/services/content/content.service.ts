@@ -4,7 +4,7 @@ import { map } from 'rxjs/operators';
 import { BrowserLocationService } from '../../browser/browser-location.service';
 import { convertObjectToUrlQueryString } from '../../helpers/common';
 import { TypeOfContent } from '../../types';
-import { PaginateOptions, QueryResult } from '../base.model';
+import { PaginateOptions, QueryResult, QuerySort } from '../base.model';
 import { FolderService } from './folder.service';
 import { Content, FilterContent } from './models/content.model';
 
@@ -75,17 +75,23 @@ export abstract class ContentService<T extends Content> extends FolderService<T>
      * Query content using aggregation function
      * @param filter {FilterQuery<T & P>} The filter to query content
      * @param project {string | { [key: string]: any }} (Optional) project aggregation for example: { name: 1, language: 1} or `'name,language'`
-     * @param paginateOptions {PaginateOptions} (Optional) Last row to return in results
+     * @param {QuerySort} [sort] - Sort option in the format: `'a,b, -c'` or `{a:1, b: 'asc', c: -1}`
+     * @param {number} [page] - Current page (default = 1)
+     * @param {number} [limit] - Maximum number of results per page (default = 10)
      * @returns {Object} Return `PaginateResult` object
      */
     queryContents(
         filter: FilterContent,
-        project?: { [key: string]: any },
-        paginateOptions?: PaginateOptions): Observable<QueryResult<T>> {
+        project?: string | { [key: string]: any },
+        sort?: string | QuerySort,
+        page?: number,
+        limit?: number): Observable<QueryResult<T>> {
         const bodyReq = {
             filter,
             project,
-            ...paginateOptions
+            sort,
+            page,
+            limit
         };
         return this.httpClient.post<QueryResult<T>>(`${this.apiUrl}/query`, bodyReq);
     }

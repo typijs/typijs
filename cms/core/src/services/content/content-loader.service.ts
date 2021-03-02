@@ -4,7 +4,7 @@ import { catchError, map } from 'rxjs/operators';
 import { groupBy } from '../../helpers/common';
 import { ClassOf, TypeOfContent } from '../../types';
 import { ContentReference } from '../../types/content-reference';
-import { PaginateOptions, QueryResult } from '../base.model';
+import { PaginateOptions, QueryResult, QuerySort } from '../base.model';
 import { ContentService } from './content.service';
 import { ContentData } from './models/content-data';
 import { Content, FilterContent } from './models/content.model';
@@ -82,18 +82,22 @@ export class ContentLoader {
      * Query content using aggregation function
      * @param filter {FilterQuery<T & P>} The filter to query content
      * @param project {string | { [key: string]: any }} (Optional) project aggregation for example: { name: 1, language: 1} or `'name,language'`
-     * @param paginateOptions {PaginateOptions} (Optional) Last row to return in results
+     * @param {QuerySort} [sort] - Sort option in the format: `'a,b, -c'` or `{a:1, b: 'asc', c: -1}`
+     * @param {number} [page] - Current page (default = 1)
+     * @param {number} [limit] - Maximum number of results per page (default = 10)
      * @returns {Object} Return `PaginateResult` object
      */
     query<T extends ContentData>(
         filter: FilterContent,
-        project?: { [key: string]: any },
-        paginateOptions?: PaginateOptions): Observable<QueryResult<T>> {
+        project?: string | { [key: string]: any },
+        sort?: string | QuerySort,
+        page?: number,
+        limit?: number): Observable<QueryResult<T>> {
         const contentService = this.contentServiceResolver.resolveContentProviderFactory(filter.type);
-        return contentService.queryContents(filter, project, paginateOptions).pipe(
+        return contentService.queryContents(filter, project, sort, page, limit).pipe(
             map((result: QueryResult<Content>) =>
                 Object.assign(result, { docs: result.docs.map(childContent => contentService.getContentData(childContent)) })
-            ))
+            ));
     }
 
     getItems(contentLinks: ContentReference[], language?: string, statuses?: number[], isDeepPopulate?: boolean): Observable<Content[]> {
