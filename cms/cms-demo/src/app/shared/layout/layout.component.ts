@@ -2,7 +2,7 @@ import { ContentLoader, PageData, SiteDefinition } from '@angular-cms/core';
 import { DOCUMENT } from '@angular/common';
 import { Component, ViewEncapsulation, OnInit, AfterViewInit, Renderer2, Inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { publishReplay, refCount, switchMap } from 'rxjs/operators';
+import { map, publishReplay, refCount, switchMap } from 'rxjs/operators';
 
 import { HomePage } from '../../pages/home/home.pagetype';
 
@@ -24,7 +24,14 @@ export class LayoutComponent implements OnInit, AfterViewInit {
     ngOnInit() {
         this.startPage$ = this.siteDefinition.getStartPage<HomePage>();
         this.menuItems$ = this.startPage$.pipe(
-            switchMap((startPage: HomePage) => this.contentLoader.getChildren<PageData>(startPage.contentLink, startPage.language, '_id,parentId,parentPath, language, urlSegment, name'))
+            switchMap((startPage: HomePage) =>
+                this.contentLoader.query<PageData>({
+                    type: startPage.contentLink.type,
+                    parentId: startPage.contentLink.id,
+                    language: startPage.language,
+                    visibleInMenu: true
+                }, '_id,parentId,parentPath, language, urlSegment, name', 'peerOrder')),
+            map(queryResult => queryResult.docs)
         );
     }
 

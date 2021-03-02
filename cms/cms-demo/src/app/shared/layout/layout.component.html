@@ -49,7 +49,7 @@
             </div>
           </li> -->
           <li class="nav-item" *ngFor="let item of menuItems" routerLinkActive="active">
-            <a class="nav-link" href="javascript:void(0)" [routerLink]="[item.linkUrl]">{{item.name}}</a>
+            <a class="nav-link" href="javascript:void(0)" [cmsUrl]="item.contentLink | toPageUrl">{{item.name}}</a>
           </li>
           <li class="nav-item cta cta-colored">
             <a [cmsUrl]="startPage.shoppingCartPage | toPageUrl" class="nav-link">
