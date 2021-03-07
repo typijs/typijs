@@ -22,12 +22,12 @@ import { TextRenderDirective } from './renders/text/text-render-as-directive';
 import { UrlRenderDirective } from './renders/url/url-render.directive';
 import { UrlListRenderDirective } from './renders/url-list/url-list-render-as-directive';
 import { XHtmlRenderDirective } from './renders/xhtml/xhtml-render.directive';
-import { ToPageUrlPipe } from './pipes/to-page-url.pipe';
+import { ToUrlPipe } from './pipes/to-url.pipe';
 import { CallFunctionPipe } from './pipes/call-function.pipe';
 
 export const PIPES = [
     ToImgSrcPipe,
-    ToPageUrlPipe,
+    ToUrlPipe,
     MapPipe,
     SafePipe,
     CallFunctionPipe
