@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { map, publishReplay, refCount, switchMap } from 'rxjs/operators';
 
 import { HomePage } from '../../pages/home/home.pagetype';
+import { MenuItem, MenuService } from '../menu.service';
 
 @Component({
     templateUrl: './layout.component.html',
@@ -13,25 +14,19 @@ import { HomePage } from '../../pages/home/home.pagetype';
 })
 export class LayoutComponent implements OnInit, AfterViewInit {
     startPage$: Observable<HomePage>;
-    menuItems$: Observable<PageData[]>;
+    menuItems$: Observable<MenuItem[]>;
 
     constructor(
         private siteDefinition: SiteDefinition,
         private contentLoader: ContentLoader,
+        private menuService: MenuService,
         private renderer: Renderer2,
         @Inject(DOCUMENT) private document: Document) { }
 
     ngOnInit() {
         this.startPage$ = this.siteDefinition.getStartPage<HomePage>();
         this.menuItems$ = this.startPage$.pipe(
-            switchMap((startPage: HomePage) =>
-                this.contentLoader.query<PageData>({
-                    type: startPage.contentLink.type,
-                    parentId: startPage.contentLink.id,
-                    language: startPage.language,
-                    visibleInMenu: true
-                }, '_id,parentId,parentPath, language, urlSegment, name', 'peerOrder')),
-            map(queryResult => queryResult.docs)
+            switchMap((startPage: HomePage) => this.menuService.getPageVisibleInMenu(startPage))
         );
     }
 
