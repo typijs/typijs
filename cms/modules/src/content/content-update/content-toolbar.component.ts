@@ -17,7 +17,7 @@ import { ContentExt } from '../content-crud.service';
             <fa-icon [icon]="['fas', 'external-link-alt']"></fa-icon>
           </a>
         </div>
-        <div class="btn-group" btnRadioGroup [(ngModel)]="editMode">
+        <div class="btn-group" btnRadioGroup [ngModel]="editMode" (ngModelChange)="editModeChange.emit($event)">
           <label class="btn btn-sm btn-primary" btnRadio="AllProperties" role="button">
             <fa-icon [icon]="['fas', 'list']"></fa-icon>
           </label>
