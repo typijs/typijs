@@ -16,7 +16,7 @@ import { CategoryContainerBlock } from './category-container.blocktype';
 								<div class="text text-center">
 									<h2 [cmsText]="currentContent.heading"></h2>
 									<p [cmsText]="currentContent.subheading"></p>
-									<p><a [cmsUrl]="currentContent.link" class="btn btn-primary"></a></p>
+									<p><a *ngIf="currentContent.link" [cmsUrl]="currentContent.link" class="btn btn-primary">{{currentContent.link.text}}</a></p>
 								</div>
 							</div>
 						</div>

@@ -3,7 +3,6 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 import { AngularCms } from '@angular-cms/core';
-import { FeatureComponent } from './feature/feature.component';
 import { ContactUsComponent } from './contact-us/contact-us.component';
 import { LinkListComponent } from './link-list/link-list.component';
 import { BestPriceComponent } from './best-price/best-price.component';
@@ -28,7 +27,6 @@ const BLOCKS_COMPONENT = [
     CategoryComponent,
     CategoryContainerComponent,
     ContactUsComponent,
-    FeatureComponent,
     FeatureProductsComponent,
     LinkListComponent,
     NewsletterComponent,

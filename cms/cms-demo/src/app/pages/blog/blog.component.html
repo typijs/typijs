@@ -17,7 +17,7 @@
                   <div><a href="#">{{item.author}}</a></div>
                   <div><a href="#" class="meta-chat"><span class="icon-chat"></span> 3</a></div>
                 </div>
-                <h3 class="heading"><a href="#">{{item.header}}</a>
+                <h3 class="heading"><a href="javascript:;" [routerLink]="[item.linkUrl]">{{item.title}}</a>
                 </h3>
                 <p [innerHTML]="item.summary"></p>
                 <p><a href="javascript:;" [routerLink]="[item.linkUrl]" class="btn btn-primary py-2 px-3">Read more</a>
