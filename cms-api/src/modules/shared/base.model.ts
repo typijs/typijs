@@ -1,5 +1,9 @@
 import * as mongoose from 'mongoose';
-import { Document, Model, FilterQuery, DocumentQuery } from 'mongoose';
+import { Document, Model, Query } from 'mongoose';
+
+export const ObjectId = mongoose.Types.ObjectId;
+
+export type QuerySort = { [key: string]: 'asc' | 'desc' | 1 | -1 };
 
 export type QueryOptions = {
     /**
@@ -19,19 +23,19 @@ export type QueryOptions = {
 }
 
 /**
- * @typedef {Object} PaginateResult
+ * @typedef {Object} QueryResult
  * @param {Document[]} results - Results found
  * @param {number} page - Current page
  * @param {number} limit - Maximum number of results per page
  * @param {number} pages - Total number of pages
  * @param {number} total - Total number of documents
  */
-export type PaginateResult = {
-    docs: Document[]
-    page: number
-    limit: number
-    pages: number
-    total: number
+export type QueryResult<T> = {
+    docs: T[]
+    page?: number
+    limit?: number
+    pages?: number
+    total?: number
 }
 
 /**
@@ -44,6 +48,7 @@ export type PaginateOptions = {
     sortBy?: string
     limit?: number
     page?: number
+    sort?: QuerySort
 }
 
 export interface ICommonMetadata {
@@ -64,5 +69,5 @@ export const BaseSchema = new mongoose.Schema({
     updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'cms_User', required: false }
 })
 
-export type QueryList<T extends IBaseDocument> = DocumentQuery<T[], T>;
-export type QueryItem<T extends IBaseDocument> = DocumentQuery<T, T>;
+export type QueryList<T extends IBaseDocument> = Query<T[], T>;
+export type QueryItem<T extends IBaseDocument> = Query<T, T>;

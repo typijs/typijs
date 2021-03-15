@@ -3,16 +3,16 @@ import { Injectable } from 'injection-js';
 import 'reflect-metadata';
 import { Cache, CacheService } from '../../caching';
 import { DocumentNotFoundException, Exception } from '../../error';
-import { isNullOrWhiteSpace } from '../../utils';
+import { isNilOrWhiteSpace } from '../../utils';
+import { Dictionary } from '../../utils/dictionary';
 import { slugify } from '../../utils/slugify';
 import { ContentVersionService } from '../content/content-version.service';
 import { ContentService } from '../content/content.service';
 import { VersionStatus } from "../content/version-status";
 import { LanguageService } from '../language';
 import { SiteDefinitionService } from '../site-definition/site-definition.service';
-import { IPageLanguageDocument, PageLanguageModel } from './models/page-language.model';
 import { IPageVersionDocument, PageVersionModel } from "./models/page-version.model";
-import { IPageDocument, PageModel } from "./models/page.model";
+import { IPageDocument, IPageLanguageDocument, PageModel } from "./models/page.model";
 
 export class PageVersionService extends ContentVersionService<IPageVersionDocument> {
     constructor() {
@@ -24,7 +24,7 @@ export class PageVersionService extends ContentVersionService<IPageVersionDocume
 export class PageService extends ContentService<IPageDocument, IPageLanguageDocument, IPageVersionDocument> {
     private static readonly PrefixCacheKey: string = 'Page';
     constructor(private siteDefinitionService: SiteDefinitionService, private languageService: LanguageService, private cacheService: CacheService) {
-        super(PageModel, PageLanguageModel, PageVersionModel);
+        super(PageModel, PageVersionModel);
     }
 
     /**
@@ -46,26 +46,69 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
     }
 
     /**
+     * Gets page children by parent id
+     * @param parentId 
+     * @param language 
+     * @param [host] 
+     * @param select The fields select syntax like 'a,-b,c'
+     * @returns The array of children 
+     */
+    async getContentChildren(parentId: string, language: string, host?: string, select?: string): Promise<Array<IPageDocument & IPageLanguageDocument>> {
+
+        const pageChildren = await super.getContentChildren(parentId, language, host, select)
+        if (pageChildren.length == 0) return [];
+
+        const linkArray: Array<[string, string]> = await this.buildManyLinkTuples(pageChildren, language, host);
+
+        pageChildren.forEach(page => {
+            const linkTuple = linkArray.find(x => x[0] == page._id.toString());
+            if (linkTuple) page.linkUrl = linkTuple[1];
+        })
+
+        return pageChildren;
+    }
+
+
+    async getAncestors(id: string, language: string, host?: string, select?: string) {
+        const ancestors = await super.getAncestors(id, language, host, select);
+        if (ancestors.length == 0) return [];
+
+        const linkArray: Array<[string, string]> = await this.buildManyLinkTuples(ancestors, language, host);
+
+        ancestors.forEach(page => {
+            const linkTuple = linkArray.find(x => x[0] == page._id.toString());
+            if (linkTuple) page.linkUrl = linkTuple[1];
+        })
+
+        return ancestors;
+    }
+
+    /**
      * Gets link urls of multi pages
-     * @param id 
+     * @param ids 
      * @param language 
      * @param host 
      * @returns page with url
      */
-    async getPageUrls(id: string[], language: string, host: string): Promise<Array<IPageDocument & IPageLanguageDocument>> {
+    async getPageUrls(ids: string[], language: string, host: string): Promise<Array<IPageDocument & IPageLanguageDocument>> {
 
         const statuses = [VersionStatus.Published];
-        const fieldsSelect = '_id parentPath language urlSegment';
-        const resultPages = await this.getContentItems(id, language, statuses, fieldsSelect, false);
+        const project = { _id: 1, parentPath: 1, language: 1, urlSegment: 1 };
+        const filter = {
+            _id: { $in: ids },
+            status: { $in: statuses },
+            language
+        }
+        const queryResult = (await this.queryContent(filter, project));
 
-        const linkArray: Array<[string, string]> = await this.buildManyLinkTuples(resultPages, language, host);
+        const linkArray: Array<[string, string]> = await this.buildManyLinkTuples(queryResult.docs, language, host);
 
-        resultPages.forEach(page => {
+        queryResult.docs.forEach(page => {
             const linkItem = linkArray.find(x => x[0] == page._id.toString());
             if (linkItem) page.linkUrl = linkItem[1];
         })
 
-        return resultPages;
+        return queryResult.docs;
     }
 
     private async buildManyLinkTuples(pages: Array<IPageDocument & IPageLanguageDocument>, language: string, host: string): Promise<Array<[string, string]>> {
@@ -95,7 +138,7 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
     })
     private async buildLinkUrlTuple(currentId: string, parentPath: string, currentUrlSegment: string, language: string, siteDefinition: [string, string]): Promise<[string, string]> {
 
-        const parentIds = parentPath ? parentPath.split(',').filter(id => !isNullOrWhiteSpace(id)) : [];
+        const parentIds = parentPath ? parentPath.split(',').filter(id => !isNilOrWhiteSpace(id)) : [];
 
         const [startPageId, defaultLang] = siteDefinition;
 
@@ -103,23 +146,25 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         if (defaultLang !== language) { urlSegments.push(language); }
 
         const matchStartIndex = parentIds.indexOf(startPageId);
+        const queryParentIds = parentIds.filter(id => parentIds.indexOf(id) > matchStartIndex);
+        const urlSegmentDic = await this.getUrlSegmentByPageIds(queryParentIds, language);
         for (let i = matchStartIndex + 1; i < parentIds.length; i++) {
-            const urlSegment = await this.getUrlSegmentByPageId(parentIds[i], language);
-            urlSegments.push(urlSegment);
+            urlSegments.push(urlSegmentDic[parentIds[i]]);
         }
 
         if (currentId != startPageId) { urlSegments.push(currentUrlSegment); }
-        return [currentId, `/${urlSegments.filter(segment => !isNullOrWhiteSpace(segment)).join('/')}`];
+        return [currentId, `/${urlSegments.filter(segment => !isNilOrWhiteSpace(segment)).join('/')}`];
     }
 
-    @Cache({
-        prefixKey: PageService.PrefixCacheKey,
-        suffixKey: (args) => `${args[0]}:${args[1]}`
-    })
-    private async getUrlSegmentByPageId(id: string, language: string): Promise<string> {
-        const fieldsSelect = '_id contentId language urlSegment';
-        const currentContent = await this.getContent(id, language, null, fieldsSelect)
-        return currentContent.urlSegment;
+    private async getUrlSegmentByPageIds(ids: string[], language: string): Promise<Dictionary<string>> {
+        const project = { language: 1, urlSegment: 1 };
+        const filter = { _id: { $in: ids }, language }
+        const queryResult = await this.queryContent(filter, project);
+        const dictionaryUrl: Dictionary<string> = {};
+        queryResult.docs.forEach(page => {
+            dictionaryUrl[page._id] = page.urlSegment;
+        })
+        return dictionaryUrl;
     }
 
     /**
@@ -148,7 +193,7 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
     private splitPathNameToUrlSegments = (pathname: string, language: string): string[] => {
         if (!pathname) return [];
 
-        const paths = pathname.split('/').filter(id => !isNullOrWhiteSpace(id));
+        const paths = pathname.split('/').filter(id => !isNilOrWhiteSpace(id));
         if (paths.length == 0) return [];
 
         if (paths[0] == language) paths.splice(0, 1);
@@ -163,9 +208,8 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
 
     private recursiveResolvePageByUrlSegment = async (parentPageId: string, segments: string[], language: string, index: number): Promise<IPageDocument & IPageLanguageDocument> => {
         // get page children
-        const fieldsSelect: string = '_id urlSegment language status';
-        const childrenPage = (await super.getContentChildren(parentPageId, language, null, fieldsSelect))
-            .filter(x => x.status == VersionStatus.Published);
+        const select = '_id,urlSegment,language,status';
+        const childrenPage = (await super.getContentChildren(parentPageId, language, null, select));
         if (!childrenPage || childrenPage.length == 0) return null;
 
         const matchPage = childrenPage.find(page => page.urlSegment == segments[index]);
@@ -183,7 +227,7 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
      */
     private getLanguageFromUrl = async (url: URL, fallbackLanguage: string): Promise<string> => {
         const pathUrl = url.pathname; // --> /abc/xyz
-        const paths = pathUrl.split('/').filter(id => !isNullOrWhiteSpace(id));
+        const paths = pathUrl.split('/').filter(id => !isNilOrWhiteSpace(id));
 
         if (paths.length > 0) {
             const languageCode = paths[0];
@@ -194,30 +238,6 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
 
         const langDoc = await this.languageService.getLanguageByCode(fallbackLanguage);
         return langDoc ? langDoc.language : undefined;
-    }
-
-    /**
-     * Gets page children by parent id
-     * @param parentId 
-     * @param language 
-     * @param [host] 
-     * @param [fieldSelect] The Mongoose select field syntax (for example: `'_id name created'`)
-     * @returns The array of children 
-     */
-    async getContentChildren(parentId: string, language: string, host?: string, fieldSelect?: string): Promise<Array<IPageDocument & IPageLanguageDocument>> {
-        if (parentId == '0') parentId = null;
-
-        const pageChildren = await super.getContentChildren(parentId, language, host, fieldSelect)
-        if (pageChildren.length == 0) return [];
-
-        const linkArray: Array<[string, string]> = await this.buildManyLinkTuples(pageChildren, language, host);
-
-        pageChildren.forEach(page => {
-            const linkItem = linkArray.find(x => x[0] == page._id.toString());
-            if (linkItem) page.linkUrl = linkItem[1];
-        })
-
-        return pageChildren;
     }
 
     public executeCreateContentFlow = async (pageObj: IPageDocument & IPageLanguageDocument, language: string, userId: string): Promise<IPageDocument & IPageVersionDocument> => {
@@ -236,17 +256,14 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
 
         const urlSegment = generatedNameInUrl ? generatedNameInUrl : originalUrl;
         //Find existing page has the same url segment
-        const existPages = await this.contentLanguageService.find({ urlSegment, language }, { lean: true })
-            .select('contentId')
-            .populate({
-                path: 'contentId',
-                match: { isDeleted: false },
-                select: 'parentId'
-            }).exec();
+        const existPages = await this.find({
+            isDeleted: false,
+            contentLanguages: { $elemMatch: { urlSegment, language } }
+        }, { lean: true })
+            .select('parentId')
+            .exec();
 
-        const count = existPages.map(x => x.contentId as IPageDocument)
-            .filter(x => x)
-            .filter(x => (!x.parentId && !parentId) || (x.parentId && x.parentId!.toString() == parentId)).length;
+        const count = existPages.filter(x => (!x.parentId && !parentId) || (x.parentId && x.parentId!.toString() == parentId)).length;
         if (count <= 0) return generatedNameInUrl ? generatedNameInUrl : originalUrl;
 
         return await this.generateUrlSegment(seed + 1, originalUrl, parentId, language, `${originalUrl}${seed + 1}`);
@@ -269,22 +286,26 @@ export class PageService extends ContentService<IPageDocument, IPageLanguageDocu
         const { language, urlSegment } = pageVersion;
 
         //Find published page has the same url segment
-        const existPages = await this.contentLanguageService.find({ contentId: { $ne: pageId }, urlSegment, language, status: VersionStatus.Published }, { lean: true })
-            .select('contentId name')
-            .populate({
-                path: 'contentId',
-                match: { isDeleted: false },
-                select: 'parentId'
-            }).exec();
+        const existPages = await this.find({
+            _id: { $ne: pageId },
+            isDeleted: false,
+            contentLanguages: {
+                $elemMatch: { urlSegment, language, status: VersionStatus.Published }
+            }
+        }, { lean: true })
+            .exec();
 
         const parentId = pageContent.parentId;
         const duplicatedUrlSegmentPages = existPages.filter(x =>
-            JSON.stringify((x.contentId as IPageDocument).parentId) === JSON.stringify(parentId)
+            JSON.stringify(x.parentId) === JSON.stringify(parentId)
         );
 
         if (duplicatedUrlSegmentPages.length > 0) {
-            const pageInfo = JSON.stringify(duplicatedUrlSegmentPages.map(x => ({ id: (x.contentId as IPageDocument)._id, name: x.name })));
-            const message = `The url segment ${urlSegment} has been used in pages ${pageInfo}`;
+            const pageInfo = duplicatedUrlSegmentPages.map(x => {
+                const pageLang = x.contentLanguages.find(y => y.language == language && y.urlSegment == urlSegment);
+                return { id: x._id, name: pageLang?.name }
+            });
+            const message = `The url segment ${urlSegment} has been used in pages ${JSON.stringify(pageInfo)}`;
             throw new Exception(httpStatus.BAD_REQUEST, message);
         }
     }

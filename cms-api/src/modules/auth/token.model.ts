@@ -44,7 +44,7 @@ export interface IToken {
 export interface ITokenDocument extends IToken, IBaseDocument { }
 export interface ITokenModel extends IBaseModel<ITokenDocument> { }
 
-const TokenSchema = new mongoose.Schema(
+const TokenSchema = new mongoose.Schema<ITokenDocument, ITokenModel>(
     {
         token: { type: String, required: true, index: true },
         user: { type: mongoose.SchemaTypes.ObjectId, ref: cmsUser, required: true },

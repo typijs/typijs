@@ -43,6 +43,7 @@ export * from './renders/insert-point.directive';
 export * from './renders/cms-property.directive';
 export * from './renders/property-render.factory';
 
+export * from './services/base.model';
 export * from './services/base.service';
 export * from './services/language.service';
 export * from './services/content-type.service';
@@ -73,5 +74,5 @@ export * from './utils/undetected.event';
 export * from './pipes/map.pipe';
 export * from './pipes/safe.pipe';
 export * from './pipes/to-img-src.pipe';
-export * from './pipes/to-page-url.pipe';
+export * from './pipes/to-url.pipe';
 export * from './pipes/call-function.pipe';

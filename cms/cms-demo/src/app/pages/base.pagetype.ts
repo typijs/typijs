@@ -2,7 +2,7 @@ import { CmsImage, PageData, Property, UIHint } from '@angular-cms/core';
 
 export abstract class BasePage extends PageData {
     @Property({
-        displayName: 'Header',
+        displayName: 'Hero Text',
         displayType: UIHint.Text,
         groupName: 'Hero Banner'
     })

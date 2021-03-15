@@ -10,6 +10,10 @@ import { ButtonsModule } from 'ngx-bootstrap/buttons';
 import { ContentCreateComponent } from './content-create/content-create.component';
 import { ContentCrudServiceResolver } from './content-crud.service';
 import { ContentUpdateComponent } from './content-update/content-update.component';
+import { ContentToolbarComponent } from './content-update/content-toolbar.component';
+import { ContentSettingsComponent } from './content-update/content-settings.component';
+import { ContentHeaderComponent } from './content-update/content-header.component';
+import { ContentBreadcrumbComponent } from './content-update/content-breadcrumb.component';
 
 @NgModule({
     imports: [
@@ -27,7 +31,11 @@ import { ContentUpdateComponent } from './content-update/content-update.componen
     ],
     declarations: [
         ContentUpdateComponent,
-        ContentCreateComponent
+        ContentCreateComponent,
+        ContentToolbarComponent,
+        ContentSettingsComponent,
+        ContentHeaderComponent,
+        ContentBreadcrumbComponent
     ],
     exports: [
         ContentUpdateComponent,

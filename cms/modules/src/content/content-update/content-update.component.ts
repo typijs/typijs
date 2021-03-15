@@ -13,9 +13,7 @@ import { auditTime, catchError, concatMap, debounceTime, distinctUntilChanged, f
 import { DynamicFormService } from '../../shared/form/dynamic-form.service';
 import { SubjectService } from '../../shared/services/subject.service';
 import { SubscriptionDestroy } from '../../shared/subscription-destroy';
-import { ContentCrudService, ContentCrudServiceResolver, ContentInfo } from '../content-crud.service';
-
-export type ContentExt = Content & { urlSegment?: string, linkUrl?: string };
+import { ContentCrudService, ContentCrudServiceResolver, ContentExt, ContentInfo } from '../content-crud.service';
 
 @Component({
     templateUrl: './content-update.component.html',
@@ -37,7 +35,8 @@ export class ContentUpdateComponent extends SubscriptionDestroy implements OnIni
     saveMessage: string = '';
     isPublishing = false;
 
-    private readonly defaultGroup: string = 'Content';
+    readonly settingsGroup: string = 'Settings';
+    readonly defaultGroup: string = 'Content';
     private contentService: ContentCrudService;
     private contentTypeProperties: ContentTypeProperty[] = [];
     private componentRefs: ComponentRef<any>[] = [];
@@ -192,18 +191,31 @@ export class ContentUpdateComponent extends SubscriptionDestroy implements OnIni
         const tabs: Partial<CmsTab>[] = [];
 
         properties.forEach((property: ContentTypeProperty) => {
-            if (property.metadata.hasOwnProperty('groupName')) {
-                if (tabs.findIndex(x => x.title == property.metadata.groupName) == -1) {
-                    tabs.push({ title: property.metadata.groupName, name: `${property.metadata.groupName}` });
+            const groupName = property.metadata.groupName;
+
+            if (!this.isNil(groupName)) {
+                if (tabs.findIndex(x => x.title === groupName) === -1) {
+                    tabs.push({ title: groupName, name: groupName });
                 }
             }
         });
 
-        if (properties.findIndex((property: ContentTypeProperty) => !property.metadata.groupName) != -1) {
-            tabs.push({ title: this.defaultGroup, name: `${this.defaultGroup}` });
+        if (properties.findIndex((property: ContentTypeProperty) => this.isNil(property.metadata.groupName)) !== -1) {
+            if (tabs.findIndex(x => x.name === this.defaultGroup) === -1) {
+                tabs.push({ title: this.defaultGroup, name: this.defaultGroup });
+            }
+        }
+
+        if (tabs.findIndex(x => x.name === this.settingsGroup) === -1) {
+            tabs.push({ title: this.settingsGroup, name: this.settingsGroup });
         }
 
         return tabs.sort(sortByString('title', 'asc'));
+    }
+
+    private isNil(value): boolean {
+        if (value === null || value === undefined) { return true; }
+        return false;
     }
 
     /**
@@ -224,9 +236,16 @@ export class ContentUpdateComponent extends SubscriptionDestroy implements OnIni
     private createDefaultFormControls(content: ContentExt): { [key: string]: any } {
         const formControls: { [key: string]: any } = {};
         formControls.name = [content.name, Validators.required];
+        formControls.startPublish = [content.startPublish];
+        formControls.createdAt = [content.createdAt];
+        formControls.updatedAt = [content.updatedAt];
+        formControls.childOrderRule = [content.childOrderRule];
+        formControls.peerOrder = [content.peerOrder];
 
         if (this.typeOfContent === TypeOfContentEnum.Page) {
             formControls.urlSegment = [content.urlSegment, Validators.required];
+            formControls.visibleInMenu = [content.visibleInMenu];
+            formControls.simpleAddress = [content.simpleAddress];
         }
         return formControls;
     }

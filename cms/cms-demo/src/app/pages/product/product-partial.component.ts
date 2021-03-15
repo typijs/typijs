@@ -7,11 +7,12 @@ import { ProductPage } from './product.pagetype';
     host: { 'class': 'col-md-6 col-lg-3' },
     template: `
         <div class="product">
-            <a [cmsUrl]="currentContent.contentLink | toPageUrl" target="_blank" class="img-prod"><img class="img-fluid" [src]="currentContent.image | toImgSrc" alt="Colorlib Template">
+            <a [cmsUrl]="currentContent.contentLink | toUrl" target="_blank" class="img-prod">
+                <img class="img-fluid" [src]="currentContent.image | toImgSrc" alt="{{currentContent.name}}">
                 <div class="overlay"></div>
             </a>
             <div class="text py-3 pb-4 px-3 text-center">
-                <h3><a [cmsUrl]="currentContent.contentLink | toPageUrl" [cmsText]="currentContent.name"></a></h3>
+                <h3><a [cmsUrl]="currentContent.contentLink | toUrl" [cmsText]="currentContent.name"></a></h3>
                 <div class="d-flex">
                     <div class="pricing">
                         <p class="price"><span [cmsText]="currentContent.price"></span></p>

@@ -12,7 +12,7 @@ import { CarouselItemBlock } from './carousel-item.blocktype';
                 <div class="col-md-12  text-center">
                     <h1 class="mb-2" [cmsText]="currentContent.heading"></h1>
                     <h2 class="subheading mb-4" [cmsText]="currentContent.subheading"></h2>
-                    <p><a href="#" class="btn btn-primary">{{currentContent.buttonText}}</a></p>
+                    <p><a [cmsUrl]="currentContent.url" class="btn btn-primary">{{currentContent.url?.text}}</a></p>
                 </div>
             </div>
         </div>

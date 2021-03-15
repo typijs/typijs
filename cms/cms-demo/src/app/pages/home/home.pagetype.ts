@@ -76,4 +76,18 @@ export class HomePage extends PageData {
         groupName: GroupName.COMMERCE
     })
     checkoutPage: ContentReference;
+
+    @Property({
+        displayName: 'Test Content Tab',
+        displayType: UIHint.Text,
+        groupName: 'Content'
+    })
+    testContentTab: string;
+
+    @Property({
+        displayName: 'Test Settings Tab',
+        displayType: UIHint.Text,
+        groupName: 'Settings'
+    })
+    testSettingsTab: string;
 }

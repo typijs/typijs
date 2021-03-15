@@ -20,30 +20,7 @@ const PAGE_MENU_ACTION = {
 };
 
 @Component({
-    template: `
-    <div class='position-relative'>
-        <cms-tree
-            class="tree-root pl-1 pt-2 d-block"
-            [root]="root"
-            [config]="treeConfig"
-            (nodeSelected)="pageSelected($event)"
-            (menuItemSelected)="menuItemSelected($event)">
-            <ng-template #treeNodeTemplate let-node>
-                <span [ngClass]="{'page-node': node.id != '0', 'border-bottom': node.isSelected && node.id != '0'}">
-                    <fa-icon class="mr-1" *ngIf="node.id == '0'" [icon]="['fas', 'sitemap']"></fa-icon>
-                    <fa-icon class="mr-1" *ngIf="node.id != '0'" [icon]="['fas', 'file']"></fa-icon>
-                    <span>{{node.name}}</span>
-                </span>
-            </ng-template>
-        </cms-tree>
-        <a role="button"
-            class="btn btn-xs btn-secondary mt-2 mr-1 new-page-link"
-            href="javascript:void(0)"
-            [routerLink]="['new/page']">
-            <fa-icon [icon]="['fas', 'plus']"></fa-icon>
-        </a>
-    </div>
-        `,
+    templateUrl: './page-tree.component.html',
     styleUrls: ['./page-tree.scss'],
     providers: [PageTreeService, { provide: TreeService, useExisting: PageTreeService }]
 })

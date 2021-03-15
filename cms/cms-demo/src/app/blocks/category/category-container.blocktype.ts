@@ -1,4 +1,4 @@
-import { BlockData, BlockType, Property, CmsImage, UIHint } from '@angular-cms/core';
+import { BlockData, BlockType, Property, CmsImage, UIHint, UrlItem } from '@angular-cms/core';
 import { CategoryContainerComponent } from './category-container.component';
 
 @BlockType({
@@ -27,10 +27,10 @@ export class CategoryContainerBlock extends BlockData {
     image: CmsImage;
 
     @Property({
-        displayName: 'Button Text',
-        displayType: UIHint.Text
+        displayName: 'Link',
+        displayType: UIHint.Url
     })
-    buttonText: string;
+    link: UrlItem;
 
     @Property({
         displayName: 'Left Categories',

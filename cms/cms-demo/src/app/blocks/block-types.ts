@@ -12,6 +12,5 @@ export * from './newsletter/newsletter.blocktype';
 export * from './best-price/best-price.blocktype';
 export * from './feature-product/feature-product.blocktype';
 export * from './video/video.blocktype';
-export * from './feature/feature.blocktype';
 export * from './link-list/link-list.blocktype';
 export * from './contact-us/contact-us.blocktype';

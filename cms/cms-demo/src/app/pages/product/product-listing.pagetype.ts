@@ -1,4 +1,4 @@
-import { ContentReference, PageType, Property, UIHint } from '@angular-cms/core';
+import { PageType, Property, UIHint } from '@angular-cms/core';
 import { StandardPage } from '../standard/standard.pagetype';
 import { ProductListingComponent } from './product-listing.component';
 
@@ -10,8 +10,8 @@ import { ProductListingComponent } from './product-listing.component';
 export class ProductListingPage extends StandardPage {
 
     @Property({
-        displayName: 'Product Catalog Root',
-        displayType: UIHint.ContentReference
+        displayName: 'Number Items Per Page',
+        displayType: UIHint.Text
     })
-    productCatalogRoot: ContentReference;
+    numberItemsPerPage: string;
 }

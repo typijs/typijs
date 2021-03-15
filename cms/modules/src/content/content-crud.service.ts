@@ -2,6 +2,8 @@ import { Content, TypeOfContent, ContentTypeProperty, Page, Block, Media, Conten
 import { InjectionToken, Injectable, Inject } from '@angular/core';
 import { Observable } from 'rxjs';
 
+export type ContentExt = Content & { urlSegment?: string, linkUrl?: string, visibleInMenu?: boolean, simpleAddress?: string };
+
 export type ContentInfo = {
     contentTypeProperties: ContentTypeProperty[],
     contentData: Page | Block | Media,

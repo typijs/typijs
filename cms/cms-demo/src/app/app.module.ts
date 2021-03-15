@@ -5,12 +5,14 @@ import { ApplicationRef, NgModule, RendererFactory2 } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TransferHttpCacheModule } from '@nguniversal/common';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BlocksModule } from './blocks/block.module';
 import { PagesModule } from './pages/pages.module';
 import * as contentTypes from './register-content-types';
 import { LayoutComponent } from './shared/layout/layout.component';
+import { NavbarComponent } from './shared/layout/navbar.component';
 
 AngularCms.registerContentTypes(contentTypes);
 
@@ -36,6 +38,7 @@ export function pageAfterViewInit(rendererFactory: RendererFactory2, document: D
         BrowserModule.withServerTransition({ appId: 'serverApp' }),
         TransferHttpCacheModule,
         HttpClientModule,
+        BsDropdownModule.forRoot(),
         AngularCms.forRoot(),
         AuthModule,
         AppRoutingModule,
@@ -45,6 +48,7 @@ export function pageAfterViewInit(rendererFactory: RendererFactory2, document: D
     declarations: [
         AppComponent,
         LayoutComponent,
+        NavbarComponent
     ],
     providers: [
         //{ provide: PAGE_AFTER_INIT, useFactory: pageAfterViewInit, deps: [RendererFactory2, DOCUMENT], multi: true }

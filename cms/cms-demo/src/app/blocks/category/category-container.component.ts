@@ -3,9 +3,9 @@ import { CmsComponent } from '@angular-cms/core';
 import { CategoryContainerBlock } from './category-container.blocktype';
 
 @Component({
-	selector: 'section[category-container]',
-	host: { 'class': 'ftco-section ftco-category ftco-no-pt' },
-	template: `
+    selector: 'section[category-container]',
+    host: { 'class': 'ftco-section ftco-category ftco-no-pt' },
+    template: `
     <div class="container">
 			<div class="row">
 				<div class="col-md-8">
@@ -16,7 +16,7 @@ import { CategoryContainerBlock } from './category-container.blocktype';
 								<div class="text text-center">
 									<h2 [cmsText]="currentContent.heading"></h2>
 									<p [cmsText]="currentContent.subheading"></p>
-									<p><a href="#" class="btn btn-primary" [cmsText]="currentContent.buttonText"></a></p>
+									<p><a *ngIf="currentContent.link" [cmsUrl]="currentContent.link" class="btn btn-primary">{{currentContent.link.text}}</a></p>
 								</div>
 							</div>
 						</div>
@@ -31,7 +31,7 @@ import { CategoryContainerBlock } from './category-container.blocktype';
 		</div>`
 })
 export class CategoryContainerComponent extends CmsComponent<CategoryContainerBlock> {
-	constructor() {
-		super();
-	}
+    constructor() {
+        super();
+    }
 }

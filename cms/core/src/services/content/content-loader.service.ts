@@ -4,9 +4,10 @@ import { catchError, map } from 'rxjs/operators';
 import { groupBy } from '../../helpers/common';
 import { ClassOf, TypeOfContent } from '../../types';
 import { ContentReference } from '../../types/content-reference';
+import { PaginateOptions, QueryResult, QuerySort } from '../base.model';
 import { ContentService } from './content.service';
 import { ContentData } from './models/content-data';
-import { Content } from './models/content.model';
+import { Content, FilterContent } from './models/content.model';
 
 /**
  * The loader options for `ContentLoader`
@@ -48,22 +49,58 @@ export class ContentLoader {
         );
     }
 
-    getChildren<T extends ContentData>(contentLink: ContentReference, loaderOptions?: LoaderOptions): Observable<T[]> {
+    getChildren<T extends ContentData>(contentLink: ContentReference, language?: string, select?: string, loaderOptions?: LoaderOptions): Observable<T[]> {
         const contentService = this.contentServiceResolver.resolveContentProviderFactory(contentLink.type);
-        return contentService.getContentChildren(contentLink.id).pipe(
+        return contentService.getContentChildren(contentLink.id, language, select).pipe(
             map((children: Content[]) => children.map(childContent => contentService.getContentData(childContent)))
         );
     }
 
-    getDescendents(contentLink: ContentReference, loaderOptions?: LoaderOptions): Observable<ContentReference[]> {
-        throw new Error('Not implemented');
+    getDescendents(contentLink: ContentReference, loaderOptions?: LoaderOptions): Observable<ContentData[]> {
+        const filter: FilterContent = {
+            type: contentLink.type,
+            parentPath: { $regex: `,${contentLink.id},` }
+        };
+        const project = {
+            _id: 1,
+            contentType: 1,
+            versionId: 1
+        };
+        return this.query<ContentData>(filter, project).pipe(
+            map((result: QueryResult<ContentData>) => result.docs)
+        );
     }
 
-    getAncestors(contentLink: ContentReference, loaderOptions?: LoaderOptions): Observable<ContentData[]> {
-        throw new Error('Not implemented');
+    getAncestors(contentLink: ContentReference, language?: string, select?: string, loaderOptions?: LoaderOptions): Observable<ContentData[]> {
+        const contentService = this.contentServiceResolver.resolveContentProviderFactory(contentLink.type);
+        return contentService.getAncestors(contentLink.id, language, select).pipe(
+            map((ancestors: Content[]) => ancestors.map(content => contentService.getContentData(content)))
+        );
     }
 
-    getItems(contentLinks: ContentReference[], loaderOptions?: LoaderOptions): Observable<Content[]> {
+    /**
+     * Query content using aggregation function
+     * @param filter {FilterQuery<T & P>} The filter to query content
+     * @param project {string | { [key: string]: any }} (Optional) project aggregation for example: { name: 1, language: 1} or `'name,language'`
+     * @param {QuerySort} [sort] - Sort option in the format: `'a,b, -c'` or `{a:1, b: 'asc', c: -1}`
+     * @param {number} [page] - Current page (default = 1)
+     * @param {number} [limit] - Maximum number of results per page (default = 10)
+     * @returns {Object} Return `PaginateResult` object
+     */
+    query<T extends ContentData>(
+        filter: FilterContent,
+        project?: string | { [key: string]: any },
+        sort?: string | QuerySort,
+        page?: number,
+        limit?: number): Observable<QueryResult<T>> {
+        const contentService = this.contentServiceResolver.resolveContentProviderFactory(filter.type);
+        return contentService.queryContents(filter, project, sort, page, limit).pipe(
+            map((result: QueryResult<Content>) =>
+                Object.assign(result, { docs: result.docs.map(childContent => contentService.getContentData(childContent)) })
+            ));
+    }
+
+    getItems(contentLinks: ContentReference[], language?: string, statuses?: number[], isDeepPopulate?: boolean): Observable<Content[]> {
 
         const contentLinksGroup = groupBy(contentLinks, 'type');
         const getContentItemsArray: Observable<Content[]>[] = [];
@@ -72,7 +109,7 @@ export class ContentLoader {
             const contentIds = contentLinksGroup[key].map(x => x._id);
             if (contentService && contentIds && contentIds.length > 0) {
                 getContentItemsArray.push(
-                    contentService.getContentItems(contentIds).pipe(catchError(() => []))
+                    contentService.getContentItems(contentIds, language, statuses, isDeepPopulate).pipe(catchError(() => []))
                 );
             }
         });

@@ -4,12 +4,13 @@ import { map } from 'rxjs/operators';
 import { BrowserLocationService } from '../../browser/browser-location.service';
 import { convertObjectToUrlQueryString } from '../../helpers/common';
 import { TypeOfContent } from '../../types';
+import { PaginateOptions, QueryResult, QuerySort } from '../base.model';
 import { FolderService } from './folder.service';
-import { Content } from './models/content.model';
+import { Content, FilterContent } from './models/content.model';
 
 export abstract class ContentService<T extends Content> extends FolderService<T> {
 
-    protected locationService: BrowserLocationService
+    protected locationService: BrowserLocationService;
     protected typeOfContent: TypeOfContent;
     constructor(injector: Injector) {
         super(injector);
@@ -17,6 +18,83 @@ export abstract class ContentService<T extends Content> extends FolderService<T>
     }
     abstract isMatching(typeOfContent: TypeOfContent);
     abstract getContentData(content: T);
+
+    /**
+     * Get the content detail without populate child items
+     * @param contentId
+     * @param language
+     * @param select The mongoose select syntax like 'a,-b,c'
+     */
+    getContent(contentId: string, language?: string, select?: string): Observable<T> {
+        const host = this.locationService.getLocation().host;
+        const query = convertObjectToUrlQueryString({ language, host, select });
+        return this.httpClient.get<T>(`${this.apiUrl}/${contentId}?${query}`);
+    }
+
+    /**
+     * Gets content children by parent id
+     * @param parentId
+     * @param language
+     * @param [host] optional
+     * @param select The mongoose select syntax like 'a,-b,c'
+     * @returns The array of children
+     */
+    getContentChildren(parentId: string, language?: string, select?: string): Observable<T[]> {
+        const host = this.locationService.getLocation().host;
+        const query = convertObjectToUrlQueryString({ language, host, select });
+        return this.httpClient.get<T[]>(`${this.apiUrl}/children/${parentId}?${query}`);
+    }
+
+    getAncestors(contentId: string, language?: string, select?: string): Observable<T[]> {
+        const host = this.locationService.getLocation().host;
+        const query = convertObjectToUrlQueryString({ language, host, select });
+        return this.httpClient.get<T[]>(`${this.apiUrl}/ancestors/${contentId}?${query}`);
+    }
+
+    /**
+     * Gets content items details by array of ids
+     * @param ids
+     * @param language (Optional)
+     * @param [statuses] (Optional)
+     * @param [isDeepPopulate] (Optional) if true, the content child items will be populated
+     * @returns content items
+     */
+    getContentItems(ids: string[], language?: string, statuses?: number[], isDeepPopulate?: boolean): Observable<T[]> {
+        const query = convertObjectToUrlQueryString({ language });
+        const bodyReq = {
+            ids,
+            statuses,
+            isDeepPopulate
+        };
+        return this.httpClient.post<T[]>(`${this.apiUrl}/getContentItems?${query}`, bodyReq).pipe(
+            map((contents: T[]) => contents.map(content => Object.assign(content, { type: this.typeOfContent })))
+        );
+    }
+
+    /**
+     * Query content using aggregation function
+     * @param filter {FilterQuery<T & P>} The filter to query content
+     * @param project {string | { [key: string]: any }} (Optional) project aggregation for example: { name: 1, language: 1} or `'name,language'`
+     * @param {QuerySort} [sort] - Sort option in the format: `'a,b, -c'` or `{a:1, b: 'asc', c: -1}`
+     * @param {number} [page] - Current page (default = 1)
+     * @param {number} [limit] - Maximum number of results per page (default = 10)
+     * @returns {Object} Return `PaginateResult` object
+     */
+    queryContents(
+        filter: FilterContent,
+        project?: string | { [key: string]: any },
+        sort?: string | QuerySort,
+        page?: number,
+        limit?: number): Observable<QueryResult<T>> {
+        const bodyReq = {
+            filter,
+            project,
+            sort,
+            page,
+            limit
+        };
+        return this.httpClient.post<QueryResult<T>>(`${this.apiUrl}/query`, bodyReq);
+    }
 
     /**
      * Creates content based on language
@@ -27,30 +105,6 @@ export abstract class ContentService<T extends Content> extends FolderService<T>
     createContent(content: Partial<T>, language?: string): Observable<T> {
         const query = convertObjectToUrlQueryString({ language });
         return this.httpClient.post<T>(`${this.apiUrl}?${query}`, content);
-    }
-
-    /**
-     * Get the content detail without populate child items
-     * @param contentId
-     * @param language
-     */
-    getContent(contentId: string, language?: string): Observable<T> {
-        const host = this.locationService.getLocation().host;
-        const query = convertObjectToUrlQueryString({ language, host });
-        return this.httpClient.get<T>(`${this.apiUrl}/${contentId}?${query}`);
-    }
-
-    getContentItems(contentIds: string[], language?: string): Observable<T[]> {
-        const query = convertObjectToUrlQueryString({ language });
-        return this.httpClient.post<T[]>(`${this.apiUrl}/getContentItems?${query}`, contentIds).pipe(
-            map((contents: T[]) => contents.map(content => Object.assign(content, { type: this.typeOfContent })))
-        );
-    }
-
-    getContentChildren(parentId: string, language?: string): Observable<T[]> {
-        const host = this.locationService.getLocation().host;
-        const query = convertObjectToUrlQueryString({ language, host });
-        return this.httpClient.get<T[]>(`${this.apiUrl}/children/${parentId}?${query}`);
     }
 
     moveContentToTrash(contentId: string): Observable<T> {

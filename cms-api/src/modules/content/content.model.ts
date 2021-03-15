@@ -32,18 +32,7 @@ export interface IPublishContent {
     publishedBy: string;
 }
 
-export interface IContent extends ISoftDeletedContent, IHierarchyContent {
-    contentType: string;
-    masterLanguageId: string;
-    contentLanguages: any[];
-    //not map to db
-    versionId: string; //contain corresponding version id
-}
-export interface IContentDocument extends IContent, IBaseDocument { }
-export interface IContentModel<T extends IContentDocument> extends IBaseModel<T> { }
-
 export interface IContentLanguage extends IPublishContent, IContentHasChildItems {
-    contentId: string | IContentDocument;
     language: string;
     versionId: string;
     name: string;
@@ -55,7 +44,16 @@ export interface IContentLanguage extends IPublishContent, IContentHasChildItems
     [key: string]: any;
 }
 export interface IContentLanguageDocument extends IContentLanguage, IBaseDocument { }
-export interface IContentLanguageModel<T extends IContentLanguageDocument> extends IBaseModel<T> { }
+
+export interface IContent extends ISoftDeletedContent, IHierarchyContent {
+    contentType: string;
+    masterLanguageId: string;
+    contentLanguages: Partial<IContentLanguageDocument>[];
+    //not map to db
+    versionId: string; //contain corresponding version id
+}
+export interface IContentDocument extends IContent, IBaseDocument { }
+export interface IContentModel<T extends IContentDocument> extends IBaseModel<T> { }
 
 export interface IContentVersion extends IPublishContent, IContentHasChildItems {
     contentId: string | IContentDocument;
@@ -90,7 +88,7 @@ export const ContentHasChildItemsSchema = new mongoose.Schema({
     //contain all reference Ids of all current contents which be used in page such as block, media, page
     childItems: [{
         refPath: { type: String, required: true },
-        content: { type: mongoose.Schema.Types.ObjectId, refPath: 'childItems.refPath' }
+        content: { type: mongoose.Schema.Types.ObjectId, refPath: 'contentLanguages.childItems.refPath' }
     }]
 })
 
@@ -119,7 +117,7 @@ export const ContentLanguageSchema = new mongoose.Schema({
     ...PublishContentSchema.obj,
     ...ContentHasChildItemsSchema.obj,
     language: { type: String, required: true },
-    name: { type: String, required: true },
+    name: { type: String, required: true, index: true },
     properties: mongoose.Schema.Types.Mixed,
     status: { type: Number, required: true, default: 2 }
 });

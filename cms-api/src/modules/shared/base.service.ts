@@ -1,6 +1,6 @@
 import { FilterQuery, Query, UpdateQuery } from 'mongoose';
 import { DocumentNotFoundException } from '../../error';
-import { IBaseDocument, IBaseModel, QueryItem, QueryList, QueryOptions, PaginateOptions, PaginateResult } from './base.model';
+import { IBaseDocument, IBaseModel, QueryItem, QueryList, QueryOptions, PaginateOptions, QueryResult } from './base.model';
 
 export class BaseService<T extends IBaseDocument> {
 
@@ -93,9 +93,9 @@ export class BaseService<T extends IBaseDocument> {
      * @param {FilterQuery<T>} filter - Mongo Query - https://docs.mongodb.com/manual/tutorial/query-documents/
      * @param {Object} paginateOptions - Paginate options
      * @param {Object} queryOptions - query option ex `{ lean: true }`
-     * @returns {Promise<PaginateResult>}
+     * @returns {Promise<QueryResult>}
      */
-    public paginate = (filter: FilterQuery<T>, paginateOptions?: PaginateOptions, queryOptions?: QueryOptions): Promise<PaginateResult> => {
+    public paginate = (filter: FilterQuery<T>, paginateOptions?: PaginateOptions, queryOptions?: QueryOptions): Promise<QueryResult<T>> => {
         //query.sort('firstName -lastName');  query.sort({ firstName: 'asc', lastName: -1 });
         const { sortBy, page, limit } = this.getPaginateOptions(paginateOptions);
         const skip = (page - 1) * limit;
@@ -107,7 +107,7 @@ export class BaseService<T extends IBaseDocument> {
         return Promise.all([countPromise, docsPromise]).then((values) => {
             const [totalResults, results] = values;
             const totalPages = Math.ceil(totalResults / limit);
-            const result: PaginateResult = {
+            const result: QueryResult<T> = {
                 docs: results,
                 page,
                 limit,
@@ -124,7 +124,7 @@ export class BaseService<T extends IBaseDocument> {
     }
 
     public insertMany = (docs: Partial<T>[]): Promise<T[]> => {
-        return this.mongooseModel.insertMany(docs)
+        return this.mongooseModel.insertMany(docs as T[])
     }
 
     public updateById = async (id: string, doc: Partial<T>): Promise<T> => {
@@ -142,7 +142,7 @@ export class BaseService<T extends IBaseDocument> {
      * @param updateQuery
      * @returns 
      */
-    public updateMany = (filter: FilterQuery<T>, updateQuery: UpdateQuery<T>): Query<any> => {
+    public updateMany = (filter: FilterQuery<T>, updateQuery: UpdateQuery<T>): Query<any, T> => {
         return this.mongooseModel.updateMany(filter, updateQuery)
     }
 
@@ -158,7 +158,7 @@ export class BaseService<T extends IBaseDocument> {
         return await document.remove();
     }
 
-    public deleteMany = (filter: FilterQuery<T>): Query<any> => {
+    public deleteMany = (filter: FilterQuery<T>): Query<any, T> => {
         return this.mongooseModel.deleteMany(filter)
     }
 

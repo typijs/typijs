@@ -6,9 +6,9 @@ import { UrlItem } from '../types/url-item';
  * The pipe to convert the ContentReference or url to absolute image source
  */
 @Pipe({
-    name: 'toPageUrl'
+    name: 'toUrl'
 })
-export class ToPageUrlPipe implements PipeTransform {
+export class ToUrlPipe implements PipeTransform {
 
     transform(value: ContentReference): UrlItem {
         const urlItem = new UrlItem();

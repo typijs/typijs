@@ -6,6 +6,10 @@ import { ILanguageBranchDocument, LanguageBranchModel } from './language.model';
 
 @Injectable()
 export class LanguageService extends BaseService<ILanguageBranchDocument> {
+    /**
+     * Empty language is used in folder
+     */
+    public readonly EMPTY_LANGUAGE: string = '0';
     private static readonly PrefixCacheKey: string = 'LanguageBranch';
     constructor(private cacheService: CacheService) {
         super(LanguageBranchModel);

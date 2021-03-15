@@ -21,21 +21,9 @@ export abstract class ContentController<T extends IContentDocument, P extends IC
 
   async getContent(req: express.Request, res: express.Response) {
     const { language } = req as any;
-    const createdContent = await this.contentService.getContent(req.params.id, language);
+    const { select } = req.query;
+    const createdContent = await this.contentService.getContent(req.params.id, language, undefined, select);
     res.status(httpStatus.OK).json(createdContent)
-  }
-
-  async getContentItems(req: express.Request, res: express.Response) {
-    const { language } = req as any;
-    const { statuses, fieldsSelect } = req.query;
-    const items = await this.contentService.getContentItems(req.body, language, statuses, fieldsSelect, true);
-    res.status(httpStatus.OK).json(items);
-  }
-
-  async queryContent(req: express.Request, res: express.Response) {
-    const { filter, page, limit, sort, select } = req.body;
-    const items = await this.contentService.queryContent(filter, page, limit, sort, select);
-    res.status(httpStatus.OK).json(items);
   }
 
   @Profiler({
@@ -45,8 +33,29 @@ export abstract class ContentController<T extends IContentDocument, P extends IC
   })
   async getContentChildren(req: express.Request, res: express.Response) {
     const { language } = req as any;
-    const items = await this.contentService.getContentChildren(req.params.parentId, language, req.query.host);
+    const { host, select } = req.query;
+    const items = await this.contentService.getContentChildren(req.params.parentId, language, host, select);
     res.status(httpStatus.OK).json(items)
+  }
+
+  async getAncestors(req: express.Request, res: express.Response) {
+    const { language } = req as any;
+    const { host, select } = req.query;
+    const createdContent = await this.contentService.getAncestors(req.params.id, language, host, select);
+    res.status(httpStatus.OK).json(createdContent)
+  }
+
+  async getContentItems(req: express.Request, res: express.Response) {
+    const { language } = req as any;
+    const { ids, statuses, project, isDeepPopulate } = req.body;
+    const items = await this.contentService.getContentItems(ids, language, statuses, project, isDeepPopulate);
+    res.status(httpStatus.OK).json(items);
+  }
+
+  async queryContent(req: express.Request, res: express.Response) {
+    const { filter, project, sort, page, limit } = req.body;
+    const items = await this.contentService.queryContent(filter, project, sort, page, limit);
+    res.status(httpStatus.OK).json(items);
   }
 
   @Authorize({ roles: AdminOrEditor })

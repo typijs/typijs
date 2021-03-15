@@ -17,7 +17,7 @@ export class MediaRouter {
         media.get('/folders/:parentId?', this.mediaController.getFoldersByParentId.bind(this.mediaController));
 
         media.get('/children/:parentId?', this.langGuard.checkEnabled(), this.mediaController.getContentChildren.bind(this.mediaController));
-
+        media.get('/ancestors/:id', this.langGuard.checkEnabled(), this.mediaController.getAncestors.bind(this.mediaController));
         media.post('/folder', this.mediaController.createFolderContent.bind(this.mediaController));
 
         media.put('/folder/:id', this.mediaController.updateFolderName.bind(this.mediaController));
@@ -30,6 +30,8 @@ export class MediaRouter {
 
         media.post('/copy', this.mediaController.copy.bind(this.mediaController));
 
+        //query contents
+        media.post('/query', this.langGuard.checkEnabled(), this.mediaController.queryContent.bind(this.mediaController));
         //TODO need to revisit
         media.get('/:id', this.mediaController.getVersion.bind(this.mediaController));
         //move to trash
