@@ -4,7 +4,6 @@ import { BestPriceBlock } from './best-price.blocktype';
 
 @Component({
     selector: '[best-price-block]',
-    //host: { 'class': 'ftco-section img' },
     template: `
     <section class="ftco-section img" [ngStyle]="{ 'background-image': 'url(' + (currentContent.backgroundImage | toImgSrc) + ')'}">
         <div class="container">

@@ -21,7 +21,7 @@ import { VideoBlock } from './video.blocktype';
                 </div>
                 <div class="pb-md-5">
                     <p [cmsXhtml]="currentContent.description"></p>
-                    <p><a class="btn btn-primary" [cmsUrl]="currentContent.link">Shop now</a></p>
+                    <p><a *ngIf="currentContent.link" class="btn btn-primary" [cmsUrl]="currentContent.link">{{currentContent.link.text}}</a></p>
                 </div>
             </div>
         </div>
