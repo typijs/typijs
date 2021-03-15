@@ -1,7 +1,6 @@
 import { CmsComponent } from '@angular-cms/core';
 import { Component } from '@angular/core';
 import { CarouselItemBlock } from './carousel-item.blocktype';
-
 @Component({
     selector: '[carousel-item-block]',
     template: `

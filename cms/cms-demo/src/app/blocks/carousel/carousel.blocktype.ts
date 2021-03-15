@@ -1,6 +1,5 @@
 import { BlockData, BlockType, Property, ValidationTypes, UIHint } from '@angular-cms/core';
 import { CarouselComponent } from './carousel.component';
-
 @BlockType({
     displayName: 'Carousel Block',
     componentRef: CarouselComponent
