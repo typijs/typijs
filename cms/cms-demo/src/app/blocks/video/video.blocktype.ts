@@ -1,4 +1,4 @@
-import { BlockData, BlockType, CmsImage, Property, UIHint } from '@angular-cms/core';
+import { BlockData, BlockType, CmsImage, Property, UIHint, UrlItem } from '@angular-cms/core';
 import { VideoComponent } from './video.component';
 
 @BlockType({
@@ -19,10 +19,10 @@ export class VideoBlock extends BlockData {
     description: string;
 
     @Property({
-        displayName: 'Video Url',
-        displayType: UIHint.Text
+        displayName: 'Video Source',
+        displayType: UIHint.Url
     })
-    video: string;
+    video: UrlItem;
 
     @Property({
         displayName: 'Video Thumbnail',
@@ -32,7 +32,7 @@ export class VideoBlock extends BlockData {
 
     @Property({
         displayName: 'Link Text',
-        displayType: UIHint.Text
+        displayType: UIHint.Url
     })
-    link: string;
+    link: UrlItem;
 }
