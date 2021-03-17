@@ -2,5 +2,5 @@
 </hero-banner>
 
 <div [cmsContentArea]="currentContent.topContent"></div>
-<div [cmsContentArea]="currentContent.mainContent"></div>
+<div [cmsContentArea]="currentContent.mainContent" (contentLoaded)="contentLoaded($event)"></div>
 <div [cmsContentArea]="currentContent.bottomContent"></div>

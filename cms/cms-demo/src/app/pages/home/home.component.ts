@@ -12,7 +12,6 @@ export class HomeComponent extends CmsComponent<HomePage> {
     }
 
     contentLoaded(value: string) {
-        console.log(value);
         this.scriptJs.loadScript('assets/js/secondary.js');
     }
 }
