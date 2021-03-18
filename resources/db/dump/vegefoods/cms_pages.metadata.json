@@ -1,1 +1,0 @@
-{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"vegefoods.cms_pages"},{"v":{"$numberInt":"2"},"key":{"parentPath":{"$numberInt":"1"}},"name":"parentPath_1","ns":"vegefoods.cms_pages","background":true}],"uuid":"9668968be84b492dbedc2534a62bd186"}

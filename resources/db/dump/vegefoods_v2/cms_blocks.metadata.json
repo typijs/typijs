@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"key":{"parentPath":{"$numberInt":"1"}},"name":"parentPath_1","background":true},{"v":{"$numberInt":"2"},"key":{"contentLanguages.name":{"$numberInt":"1"}},"name":"contentLanguages.name_1","background":true}],"uuid":"fa9182df56c641f0b299b9a9bf28600f"}
