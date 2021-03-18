@@ -17,7 +17,7 @@ export const config = {
     mongdb: {
         protocol: process.env.MONGO_DB_PROTOCOL || 'mongodb',
         host: process.env.MONGO_DB_HOST || 'localhost:27017',
-        name: process.env.MONGO_DB_NAME || 'angularcms',
+        name: process.env.MONGO_DB_NAME || 'vegefood_v2',
         user: process.env.MONGO_DB_USER || '',
         password: process.env.MONGO_DB_PASSWORD || ''
     },
