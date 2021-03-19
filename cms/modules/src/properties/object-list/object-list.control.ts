@@ -65,7 +65,7 @@ export class ObjectListControl extends CmsListControl {
             itemData: item ?? {},
             title: item ? 'Item Detail' : 'Create Item'
         };
-        const config: ModalOptions = {
+        const config: ModalOptions<ObjectDetailsComponent> = {
             initialState,
             backdrop: true, // Show backdrop
             keyboard: false, // Esc button option

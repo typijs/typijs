@@ -20,9 +20,9 @@ export function cmsInitializer(configService: ConfigService, configDeps: (() => 
                 // Return resolved Promise when dependant functions are resolved
                 return Promise.all(configDeps.map(dep => dep())); // configDeps received from the outside world
             })
-            .then(() => {
+            .then(value => {
                 // Once configuration dependencies are resolved, then resolve factory
-                resolve();
+                resolve(value);
             })
             .catch(() => {
                 reject();

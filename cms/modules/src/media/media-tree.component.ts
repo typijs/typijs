@@ -117,7 +117,7 @@ export class MediaTreeComponent extends SubscriptionDestroy implements OnInit {
     }
 
     private openFileUploadModal(uploadProgress: FileUploadProgress) {
-        const config: ModalOptions = {
+        const config: ModalOptions<FileModalComponent> = {
             initialState: uploadProgress,
             backdrop: true, // Show backdrop
             keyboard: false, // Esc button option

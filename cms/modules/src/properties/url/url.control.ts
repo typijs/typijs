@@ -51,10 +51,10 @@ export class UrlControl extends CmsControl {
 
     openUrlDialog() {
         const initialState = {
-            urlData: this.model ?? {},
+            urlData: this.model ?? <UrlItem>{},
             title: this.model ? 'Edit url' : 'Create url'
         };
-        const config: ModalOptions = {
+        const config: ModalOptions<UrlDetailsComponent> = {
             initialState,
             backdrop: true, // Show backdrop
             keyboard: false, // Esc button option

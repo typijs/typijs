@@ -131,7 +131,7 @@ export class MediaTreeModalComponent implements OnInit {
         this.selectedContentSubject.next(this.selectedContent);
     }
 
-    getResult(): Observable<ContentReference> {
+    getResult(): Observable<CmsImage & ContentReference> {
         return this.selectedContentSubject.asObservable().pipe(take(1));
     }
 }
