@@ -1,3 +1,4 @@
+import { UrlItem } from '@angular-cms/core';
 import { Component, forwardRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
@@ -51,12 +52,12 @@ export class UrlListControl extends CmsListControl {
         super();
     }
 
-    openUrlDetailsModal(item?: { [key: string]: any }) {
+    openUrlDetailsModal(item?: UrlItem) {
         const initialState = {
-            urlData: item ?? {},
+            urlData: item ?? <UrlItem>{},
             title: item ? 'Edit url' : 'Create url'
         };
-        const config: ModalOptions = {
+        const config: ModalOptions<UrlDetailsComponent> = {
             initialState,
             backdrop: true, // Show backdrop
             keyboard: false, // Esc button option

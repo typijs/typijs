@@ -12,7 +12,7 @@ export class ContentModalService {
     constructor(private modalService: BsModalService) { }
 
     openPageDialog(selectedContentId: string): Observable<ContentReference> {
-        const config: ModalOptions = {
+        const config: ModalOptions<PageTreeModalComponent> = {
             initialState: { selectedContentId },
             animated: false,
             class: 'modal-md'
@@ -24,7 +24,7 @@ export class ContentModalService {
     }
 
     openMediaDialog(selectedContentId: string): Observable<CmsImage & ContentReference> {
-        const config: ModalOptions = {
+        const config: ModalOptions<MediaTreeModalComponent> = {
             initialState: { selectedContentId },
             animated: false,
             class: 'modal-lg'

@@ -13,7 +13,7 @@ export class CmsModalService {
         message: string,
         btnYesText: string = 'Yes',
         btnNoText: string = 'No'): Observable<boolean> {
-        const config: ModalOptions = {
+        const config: ModalOptions<ConfirmationModalComponent> = {
             initialState: { title, message, btnYesText, btnNoText },
             animated: false,
             class: 'modal-md'
