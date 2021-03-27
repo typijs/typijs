@@ -15,6 +15,8 @@ export class AuthRouter {
     get router(): Router {
         const authRouter: Router = asyncRouterErrorHandler(Router());
 
+        authRouter.get('/can-setup-admin', this.authController.canSetupAdmin);
+        authRouter.post('/setup-admin', validate(createUser), this.authController.setupAdminSite);
         authRouter.post('/register', validate(createUser), this.authController.register);
         authRouter.post('/login', validate(authValidation.login), this.authController.login);
         authRouter.post('/refresh-token', this.authController.refreshTokens);

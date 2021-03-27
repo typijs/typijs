@@ -1,10 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { ADMIN_PATH } from '../injection-tokens';
 import { AuthService } from './auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate {
-    constructor(private router: Router, private authService: AuthService) { }
+    constructor(private router: Router, private authService: AuthService, @Inject(ADMIN_PATH) private adminPath: string) { }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
         if (this.authService.isLoggedIn) {
@@ -17,7 +18,7 @@ export class AuthGuard implements CanActivate {
             return roleMatch;
         } else {
             // not logged in so redirect to login page with the return url
-            this.router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
+            this.router.navigate([`${this.adminPath}/login`], { queryParams: { returnUrl: state.url } });
             return false;
         }
     }

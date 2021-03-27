@@ -1,5 +1,5 @@
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { APP_INITIALIZER, Injector, ModuleWithProviders, NgModule, PLATFORM_ID } from '@angular/core';
+import { APP_INITIALIZER, Injector, ModuleWithProviders, NgModule, PLATFORM_ID, Provider } from '@angular/core';
 import { EVENT_MANAGER_PLUGINS } from '@angular/platform-browser';
 import { RouteReuseStrategy, Routes } from '@angular/router';
 
@@ -28,6 +28,7 @@ import { CONTENT_SERVICE_PROVIDER } from './services/content/content-loader.serv
 import { PageService } from './services/content/page.service';
 import { MediaService } from './services/content/media.service';
 import { BlockService } from './services/content/block.service';
+import { ADMIN_PATH, CONFIG_PATH } from './injection-tokens';
 
 /**
  * Re-export Core Module to used on client
@@ -38,7 +39,7 @@ export class AngularCms {
         setAppInjector(this.injector);
     }
 
-    static forRoot(): ModuleWithProviders<AngularCms> {
+    static forRoot(providers: Provider[] = []): ModuleWithProviders<AngularCms> {
         return {
             ngModule: AngularCms,
             providers: [
@@ -65,7 +66,11 @@ export class AngularCms {
                 // Register Content Providers
                 { provide: CONTENT_SERVICE_PROVIDER, useClass: PageService, multi: true },
                 { provide: CONTENT_SERVICE_PROVIDER, useClass: MediaService, multi: true },
-                { provide: CONTENT_SERVICE_PROVIDER, useClass: BlockService, multi: true }
+                { provide: CONTENT_SERVICE_PROVIDER, useClass: BlockService, multi: true },
+                // Configuration value
+                { provide: ADMIN_PATH, useValue: '/cms' },
+                { provide: CONFIG_PATH, useValue: '/assets/config.json' },
+                ...providers
             ]
         };
     }

@@ -4,21 +4,29 @@
 <!-- Form Module-->
 <div class="module form-module">
   <div class="form">
-    <h2>Login to your account</h2>
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <h2>Create the Admin account</h2>
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <!-- Username -->
       <input type="text" formControlName="username" placeholder="Username"
         [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
       <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
         <div *ngIf="f.username.errors.required">Username is required</div>
       </div>
+      <!-- Password -->
       <input type="password" formControlName="password" placeholder="Password"
         [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
       <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
         <div *ngIf="f.password.errors.required">Password is required</div>
       </div>
-      <button [disabled]="loading">Login</button>
+      <!-- Email -->
+      <input type="email" formControlName="email" placeholder="example@domain.com"
+        [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
+      <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+        <div *ngIf="f.email.errors.required">Email is required</div>
+      </div>
+
+      <button [disabled]="loading">Ready to start</button>
       <p class="invalid-feedback">{{error}}&nbsp;</p>
     </form>
   </div>
-  <div class="cta"><a href="javascript:void(0)">Forgot your password?</a></div>
 </div>

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 
 import { BaseService } from '../services/base.service';
 import { AuthStatus, TokenResponse } from './auth.model';
@@ -31,6 +31,18 @@ export class AuthService extends BaseService {
         this.baseApiUrl = baseApiUrl;
         this.apiUrl = `${baseApiUrl}/auth`;
         return this;
+    }
+
+    canSetupAdmin(): Observable<boolean> {
+        return this.httpClient.get<boolean>(`${this.apiUrl}/can-setup-admin`);
+    }
+
+    setupAdmin(username: string, password: string, email: string): Observable<AuthStatus> {
+        const adminUser = { firstName: username, lastName: username, username, password, confirmPassword: password, email };
+        return this.httpClient.post<any>(`${this.apiUrl}/setup-admin`, adminUser)
+            .pipe(
+                switchMap(() => this.login(username, password))
+            );
     }
 
     login(username: string, password: string): Observable<AuthStatus> {

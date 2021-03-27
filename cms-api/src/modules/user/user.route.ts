@@ -26,7 +26,6 @@ export class UserRouter {
         user.get('/:id', this.authGuard.checkAuthenticated(), validate(requiredId), this.userController.get);
         //create user
         user.post('/', validate(createUser), this.userController.createUser);
-        user.post('/admin', validate(createAdminUser), this.userController.createAdminUser);
         //update user by id
         user.put('/:id', this.authGuard.checkAuthenticated(), validate(updateUser), this.userController.updateUser);
 

@@ -1,10 +1,10 @@
 <header>
   <nav class="navbar p-0">
-    <a class="navbar-brand" [routerLink]="['/cms/dashboard']"></a>
+    <a class="navbar-brand" [routerLink]="[adminPath + '/dashboard']"></a>
     <nav class="nav mr-auto">
-      <a class="nav-link" routerLinkActive="active" [routerLink]="['/cms/dashboard']">Dashboard</a>
-      <a class="nav-link" routerLinkActive="active" [routerLink]="['/cms/editor']">Editor</a>
-      <a class="nav-link" routerLinkActive="active" [routerLink]="['/cms/admin']">Admin</a>
+      <a class="nav-link" routerLinkActive="active" [routerLink]="[adminPath + '/dashboard']">Dashboard</a>
+      <a class="nav-link" routerLinkActive="active" [routerLink]="[adminPath + '/editor']">Editor</a>
+      <a class="nav-link" routerLinkActive="active" [routerLink]="[adminPath + '/admin']">Admin</a>
       <ng-content></ng-content>
     </nav>
   </nav>

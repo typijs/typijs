@@ -7,15 +7,50 @@ import { AuthService } from './auth.service';
 import { UserService } from '../user/user.service';
 import { TokenService } from './token.service';
 import { TokenDto } from './token.model';
+import { LanguageService } from '../language/language.service';
+import { ILanguageBranchDocument } from '../language/language.model';
 
 @Injectable()
 export class AuthController {
 
     private readonly refreshTokenCookie: string = 'refreshToken';
-    constructor(private authService: AuthService, private userService: UserService, private tokenService: TokenService) { }
+    constructor(private authService: AuthService, private userService: UserService, private tokenService: TokenService, private languageService: LanguageService) { }
+
+    public canSetupAdmin = async (req: express.Request, res: express.Response) => {
+        const admin = await this.userService.getAdminUser();
+        const canSetupAdmin = admin ? false : true;
+        res.status(httpStatus.OK).json(canSetupAdmin);
+    }
+
+    /**
+     * Setup for first time using
+     */
+    public setupAdminSite = async (req: express.Request, res: express.Response) => {
+        // step 1: check if there is not any admin account
+        let admin = await this.userService.getAdminUser();
+        if (admin) { res.status(httpStatus.OK).json('The Admin account has already created'); }
+
+        // step 2: create admin account
+        admin = await this.userService.createAdminUser(req.body);
+
+        // step 3: check if there is not any language
+        const languages = await this.languageService.getEnabledLanguages();
+        if (languages.length === 0) {
+            // step 4: create default language
+            const defaultLanguageDoc: Partial<ILanguageBranchDocument> = {
+                language: 'en',
+                name: 'English',
+                sortIndex: 1,
+                enabled: true
+            }
+            await this.languageService.addLanguage(defaultLanguageDoc, admin._id.toString());
+        }
+
+        res.status(httpStatus.OK).json(admin);
+    }
 
     public register = async (req: express.Request, res: express.Response) => {
-        const user = await this.userService.create(req.body);
+        const user = await this.userService.createUser(req.body);
         const tokens = await this.tokenService.generateAuthTokens(user);
         this.setRefreshTokenCookie(res, tokens.refresh);
         res.status(httpStatus.CREATED).send({ ...tokens.access });
