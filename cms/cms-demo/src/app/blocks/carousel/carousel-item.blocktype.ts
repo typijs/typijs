@@ -1,4 +1,4 @@
-import { BlockData, BlockType, CmsImage, Property, UIHint, UrlItem } from '@angular-cms/core';
+import { BlockData, BlockType, CmsImage, Property, UIHint, CmsUrl } from '@angular-cms/core';
 import { CarouselItemComponent } from './carousel-item.component';
 
 @BlockType({
@@ -28,5 +28,5 @@ export class CarouselItemBlock extends BlockData {
         displayName: 'Link Url',
         displayType: UIHint.Url
     })
-    url: UrlItem;
+    url: CmsUrl;
 }

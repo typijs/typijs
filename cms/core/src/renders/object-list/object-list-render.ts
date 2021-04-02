@@ -5,7 +5,10 @@ import { CmsPropertyRenderFactory } from '../property-render.factory';
 
 @Component({
     selector: 'ul',
-    template: `<ng-container *ngIf="value"><li *ngFor="let item of value">{{item | json}}</li></ng-container>`
+    template: `
+    <ng-container *ngIf="value">
+        <li *ngFor="let item of value">{{item | json}}</li>
+    </ng-container>`
 })
 export class ObjectListPropertyRender extends CmsPropertyRender<any[]> { }
 

@@ -1,4 +1,4 @@
-import { CmsImage, ContentReference, FOLDER_MEDIA, LanguageService, Media, MediaService, MEDIA_TYPE, VersionStatus } from '@angular-cms/core';
+import { CmsImage, ContentReference, LanguageService, Media, MediaService, ContentTypeEnum, VersionStatus } from '@angular-cms/core';
 import { Component, EventEmitter, Injectable, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
 import { map, switchMap, take } from 'rxjs/operators';
@@ -12,13 +12,13 @@ export class MediaTreeReadonlyService implements TreeService {
 
     getNode(nodeId: string): Observable<TreeNode> {
         return this.mediaService.getContent(nodeId, this.languageService.EMPTY_LANGUAGE).pipe(
-            map(media => TreeNode.createInstanceFromContent(media, FOLDER_MEDIA)));
+            map(media => TreeNode.createInstanceFromContent(media, ContentTypeEnum.FolderMedia)));
     }
 
     loadChildren(parentNodeId: string): Observable<TreeNode[]> {
         return this.mediaService.getFolderChildren(parentNodeId).pipe(
             map((childFolders: Media[]) => {
-                return childFolders.map(folder => TreeNode.createInstanceFromContent(folder, FOLDER_MEDIA));
+                return childFolders.map(folder => TreeNode.createInstanceFromContent(folder, ContentTypeEnum.FolderMedia));
             }));
     }
 }
@@ -108,7 +108,7 @@ export class MediaTreeModalComponent implements OnInit {
         this.medias$ = this.folderSelected$.pipe(
             switchMap(node => this.mediaService.getContentInFolder(node.id)),
             map((medias: Media[]) => medias.map(media => Object.assign(media, {
-                type: MEDIA_TYPE,
+                type: ContentTypeEnum.Media,
                 contentType: media.contentType,
                 isPublished: media.status === VersionStatus.Published
             })))
@@ -119,7 +119,7 @@ export class MediaTreeModalComponent implements OnInit {
         this.selectedContent = <CmsImage & ContentReference>{
             contentType: media.contentType,
             id: media._id,
-            type: MEDIA_TYPE,
+            type: ContentTypeEnum.Media,
             name: media.name,
             src: media.linkUrl,
             alt: media.name,

@@ -1,4 +1,4 @@
-import { Content, PageService, PAGE_TYPE } from '@angular-cms/core';
+import { Content, PageService, ContentTypeEnum } from '@angular-cms/core';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ContentVersionService } from '../content-version/content-version.service';
@@ -10,7 +10,7 @@ export class PageVersionService extends ContentVersionService {
     constructor(
         private pageService: PageService,
         private subjectService: SubjectService) {
-        super(PAGE_TYPE);
+        super(ContentTypeEnum.Page);
     }
 
     getAllVersions(contentId: string): Observable<Content[]> {

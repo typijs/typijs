@@ -3,7 +3,7 @@ import {
     CmsObject, CmsPropertyFactoryResolver, CmsTab,
     Content,
     ContentTypeProperty, InsertPointDirective,
-    sortByString, TypeOfContent, TypeOfContentEnum
+    sortByString, TypeOfContent, ContentTypeEnum
 } from '@angular-cms/core';
 import { AfterViewInit, ChangeDetectorRef, Component, ComponentRef, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { FormGroup, Validators } from '@angular/forms';
@@ -242,7 +242,7 @@ export class ContentUpdateComponent extends SubscriptionDestroy implements OnIni
         formControls.childOrderRule = [content.childOrderRule];
         formControls.peerOrder = [content.peerOrder];
 
-        if (this.typeOfContent === TypeOfContentEnum.Page) {
+        if (this.typeOfContent === ContentTypeEnum.Page) {
             formControls.urlSegment = [content.urlSegment, Validators.required];
             formControls.visibleInMenu = [content.visibleInMenu];
             formControls.simpleAddress = [content.simpleAddress];

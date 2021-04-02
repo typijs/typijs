@@ -1,16 +1,21 @@
 /*
  * Public API Surface of core
  */
+export * from './core.module';
 export * from './angular-cms.module';
+export * from './cms';
+export * from './injection-tokens';
+
+// Bases
 export * from './bases/cms-component';
 export * from './bases/cms-property';
 export * from './bases/cms-property.factory';
 export * from './bases/selection-factory';
-export * from './cms';
-export * from './injection-tokens';
+
+// Constants
 export * from './constants';
 export * from './constants/version-status';
-export * from './core.module';
+export * from './constants/content-type.enum';
 
 export * from './decorators/content-type.decorator';
 export * from './decorators/metadata-key';
@@ -69,7 +74,8 @@ export * from './types/image-reference';
 export * from './types/content-type';
 export * from './types/module-config';
 export * from './types/ui-hint';
-export * from './types/url-item';
+export * from './types/cms-url';
+export * from './types/cms-image';
 
 export * from './utils/app-injector';
 export * from './utils/route-reuse-strategy';

@@ -1,7 +1,7 @@
 import { Input, Directive, Injector, ElementRef, HostBinding, OnInit } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { isUrlAbsolute } from '../../helpers/common';
-import { CmsImage } from '../../types/image-reference';
+import { CmsImage } from '../../types/cms-image';
 import { ConfigService } from '../../config/config.service';
 import { PropertyDirectiveBase } from '../property-directive.base';
 

@@ -1,5 +1,5 @@
 import { Injectable, Injector } from '@angular/core';
-import { TypeOfContentEnum } from '../../types';
+import { ContentTypeEnum } from '../../constants/content-type.enum';
 import { ContentService } from './content.service';
 import { Block } from './models/block.model';
 import { BlockData } from './models/content-data';
@@ -16,7 +16,7 @@ export class BlockService extends ContentService<Block> {
 
     isMatching(typeOfContent: string) {
         this.typeOfContent = typeOfContent;
-        return typeOfContent === TypeOfContentEnum.Block || typeOfContent === TypeOfContentEnum.FolderBlock;
+        return typeOfContent === ContentTypeEnum.Block || typeOfContent === ContentTypeEnum.FolderBlock;
     }
 
     getContentData(content: Block): BlockData {

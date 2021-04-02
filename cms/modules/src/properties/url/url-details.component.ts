@@ -1,4 +1,4 @@
-import { ClassOf, UrlItem } from '@angular-cms/core';
+import { ClassOf, CmsUrl } from '@angular-cms/core';
 import { AfterViewInit, Component, Input, ViewChild } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { Observable, ReplaySubject } from 'rxjs';
@@ -69,17 +69,17 @@ import { DynamicFormComponent } from '../../shared/form/dynamic-form.component';
 export class UrlDetailsComponent implements AfterViewInit {
 
     @Input() title: string;
-    @Input() urlData: UrlItem;
-    @Input() itemType: ClassOf<UrlItem> = UrlItem;
+    @Input() urlData: CmsUrl;
+    @Input() itemType: ClassOf<CmsUrl> = CmsUrl;
 
     @ViewChild('formId', { static: true }) urlForm: DynamicFormComponent;
 
     urlType$: Observable<string>;
-    private itemSubject: ReplaySubject<UrlItem> = new ReplaySubject(1);
+    private itemSubject: ReplaySubject<CmsUrl> = new ReplaySubject(1);
 
     constructor(public bsModalRef: BsModalRef) { }
 
-    createItem(item: UrlItem) {
+    createItem(item: CmsUrl) {
         switch (item.urlType) {
             case 'page':
                 item.media = null;
@@ -108,7 +108,7 @@ export class UrlDetailsComponent implements AfterViewInit {
         this.bsModalRef.hide();
     }
 
-    getResult(): Observable<UrlItem> {
+    getResult(): Observable<CmsUrl> {
         return this.itemSubject.asObservable().pipe(take(1));
     }
 

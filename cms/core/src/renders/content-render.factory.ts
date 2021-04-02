@@ -3,7 +3,8 @@ import { CmsComponent } from '../bases/cms-component';
 import { ContentTypeService } from '../services/content-type.service';
 import { BlockData, ContentData, PageData } from '../services/content/models/content-data';
 import { Content } from '../services/content/models/content.model';
-import { TypeOfContent, TypeOfContentEnum } from '../types';
+import { TypeOfContent } from '../types';
+import { ContentTypeEnum } from '../constants/content-type.enum';
 import { ContentType, ContentTypeProperty } from '../types/content-type';
 import { CmsPropertyRenderFactoryResolver } from './property-render.factory';
 
@@ -52,7 +53,7 @@ export class PageRenderFactory extends CmsContentRenderFactory {
     }
 
     isMatching(typeOfContent: string): boolean {
-        return typeOfContent === TypeOfContentEnum.Page;
+        return typeOfContent === ContentTypeEnum.Page;
     }
     protected getContentType(content: Content): ContentType {
         return this.contentTypeService.getPageType(content.contentType);
@@ -70,7 +71,7 @@ export class PagePartialRenderFactory extends CmsContentRenderFactory {
     }
 
     isMatching(typeOfContent: string): boolean {
-        return typeOfContent === TypeOfContentEnum.PagePartial;
+        return typeOfContent === ContentTypeEnum.PagePartial;
     }
 
     protected getContentType(content: Content): ContentType {
@@ -101,7 +102,7 @@ export class BlockRenderFactory extends CmsContentRenderFactory {
     }
 
     isMatching(typeOfContent: string): boolean {
-        return typeOfContent === TypeOfContentEnum.Block;
+        return typeOfContent === ContentTypeEnum.Block;
     }
 
     protected getContentType(content: Content): ContentType {
@@ -119,7 +120,7 @@ export class MediaRenderFactory extends CmsContentRenderFactory {
     }
 
     isMatching(typeOfContent: string): boolean {
-        return typeOfContent === TypeOfContentEnum.Media;
+        return typeOfContent === ContentTypeEnum.Media;
     }
 
     protected getContentType(content: Content): ContentType {

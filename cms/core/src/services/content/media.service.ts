@@ -1,7 +1,7 @@
 import { HttpClient, HttpEvent, HttpRequest } from '@angular/common/http';
 import { Injectable, Injector } from '@angular/core';
 import { Observable } from 'rxjs';
-import { TypeOfContentEnum } from '../../types';
+import { ContentTypeEnum } from '../../constants/content-type.enum';
 import { ContentService } from './content.service';
 import { ContentData } from './models/content-data';
 import { Media } from './models/media.model';
@@ -19,7 +19,7 @@ export class MediaService extends ContentService<Media> {
 
     isMatching(typeOfContent: string) {
         this.typeOfContent = typeOfContent;
-        return typeOfContent === TypeOfContentEnum.Media || typeOfContent === TypeOfContentEnum.FolderMedia
+        return typeOfContent === ContentTypeEnum.Media || typeOfContent === ContentTypeEnum.FolderMedia
     }
 
     getContentData(content: Media): ContentData {

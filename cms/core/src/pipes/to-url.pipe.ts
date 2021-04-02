@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { ContentReference } from '../types/content-reference';
-import { UrlItem } from '../types/url-item';
+import { CmsUrl } from '../types/cms-url';
 
 /**
  * The pipe to convert the ContentReference or url to absolute image source
@@ -10,8 +10,8 @@ import { UrlItem } from '../types/url-item';
 })
 export class ToUrlPipe implements PipeTransform {
 
-    transform(value: ContentReference): UrlItem {
-        const urlItem = new UrlItem();
+    transform(value: ContentReference): CmsUrl {
+        const urlItem = new CmsUrl();
         urlItem.urlType = 'page';
         urlItem.page = value;
         return urlItem;

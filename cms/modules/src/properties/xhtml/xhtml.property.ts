@@ -1,4 +1,4 @@
-import { CmsProperty, MediaService, MEDIA_TYPE, PAGE_TYPE } from '@angular-cms/core';
+import { CmsProperty, MediaService, ContentTypeEnum } from '@angular-cms/core';
 import { Component, ViewChild } from '@angular/core';
 import { QuillEditorComponent } from 'ngx-quill';
 import Quill from 'quill';
@@ -56,10 +56,10 @@ export class XHtmlProperty extends CmsProperty {
     onDropItem(e: DropEvent) {
         const { type } = e.dragData;
         switch (type) {
-            case PAGE_TYPE:
+            case ContentTypeEnum.Page:
                 this.insertPageUrl(e.dragData);
                 break;
-            case MEDIA_TYPE:
+            case ContentTypeEnum.Media:
                 this.insertImageUrl(e.dragData);
                 break;
         }

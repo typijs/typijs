@@ -1,4 +1,4 @@
-import { ContentTypeService, ngEditMode, ngId, Page, PageService, PAGE_TYPE, ContentType } from '@angular-cms/core';
+import { ContentTypeService, ngEditMode, ngId, Page, PageService, ContentTypeEnum, ContentType } from '@angular-cms/core';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
@@ -11,7 +11,7 @@ export class PageCrudService extends ContentCrudService {
         private contentTypeService: ContentTypeService,
         private pageService: PageService,
         private subjectService: SubjectService) {
-        super(PAGE_TYPE);
+        super(ContentTypeEnum.Page);
     }
 
     getContentVersion(contentId: string, versionId: string, language: string): Observable<ContentInfo> {

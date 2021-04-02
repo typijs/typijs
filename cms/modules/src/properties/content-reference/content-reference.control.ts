@@ -1,4 +1,4 @@
-import { ContentReference, PAGE_TYPE } from '@angular-cms/core';
+import { ContentReference, ContentTypeEnum } from '@angular-cms/core';
 import { Component, forwardRef, Input } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { DropEvent } from '../../shared/drag-drop/drop-event.model';
@@ -53,8 +53,8 @@ export class ContentReferenceControl extends CmsControl {
     isDropAllowed = (dragData) => {
         const { contentType, type } = dragData;
 
-        if (!this.allowedTypes) { return type == PAGE_TYPE; }
-        return this.allowedTypes.indexOf(contentType) > -1 && type == PAGE_TYPE;
+        if (!this.allowedTypes) { return type == ContentTypeEnum.Page; }
+        return this.allowedTypes.indexOf(contentType) > -1 && type == ContentTypeEnum.Page;
     }
 
     onDropContent(e: DropEvent) {

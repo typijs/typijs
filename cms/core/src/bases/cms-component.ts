@@ -4,7 +4,7 @@ import { ContentData } from '../services/content/models/content-data';
 import { ContentTypeService } from '../services/content-type.service';
 import { AppInjector } from '../utils/app-injector';
 import { PropertyModel, ContentTypeProperty } from '../types/content-type';
-import { PAGE_TYPE, BLOCK_TYPE } from '../constants';
+import { ContentTypeEnum } from '../constants/content-type.enum';
 
 /**
  * A function that will be executed when an Page Component is initialized.
@@ -24,9 +24,9 @@ export abstract class CmsComponent<T extends ContentData> implements AfterViewIn
         const type = this.currentContent.type;
         let propertyInfo: ContentTypeProperty = null;
 
-        if (type === PAGE_TYPE) {
+        if (type === ContentTypeEnum.Page) {
             propertyInfo = this.contentTypeService.getPageTypeProperty(contentType, propertyName.toString());
-        } else if (type === BLOCK_TYPE) {
+        } else if (type === ContentTypeEnum.Block) {
             propertyInfo = this.contentTypeService.getBlockTypeProperty(contentType, propertyName.toString());
         }
 
@@ -61,7 +61,7 @@ export abstract class CmsComponent<T extends ContentData> implements AfterViewIn
 
     ngAfterViewInit(): void {
         const type = this.currentContent.type;
-        if (type === PAGE_TYPE && this.pageAfterInitFuncs) {
+        if (type === ContentTypeEnum.Page && this.pageAfterInitFuncs) {
             this.pageAfterInitFuncs.forEach(func => {
                 const result: any = func();
                 if (result instanceof Promise) { Promise.all([result]); }

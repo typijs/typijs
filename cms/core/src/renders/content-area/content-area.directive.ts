@@ -1,6 +1,6 @@
 import { ComponentRef, Directive, EventEmitter, Input, OnDestroy, OnInit, Output, ViewContainerRef } from '@angular/core';
 import { ContentReference } from '../../types/content-reference';
-import { TypeOfContentEnum } from '../../types';
+import { ContentTypeEnum } from '../../constants/content-type.enum';
 import { CmsContentRenderFactoryResolver } from '../content-render.factory';
 import { ContentLoader } from '../../services/content/content-loader.service';
 import { Content } from '../../services/content/models/content.model';
@@ -65,8 +65,8 @@ export class ContentAreaDirective implements OnInit, OnDestroy {
     private createContentComponent(content: any): ComponentRef<any> {
         try {
             // Incase the page is dragged to content area, the page partial will be used to render
-            if (content.type === TypeOfContentEnum.Page) {
-                const contentRenderFactory = this.cmsContentRenderFactoryResolver.resolveContentRenderFactory(TypeOfContentEnum.PagePartial);
+            if (content.type === ContentTypeEnum.Page) {
+                const contentRenderFactory = this.cmsContentRenderFactoryResolver.resolveContentRenderFactory(ContentTypeEnum.PagePartial);
                 return contentRenderFactory.createContentComponent(content, this.viewContainerRef);
             } else {
                 const contentRenderFactory = this.cmsContentRenderFactoryResolver.resolveContentRenderFactory(content.type);

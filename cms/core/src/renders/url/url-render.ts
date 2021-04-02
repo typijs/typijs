@@ -3,7 +3,7 @@ import { SafeUrl } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { UrlResolveService } from '../../services/url-resolve.service';
 import { UIHint } from '../../types/ui-hint';
-import { LinkTarget, UrlItem } from '../../types/url-item';
+import { LinkTarget, CmsUrl } from '../../types/cms-url';
 import { CmsPropertyRender } from '../property-render';
 import { CmsPropertyRenderFactory } from '../property-render.factory';
 
@@ -11,7 +11,7 @@ import { CmsPropertyRenderFactory } from '../property-render.factory';
     selector: 'a',
     template: `{{value.text}}`
 })
-export class UrlPropertyRender extends CmsPropertyRender<UrlItem> implements OnInit {
+export class UrlPropertyRender extends CmsPropertyRender<CmsUrl> implements OnInit {
     @HostBinding('attr.href') href: SafeUrl;
     @HostBinding('attr.target') target: LinkTarget;
     url: string;

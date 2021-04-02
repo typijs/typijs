@@ -1,4 +1,4 @@
-import { Media, MediaService, MEDIA_TYPE, VersionStatus } from '@angular-cms/core';
+import { Media, MediaService, ContentTypeEnum, VersionStatus } from '@angular-cms/core';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 import { BehaviorSubject, merge, Observable, Subject } from 'rxjs';
@@ -74,7 +74,7 @@ export class MediaTreeComponent extends SubscriptionDestroy implements OnInit {
         this.medias$ = merge(setFolderSelected$, this.refreshFolder$).pipe(
             switchMap(node => this.mediaService.getContentInFolder(node.id)),
             map((medias: Media[]) => medias.map(media => Object.assign(media, {
-                type: MEDIA_TYPE,
+                type: ContentTypeEnum.Media,
                 contentType: media.contentType,
                 isPublished: media.status === VersionStatus.Published
             })))

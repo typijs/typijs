@@ -1,4 +1,4 @@
-import { CmsImage, ContentReference, MEDIA_TYPE } from '@angular-cms/core';
+import { CmsImage, ContentReference, ContentTypeEnum } from '@angular-cms/core';
 import { Component, forwardRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { DropEvent } from '../../shared/drag-drop/drop-event.model';
@@ -64,7 +64,7 @@ export class ImageReferenceControl extends CmsControl {
         if (!dragData) { return false; }
         const { contentType, type } = dragData;
 
-        return contentType == 'ImageContent' && type == MEDIA_TYPE;
+        return contentType == 'ImageContent' && type == ContentTypeEnum.Media;
     }
 
     removeImage() {

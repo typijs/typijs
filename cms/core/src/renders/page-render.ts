@@ -4,7 +4,7 @@ import { BrowserLocationService } from '../browser/browser-location.service';
 import { ngEditMode, ngId } from '../constants';
 import { Page } from '../services/content/models/page.model';
 import { PageService } from '../services/content/page.service';
-import { TypeOfContentEnum } from '../types';
+import { ContentTypeEnum } from '../constants/content-type.enum';
 import { CmsContentRenderFactoryResolver } from './content-render.factory';
 import { InsertPointDirective } from './insert-point.directive';
 
@@ -63,7 +63,7 @@ export class CmsPageRender implements OnInit, OnDestroy {
 
     private createPageComponent(page: Page): ComponentRef<any> {
         this.pageContainerRef.clear();
-        const pageRenderFactory = this.cmsContentRenderFactoryResolver.resolveContentRenderFactory(TypeOfContentEnum.Page);
+        const pageRenderFactory = this.cmsContentRenderFactoryResolver.resolveContentRenderFactory(ContentTypeEnum.Page);
         return pageRenderFactory.createContentComponent(page, this.pageContainerRef);
     }
 }

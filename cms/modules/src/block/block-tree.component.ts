@@ -1,4 +1,4 @@
-import { Block, BlockService, BLOCK_TYPE } from '@angular-cms/core';
+import { Block, BlockService, ContentTypeEnum } from '@angular-cms/core';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, merge, Observable, Subject } from 'rxjs';
@@ -74,7 +74,7 @@ export class BlockTreeComponent extends SubscriptionDestroy implements OnInit {
         this.blocks$ = merge(setFolderSelected$, this.refreshFolder$).pipe(
             switchMap(node => this.blockService.getContentInFolder(node.id)),
             map((blocks: Block[]) => blocks.map(block => Object.assign(block, {
-                type: BLOCK_TYPE,
+                type: ContentTypeEnum.Block,
                 contentType: block.contentType,
                 isPublished: block.isPublished
             })))

@@ -2,7 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { ConfigService } from '../config/config.service';
 import { isNullOrWhiteSpace, isUrlAbsolute } from '../helpers/common';
 import { TypeCheck } from '../helpers/type-check';
-import { CmsImage } from '../types/image-reference';
+import { CmsImage } from '../types/cms-image';
 
 /**
  * The pipe to convert the cmsImage object or url to absolute image source

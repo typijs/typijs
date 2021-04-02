@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { BlockService, LanguageService, Block, FOLDER_BLOCK } from '@angular-cms/core';
+import { BlockService, LanguageService, Block, ContentTypeEnum } from '@angular-cms/core';
 import { TreeService } from '../shared/tree/interfaces/tree-service';
 import { TreeNode } from '../shared/tree/interfaces/tree-node';
 import '../types/tree-node-extension';
@@ -15,13 +15,13 @@ export class BlockTreeService implements TreeService {
 
     getNode(nodeId: string): Observable<TreeNode> {
         return this.blockService.getContent(nodeId, this.languageService.EMPTY_LANGUAGE).pipe(
-            map(block => TreeNode.createInstanceFromContent(block, FOLDER_BLOCK)));
+            map(block => TreeNode.createInstanceFromContent(block, ContentTypeEnum.FolderBlock)));
     }
 
     loadChildren(parentNodeId: string): Observable<TreeNode[]> {
         return this.blockService.getFolderChildren(parentNodeId).pipe(
             map((childFolders: Block[]) => {
-                return childFolders.map(folder => TreeNode.createInstanceFromContent(folder, FOLDER_BLOCK)
+                return childFolders.map(folder => TreeNode.createInstanceFromContent(folder, ContentTypeEnum.FolderBlock)
                 );
             })
         );

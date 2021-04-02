@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { map, publishReplay, refCount, switchMap } from 'rxjs/operators';
 import { BrowserLocationService } from '../browser/browser-location.service';
 import { convertObjectToUrlQueryString } from '../helpers/common';
-import { TypeOfContentEnum } from '../types';
+import { ContentTypeEnum } from '../constants/content-type.enum';
 import { ContentReference } from '../types/content-reference';
 import { BaseService } from './base.service';
 import { ContentLoader } from './content/content-loader.service';
@@ -42,7 +42,7 @@ export class SiteDefinition extends BaseService {
             this.siteDefinition[host] = this.httpClient.get<[string, string]>(`${this.apiUrl}/getSiteByHost?${query}`).pipe(
                 publishReplay(1), // this tells Rx to cache the latest emitted
                 refCount(), // and this tells Rx to keep the Observable alive as long as there are any Subscribers
-                map(([startPageId, language]) => [new ContentReference({ id: startPageId, type: TypeOfContentEnum.Page }), language]),
+                map(([startPageId, language]) => [new ContentReference({ id: startPageId, type: ContentTypeEnum.Page }), language]),
             );
         }
 

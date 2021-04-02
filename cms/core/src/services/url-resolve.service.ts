@@ -4,7 +4,7 @@ import { Observable, of, ReplaySubject, Subject } from 'rxjs';
 import { concatMap, debounceTime, distinct, first, map, scan, takeUntil } from 'rxjs/operators';
 import { ConfigService } from '../config/config.service';
 import { isUrlAbsolute } from '../helpers/common';
-import { UrlItem } from '../types/url-item';
+import { CmsUrl } from '../types/cms-url';
 import { Page } from './content/models/page.model';
 import { PageService } from './content/page.service';
 
@@ -57,10 +57,10 @@ export class UrlResolveService implements OnDestroy {
     }
 
     /**
-     * Get the `href` from the `UrlItem` object
+     * Get the `href` from the `CmsUrl` object
      * @param urlItem The url item instance
      */
-    getHrefFromUrlItem(urlItem: UrlItem): SafeUrl {
+    getHrefFromUrlItem(urlItem: CmsUrl): SafeUrl {
         switch (urlItem.urlType) {
             case 'media':
                 const imgSrc = isUrlAbsolute(urlItem.media?.src) ? urlItem.media?.src : `${this.configService.baseApiUrl}${urlItem.media?.src}`;
