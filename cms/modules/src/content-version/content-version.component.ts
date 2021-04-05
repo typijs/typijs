@@ -1,4 +1,4 @@
-import { ADMIN_PATH, ClassOf, Content, TypeOfContent } from '@angular-cms/core';
+import { ADMIN_ROUTE, ClassOf, Content, TypeOfContent } from '@angular-cms/core';
 import { Component, Inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { merge, Observable, of } from 'rxjs';
@@ -23,7 +23,7 @@ export class ContentVersionComponent extends SubscriptionDestroy implements OnIn
     private typeOfContent: TypeOfContent;
 
     constructor(
-        @Inject(ADMIN_PATH) private adminPath: string,
+        @Inject(ADMIN_ROUTE) private adminPath: string,
         private router: Router,
         private subjectService: SubjectService,
         private versionServiceResolver: ContentVersionServiceResolver) { super(); }

@@ -1,6 +1,6 @@
 import { Component, forwardRef, Inject, Input, Provider } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { ADMIN_PATH, generateUUID } from '@angular-cms/core';
+import { ADMIN_ROUTE, generateUUID } from '@angular-cms/core';
 import { takeUntil } from 'rxjs/operators';
 
 import { DropEvent } from '../../shared/drag-drop/drop-event.model';
@@ -72,7 +72,7 @@ export class ContentAreaControl extends CmsControl {
         return this._model;
     }
 
-    constructor(@Inject(ADMIN_PATH) public adminPath: string, private subjectService: SubjectService) {
+    constructor(@Inject(ADMIN_ROUTE) public adminPath: string, private subjectService: SubjectService) {
         super();
         this.subjectService.contentDropFinished$
             .pipe(takeUntil(this.unsubscribe$))

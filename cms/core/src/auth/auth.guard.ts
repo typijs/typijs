@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { ADMIN_PATH } from '../injection-tokens';
+import { ADMIN_ROUTE } from '../injection-tokens';
 import { AuthService } from './auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate {
-    constructor(private router: Router, private authService: AuthService, @Inject(ADMIN_PATH) private adminPath: string) { }
+    constructor(private router: Router, private authService: AuthService, @Inject(ADMIN_ROUTE) private adminPath: string) { }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
         if (this.authService.isLoggedIn) {

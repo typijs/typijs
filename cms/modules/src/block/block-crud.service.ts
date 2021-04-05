@@ -1,4 +1,4 @@
-import { Block, BlockService, ContentTypeEnum, ContentTypeService, ContentType, Content, ADMIN_PATH } from '@angular-cms/core';
+import { Block, BlockService, ContentTypeEnum, ContentTypeService, ContentType, Content, ADMIN_ROUTE } from '@angular-cms/core';
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -9,7 +9,7 @@ import { SubjectService } from '../shared/services/subject.service';
 @Injectable()
 export class BlockCrudService extends ContentCrudService {
     constructor(
-        @Inject(ADMIN_PATH) private adminPath: string,
+        @Inject(ADMIN_ROUTE) private adminPath: string,
         private router: Router,
         private contentTypeService: ContentTypeService,
         private blockService: BlockService,

@@ -1,4 +1,4 @@
-import { ADMIN_PATH } from '@angular-cms/core';
+import { ADMIN_ROUTE } from '@angular-cms/core';
 import { Component, Inject } from '@angular/core';
 
 @Component({
@@ -6,5 +6,5 @@ import { Component, Inject } from '@angular/core';
     templateUrl: './cms-header.component.html'
 })
 export class CmsHeaderComponent {
-    constructor(@Inject(ADMIN_PATH) public adminPath: string) { }
+    constructor(@Inject(ADMIN_ROUTE) public adminPath: string) { }
 }

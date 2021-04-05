@@ -1,4 +1,4 @@
-import { AngularCms, AuthModule, PAGE_AFTER_INIT, ADMIN_PATH, CONFIG_PATH } from '@angular-cms/core';
+import { AngularCms, AuthModule, PAGE_AFTER_INIT } from '@angular-cms/core';
 import { DOCUMENT } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ApplicationRef, NgModule, RendererFactory2 } from '@angular/core';
@@ -39,10 +39,10 @@ export function pageAfterViewInit(rendererFactory: RendererFactory2, document: D
         TransferHttpCacheModule,
         HttpClientModule,
         BsDropdownModule.forRoot(),
-        AngularCms.forRoot([
-            { provide: ADMIN_PATH, useValue: '/typicms' },
-            { provide: CONFIG_PATH, useValue: '/assets/config/config-dev.json' }
-        ]),
+        AngularCms.forRoot({
+            adminRoute: '/typicms',
+            configFilePath: '/assets/config/config-dev.json'
+        }),
         AuthModule,
         AppRoutingModule,
         PagesModule,

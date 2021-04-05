@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ADMIN_PATH } from '../../injection-tokens';
+import { ADMIN_ROUTE } from '../../injection-tokens';
 import { AuthService } from '../auth.service';
 
 
@@ -21,7 +21,7 @@ export class CmsRegisterComponent implements OnInit {
         private router: Router,
         private formBuilder: FormBuilder,
         private authService: AuthService,
-        @Inject(ADMIN_PATH) private adminPath: string) {
+        @Inject(ADMIN_ROUTE) private adminPath: string) {
     }
 
     ngOnInit() {

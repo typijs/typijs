@@ -10,7 +10,7 @@ export const ADMIN_WIDGETS: InjectionToken<CmsComponentConfig[]> = new Injection
 /**
  * The path from where user can access the portal. Default `/cms`
  */
-export const ADMIN_PATH: InjectionToken<string> = new InjectionToken<string>('ADMIN_PATH');
+export const ADMIN_ROUTE: InjectionToken<string> = new InjectionToken<string>('ADMIN_ROUTE');
 /**
  * The path which point to the configuration file to fetch when init cms app. Default `/assets/config.json`
  */
