@@ -19,7 +19,7 @@ const OBJECT_LIST_VALUE_ACCESSOR = {
             <ng-template #itemTemplate let-item>
                 <div class="d-flex align-items-center">
                     <fa-icon class="mr-1" [icon]="['fas', 'hashtag']"></fa-icon>
-                    <div *ngFor="let field of getKeyValues | call:item" class="mr-2">
+                    <div *ngFor="let field of getKeyValues | callFn:item" class="mr-2">
                         <span>{{field.value}}</span>
                     </div>
                     <div class="hover-menu ml-auto" dropdown container="body">

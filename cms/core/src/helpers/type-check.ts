@@ -23,7 +23,7 @@ export class TypeCheck {
         return typeof value === 'string' || TypeCheck.getObjectType(value) === '[object String]'
     }
 
-    /** Checks to see if a valule is a boolean */
+    /** Checks to see if a value is a boolean */
     static isBoolean(value?: any): boolean {
         return (
             value === true ||

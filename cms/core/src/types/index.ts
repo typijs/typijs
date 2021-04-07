@@ -14,6 +14,11 @@ export type ClassOf<T> = new (...args: any[]) => T;
  */
 export type CmsObject = { [key: string]: any };
 
+/**
+ * Function declaration
+ */
+export type CmsFunction = (...args: any[]) => any;
+
 export type CmsTab = {
     /**
      * The tab name

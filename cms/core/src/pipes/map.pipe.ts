@@ -6,9 +6,14 @@ import { Pipe, PipeTransform } from '@angular/core';
  * Usage:
  *
  * ```
- * addOne(item) {return item + 1;}
+ * export class Component {
+ *  addOne(item) {return item + 1;}
+ * }
  *
- * {{ [1, 2, 3] | map: addOne }}
+ * Template:
+ * <div>{{ [1, 2, 3] | map: addOne }}</div>
+ *
+ * Output:
  * <!-- [2, 3, 4] -->
  *
  * ```
