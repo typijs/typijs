@@ -1,15 +1,22 @@
 import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { ConfigService } from '../config/config.service';
+import { BrowserLocationService } from '../browser/browser-location.service';
+import { ADMIN_ROUTE } from '../injection-tokens';
 import { AuthService } from './auth.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-    constructor(private router: Router, private authService: AuthService, private configService: ConfigService) { }
+    constructor(
+        private router: Router,
+        private authService: AuthService,
+        private configService: ConfigService,
+        private locationService: BrowserLocationService,
+        @Inject(ADMIN_ROUTE) private adminPath: string) { }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         const authRequest = this.setAuthorizationHeader(request);
@@ -30,7 +37,16 @@ export class AuthInterceptor implements HttpInterceptor {
         if (error.status === 401 && this.authService.isLoggedIn) {
             // auto logout if 401 or 403 response returned from api
             this.authService.logout();
-            this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.routerState.snapshot.url } });
+
+            const loginUrl = `${this.adminPath}/login?returnUrl=${this.router.routerState.snapshot.url}`;
+            this.locationService.navigate(loginUrl);
+
+            // this.router.navigate([`${this.adminPath}/login`], {
+            //     queryParams: { returnUrl: this.router.routerState.snapshot.url }
+            // }).then(() => {
+            //     window.location.reload();
+            // });
+
             // if you've caught / handled the error
             // you don't want to rethrow it unless you also want downstream consumers to have to handle it as well.
             // return of(error.message); // or EMPTY may be appropriate here

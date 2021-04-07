@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-
+import { ActivatedRoute } from '@angular/router';
+import { BrowserLocationService } from '../../browser/browser-location.service';
 import { AuthService } from '../auth.service';
 
 @Component({
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CmsLoginComponent implements OnInit {
     loginForm: FormGroup;
@@ -20,8 +21,8 @@ export class CmsLoginComponent implements OnInit {
 
     constructor(
         private route: ActivatedRoute,
-        private router: Router,
         private formBuilder: FormBuilder,
+        private locationService: BrowserLocationService,
         private authService: AuthService) {
     }
 
@@ -47,7 +48,7 @@ export class CmsLoginComponent implements OnInit {
         this.authService.login(this.f.username.value, this.f.password.value)
             .subscribe({
                 next: () => {
-                    this.router.navigate([this.returnUrl]);
+                    this.locationService.navigate(this.returnUrl);
                 },
                 error: error => {
                     this.error = error;

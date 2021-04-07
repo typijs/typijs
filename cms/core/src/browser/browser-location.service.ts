@@ -33,6 +33,8 @@ export type LocationRef = {
      * Ex: http://yourdomain:4200/path1/path2?param1=value1&param2=value2 --> ?param1=value1&param2=value2
      */
     search: string
+
+    [key: string]: any;
 };
 
 @Injectable({
@@ -85,5 +87,14 @@ export class BrowserLocationService {
     getURLSearchParams(): URLSearchParams {
         const location = this.getLocation();
         return new URLSearchParams(location.search);
+    }
+
+    /**
+     * Navigates to url using `location.assign()` method causes the window to load and display the document at the URL specified
+     * @param url
+     */
+    navigate(url: string): void {
+        const location = this.getLocation();
+        location.assign(url);
     }
 }
