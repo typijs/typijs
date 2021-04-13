@@ -2,12 +2,11 @@ import { ClassOf, CmsObject, ContentTypeService } from '@angular-cms/core';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChild, ContentChildren, Directive, EventEmitter, Input, OnInit, Output, QueryList, TemplateRef } from '@angular/core';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
-import { ColumnMetadata } from '../../decorators/column.decorator';
 import { SubscriptionDestroy } from '../subscription-destroy';
+import { ColumnMetadata, COLUMNS_METADATA_KEY, COLUMN_METADATA_KEY } from './column.decorator';
 
 export interface ColumnSettings extends ColumnMetadata {
     name: string;
-    sort?: boolean;
     desc?: boolean;
 }
 
@@ -27,6 +26,23 @@ export type TableChangeEvent = {
     page?: number;
 };
 
+/**
+ * Directive
+ * ```html
+ * <cms-table-column name="siteUrl">
+        <ng-template #cellTemplate let-value="value">
+            <a [href]="value" target="_blank">{{value}}</a>
+        </ng-template>
+    </cms-table-column>
+
+   <cms-table-column name="name">
+        <ng-template #headerTemplate let-column="column">
+            <fa-icon [icon]="['fas', 'language']"></fa-icon>
+            {{column.displayName}}
+        </ng-template>
+    </cms-table-column>
+ * ```
+ */
 @Directive({ selector: 'cms-table-column' })
 export class TableColumnDirective {
     @Input() name: string;
@@ -85,12 +101,13 @@ export class DynamicTableComponent extends SubscriptionDestroy implements OnInit
     pageNumber$: BehaviorSubject<number> = new BehaviorSubject(this.currentPage);
 
     private _columnDirectives: QueryList<TableColumnDirective>;
-    constructor(private contentTypeService: ContentTypeService, private changeDetectionRef: ChangeDetectorRef) {
+    constructor(private changeDetectionRef: ChangeDetectorRef) {
         super();
     }
 
     ngOnInit() {
-        this.columns = this.contentTypeService.getContentTypeProperties(this.modelType).map(x => ({ name: x.name, ...x.metadata }));
+        this.columns = this.getColumnsMetadata(this.modelType);
+
         const query$ = this.keyword$.pipe(
             debounceTime(500),
             distinctUntilChanged()
@@ -103,11 +120,32 @@ export class DynamicTableComponent extends SubscriptionDestroy implements OnInit
     }
 
     sort(column: ColumnSettings) {
-        this.columns.filter(x => x.name !== column.name).forEach(x => { x.sort = false; x.desc = false; });
-        column.desc = column.sort ? !column.desc : false;
-        column.sort = true;
+        this.columns.filter(x => x.name !== column.name).forEach(x => { x.sortable = false; x.desc = false; });
+        column.desc = column.sortable ? !column.desc : false;
+        column.sortable = true;
         // this.changeDetectionRef.markForCheck();
         this.sortColumn$.next(column);
+    }
+
+    /**
+     * Gets content type properties
+     * @param modelTarget The class contains the properties which are decorate with @Column
+     * @returns content type properties
+     */
+    private getColumnsMetadata(modelTarget: any): ColumnSettings[] {
+        const properties: string[] = [];
+        let target = modelTarget;
+        // walk up the property chain to get all base class fields
+        while (target !== Object.prototype) {
+            const childFields = Reflect.getOwnMetadata(COLUMNS_METADATA_KEY, target) || [];
+            properties.push(...childFields);
+            target = Object.getPrototypeOf(target);
+        }
+
+        return properties.map(propertyName => ({
+            name: propertyName,
+            ...Reflect.getMetadata(COLUMN_METADATA_KEY, modelTarget, propertyName)
+        }));
     }
 
     private translateColumns(val: QueryList<TableColumnDirective>): ColumnTemplateDictionary {

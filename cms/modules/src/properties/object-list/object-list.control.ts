@@ -1,4 +1,4 @@
-import { ClassOf } from '@angular-cms/core';
+import { ClassOf, ContentTypeProperty, ContentTypeService } from '@angular-cms/core';
 import { Component, forwardRef, Input } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
@@ -19,8 +19,8 @@ const OBJECT_LIST_VALUE_ACCESSOR = {
             <ng-template #itemTemplate let-item>
                 <div class="d-flex align-items-center">
                     <fa-icon class="mr-1" [icon]="['fas', 'hashtag']"></fa-icon>
-                    <div *ngFor="let field of getKeyValues | callFn:item" class="mr-2">
-                        <span>{{field.value}}</span>
+                    <div class="ml-2">
+                        <pre class="m-0" id="json">{{prettyStringify.bind(this) | callFn:item}}</pre>
                     </div>
                     <div class="hover-menu ml-auto" dropdown container="body">
                         <fa-icon class="mr-1" [icon]="['fas', 'bars']" dropdownToggle></fa-icon>
@@ -53,9 +53,21 @@ const OBJECT_LIST_VALUE_ACCESSOR = {
     providers: [OBJECT_LIST_VALUE_ACCESSOR, DndService]
 })
 export class ObjectListControl extends CmsListControl {
-    @Input() itemType: ClassOf<any>;
+    @Input()
+    get itemType(): ClassOf<any> {
+        return this._itemType;
+    }
+    set itemType(value: ClassOf<any>) {
+        this._itemType = value;
+        if (this._itemType) {
+            this.properties = this.contentTypeService.getContentTypeProperties(value);
+        }
+    }
+    private _itemType: ClassOf<any>;
 
-    constructor(private modalService: BsModalService) {
+    private properties: ContentTypeProperty[];
+
+    constructor(private modalService: BsModalService, private contentTypeService: ContentTypeService) {
         super();
     }
 
@@ -79,12 +91,12 @@ export class ObjectListControl extends CmsListControl {
         });
     }
 
-    getKeyValues(objectItem): { key: string, value: any }[] {
-        const keyValues = Object.keys(objectItem).filter(key => key !== 'guid').map(key => ({
-            key,
-            value: objectItem[key]
-        }));
-
-        return keyValues;
+    prettyStringify(objectItem): string {
+        const prettyObject = {};
+        this.properties.forEach(element => {
+            const key = element.metadata?.displayName ?? element.name;
+            prettyObject[key] = objectItem[element.name];
+        });
+        return JSON.stringify(prettyObject, undefined, 2);
     }
 }

@@ -1,4 +1,4 @@
-import { ClassOf, ContentType, ContentTypeProperty, ContentTypeService, TypeOfContent } from '@angular-cms/core';
+import { ClassOf, ContentType, ContentTypeProperty, ContentTypeService, TypeOfContent, ContentTypeEnum } from '@angular-cms/core';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, UrlSegment } from '@angular/router';
 import { Observable, of } from 'rxjs';
@@ -33,11 +33,11 @@ export class ContentTypeDetailComponent implements OnInit {
                 switchMap((params: Params) => {
                     const typeOfContent = this.getTypeContentFromUrl(this.route.snapshot.url);
                     switch (typeOfContent) {
-                        case 'page':
+                        case ContentTypeEnum.Page:
                             return of(this.contentTypeService.getPageType(params.name));
-                        case 'block':
+                        case ContentTypeEnum.Block:
                             return of(this.contentTypeService.getBlockType(params.name));
-                        case 'media':
+                        case ContentTypeEnum.Media:
                             return of(this.contentTypeService.getMediaType(params.name));
                     }
                     return of(undefined);

@@ -17,8 +17,8 @@ export * from './constants';
 export * from './constants/version-status';
 export * from './constants/content-type.enum';
 
-export * from './decorators/content-type.decorator';
 export * from './decorators/metadata-key';
+export * from './decorators/content-type.decorator';
 export * from './decorators/property.decorator';
 export * from './decorators/validate.decorator';
 

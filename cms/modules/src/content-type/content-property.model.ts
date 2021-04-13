@@ -1,30 +1,23 @@
-import { UIHint } from '@angular-cms/core';
-import { Column } from '../decorators/column.decorator';
-
+import { Column } from '../shared/table/column.decorator';
 export class ContentPropertyModel {
     @Column({
-        displayName: 'Name',
-        displayType: UIHint.Text
+        header: 'Name'
     })
     name: string;
     @Column({
-        displayName: 'Display Name',
-        displayType: UIHint.Text
+        header: 'Display Name'
     })
-    displayName?: string;
+    header?: string;
     @Column({
-        displayName: 'Description',
-        displayType: UIHint.Text
+        header: 'Description'
     })
     description?: string;
     @Column({
-        displayName: 'UI Type',
-        displayType: UIHint.Text
+        header: 'UI Type'
     })
     displayType?: string;
     @Column({
-        displayName: 'Property Type',
-        displayType: UIHint.Text
+        header: 'Property Type'
     })
     propertyType: string;
 }
