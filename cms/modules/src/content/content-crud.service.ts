@@ -1,5 +1,5 @@
-import { Content, TypeOfContent, ContentTypeProperty, Page, Block, Media, ContentType } from '@typijs/core';
-import { InjectionToken, Injectable, Inject } from '@angular/core';
+import { Inject, Injectable, InjectionToken } from '@angular/core';
+import { Block, Content, ContentType, ContentTypeProperty, Media, Page, TypeOfContent } from '@typijs/core';
 import { Observable } from 'rxjs';
 
 export type ContentExt = Content & { urlSegment?: string, linkUrl?: string, visibleInMenu?: boolean, simpleAddress?: string };

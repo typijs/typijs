@@ -1,5 +1,5 @@
-import { ClassOf, CmsObject, ContentTypeService } from '@typijs/core';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChild, ContentChildren, Directive, EventEmitter, Input, OnInit, Output, QueryList, TemplateRef } from '@angular/core';
+import { ClassOf, CmsObject } from '@typijs/core';
 import { BehaviorSubject, combineLatest } from 'rxjs';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { SubscriptionDestroy } from '../subscription-destroy';

@@ -1,6 +1,6 @@
-import { TypeOfContent } from '@typijs/core';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { TypeOfContent } from '@typijs/core';
 import { ContentExt } from '../content-crud.service';
 
 @Component({

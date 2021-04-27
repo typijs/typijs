@@ -1,11 +1,12 @@
-import { CoreModule, DEFAULT_PROPERTY_FACTORIES } from '@typijs/core';
 import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { CoreModule, DEFAULT_PROPERTY_FACTORIES } from '@typijs/core';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { QuillModule } from 'ngx-quill';
+
 import { DndModule } from '../shared/drag-drop/dnd.module';
 import { CmsFormModule } from '../shared/form/form.module';
 import { CmsModalModule } from '../shared/modal/modal.module';
@@ -33,13 +34,13 @@ import { TextPropertyFactory } from './text/text.factory';
 import { TextProperty } from './text/text.property';
 import { TextareaPropertyFactory } from './textarea/textarea.factory';
 import { TextareaProperty } from './textarea/textarea.property';
-import { UrlDetailsComponent } from './url/url-details.component';
 import { UrlListControl } from './url-list/url-list.control';
 import { UrlListProperty, UrlListPropertyFactory } from './url-list/url-list.property';
+import { UrlDetailsComponent } from './url/url-details.component';
+import { UrlControl } from './url/url.control';
+import { UrlProperty, UrlPropertyFactory } from './url/url.property';
 import { XHtmlPropertyFactory } from './xhtml/xhtml.factory';
 import { XHtmlProperty } from './xhtml/xhtml.property';
-import { UrlProperty, UrlPropertyFactory } from './url/url.property';
-import { UrlControl } from './url/url.control';
 
 export const PROPERTIES = [
     TextProperty,

@@ -1,5 +1,5 @@
-import { ContentTypeService, ngEditMode, ngId, Page, PageService, ContentTypeEnum, ContentType } from '@typijs/core';
 import { Injectable } from '@angular/core';
+import { ContentType, ContentTypeEnum, ContentTypeService, ngEditMode, ngId, Page, PageService } from '@typijs/core';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { ContentCrudService, ContentInfo } from '../content/content-crud.service';

@@ -69,7 +69,7 @@ Then corresponding to page type, we will create a template (like Html template).
 
 ```typescript
 import { Component } from '@angular/core';
-import { CmsComponent } from '@angular-cms/core';
+import { CmsComponent } from '@typijs/core';
 import { HomePage } from './home.pagetype';
 
 @Component({
@@ -174,7 +174,7 @@ For running examples, we need set up the [symlinks](https://docs.npmjs.com/cli/l
 2. Go to `cms-server` folder and run commands
 
 ```
-    npm link @angular-cms/api
+    npm link @typijs/api
 ```
 
 ### Run in Dev Mode
@@ -184,7 +184,7 @@ For running examples, we need set up the [symlinks](https://docs.npmjs.com/cli/l
     npm install
     npm run dev
 ```
-> If you have the issue installing such as the `@angular-cms/api` package is not found, temporary remove it in package.json, run install command then add it again
+> If you have the issue installing such as the `@typijs/api` package is not found, temporary remove it in package.json, run install command then add it again
 
 This command will run script to connect to mongo db, so make sure you have the correct path to your db.
 For example, in my local, I have the db path like as `D:/ProgramData/MongoDB/data/db`
@@ -225,7 +225,7 @@ to restore from a dump directory to a local mongod instance running on port 2701
     ng build
     ng run cms-demo:server
 ```
-Copy three folders `dist\core`, `dist\modules` and `dist\portal` into `cms\node_modules\@angular-cms` folder then run this script to start Server Site Render
+Copy three folders `dist\core`, `dist\modules` and `dist\portal` into `cms\node_modules\@typijs` folder then run this script to start Server Site Render
 
 ```
     npm run start:ssr

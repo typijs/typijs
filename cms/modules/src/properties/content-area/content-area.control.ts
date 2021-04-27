@@ -5,8 +5,9 @@ import { takeUntil } from 'rxjs/operators';
 
 import { DropEvent } from '../../shared/drag-drop/drop-event.model';
 import { SubjectService } from '../../shared/services/subject.service';
-import { ContentAreaItem } from './content-area.model';
 import { CmsControl } from '../cms-control';
+import { ContentAreaItem } from './content-area.model';
+
 
 const CONTENT_AREA_VALUE_ACCESSOR: Provider = {
     provide: NG_VALUE_ACCESSOR,

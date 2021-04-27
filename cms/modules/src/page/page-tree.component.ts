@@ -1,18 +1,18 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { takeUntil, distinctUntilKeyChanged, takeWhile } from 'rxjs/operators';
-
 import { Page, PageService } from '@typijs/core';
-import { TreeNode } from '../shared/tree/interfaces/tree-node';
+import { distinctUntilKeyChanged, takeUntil, takeWhile } from 'rxjs/operators';
+
+import { CmsModalService } from '../shared/modal/modal.service';
+import { SubjectService } from '../shared/services/subject.service';
+import { SubscriptionDestroy } from '../shared/subscription-destroy';
 import { TreeComponent } from '../shared/tree/components/tree.component';
 import { TreeConfig } from '../shared/tree/interfaces/tree-config';
 import { NodeMenuItemAction, TreeMenuActionEvent } from '../shared/tree/interfaces/tree-menu';
-
-import { PageTreeService } from './page-tree.service';
-import { SubscriptionDestroy } from '../shared/subscription-destroy';
-import { SubjectService } from '../shared/services/subject.service';
+import { TreeNode } from '../shared/tree/interfaces/tree-node';
 import { TreeService } from '../shared/tree/interfaces/tree-service';
-import { CmsModalService } from '../shared/modal/modal.service';
+import { PageTreeService } from './page-tree.service';
+
 
 const PAGE_MENU_ACTION = {
     DeletePage: 'DeletePage',

@@ -1,6 +1,6 @@
-import { Block, BlockService, ContentTypeEnum } from '@typijs/core';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Block, BlockService, ContentTypeEnum } from '@typijs/core';
 import { BehaviorSubject, merge, Observable, Subject } from 'rxjs';
 import { distinctUntilKeyChanged, map, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operators';
 import { CmsModalService } from '../shared/modal/modal.service';

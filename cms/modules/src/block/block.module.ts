@@ -1,9 +1,9 @@
-import { CmsWidgetPosition, EDITOR_ROUTES, EDITOR_WIDGETS } from '@typijs/core';
 import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { CmsWidgetPosition, EDITOR_ROUTES, EDITOR_WIDGETS } from '@typijs/core';
 import { AngularSplitModule } from 'angular-split';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { CONTENT_VERSION_SERVICES } from '../content-version/content-version.service';

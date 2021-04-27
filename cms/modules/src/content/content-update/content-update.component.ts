@@ -1,14 +1,14 @@
+import { AfterViewInit, ChangeDetectorRef, Component, ComponentRef, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, UrlSegment } from '@angular/router';
 import {
     ChildItemRef,
     CmsObject, CmsPropertyFactoryResolver, CmsTab,
     Content,
-    ContentTypeProperty, InsertPointDirective,
-    sortByString, TypeOfContent, ContentTypeEnum
+    ContentTypeEnum, ContentTypeProperty, InsertPointDirective,
+    sortByString, TypeOfContent
 } from '@typijs/core';
-import { AfterViewInit, ChangeDetectorRef, Component, ComponentRef, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, UrlSegment } from '@angular/router';
-import { combineLatest, Observable, of, merge } from 'rxjs';
+import { combineLatest, merge, Observable, of } from 'rxjs';
 import { auditTime, catchError, concatMap, debounceTime, distinctUntilChanged, filter, map, mapTo, switchMap, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import { DynamicFormService } from '../../shared/form/dynamic-form.service';
 import { SubjectService } from '../../shared/services/subject.service';

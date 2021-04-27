@@ -1,5 +1,5 @@
-import { BlockService, ContentTypeEnum, Content } from '@typijs/core';
 import { Injectable } from '@angular/core';
+import { BlockService, Content, ContentTypeEnum } from '@typijs/core';
 import { Observable } from 'rxjs';
 import { ContentVersionService } from '../content-version/content-version.service';
 import { SubjectService } from '../shared/services/subject.service';

@@ -1,6 +1,6 @@
-import { MediaService } from '@typijs/core';
 import { HttpEventType } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { MediaService } from '@typijs/core';
 import { BehaviorSubject, forkJoin, Observable, of, Subject } from 'rxjs';
 import { TreeNode } from '../../shared/tree/interfaces/tree-node';
 

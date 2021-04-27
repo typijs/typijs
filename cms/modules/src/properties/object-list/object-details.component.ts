@@ -1,5 +1,5 @@
-import { ClassOf } from '@typijs/core';
 import { Component, Input } from '@angular/core';
+import { ClassOf } from '@typijs/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { Observable, ReplaySubject } from 'rxjs';
 import { take } from 'rxjs/operators';

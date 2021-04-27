@@ -1,5 +1,5 @@
-import { Content, TypeOfContent } from '@typijs/core';
 import { Inject, Injectable, InjectionToken } from '@angular/core';
+import { Content, TypeOfContent } from '@typijs/core';
 import { Observable } from 'rxjs';
 
 export const CONTENT_VERSION_SERVICES: InjectionToken<ContentVersionService[]> = new InjectionToken<ContentVersionService[]>('CONTENT_VERSION_SERVICES');

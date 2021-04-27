@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { SiteDefinition } from '@typijs/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SiteDefinition } from '@typijs/core';
 
 @Component({
     template: `Redirecting to start page`

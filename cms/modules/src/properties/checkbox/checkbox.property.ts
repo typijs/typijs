@@ -1,5 +1,5 @@
-import { CmsProperty } from '@typijs/core';
 import { Component } from '@angular/core';
+import { CmsProperty } from '@typijs/core';
 
 @Component({
     selector: '[checkboxProperty]',

@@ -1,10 +1,10 @@
-import { ContentReference, CmsImage } from '@typijs/core';
 import { Injectable } from '@angular/core';
+import { CmsImage, ContentReference } from '@typijs/core';
 import { BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 import { Observable } from 'rxjs';
-
 import { MediaTreeModalComponent } from './media-modal.component';
 import { PageTreeModalComponent } from './page-modal.component';
+
 
 @Injectable()
 export class ContentModalService {
