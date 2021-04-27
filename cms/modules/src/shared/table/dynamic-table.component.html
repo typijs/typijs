@@ -20,12 +20,13 @@
       <tr *ngIf="columns">
         <th *ngFor="let col of columns" scope="col" (click)="sort(col)">
           <div class="d-flex">
-            <ng-container *ngIf="!columnTemplates || !columnTemplates[col.name]?.headerTemplate">{{col.displayName}}
+            <ng-container *ngIf="!columnTemplates || !columnTemplates[col.name]?.headerTemplate">
+              {{col.header ? col.header : col.name}}
             </ng-container>
             <ng-container *ngIf="columnTemplates && columnTemplates[col.name]?.headerTemplate"
               [ngTemplateOutlet]="columnTemplates[col.name].headerTemplate" [ngTemplateOutletContext]="{column: col}">
             </ng-container>
-            <fa-icon *ngIf="col.sort" class="ml-auto" [icon]="col.desc ? ['fas', 'sort-down'] : ['fas', 'sort-up']">
+            <fa-icon *ngIf="col.sortable" class="ml-auto" [icon]="col.desc ? ['fas', 'sort-down'] : ['fas', 'sort-up']">
             </fa-icon>
           </div>
         </th>
@@ -59,8 +60,9 @@
       <option value="100">100</option>
     </select>
   </div>
-  <div>Showing {{(currentPage - 1) * itemsPerPage + 1}} to {{currentPage * itemsPerPage}} of {{totalItems}} items</div>
-  <div>
+  <div *ngIf="totalItems">Showing {{(currentPage - 1) * itemsPerPage + 1}} to {{currentPage * itemsPerPage}} of
+    {{totalItems}} items</div>
+  <div *ngIf="totalItems">
     <pagination [itemsPerPage]="itemsPerPage" [totalItems]="totalItems" [boundaryLinks]="true" previousText="&lsaquo;"
       nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;" (pageChanged)="pageNumber$.next($event)"></pagination>
   </div>

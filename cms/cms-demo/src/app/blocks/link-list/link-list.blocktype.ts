@@ -1,4 +1,4 @@
-import { BlockData, BlockType, Property, ValidationTypes, UIHint, UrlItem } from '@angular-cms/core';
+import { BlockData, BlockType, Property, ValidationTypes, UIHint, CmsUrl } from '@typijs/core';
 import { LinkListComponent } from './link-list.component';
 
 @BlockType({
@@ -18,5 +18,5 @@ export class LinkListBlock extends BlockData {
         displayName: 'Link Items',
         displayType: UIHint.UrlList
     })
-    linkItems: UrlItem[];
+    linkItems: CmsUrl[];
 }

@@ -1,4 +1,4 @@
-import { CmsImage, PageType, Property, UIHint, ValidationTypes } from '@angular-cms/core';
+import { CmsImage, PageType, Property, UIHint, ValidationTypes } from '@typijs/core';
 import { BasePage } from '../base.pagetype';
 import { ArticleComponent } from './article.component';
 

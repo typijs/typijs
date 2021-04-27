@@ -1,5 +1,5 @@
-import { ContentReference, LanguageService, Page, PageService, PAGE_TYPE } from '@angular-cms/core';
 import { Component, Injectable, Input, OnInit, ViewChild } from '@angular/core';
+import { ContentReference, ContentTypeEnum, LanguageService, Page, PageService } from '@typijs/core';
 import { Observable, ReplaySubject } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { TreeComponent } from '../shared/tree/components/tree.component';
@@ -14,13 +14,13 @@ export class PageTreeReadonlyService implements TreeService {
     getNode(nodeId: string): Observable<TreeNode> {
         const language = this.languageService.getLanguageParam();
         return this.pageService.getContent(nodeId, language).pipe(
-            map(page => TreeNode.createInstanceFromContent(page, PAGE_TYPE)));
+            map(page => TreeNode.createInstanceFromContent(page, ContentTypeEnum.Page)));
     }
 
     loadChildren(parentNodeId: string): Observable<TreeNode[]> {
         return this.pageService.getContentChildren(parentNodeId).pipe(
             map((childPages: Page[]) => {
-                return childPages.map(page => TreeNode.createInstanceFromContent(page, PAGE_TYPE));
+                return childPages.map(page => TreeNode.createInstanceFromContent(page, ContentTypeEnum.Page));
             }));
     }
 }

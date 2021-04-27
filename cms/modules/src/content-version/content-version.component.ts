@@ -1,8 +1,8 @@
-import { ClassOf, Content, TypeOfContent } from '@angular-cms/core';
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ADMIN_ROUTE, ClassOf, Content, TypeOfContent } from '@typijs/core';
 import { merge, Observable, of } from 'rxjs';
-import { distinctUntilChanged, catchError, switchMap } from 'rxjs/operators';
+import { catchError, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { SubjectService } from '../shared/services/subject.service';
 import { SubscriptionDestroy } from '../shared/subscription-destroy';
 import { ContentVersionModel } from './content-version.model';
@@ -23,6 +23,7 @@ export class ContentVersionComponent extends SubscriptionDestroy implements OnIn
     private typeOfContent: TypeOfContent;
 
     constructor(
+        @Inject(ADMIN_ROUTE) private adminPath: string,
         private router: Router,
         private subjectService: SubjectService,
         private versionServiceResolver: ContentVersionServiceResolver) { super(); }
@@ -44,7 +45,7 @@ export class ContentVersionComponent extends SubscriptionDestroy implements OnIn
 
     gotoVersion(version: ContentVersionModel) {
         this.router.navigate(
-            ['/cms/editor/content/', this.typeOfContent, version.contentId],
+            [`${this.adminPath}/editor/content/`, this.typeOfContent, version.contentId],
             { queryParams: { versionId: version._id, language: version.language } });
     }
 }

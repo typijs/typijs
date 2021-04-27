@@ -1,14 +1,14 @@
+import { AfterViewInit, ChangeDetectorRef, Component, ComponentRef, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, UrlSegment } from '@angular/router';
 import {
     ChildItemRef,
     CmsObject, CmsPropertyFactoryResolver, CmsTab,
     Content,
-    ContentTypeProperty, InsertPointDirective,
-    sortByString, TypeOfContent, TypeOfContentEnum
-} from '@angular-cms/core';
-import { AfterViewInit, ChangeDetectorRef, Component, ComponentRef, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, UrlSegment } from '@angular/router';
-import { combineLatest, Observable, of, merge } from 'rxjs';
+    ContentTypeEnum, ContentTypeProperty, InsertPointDirective,
+    sortByString, TypeOfContent
+} from '@typijs/core';
+import { combineLatest, merge, Observable, of } from 'rxjs';
 import { auditTime, catchError, concatMap, debounceTime, distinctUntilChanged, filter, map, mapTo, switchMap, takeUntil, tap, withLatestFrom } from 'rxjs/operators';
 import { DynamicFormService } from '../../shared/form/dynamic-form.service';
 import { SubjectService } from '../../shared/services/subject.service';
@@ -242,7 +242,7 @@ export class ContentUpdateComponent extends SubscriptionDestroy implements OnIni
         formControls.childOrderRule = [content.childOrderRule];
         formControls.peerOrder = [content.peerOrder];
 
-        if (this.typeOfContent === TypeOfContentEnum.Page) {
+        if (this.typeOfContent === ContentTypeEnum.Page) {
             formControls.urlSegment = [content.urlSegment, Validators.required];
             formControls.visibleInMenu = [content.visibleInMenu];
             formControls.simpleAddress = [content.simpleAddress];

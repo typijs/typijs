@@ -1,4 +1,4 @@
-import { BlockData, BlockType, CmsImage, Property, UIHint } from '@angular-cms/core';
+import { BlockData, BlockType, CmsImage, Property, UIHint } from '@typijs/core';
 import { BestPriceComponent } from './best-price.component';
 
 @BlockType({

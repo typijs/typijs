@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CmsComponent } from '@angular-cms/core';
+import { CmsComponent } from '@typijs/core';
 import { LinkListBlock } from './link-list.blocktype';
 
 @Component({

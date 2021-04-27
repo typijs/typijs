@@ -1,5 +1,5 @@
-import { LanguageService, MediaService } from '@angular-cms/core';
 import { Injectable } from '@angular/core';
+import { LanguageService, MediaService } from '@typijs/core';
 import { MediaTreeReadonlyService } from '../content-modal/media-modal.component';
 import '../types/tree-node-extension';
 

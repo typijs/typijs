@@ -1,7 +1,7 @@
 import { Input, ViewChildren, Component, QueryList, OnInit } from '@angular/core';
 
-import { CmsTab, InsertPointDirective, BrowserStorageService } from '@angular-cms/core';
-import { SubjectService } from '@angular-cms/modules';
+import { CmsTab, InsertPointDirective, BrowserStorageService } from '@typijs/core';
+import { SubjectService } from '@typijs/modules';
 
 type PanelConfig = {
     visible: boolean,

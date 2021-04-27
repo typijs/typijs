@@ -20,22 +20,22 @@
       "dom"
     ],
     "paths": {
-      "@angular-cms/core": [
+      "@typijs/core": [
         "dist/core"
       ],
-      "@angular-cms/core/*": [
+      "@typijs/core/*": [
         "dist/core/*"
       ],
-      "@angular-cms/modules": [
+      "@typijs/modules": [
         "dist/modules"
       ],
-      "@angular-cms/modules/*": [
+      "@typijs/modules/*": [
         "dist/modules/*"
       ],
-      "@angular-cms/portal": [
+      "@typijs/portal": [
         "dist/portal"
       ],
-      "@angular-cms/portal/*": [
+      "@typijs/portal/*": [
         "dist/portal/*"
       ]
     }

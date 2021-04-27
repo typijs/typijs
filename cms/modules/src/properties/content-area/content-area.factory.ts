@@ -1,9 +1,10 @@
 import { ComponentRef, Injectable, Injector } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
-import { CmsPropertyFactory, ContentTypeProperty, UIHint, Content, ChildItemRef } from '@angular-cms/core';
-import { ContentAreaProperty } from './content-area.property';
+import { ChildItemRef, CmsPropertyFactory, Content, ContentTypeProperty, UIHint } from '@typijs/core';
 import { ContentAreaItem } from './content-area.model';
+import { ContentAreaProperty } from './content-area.property';
+
 
 @Injectable()
 export class ContentAreaFactory extends CmsPropertyFactory {

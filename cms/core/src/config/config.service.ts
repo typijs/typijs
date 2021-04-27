@@ -1,6 +1,7 @@
 import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable, Optional, PLATFORM_ID } from '@angular/core';
+import { APP_BASE_URL, CONFIG_PATH } from '../injection-tokens';
 
 export type Configuration = {
     baseApiUrl: string
@@ -14,7 +15,6 @@ const defaultConfig: Configuration = {
     providedIn: 'root',
 })
 export class ConfigService {
-    private readonly CONFIG_PATH: string = '/assets/config.json';
     private configuration: Configuration;
     get baseApiUrl(): string {
         return this.configuration && this.configuration.baseApiUrl;
@@ -24,14 +24,15 @@ export class ConfigService {
     constructor(private http: HttpClient,
         // tslint:disable-next-line: ban-types
         @Inject(PLATFORM_ID) private platformId: Object,
-        @Inject('APP_BASE_URL') @Optional() private baseUrl: string) {
+        @Inject(CONFIG_PATH) private configPath: string,
+        @Inject(APP_BASE_URL) @Optional() private baseUrl: string) {
         if (isPlatformBrowser(this.platformId)) {
             this.baseUrl = document.location.origin;
         }
     }
 
     loadConfig() {
-        return this.http.get<Configuration>(`${this.baseUrl}${this.CONFIG_PATH}`);
+        return this.http.get<Configuration>(`${this.baseUrl}${this.configPath}`);
     }
 
     setConfig(configuration: Configuration = defaultConfig) {

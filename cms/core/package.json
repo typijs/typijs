@@ -1,5 +1,5 @@
 {
-  "name": "@angular-cms/core",
+  "name": "@typijs/core",
   "version": "1.0.0",
   "dependencies": {
     "tslib": "^2.0.0"

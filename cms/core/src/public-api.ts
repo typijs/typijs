@@ -1,18 +1,24 @@
 /*
  * Public API Surface of core
  */
-export * from './angular-cms.module';
+export * from './core.module';
+export * from './typijs.module';
+export * from './cms';
+export * from './injection-tokens';
+
+// Bases
 export * from './bases/cms-component';
 export * from './bases/cms-property';
 export * from './bases/cms-property.factory';
 export * from './bases/selection-factory';
-export * from './cms';
+
+// Constants
 export * from './constants';
 export * from './constants/version-status';
-export * from './core.module';
+export * from './constants/content-type.enum';
 
-export * from './decorators/content-type.decorator';
 export * from './decorators/metadata-key';
+export * from './decorators/content-type.decorator';
 export * from './decorators/property.decorator';
 export * from './decorators/validate.decorator';
 
@@ -24,7 +30,10 @@ export * from './auth/auth.interceptor';
 export * from './auth/auth.model';
 export * from './auth/auth.module';
 export * from './auth/auth.service';
+export * from './auth/register/register.component';
+export * from './auth/register/register.guard';
 export * from './auth/login/login.component';
+export * from './auth/login/can-login.guard';
 export * from './auth/logout/logout.component';
 export * from './browser/browser-location.service';
 export * from './browser/browser-storage.service';
@@ -65,7 +74,8 @@ export * from './types/image-reference';
 export * from './types/content-type';
 export * from './types/module-config';
 export * from './types/ui-hint';
-export * from './types/url-item';
+export * from './types/cms-url';
+export * from './types/cms-image';
 
 export * from './utils/app-injector';
 export * from './utils/route-reuse-strategy';

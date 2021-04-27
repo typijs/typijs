@@ -1,7 +1,7 @@
-import { CoreModule } from '@angular-cms/core';
 import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CoreModule } from '@typijs/core';
 import { DynamicFormComponent } from '../form/dynamic-form.component';
 import { DynamicFormService } from './dynamic-form.service';
 

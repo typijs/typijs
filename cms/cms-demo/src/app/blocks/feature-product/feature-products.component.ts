@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CmsComponent } from '@angular-cms/core';
+import { CmsComponent } from '@typijs/core';
 import { FeatureProductsBlock } from './feature-product.blocktype';
 
 @Component({

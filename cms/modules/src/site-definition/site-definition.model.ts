@@ -1,15 +1,13 @@
-import { BaseService, ISelectionFactory, SelectItem, UIHint } from '@angular-cms/core';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { BaseService, ContentReference, ContentTypeEnum, ISelectionFactory, Property, SelectItem, UIHint } from '@typijs/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Column } from '../decorators/column.decorator';
-import { Table } from '../decorators/table.decorator';
+import { Column } from '../shared/table/column.decorator';
 
 export type Language = {
-    code: string;
+    language: string;
     name: string;
-    nativeName: string;
 };
 
 @Injectable()
@@ -20,33 +18,120 @@ export class LanguageSelectionFactory extends BaseService implements ISelectionF
     }
 
     getSelectItems(): Observable<SelectItem[]> {
-        return this.httpClient.get<Language[]>(`${this.apiUrl}/getAll`).pipe(
-            map((languages: Language[]) => languages.map(lang => <SelectItem>{ value: lang.code, text: `${lang.name} (${lang.nativeName})` }))
+        return this.httpClient.get<Language[]>(`${this.apiUrl}/getAvailableLanguages`).pipe(
+            map((languages: Language[]) => languages.map(lang => <SelectItem>{ value: lang.language, text: `${lang.name} (${lang.language})` }))
         );
     }
 }
 
-@Table({
-    displayName: 'Site Management',
-    description: 'Configuration for site'
-})
-export class SiteDefinition {
-    _id: string;
-    @Column({
-        displayName: 'Start Page',
-        displayType: UIHint.ContentReference
+export class HostDefinition {
+    @Property({
+        displayName: 'Hostname',
+        displayType: UIHint.Text
     })
-    startPage: any;
-    @Column({
-        displayName: 'Hostname'
-    })
-    siteUrl: string;
-    @Column({
-        displayName: 'Default Language',
+    name: string;
+
+    @Property({
+        displayName: 'Language',
         displayType: UIHint.Dropdown,
         selectionFactory: LanguageSelectionFactory
     })
     language: string;
-    @Column()
+
+    @Property({
+        displayName: 'Is Primary',
+        displayType: UIHint.Checkbox
+    })
     isPrimary: boolean;
+
+    @Property({
+        displayName: 'Is Https',
+        displayType: UIHint.Checkbox
+    })
+    isHttps: boolean;
 }
+
+export class SiteDefinition {
+    _id: string;
+
+    @Column({
+        header: 'Site Name'
+    })
+    @Property({
+        displayName: 'Site name'
+    })
+    name: string;
+
+    @Column({
+        header: 'Site Url'
+    })
+    siteUrl: string;
+
+    @Column({
+        header: 'Start Page'
+    })
+    startPageName: string;
+
+    @Property({
+        displayName: 'Start page',
+        displayType: UIHint.ContentReference
+    })
+    startPage: any;
+
+    @Property({
+        displayName: 'Hosts',
+        displayType: UIHint.ObjectList,
+        objectListItemType: HostDefinition
+    })
+    hosts: HostDefinition[];
+
+    constructor(siteDefinition: Partial<SiteDefinition>) {
+        const startPageName = this.getStartPageName(siteDefinition);
+        const siteUrl = this.getSiteUrl(siteDefinition);
+        const startPage = this.getStartPageReference(siteDefinition, startPageName);
+        const siteDefinitionDto: Partial<SiteDefinition> = {
+            ...siteDefinition,
+            siteUrl,
+            startPageName,
+            startPage
+        };
+
+        Object.assign(this, siteDefinitionDto);
+    }
+
+    private getSiteUrl(siteDefinition: Partial<SiteDefinition>): string {
+        const primaryHost = this.getHostname(siteDefinition);
+        const https = primaryHost?.isHttps ? 'https' : 'http';
+        return `${https}://${primaryHost?.name}`;
+    }
+
+    private getStartPageName(siteDefinition: Partial<SiteDefinition>): string {
+        const primaryHost = this.getHostname(siteDefinition);
+        const language = primaryHost?.language;
+        const startPage = siteDefinition?.startPage?.contentLanguages?.find(x => x.language == language);
+        return startPage?.name;
+    }
+
+    private getHostname(siteDefinition: Partial<SiteDefinition>) {
+        const hosts = siteDefinition.hosts;
+        if (!hosts || hosts.length === 0) { return null; }
+
+        const primaryHost = siteDefinition.hosts.find(x => x.isPrimary);
+        if (primaryHost) { return primaryHost; }
+
+        return siteDefinition.hosts[0];
+    }
+
+    private getStartPageReference(siteDefinition: Partial<SiteDefinition>, pageName: string): ContentReference {
+        if (!siteDefinition.startPage) { return null; }
+
+        return {
+            id: siteDefinition.startPage._id,
+            type: ContentTypeEnum.Page,
+            name: pageName,
+            contentType: siteDefinition.startPage.contentType
+        };
+    }
+}
+
+

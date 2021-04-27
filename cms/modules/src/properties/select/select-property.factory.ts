@@ -1,7 +1,7 @@
 import { Injectable, ComponentRef, Injector } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
-import { CmsPropertyFactory, UIHint, ContentTypeProperty, ISelectionFactory, ClassOf } from '@angular-cms/core';
+import { CmsPropertyFactory, UIHint, ContentTypeProperty, ISelectionFactory, ClassOf } from '@typijs/core';
 import { SelectProperty } from './select-property';
 import { DropdownProperty } from './dropdown/dropdown.property';
 import { CheckboxListProperty } from './checkbox-list/checkbox-list.property';

@@ -1,7 +1,7 @@
 import { ComponentRef, Injectable, Injector } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
-import { CmsPropertyFactory, ContentTypeProperty, UIHint } from '@angular-cms/core';
+import { CmsPropertyFactory, ContentTypeProperty, UIHint } from '@typijs/core';
 import { ContentReferenceProperty } from './content-reference.property';
 
 @Injectable()

@@ -4,7 +4,7 @@ import * as httpStatus from 'http-status';
 import { Injectable } from 'injection-js';
 import 'reflect-metadata';
 import { Roles } from '../../constants';
-import { ValidateQuery } from '../../validation';
+import { ValidateBody, ValidateQuery } from '../../validation';
 import { Authorize } from '../auth';
 import { BaseController } from '../shared/base.controller';
 import { ISiteDefinitionDocument } from './site-definition.model';
@@ -42,9 +42,26 @@ export class SiteDefinitionController extends BaseController<ISiteDefinitionDocu
     }
 
     @Authorize({ roles: [Roles.Admin] })
+    @ValidateBody({
+        startPage: Joi.string().required(),
+        name: Joi.string().required(),
+        hosts: Joi.array().required()
+    })
     async createSiteDefinition(req: express.Request, res: express.Response) {
         const { id } = req['user'];
         const item = await this.siteDefinitionService.createSiteDefinition(req.body, id);
+        res.status(httpStatus.OK).json(item)
+    }
+
+    @Authorize({ roles: [Roles.Admin] })
+    @ValidateBody({
+        startPage: Joi.string().required(),
+        name: Joi.string().required(),
+        hosts: Joi.array().required()
+    })
+    async updateSiteDefinition(req: express.Request, res: express.Response) {
+        const { id } = req['user'];
+        const item = await this.siteDefinitionService.updateSiteDefinition(req.body, id);
         res.status(httpStatus.OK).json(item)
     }
 }

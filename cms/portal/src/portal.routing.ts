@@ -2,7 +2,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes, Route, ROUTES } from '@angular/router';
 
-import { EDITOR_ROUTES, ADMIN_ROUTES, Roles, AuthGuard } from '@angular-cms/core';
+import { EDITOR_ROUTES, ADMIN_ROUTES, Roles, AuthGuard, CanLoginGuard, RegisterGuard, CmsLoginComponent, CmsLogoutComponent, CmsRegisterComponent } from '@typijs/core';
 
 import { PortalComponent } from './portal.component';
 import { EditorComponent } from './editor/editor.component';
@@ -12,45 +12,49 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 export function getPortalRoutes(editorRoutes: Routes[], adminRoutes: Routes[]): Route[] {
     const childEditorRoutes: Route[] = editorRoutes.reduce((a, b) => a.concat(b), []);
     const childAdminRoutes: Route[] = adminRoutes.reduce((a, b) => a.concat(b), []);
-    return [{
-        path: '', component: PortalComponent,
-        children: [
-            {
-                path: '',
-                component: DashboardComponent,
-                canActivate: [AuthGuard],
-                data: {
-                    role: Roles.Editor
-                }
-            },
-            {
-                path: 'dashboard',
-                component: DashboardComponent,
-                canActivate: [AuthGuard],
-                data: {
-                    role: Roles.Editor
-                }
-            },
-            {
-                path: 'editor',
-                component: EditorComponent,
-                canActivate: [AuthGuard],
-                data: {
-                    role: Roles.Editor
+    return [
+        { path: 'register', component: CmsRegisterComponent, canActivate: [RegisterGuard] },
+        { path: 'login', component: CmsLoginComponent, canActivate: [CanLoginGuard], },
+        { path: 'logout', component: CmsLogoutComponent },
+        {
+            path: '', component: PortalComponent,
+            children: [
+                {
+                    path: '',
+                    component: DashboardComponent,
+                    canActivate: [AuthGuard],
+                    data: {
+                        role: Roles.Editor
+                    }
                 },
-                children: childEditorRoutes
-            },
-            {
-                path: 'admin',
-                component: AdminComponent,
-                canActivate: [AuthGuard],
-                data: {
-                    role: Roles.Admin
+                {
+                    path: 'dashboard',
+                    component: DashboardComponent,
+                    canActivate: [AuthGuard],
+                    data: {
+                        role: Roles.Editor
+                    }
                 },
-                children: childAdminRoutes
-            }
-        ]
-    }];
+                {
+                    path: 'editor',
+                    component: EditorComponent,
+                    canActivate: [AuthGuard],
+                    data: {
+                        role: Roles.Editor
+                    },
+                    children: childEditorRoutes
+                },
+                {
+                    path: 'admin',
+                    component: AdminComponent,
+                    canActivate: [AuthGuard],
+                    data: {
+                        role: Roles.Admin
+                    },
+                    children: childAdminRoutes
+                }
+            ]
+        }];
 }
 
 @NgModule({

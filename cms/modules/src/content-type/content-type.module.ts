@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { NgModule, ModuleWithProviders } from '@angular/core';
+import { ModuleWithProviders, NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { ADMIN_ROUTES, ADMIN_WIDGETS, CmsWidgetPosition, CoreModule } from '@typijs/core';
 import { CmsTableModule } from '../shared/table/table.module';
-import { ContentTypeListComponent } from './content-type-list.component';
 import { ContentTypeDetailComponent } from './content-type-detail.component';
-import { Routes, RouterModule } from '@angular/router';
-import { ADMIN_ROUTES, ADMIN_WIDGETS, CmsWidgetPosition, CoreModule } from '@angular-cms/core';
+import { ContentTypeListComponent } from './content-type-list.component';
 
 const contentTypeRoutes: Routes = [
     { path: `content-type/page/:name`, component: ContentTypeDetailComponent },

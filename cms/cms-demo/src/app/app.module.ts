@@ -1,4 +1,4 @@
-import { AngularCms, AuthModule, PAGE_AFTER_INIT } from '@angular-cms/core';
+import { TypiJsModule, AuthModule, PAGE_AFTER_INIT } from '@typijs/core';
 import { DOCUMENT } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ApplicationRef, NgModule, RendererFactory2 } from '@angular/core';
@@ -14,7 +14,7 @@ import * as contentTypes from './register-content-types';
 import { LayoutComponent } from './shared/layout/layout.component';
 import { NavbarComponent } from './shared/layout/navbar.component';
 
-AngularCms.registerContentTypes(contentTypes);
+TypiJsModule.registerContentTypes(contentTypes);
 
 // Use a factory that return an array of dependant functions to be executed
 export function pageAfterViewInit(rendererFactory: RendererFactory2, document: Document) {
@@ -39,7 +39,10 @@ export function pageAfterViewInit(rendererFactory: RendererFactory2, document: D
         TransferHttpCacheModule,
         HttpClientModule,
         BsDropdownModule.forRoot(),
-        AngularCms.forRoot(),
+        TypiJsModule.forRoot({
+            adminRoute: '/typicms',
+            configFilePath: '/assets/config/config-dev.json'
+        }),
         AuthModule,
         AppRoutingModule,
         PagesModule,

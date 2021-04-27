@@ -1,4 +1,4 @@
-import { PageType, Property, UIHint } from '@angular-cms/core';
+import { PageType, Property, UIHint } from '@typijs/core';
 import { ContactComponent } from './contact.component';
 import { BasePage } from '../base.pagetype';
 

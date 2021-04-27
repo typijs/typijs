@@ -1,6 +1,6 @@
-import { ClassOf, CmsObject, ContentTypeService, InsertPointDirective } from '@angular-cms/core';
 import { Component, ComponentRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormGroup, NgForm } from '@angular/forms';
+import { ClassOf, CmsObject, ContentTypeService, InsertPointDirective } from '@typijs/core';
 import { DynamicFormService } from './dynamic-form.service';
 
 @Component({
@@ -14,7 +14,8 @@ import { DynamicFormService } from './dynamic-form.service';
         </div>
         <!-- <input type="submit" value="Submit"/> -->
     </form>
-    `
+    `,
+    //changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DynamicFormComponent implements OnInit, OnDestroy, OnChanges {
     @ViewChild(InsertPointDirective, { static: true, read: ViewContainerRef }) formContainerRef: ViewContainerRef;
@@ -52,7 +53,7 @@ export class DynamicFormComponent implements OnInit, OnDestroy, OnChanges {
 
     ngOnChanges({ modelType, model }: SimpleChanges): void {
         // handle the second change of modelType to render the form
-        if (!modelType.isFirstChange()) {
+        if (modelType && !modelType.isFirstChange()) {
             this.createDynamicForm(modelType.currentValue, model.currentValue);
         }
     }

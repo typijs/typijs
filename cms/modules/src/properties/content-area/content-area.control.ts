@@ -1,12 +1,13 @@
-import { Component, forwardRef, Input, Provider } from '@angular/core';
+import { Component, forwardRef, Inject, Input, Provider } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { generateUUID } from '@angular-cms/core';
+import { ADMIN_ROUTE, generateUUID } from '@typijs/core';
 import { takeUntil } from 'rxjs/operators';
 
 import { DropEvent } from '../../shared/drag-drop/drop-event.model';
 import { SubjectService } from '../../shared/services/subject.service';
-import { ContentAreaItem } from './content-area.model';
 import { CmsControl } from '../cms-control';
+import { ContentAreaItem } from './content-area.model';
+
 
 const CONTENT_AREA_VALUE_ACCESSOR: Provider = {
     provide: NG_VALUE_ACCESSOR,
@@ -40,7 +41,7 @@ const CONTENT_AREA_VALUE_ACCESSOR: Provider = {
                                     aria-labelledby="simple-dropdown">
                                     <a class="dropdown-item p-2" href="javascript:void(0)"
                                         [ngClass]="{'disabled': item.type == 'folder_block' || item.type == 'folder_media'}"
-                                        [routerLink]="['/cms/editor/content/' + item.type, item._id]">
+                                        [routerLink]="[adminPath + '/editor/content/' + item.type, item._id]">
                                         Edit
                                     </a>
                                     <a class="dropdown-item p-2" href="javascript:void(0)" (click)="removeItem(item)">
@@ -72,7 +73,7 @@ export class ContentAreaControl extends CmsControl {
         return this._model;
     }
 
-    constructor(private subjectService: SubjectService) {
+    constructor(@Inject(ADMIN_ROUTE) public adminPath: string, private subjectService: SubjectService) {
         super();
         this.subjectService.contentDropFinished$
             .pipe(takeUntil(this.unsubscribe$))

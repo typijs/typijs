@@ -1,5 +1,5 @@
-import { BaseService } from '@angular-cms/core';
 import { HttpClient } from '@angular/common/http';
+import { BaseService } from '@typijs/core';
 import { Observable } from 'rxjs';
 
 export abstract class CrudService<T, ID> extends BaseService {

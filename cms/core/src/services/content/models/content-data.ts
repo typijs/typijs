@@ -1,4 +1,5 @@
-import { TypeOfContent, TypeOfContentEnum } from '../../../types';
+import { TypeOfContent } from '../../../types';
+import { ContentTypeEnum } from '../../../constants/content-type.enum';
 import { ContentReference } from '../../../types/content-reference';
 import { Block } from './block.model';
 import { Page } from './page.model';
@@ -30,9 +31,9 @@ export class BlockData extends ContentData {
             status: block.status,
             language: block.language,
             contentType: block.contentType,
-            contentLink: { id: block._id, versionId: block.versionId, type: TypeOfContentEnum.Block, contentType: block.contentType },
+            contentLink: { id: block._id, versionId: block.versionId, type: ContentTypeEnum.Block, contentType: block.contentType },
             name: block.name,
-            type: TypeOfContentEnum.Block
+            type: ContentTypeEnum.Block
         };
 
         Object.assign(this, blockData);
@@ -56,9 +57,9 @@ export class PageData extends ContentData {
             language: page.language,
             urlSegment: page.urlSegment,
             contentType: page.contentType,
-            contentLink: { id: page._id, versionId: page.versionId, type: TypeOfContentEnum.Page, contentType: page.contentType },
+            contentLink: { id: page._id, versionId: page.versionId, type: ContentTypeEnum.Page, contentType: page.contentType },
             name: page.name,
-            type: TypeOfContentEnum.Page
+            type: ContentTypeEnum.Page
         };
 
         Object.assign(this, pageData);

@@ -1,4 +1,4 @@
-import { TypeOfContent } from "./index";
+import { TypeOfContent } from './index';
 
 /**
  * Contains information to reference `ContentData` instance

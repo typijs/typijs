@@ -1,6 +1,6 @@
-import { UrlItem } from '@angular-cms/core';
 import { Component, forwardRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { CmsUrl } from '@typijs/core';
 import { BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 import { CmsControl } from '../cms-control';
 import { UrlDetailsComponent } from './url-details.component';
@@ -35,12 +35,12 @@ const URL_PICKER_VALUE_ACCESSOR = {
     providers: [URL_PICKER_VALUE_ACCESSOR]
 })
 export class UrlControl extends CmsControl {
-    model: UrlItem;
+    model: CmsUrl;
     constructor(private modalService: BsModalService) {
         super();
     }
 
-    writeValue(value: UrlItem): void {
+    writeValue(value: CmsUrl): void {
         this.model = value;
     }
 
@@ -51,7 +51,7 @@ export class UrlControl extends CmsControl {
 
     openUrlDialog() {
         const initialState = {
-            urlData: this.model ?? <UrlItem>{},
+            urlData: this.model ?? <CmsUrl>{},
             title: this.model ? 'Edit url' : 'Create url'
         };
         const config: ModalOptions<UrlDetailsComponent> = {
@@ -63,7 +63,7 @@ export class UrlControl extends CmsControl {
             class: 'modal-md'
         };
 
-        this.modalService.show(UrlDetailsComponent, config).content.getResult().subscribe((url: UrlItem) => {
+        this.modalService.show(UrlDetailsComponent, config).content.getResult().subscribe((url: CmsUrl) => {
             this.model = url;
             this.onChange(this.model);
         });

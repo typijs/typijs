@@ -1,13 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { take } from 'rxjs/operators';
-
+import { ActivatedRoute } from '@angular/router';
+import { BrowserLocationService } from '../../browser/browser-location.service';
 import { AuthService } from '../auth.service';
 
 @Component({
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CmsLoginComponent implements OnInit {
     loginForm: FormGroup;
@@ -16,15 +16,14 @@ export class CmsLoginComponent implements OnInit {
     returnUrl: string;
     error = '';
 
+    // convenience getter for easy access to form fields
+    get f() { return this.loginForm.controls; }
+
     constructor(
         private route: ActivatedRoute,
-        private router: Router,
         private formBuilder: FormBuilder,
+        private locationService: BrowserLocationService,
         private authService: AuthService) {
-        // redirect to home if already logged in
-        if (this.authService.authStatus) {
-            this.router.navigate(['/']);
-        }
     }
 
     ngOnInit() {
@@ -37,9 +36,6 @@ export class CmsLoginComponent implements OnInit {
         this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
     }
 
-    // convenience getter for easy access to form fields
-    get f() { return this.loginForm.controls; }
-
     onSubmit() {
         this.submitted = true;
 
@@ -50,10 +46,9 @@ export class CmsLoginComponent implements OnInit {
 
         this.loading = true;
         this.authService.login(this.f.username.value, this.f.password.value)
-            .pipe(take(1))
             .subscribe({
                 next: () => {
-                    this.router.navigate([this.returnUrl]);
+                    this.locationService.navigate(this.returnUrl);
                 },
                 error: error => {
                     this.error = error;

@@ -32,7 +32,7 @@ const HostDefinitionSchema = new mongoose.Schema({
     name: { type: String, unique: true, required: true, trim: true, lowercase: true },
     language: { type: String, trim: true, required: true, lowercase: true },
     isPrimary: { type: Boolean, required: true, default: false },
-    isHttps: { type: Boolean, required: true, default: false }
+    isHttps: { type: Boolean, required: false }
 }, { timestamps: true });
 
 const SiteDefinitionSchema = new mongoose.Schema<ISiteDefinitionDocument, ISiteDefinitionModel>({

@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgxWigModule } from 'ngx-wig';
-import { PROPERTY_FACTORIES } from '@angular-cms/core';
-import { CmsPortalModule } from '@angular-cms/portal';
+import { PROPERTY_FACTORIES } from '@typijs/core';
+import { CmsPortalModule } from '@typijs/portal';
 
 import { CustomModule } from './lazy/custom.module';
 import { NgxWigPropertyFactory } from './xhtml/wig.factory';

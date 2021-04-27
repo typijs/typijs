@@ -6,7 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faChevronRight, faChevronLeft, faAngleUp, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 
-import { CoreModule } from '@angular-cms/core';
+import { CoreModule } from '@typijs/core';
 import { AngularSplitModule } from 'angular-split';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
@@ -30,8 +30,7 @@ import {
     ContentTypeModule,
     ContentVersionModule,
     ICONS
-} from '@angular-cms/modules';
-
+} from '@typijs/modules';
 import { CmsHeaderComponent } from './shared/components/cms-header/cms-header.component';
 import { CmsLayoutComponent } from './shared/components/cms-layout/cms-layout.component';
 import { ReplaceDirective } from './shared/directives/replace/replace.directive';

@@ -2,7 +2,7 @@ import { Component, HostBinding, Injectable, Injector, OnInit } from '@angular/c
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { isUrlAbsolute } from '../../helpers/common';
 import { UIHint } from '../../types/ui-hint';
-import { CmsImage } from '../../types/image-reference';
+import { CmsImage } from '../../types/cms-image';
 import { ConfigService } from '../../config/config.service';
 import { CmsPropertyRender } from '../property-render';
 import { CmsPropertyRenderFactory } from '../property-render.factory';

@@ -2,7 +2,7 @@ import { Injectable, Injector } from '@angular/core';
 import { convertObjectToUrlQueryString } from '../../helpers/common';
 import { Observable } from 'rxjs';
 import { btoa } from '../../helpers/base64';
-import { TypeOfContentEnum } from '../../types';
+import { ContentTypeEnum } from '../../constants/content-type.enum';
 import { ContentService } from './content.service';
 import { PageData } from './models/content-data';
 import { Page } from './models/page.model';
@@ -19,7 +19,7 @@ export class PageService extends ContentService<Page> {
 
     isMatching(typeOfContent: string) {
         this.typeOfContent = typeOfContent;
-        return typeOfContent === TypeOfContentEnum.Page;
+        return typeOfContent === ContentTypeEnum.Page;
     }
 
     getContentData(content: Page): PageData {

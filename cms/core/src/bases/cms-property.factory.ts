@@ -6,7 +6,7 @@ import { ClassOf, TypeOfContent } from '../types';
 import { ContentTypeProperty } from '../types/content-type';
 import { UIHint } from '../types/ui-hint';
 import { Content, ChildItemRef } from '../services/content/models/content.model';
-import { PAGE_TYPE, BLOCK_TYPE, FOLDER_BLOCK, MEDIA_TYPE, FOLDER_MEDIA } from '../constants';
+import { ContentTypeEnum } from '../constants/content-type.enum';
 
 // https://stackoverflow.com/questions/51824125/injection-of-multiple-instances-in-angular
 export const PROPERTY_FACTORIES: InjectionToken<CmsPropertyFactory[]> = new InjectionToken<CmsPropertyFactory[]>('PROPERTY_FACTORIES');
@@ -55,11 +55,11 @@ export class CmsPropertyFactory {
 
     protected getRefPathFromContentType(typeOfContent: TypeOfContent): 'cms_Block' | 'cms_Page' | 'cms_Media' {
         switch (typeOfContent) {
-            case PAGE_TYPE: return 'cms_Page';
-            case BLOCK_TYPE: return 'cms_Block';
-            case FOLDER_BLOCK: return 'cms_Block';
-            case MEDIA_TYPE: return 'cms_Media';
-            case FOLDER_MEDIA: return 'cms_Media';
+            case ContentTypeEnum.Page: return 'cms_Page';
+            case ContentTypeEnum.Block: return 'cms_Block';
+            case ContentTypeEnum.FolderBlock: return 'cms_Block';
+            case ContentTypeEnum.Media: return 'cms_Media';
+            case ContentTypeEnum.FolderMedia: return 'cms_Media';
             default: return null;
         }
     }

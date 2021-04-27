@@ -1,15 +1,12 @@
-import { Input, Injector, ElementRef, Directive } from '@angular/core';
+import { Input, Injector, ElementRef, Directive, HostBinding } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { PropertyDirectiveBase } from '../property-directive.base';
 
 @Directive({
-    selector: '[cmsXhtml], [cmsXHtml]',
-    host: {
-        '[innerHTML]': 'innerHtml'
-    }
+    selector: '[cmsXhtml], [cmsXHtml]'
 })
 export class XHtmlRenderDirective extends PropertyDirectiveBase {
-    innerHtml: SafeHtml;
+    @HostBinding('innerHTML') innerHtml: SafeHtml;
 
     @Input('cmsXhtml')
     get value(): string {

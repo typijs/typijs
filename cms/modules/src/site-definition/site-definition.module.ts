@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
-import { CmsWidgetPosition, ADMIN_ROUTES, ADMIN_WIDGETS } from '@angular-cms/core';
+import { CmsWidgetPosition, ADMIN_ROUTES, ADMIN_WIDGETS } from '@typijs/core';
 import { SiteDefinitionListComponent, SiteDefinitionMenuComponent, SiteDefinitionDetailComponent } from './site-definition.component';
 import { SiteDefinitionService } from './site-definition.service';
 import { CmsTableModule } from '../shared/table/table.module';

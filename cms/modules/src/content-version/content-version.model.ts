@@ -1,24 +1,22 @@
-import { UIHint } from '@angular-cms/core';
-import { Column } from '../decorators/column.decorator';
+import { Column } from '../shared/table/column.decorator';
 
 export class ContentVersionModel {
     _id: string;
     contentId: string;
     @Column({
-        displayName: 'Language'
+        header: 'Language'
     })
     language: string;
     @Column({
-        displayName: 'Status',
-        displayType: UIHint.Text
+        header: 'Status',
     })
     status: string;
     @Column({
-        displayName: 'Saved'
+        header: 'Saved'
     })
     savedAt: string;
     @Column({
-        displayName: 'By'
+        header: 'By'
     })
     savedBy: string;
 }

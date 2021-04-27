@@ -1,6 +1,6 @@
-import { UrlItem } from '@angular-cms/core';
 import { Component, forwardRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { CmsUrl } from '@typijs/core';
 import { BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 import { CmsListControl } from '../cms-list.control';
 import { UrlDetailsComponent } from '../url/url-details.component';
@@ -52,9 +52,9 @@ export class UrlListControl extends CmsListControl {
         super();
     }
 
-    openUrlDetailsModal(item?: UrlItem) {
+    openUrlDetailsModal(item?: CmsUrl) {
         const initialState = {
-            urlData: item ?? <UrlItem>{},
+            urlData: item ?? <CmsUrl>{},
             title: item ? 'Edit url' : 'Create url'
         };
         const config: ModalOptions<UrlDetailsComponent> = {

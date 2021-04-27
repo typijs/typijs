@@ -15,7 +15,7 @@ export class LinkTypeSelectionFactory implements ISelectionFactory {
             { value: 'media', text: 'Media' },
             { value: 'email', text: 'E-mail' },
             { value: 'external', text: 'External link' }
-        ])
+        ]);
     }
 }
 
@@ -24,11 +24,11 @@ export class LinkTargetSelectionFactory implements ISelectionFactory {
         return of([
             { value: '_blank', text: 'Open the url in a new window' },
             { value: '_self', text: 'Open the url in the whole window' }
-        ])
+        ]);
     }
 }
 
-export class UrlItem {
+export class CmsUrl {
     @Property({
         displayName: 'Link name/text',
         displayType: UIHint.Text

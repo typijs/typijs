@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CmsProperty } from '@angular-cms/core';
+import { CmsProperty } from '@typijs/core';
 
 @Component({
     selector: '[textareaProperty]',

@@ -28,19 +28,27 @@ import { CONTENT_SERVICE_PROVIDER } from './services/content/content-loader.serv
 import { PageService } from './services/content/page.service';
 import { MediaService } from './services/content/media.service';
 import { BlockService } from './services/content/block.service';
+import { ADMIN_ROUTE, CONFIG_PATH } from './injection-tokens';
+import { CmsConfigOption } from './types/cms-config';
+
+
+export const defaultCmsConfigOption: CmsConfigOption = {
+    adminRoute: '/typijs',
+    configFilePath: '/assets/config.json'
+};
 
 /**
  * Re-export Core Module to used on client
  */
 @NgModule({ exports: [CoreModule] })
-export class AngularCms {
+export class TypiJsModule {
     constructor(private injector: Injector) {
         setAppInjector(this.injector);
     }
 
-    static forRoot(): ModuleWithProviders<AngularCms> {
+    static forRoot(configOption: CmsConfigOption = defaultCmsConfigOption): ModuleWithProviders<TypiJsModule> {
         return {
-            ngModule: AngularCms,
+            ngModule: TypiJsModule,
             providers: [
                 { provide: APP_INITIALIZER, useFactory: cmsInitializer, deps: [ConfigService, CONFIG_DEPS], multi: true },
                 { provide: CONFIG_DEPS, useFactory: configDepsFactory, deps: [AuthService, ConfigService] },
@@ -65,7 +73,10 @@ export class AngularCms {
                 // Register Content Providers
                 { provide: CONTENT_SERVICE_PROVIDER, useClass: PageService, multi: true },
                 { provide: CONTENT_SERVICE_PROVIDER, useClass: MediaService, multi: true },
-                { provide: CONTENT_SERVICE_PROVIDER, useClass: BlockService, multi: true }
+                { provide: CONTENT_SERVICE_PROVIDER, useClass: BlockService, multi: true },
+                // Configuration value
+                { provide: ADMIN_ROUTE, useValue: configOption?.adminRoute },
+                { provide: CONFIG_PATH, useValue: configOption?.configFilePath }
             ]
         };
     }

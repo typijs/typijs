@@ -6,7 +6,7 @@ import {
     CmsWidgetPosition,
     CmsTab,
     sortByString
-} from '@angular-cms/core';
+} from '@typijs/core';
 
 @Injectable()
 export class WidgetService {

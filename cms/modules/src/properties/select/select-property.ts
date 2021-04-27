@@ -1,5 +1,5 @@
 import { Input, Directive } from '@angular/core';
-import { CmsProperty, SelectItem } from '@angular-cms/core';
+import { CmsProperty, SelectItem } from '@typijs/core';
 import { Observable } from 'rxjs';
 
 @Directive()

@@ -1,16 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { BrowserLocationService } from '../../browser/browser-location.service';
 
 import { AuthService } from '../auth.service';
 
 @Component({
-    template: `<p>Logging out...</p>`,
+    template: `<p style="text-align: center;">Logging out...</p>`,
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CmsLogoutComponent implements OnInit {
-    constructor(private router: Router, private authService: AuthService) { }
+    private readonly homePage: string = '/';
+    constructor(private locationService: BrowserLocationService, private authService: AuthService) { }
 
     ngOnInit() {
         this.authService.logout();
-        this.router.navigate(['/']);
+        this.locationService.navigate(this.homePage);
     }
 }

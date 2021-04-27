@@ -2,7 +2,7 @@ import { Directive, ElementRef, HostBinding, HostListener, Injector, Input, OnIn
 import { SafeUrl } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { UrlResolveService } from '../../services/url-resolve.service';
-import { LinkTarget, UrlItem } from '../../types/url-item';
+import { LinkTarget, CmsUrl } from '../../types/cms-url';
 import { PropertyDirectiveBase } from '../property-directive.base';
 
 @Directive({
@@ -13,7 +13,7 @@ export class UrlRenderDirective extends PropertyDirectiveBase implements OnInit 
     @HostBinding('attr.target') target: LinkTarget;
     @HostBinding('attr.title') title: string;
 
-    @Input('cmsUrl') urlItem: UrlItem;
+    @Input('cmsUrl') urlItem: CmsUrl;
     url: string;
 
     constructor(

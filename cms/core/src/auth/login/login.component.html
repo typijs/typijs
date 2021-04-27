@@ -1,34 +1,24 @@
 <div class="pen-title">
-    <h1>Welcome</h1>
+  <h1>Welcome</h1>
 </div>
 <!-- Form Module-->
 <div class="module form-module">
-    <div class="form">
-        <h2>Login to your account</h2>
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-            <input type="text" formControlName="username" placeholder="Username"
-                [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
-            <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
-                <div *ngIf="f.username.errors.required">Username is required</div>
-            </div>
-            <input type="password" formControlName="password" placeholder="Password"
-                [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
-            <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-                <div *ngIf="f.password.errors.required">Password is required</div>
-            </div>
-            <button [disabled]="loading">Login</button>
-            <p class="invalid-feedback">{{error}}&nbsp;</p>
-        </form>
-    </div>
-    <div class="form">
-        <h2>Create an account</h2>
-        <form>
-            <input type="text" placeholder="Username" />
-            <input type="password" placeholder="Password" />
-            <input type="email" placeholder="Email Address" />
-            <input type="tel" placeholder="Phone Number" />
-            <button>Register</button>
-        </form>
-    </div>
-    <div class="cta"><a href="javascript:void(0)">Forgot your password?</a></div>
+  <div class="form">
+    <h2>Login to your account</h2>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <input type="text" formControlName="username" placeholder="Username"
+        [ngClass]="{ 'is-invalid': submitted && f.username.errors }" />
+      <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
+        <div *ngIf="f.username.errors.required">Username is required</div>
+      </div>
+      <input type="password" formControlName="password" placeholder="Password"
+        [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
+      <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+        <div *ngIf="f.password.errors.required">Password is required</div>
+      </div>
+      <button [disabled]="loading">Login</button>
+      <p class="invalid-feedback">{{error}}&nbsp;</p>
+    </form>
+  </div>
+  <div class="cta"><a href="javascript:void(0)">Forgot your password?</a></div>
 </div>
