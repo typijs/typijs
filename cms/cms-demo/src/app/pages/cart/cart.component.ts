@@ -1,4 +1,4 @@
-import { CmsComponent, SiteDefinition } from '@angular-cms/core';
+import { CmsComponent, SiteDefinition } from '@typijs/core';
 import { Component, OnInit } from '@angular/core';
 import { HomePage } from '../home/home.pagetype';
 import { CartPage } from './cart.pagetype';

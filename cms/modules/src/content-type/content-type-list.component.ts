@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ContentTypeService, ContentType } from '@angular-cms/core';
+import { ContentTypeService, ContentType } from '@typijs/core';
 
 @Component({
     template: `

@@ -1,5 +1,5 @@
-import { CmsProperty, MediaService, ContentTypeEnum } from '@angular-cms/core';
 import { Component, ViewChild } from '@angular/core';
+import { CmsProperty, ContentTypeEnum, MediaService } from '@typijs/core';
 import { QuillEditorComponent } from 'ngx-quill';
 import Quill from 'quill';
 import { DropEvent } from '../../shared/drag-drop/drop-event.model';

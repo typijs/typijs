@@ -1,4 +1,4 @@
-import { BlockData, BlockType, Property, ValidationTypes, UIHint } from '@angular-cms/core';
+import { BlockData, BlockType, Property, ValidationTypes, UIHint } from '@typijs/core';
 import { TestimonyComponent } from './testimony.component';
 
 @BlockType({

@@ -1,11 +1,13 @@
-import { ContentReference, ContentTypeEnum } from '@angular-cms/core';
 import { Component, forwardRef, Input } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
+
+import { ContentReference, ContentTypeEnum } from '@typijs/core';
+
+import { ContentModalService } from '../../content-modal/content-modal.service';
 import { DropEvent } from '../../shared/drag-drop/drop-event.model';
 import { SubjectService } from '../../shared/services/subject.service';
 import { CmsControl } from '../cms-control';
 import { ContentAreaItem } from '../content-area/content-area.model';
-import { ContentModalService } from '../../content-modal/content-modal.service';
 
 
 const CONTENT_REFERENCE_VALUE_ACCESSOR = {

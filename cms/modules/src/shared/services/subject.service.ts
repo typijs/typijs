@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Subject, BehaviorSubject, Observable } from 'rxjs';
-import { Page, Block, Media, TypeOfContent } from '@angular-cms/core';
+import { Block, Media, Page, TypeOfContent } from '@typijs/core';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { ContentAreaItem } from '../../properties/content-area/content-area.model';
 
 @Injectable({

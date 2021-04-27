@@ -1,4 +1,4 @@
-import { CmsComponent } from '@angular-cms/core';
+import { CmsComponent } from '@typijs/core';
 import { Component } from '@angular/core';
 import { ServiceBlock } from './service.blocktype';
 

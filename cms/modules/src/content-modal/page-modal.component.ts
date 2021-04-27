@@ -1,5 +1,5 @@
-import { ContentReference, LanguageService, Page, PageService, ContentTypeEnum } from '@angular-cms/core';
 import { Component, Injectable, Input, OnInit, ViewChild } from '@angular/core';
+import { ContentReference, ContentTypeEnum, LanguageService, Page, PageService } from '@typijs/core';
 import { Observable, ReplaySubject } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { TreeComponent } from '../shared/tree/components/tree.component';

@@ -1,6 +1,6 @@
-import { ClassOf, ContentTypeProperty, ContentTypeService } from '@angular-cms/core';
 import { Component, forwardRef, Input } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ClassOf, ContentTypeProperty, ContentTypeService } from '@typijs/core';
 import { BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 import { DndService } from '../../shared/drag-drop/dnd.service';
 import { CmsListControl } from '../cms-list.control';

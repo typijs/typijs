@@ -1,6 +1,6 @@
-import { CmsPropertyFactoryResolver, ContentTypeProperty } from '@angular-cms/core';
 import { ComponentRef, Injectable } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { CmsPropertyFactoryResolver, ContentTypeProperty } from '@typijs/core';
 
 @Injectable()
 export class DynamicFormService {

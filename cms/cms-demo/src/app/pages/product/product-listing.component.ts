@@ -1,4 +1,4 @@
-import { CmsComponent, ContentLoader } from '@angular-cms/core';
+import { CmsComponent, ContentLoader } from '@typijs/core';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';

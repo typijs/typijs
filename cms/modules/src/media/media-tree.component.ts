@@ -1,5 +1,5 @@
-import { Media, MediaService, ContentTypeEnum, VersionStatus } from '@angular-cms/core';
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { ContentTypeEnum, Media, MediaService, VersionStatus } from '@typijs/core';
 import { BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 import { BehaviorSubject, merge, Observable, Subject } from 'rxjs';
 import { distinctUntilKeyChanged, map, switchMap, takeUntil, takeWhile, tap } from 'rxjs/operators';

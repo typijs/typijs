@@ -1,4 +1,4 @@
-import { Property, PageType, UIHint, PageData, CmsImage, ContentReference } from '@angular-cms/core';
+import { Property, PageType, UIHint, PageData, CmsImage, ContentReference } from '@typijs/core';
 import { GroupName } from '../../shared/group-name';
 import { HomeComponent } from './home.component';
 

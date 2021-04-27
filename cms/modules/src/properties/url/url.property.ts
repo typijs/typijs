@@ -1,5 +1,5 @@
 import { Component, Injectable, Injector, Input } from '@angular/core';
-import { CmsProperty, CmsPropertyFactory, UIHint } from '@angular-cms/core';
+import { CmsProperty, CmsPropertyFactory, UIHint } from '@typijs/core';
 
 @Component({
     selector: '[urlProperty]',
@@ -12,7 +12,7 @@ import { CmsProperty, CmsPropertyFactory, UIHint } from '@angular-cms/core';
     </div>
   `
 })
-export class UrlProperty extends CmsProperty {}
+export class UrlProperty extends CmsProperty { }
 
 @Injectable()
 export class UrlPropertyFactory extends CmsPropertyFactory {

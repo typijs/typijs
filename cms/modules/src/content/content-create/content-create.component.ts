@@ -1,7 +1,7 @@
-import { ContentType, TypeOfContent, LanguageService, sortByNumber, comparison } from '@angular-cms/core';
-import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router, UrlSegment } from '@angular/router';
+import { comparison, ContentType, LanguageService, sortByNumber, TypeOfContent } from '@typijs/core';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { SubscriptionDestroy } from '../../shared/subscription-destroy';
 import { ContentCrudService, ContentCrudServiceResolver } from '../content-crud.service';

@@ -1,6 +1,6 @@
-import { ClassOf, ContentType, ContentTypeProperty, ContentTypeService, TypeOfContent, ContentTypeEnum } from '@angular-cms/core';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, UrlSegment } from '@angular/router';
+import { ClassOf, ContentType, ContentTypeEnum, ContentTypeProperty, ContentTypeService, TypeOfContent } from '@typijs/core';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { ContentPropertyModel } from './content-property.model';

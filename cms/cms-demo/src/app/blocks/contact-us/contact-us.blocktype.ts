@@ -1,4 +1,4 @@
-import { BlockType, Property, UIHint } from '@angular-cms/core';
+import { BlockType, Property, UIHint } from '@typijs/core';
 import { ContactUsComponent } from './contact-us.component';
 import { LinkListBlock } from '../link-list/link-list.blocktype';
 

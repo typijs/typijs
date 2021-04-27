@@ -1,4 +1,4 @@
-import { ContentData, ContentLoader, ContentReference, PageData } from '@angular-cms/core';
+import { ContentData, ContentLoader, ContentReference, PageData } from '@typijs/core';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';

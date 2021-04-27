@@ -2,7 +2,7 @@
  * Public API Surface of core
  */
 export * from './core.module';
-export * from './angular-cms.module';
+export * from './typijs.module';
 export * from './cms';
 export * from './injection-tokens';
 

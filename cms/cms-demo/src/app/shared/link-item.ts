@@ -1,4 +1,4 @@
-import { Property, ValidationTypes, UIHint } from '@angular-cms/core';
+import { Property, ValidationTypes, UIHint } from '@typijs/core';
 
 export class LinkItem {
     @Property({

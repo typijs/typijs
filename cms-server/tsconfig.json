@@ -16,10 +16,10 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@angular-cms/api": [
+      "@typijs/api": [
         "../cms-api/dist"
       ],
-      "@angular-cms/api/*": [
+      "@typijs/api/*": [
         "../cms-api/dist/*"
       ],
       "*": [

@@ -1,4 +1,4 @@
-import { PageType, Property, UIHint } from '@angular-cms/core';
+import { PageType, Property, UIHint } from '@typijs/core';
 import { StandardPage } from '../standard/standard.pagetype';
 import { WishlistComponent } from './wishlist.component';
 

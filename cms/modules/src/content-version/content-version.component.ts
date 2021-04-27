@@ -1,8 +1,8 @@
-import { ADMIN_ROUTE, ClassOf, Content, TypeOfContent } from '@angular-cms/core';
 import { Component, Inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ADMIN_ROUTE, ClassOf, Content, TypeOfContent } from '@typijs/core';
 import { merge, Observable, of } from 'rxjs';
-import { distinctUntilChanged, catchError, switchMap } from 'rxjs/operators';
+import { catchError, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { SubjectService } from '../shared/services/subject.service';
 import { SubscriptionDestroy } from '../shared/subscription-destroy';
 import { ContentVersionModel } from './content-version.model';

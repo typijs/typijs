@@ -1,6 +1,5 @@
 import { Injectable, Injector } from '@angular/core';
-
-import { CmsPropertyFactory, UIHint } from '@angular-cms/core';
+import { CmsPropertyFactory, UIHint } from '@typijs/core';
 import { CheckboxProperty } from './checkbox.property';
 
 @Injectable()

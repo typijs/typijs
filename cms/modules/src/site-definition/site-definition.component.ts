@@ -1,6 +1,6 @@
-import { ClassOf } from '@angular-cms/core';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ClassOf } from '@typijs/core';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { SiteDefinition } from './site-definition.model';

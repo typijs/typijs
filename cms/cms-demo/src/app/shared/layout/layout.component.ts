@@ -1,4 +1,4 @@
-import { ContentLoader, PageData, SiteDefinition } from '@angular-cms/core';
+import { ContentLoader, PageData, SiteDefinition } from '@typijs/core';
 import { DOCUMENT } from '@angular/common';
 import { Component, ViewEncapsulation, OnInit, AfterViewInit, Renderer2, Inject } from '@angular/core';
 import { Observable } from 'rxjs';

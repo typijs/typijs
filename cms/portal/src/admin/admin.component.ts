@@ -1,4 +1,4 @@
-import { ADMIN_WIDGETS, CmsComponentConfig } from '@angular-cms/core';
+import { ADMIN_WIDGETS, CmsComponentConfig } from '@typijs/core';
 import { ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { WidgetService } from '../services/widget.service';
 import { BaseLayoutComponent } from '../shared/base-layout.component';

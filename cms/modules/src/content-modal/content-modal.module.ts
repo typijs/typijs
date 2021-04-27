@@ -1,7 +1,7 @@
-import { CoreModule } from '@angular-cms/core';
 import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { CoreModule } from '@typijs/core';
 import { CmsModalModule } from '../shared/modal/modal.module';
 import { TreeModule } from '../shared/tree/tree.module';
 import { ContentModalService } from './content-modal.service';

@@ -1,19 +1,21 @@
-import { CmsWidgetPosition, CoreModule, EDITOR_ROUTES, EDITOR_WIDGETS } from '@angular-cms/core';
 import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { ContentUpdateComponent } from '../content/content-update/content-update.component';
-import { CONTENT_CRUD_SERVICES } from '../content/content-crud.service';
+
+import { CmsWidgetPosition, CoreModule, EDITOR_ROUTES, EDITOR_WIDGETS } from '@typijs/core';
+
+import { CONTENT_VERSION_SERVICES } from '../content-version/content-version.service';
 import { ContentCreateComponent } from '../content/content-create/content-create.component';
+import { CONTENT_CRUD_SERVICES } from '../content/content-crud.service';
+import { ContentUpdateComponent } from '../content/content-update/content-update.component';
 import { DndModule } from '../shared/drag-drop/dnd.module';
 import { TreeModule } from '../shared/tree/tree.module';
+import { DefaultPageComponent } from './default-page.component';
 import { PageCrudService } from './page-crud.service';
 import { PageTreeComponent } from './page-tree.component';
-import { CONTENT_VERSION_SERVICES } from '../content-version/content-version.service';
 import { PageVersionService } from './page-version.service';
-import { DefaultPageComponent } from './default-page.component';
 
 const pageRoutes: Routes = [
     { path: '', component: DefaultPageComponent },

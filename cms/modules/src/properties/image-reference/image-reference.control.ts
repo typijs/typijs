@@ -1,9 +1,10 @@
-import { CmsImage, ContentReference, ContentTypeEnum } from '@angular-cms/core';
 import { Component, forwardRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
+
+import { CmsImage, ContentReference, ContentTypeEnum } from '@typijs/core';
+import { ContentModalService } from '../../content-modal/content-modal.service';
 import { DropEvent } from '../../shared/drag-drop/drop-event.model';
 import { CmsControl } from '../cms-control';
-import { ContentModalService } from '../../content-modal/content-modal.service';
 
 const IMAGE_REFERENCE_VALUE_ACCESSOR = {
     provide: NG_VALUE_ACCESSOR,

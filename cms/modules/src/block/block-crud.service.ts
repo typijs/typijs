@@ -1,6 +1,6 @@
-import { Block, BlockService, ContentTypeEnum, ContentTypeService, ContentType, Content, ADMIN_ROUTE } from '@angular-cms/core';
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { ADMIN_ROUTE, Block, BlockService, Content, ContentType, ContentTypeEnum, ContentTypeService } from '@typijs/core';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { ContentCrudService, ContentInfo } from '../content/content-crud.service';
