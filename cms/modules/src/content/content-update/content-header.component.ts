@@ -1,4 +1,4 @@
-import { TypeOfContent } from '@angular-cms/core';
+import { TypeOfContent } from '@typijs/core';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ContentExt } from '../content-crud.service';

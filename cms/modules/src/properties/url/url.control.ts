@@ -1,4 +1,4 @@
-import { CmsUrl } from '@angular-cms/core';
+import { CmsUrl } from '@typijs/core';
 import { Component, forwardRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BsModalService, ModalOptions } from 'ngx-bootstrap/modal';

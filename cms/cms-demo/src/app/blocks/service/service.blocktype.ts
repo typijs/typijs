@@ -1,4 +1,4 @@
-import { BlockData, BlockType, CmsImage, ISelectionFactory, Property, SelectItem, UIHint } from '@angular-cms/core';
+import { BlockData, BlockType, CmsImage, ISelectionFactory, Property, SelectItem, UIHint } from '@typijs/core';
 import { Observable, of } from 'rxjs';
 import { ServiceComponent } from './service.component';
 

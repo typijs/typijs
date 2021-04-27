@@ -1,4 +1,4 @@
-import { BaseService } from '@angular-cms/core';
+import { BaseService } from '@typijs/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 

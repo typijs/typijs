@@ -1,4 +1,4 @@
-import { BaseService, ContentReference, ContentTypeEnum, ISelectionFactory, Property, SelectItem, UIHint } from '@angular-cms/core';
+import { BaseService, ContentReference, ContentTypeEnum, ISelectionFactory, Property, SelectItem, UIHint } from '@typijs/core';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';

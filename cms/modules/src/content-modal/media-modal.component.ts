@@ -1,4 +1,4 @@
-import { CmsImage, ContentReference, LanguageService, Media, MediaService, ContentTypeEnum, VersionStatus } from '@angular-cms/core';
+import { CmsImage, ContentReference, LanguageService, Media, MediaService, ContentTypeEnum, VersionStatus } from '@typijs/core';
 import { Component, EventEmitter, Injectable, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Observable, ReplaySubject } from 'rxjs';
 import { map, switchMap, take } from 'rxjs/operators';

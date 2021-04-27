@@ -41,14 +41,14 @@ export const defaultCmsConfigOption: CmsConfigOption = {
  * Re-export Core Module to used on client
  */
 @NgModule({ exports: [CoreModule] })
-export class AngularCms {
+export class TypiJsModule {
     constructor(private injector: Injector) {
         setAppInjector(this.injector);
     }
 
-    static forRoot(configOption: CmsConfigOption = defaultCmsConfigOption): ModuleWithProviders<AngularCms> {
+    static forRoot(configOption: CmsConfigOption = defaultCmsConfigOption): ModuleWithProviders<TypiJsModule> {
         return {
-            ngModule: AngularCms,
+            ngModule: TypiJsModule,
             providers: [
                 { provide: APP_INITIALIZER, useFactory: cmsInitializer, deps: [ConfigService, CONFIG_DEPS], multi: true },
                 { provide: CONFIG_DEPS, useFactory: configDepsFactory, deps: [AuthService, ConfigService] },

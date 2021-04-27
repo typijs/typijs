@@ -1,4 +1,4 @@
-import { BlockData, BlockType, Property, ValidationTypes, UIHint, CmsUrl } from '@angular-cms/core';
+import { BlockData, BlockType, Property, ValidationTypes, UIHint, CmsUrl } from '@typijs/core';
 import { LinkListComponent } from './link-list.component';
 
 @BlockType({

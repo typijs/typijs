@@ -1,4 +1,4 @@
-import { CmsImage, ContentReference, ContentTypeEnum } from '@angular-cms/core';
+import { CmsImage, ContentReference, ContentTypeEnum } from '@typijs/core';
 import { Component, forwardRef } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { DropEvent } from '../../shared/drag-drop/drop-event.model';

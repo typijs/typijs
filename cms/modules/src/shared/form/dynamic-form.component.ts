@@ -1,4 +1,4 @@
-import { ClassOf, CmsObject, ContentTypeService, InsertPointDirective } from '@angular-cms/core';
+import { ClassOf, CmsObject, ContentTypeService, InsertPointDirective } from '@typijs/core';
 import { ChangeDetectionStrategy, Component, ComponentRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormGroup, NgForm } from '@angular/forms';
 import { DynamicFormService } from './dynamic-form.service';

@@ -1,4 +1,4 @@
-import { Block, BlockService, ContentTypeEnum } from '@angular-cms/core';
+import { Block, BlockService, ContentTypeEnum } from '@typijs/core';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, merge, Observable, Subject } from 'rxjs';

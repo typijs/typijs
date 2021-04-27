@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { BlockService, LanguageService, Block, ContentTypeEnum } from '@angular-cms/core';
+import { BlockService, LanguageService, Block, ContentTypeEnum } from '@typijs/core';
 import { TreeService } from '../shared/tree/interfaces/tree-service';
 import { TreeNode } from '../shared/tree/interfaces/tree-node';
 import '../types/tree-node-extension';

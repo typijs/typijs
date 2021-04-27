@@ -1,6 +1,6 @@
 import { Component, forwardRef, Inject, Input, Provider } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { ADMIN_ROUTE, generateUUID } from '@angular-cms/core';
+import { ADMIN_ROUTE, generateUUID } from '@typijs/core';
 import { takeUntil } from 'rxjs/operators';
 
 import { DropEvent } from '../../shared/drag-drop/drop-event.model';

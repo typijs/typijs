@@ -1,4 +1,4 @@
-import { generateUUID } from '@angular-cms/core';
+import { generateUUID } from '@typijs/core';
 import { CmsControl } from './cms-control';
 
 export type ListItem = {

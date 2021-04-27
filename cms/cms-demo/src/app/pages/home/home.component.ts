@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CmsComponent } from '@angular-cms/core';
+import { CmsComponent } from '@typijs/core';
 import { HomePage } from './home.pagetype';
 import { ScriptJsService } from '../../shared/scriptjs.service';
 @Component({

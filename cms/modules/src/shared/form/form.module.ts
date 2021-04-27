@@ -1,4 +1,4 @@
-import { CoreModule } from '@angular-cms/core';
+import { CoreModule } from '@typijs/core';
 import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';

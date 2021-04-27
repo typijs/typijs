@@ -1,4 +1,4 @@
-import { LanguageService, PageService } from '@angular-cms/core';
+import { LanguageService, PageService } from '@typijs/core';
 import { Injectable } from '@angular/core';
 import { PageTreeReadonlyService } from '../content-modal/page-modal.component';
 import '../types/tree-node-extension';

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { CmsPageRender } from '@angular-cms/core';
+import { CmsPageRender } from '@typijs/core';
 import { LayoutComponent } from './shared/layout/layout.component';
 
 const routes: Routes = [
@@ -23,8 +23,8 @@ const routes: Routes = [
 
 // temporary comment since this way don't working with Angular Universal
 // fix for error: Angular CLI ERROR in Cannot read property 'loadChildren' of null
-// AngularCms.registerCmsRoutes(LayoutComponent).forEach(x => routes.push(x))
-// routes.push(...AngularCms.registerCmsRoutes(LayoutComponent));
+// TypiJsModule.registerCmsRoutes(LayoutComponent).forEach(x => routes.push(x))
+// routes.push(...TypiJsModule.registerCmsRoutes(LayoutComponent));
 
 @NgModule({
     imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],

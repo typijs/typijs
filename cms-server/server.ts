@@ -1,4 +1,4 @@
-import { CmsApp, config, CmsStorageEngine, ImgurStorageEngine } from '@angular-cms/api';
+import { CmsApp, config, CmsStorageEngine, ImgurStorageEngine } from '@typijs/api';
 
 const cmsApp = new CmsApp({
     provides: [

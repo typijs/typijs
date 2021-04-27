@@ -1,4 +1,4 @@
-import { CmsProperty, CmsPropertyFactory, UIHint } from '@angular-cms/core';
+import { CmsProperty, CmsPropertyFactory, UIHint } from '@typijs/core';
 import { Component, Injectable, Injector } from '@angular/core';
 @Component({
     selector: '[urlListProperty]',

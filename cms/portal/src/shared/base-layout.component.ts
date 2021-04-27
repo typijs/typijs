@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, OnInit, QueryList, ViewChild, ComponentRef, AfterViewInit, OnDestroy, Directive } from '@angular/core';
 
-import { CmsComponentConfig, CmsTab, CmsWidgetPosition, InsertPointDirective, sortByNumber } from '@angular-cms/core';
+import { CmsComponentConfig, CmsTab, CmsWidgetPosition, InsertPointDirective, sortByNumber } from '@typijs/core';
 
 import { WidgetService } from '../services/widget.service';
 import { CmsLayoutComponent } from './components/cms-layout/cms-layout.component';

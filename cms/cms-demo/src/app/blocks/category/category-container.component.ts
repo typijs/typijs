@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { CmsComponent } from '@angular-cms/core';
+import { CmsComponent } from '@typijs/core';
 import { CategoryContainerBlock } from './category-container.blocktype';
 
 @Component({
-    selector: 'section[category-container]',
-    host: { 'class': 'ftco-section ftco-category ftco-no-pt' },
-    template: `
+	selector: 'section[category-container]',
+	host: { 'class': 'ftco-section ftco-category ftco-no-pt' },
+	template: `
     <div class="container">
 			<div class="row">
 				<div class="col-md-8">
@@ -31,7 +31,7 @@ import { CategoryContainerBlock } from './category-container.blocktype';
 		</div>`
 })
 export class CategoryContainerComponent extends CmsComponent<CategoryContainerBlock> {
-    constructor() {
-        super();
-    }
+	constructor() {
+		super();
+	}
 }

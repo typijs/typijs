@@ -1,4 +1,4 @@
-import { ClassOf } from '@angular-cms/core';
+import { ClassOf } from '@typijs/core';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';

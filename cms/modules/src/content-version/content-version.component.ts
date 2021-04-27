@@ -1,4 +1,4 @@
-import { ADMIN_ROUTE, ClassOf, Content, TypeOfContent } from '@angular-cms/core';
+import { ADMIN_ROUTE, ClassOf, Content, TypeOfContent } from '@typijs/core';
 import { Component, Inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { merge, Observable, of } from 'rxjs';

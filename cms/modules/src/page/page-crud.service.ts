@@ -1,4 +1,4 @@
-import { ContentTypeService, ngEditMode, ngId, Page, PageService, ContentTypeEnum, ContentType } from '@angular-cms/core';
+import { ContentTypeService, ngEditMode, ngId, Page, PageService, ContentTypeEnum, ContentType } from '@typijs/core';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';

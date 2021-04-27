@@ -1,4 +1,4 @@
-import { Block, BlockService, ContentTypeEnum, ContentTypeService, ContentType, Content, ADMIN_ROUTE } from '@angular-cms/core';
+import { Block, BlockService, ContentTypeEnum, ContentTypeService, ContentType, Content, ADMIN_ROUTE } from '@typijs/core';
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';

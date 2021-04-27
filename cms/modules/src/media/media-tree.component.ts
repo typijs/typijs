@@ -1,4 +1,4 @@
-import { Media, MediaService, ContentTypeEnum, VersionStatus } from '@angular-cms/core';
+import { Media, MediaService, ContentTypeEnum, VersionStatus } from '@typijs/core';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 import { BehaviorSubject, merge, Observable, Subject } from 'rxjs';

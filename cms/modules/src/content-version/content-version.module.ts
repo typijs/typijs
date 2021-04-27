@@ -1,4 +1,4 @@
-import { CmsWidgetPosition, CoreModule, EDITOR_WIDGETS } from '@angular-cms/core';
+import { CmsWidgetPosition, CoreModule, EDITOR_WIDGETS } from '@typijs/core';
 import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';

@@ -1,4 +1,4 @@
-import { CoreModule, DEFAULT_PROPERTY_FACTORIES } from '@angular-cms/core';
+import { CoreModule, DEFAULT_PROPERTY_FACTORIES } from '@typijs/core';
 import { CommonModule } from '@angular/common';
 import { ModuleWithProviders, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';

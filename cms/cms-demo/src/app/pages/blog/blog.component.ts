@@ -1,4 +1,4 @@
-import { CmsComponent, ContentLoader } from '@angular-cms/core';
+import { CmsComponent, ContentLoader } from '@typijs/core';
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ArticlePage } from '../article/article.pagetype';

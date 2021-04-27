@@ -1,4 +1,4 @@
-import { Content } from '@angular-cms/core';
+import { Content } from '@typijs/core';
 
 import { TreeNode } from '../shared/tree/interfaces/tree-node';
 import { TypeOfContent } from '.';

@@ -2,7 +2,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes, Route, ROUTES } from '@angular/router';
 
-import { EDITOR_ROUTES, ADMIN_ROUTES, Roles, AuthGuard, CanLoginGuard, RegisterGuard, CmsLoginComponent, CmsLogoutComponent, CmsRegisterComponent } from '@angular-cms/core';
+import { EDITOR_ROUTES, ADMIN_ROUTES, Roles, AuthGuard, CanLoginGuard, RegisterGuard, CmsLoginComponent, CmsLogoutComponent, CmsRegisterComponent } from '@typijs/core';
 
 import { PortalComponent } from './portal.component';
 import { EditorComponent } from './editor/editor.component';

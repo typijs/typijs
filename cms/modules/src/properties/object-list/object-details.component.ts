@@ -1,4 +1,4 @@
-import { ClassOf } from '@angular-cms/core';
+import { ClassOf } from '@typijs/core';
 import { Component, Input } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { Observable, ReplaySubject } from 'rxjs';

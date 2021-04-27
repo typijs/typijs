@@ -1,4 +1,4 @@
-import { ClassOf, ContentTypeProperty, ContentTypeService } from '@angular-cms/core';
+import { ClassOf, ContentTypeProperty, ContentTypeService } from '@typijs/core';
 import { Component, forwardRef, Input } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { BsModalService, ModalOptions } from 'ngx-bootstrap/modal';

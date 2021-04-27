@@ -1,4 +1,4 @@
-import { Content, TypeOfContent, ContentTypeProperty, Page, Block, Media, ContentType } from '@angular-cms/core';
+import { Content, TypeOfContent, ContentTypeProperty, Page, Block, Media, ContentType } from '@typijs/core';
 import { InjectionToken, Injectable, Inject } from '@angular/core';
 import { Observable } from 'rxjs';
 

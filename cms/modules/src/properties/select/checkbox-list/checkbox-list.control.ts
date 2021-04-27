@@ -1,4 +1,4 @@
-import { SelectItem } from '@angular-cms/core';
+import { SelectItem } from '@typijs/core';
 import { Component, forwardRef, Input } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CmsControl } from '../../cms-control';

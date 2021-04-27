@@ -1,4 +1,4 @@
-import { CmsProperty } from '@angular-cms/core';
+import { CmsProperty } from '@typijs/core';
 import { Component } from '@angular/core';
 
 @Component({

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CmsProperty } from '@angular-cms/core';
+import { CmsProperty } from '@typijs/core';
 
 // Try custom xHtml property, using the ng-wig instead of ngx-quill lib
 @Component({

@@ -1,4 +1,4 @@
-import { AngularCms } from '@angular-cms/core';
+import { TypiJsModule } from '@typijs/core';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -38,7 +38,7 @@ const PAGES_COMPONENT = [
         FormsModule,
         RouterModule,
         PaginationModule.forRoot(),
-        AngularCms
+        TypiJsModule
     ],
     declarations: [
         ...PAGES_COMPONENT

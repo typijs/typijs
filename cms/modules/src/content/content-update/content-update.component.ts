@@ -4,7 +4,7 @@ import {
     Content,
     ContentTypeProperty, InsertPointDirective,
     sortByString, TypeOfContent, ContentTypeEnum
-} from '@angular-cms/core';
+} from '@typijs/core';
 import { AfterViewInit, ChangeDetectorRef, Component, ComponentRef, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, UrlSegment } from '@angular/router';

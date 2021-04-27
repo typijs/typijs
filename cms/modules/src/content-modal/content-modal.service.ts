@@ -1,4 +1,4 @@
-import { ContentReference, CmsImage } from '@angular-cms/core';
+import { ContentReference, CmsImage } from '@typijs/core';
 import { Injectable } from '@angular/core';
 import { BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
 import { Observable } from 'rxjs';

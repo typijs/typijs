@@ -1,4 +1,4 @@
-import { generateUUID } from '@angular-cms/core';
+import { generateUUID } from '@typijs/core';
 import { Component, ContentChild, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
 import { DndService } from '../shared/drag-drop/dnd.service';
 import { DropEvent } from '../shared/drag-drop/drop-event.model';

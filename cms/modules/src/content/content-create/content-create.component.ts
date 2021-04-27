@@ -1,4 +1,4 @@
-import { ContentType, TypeOfContent, LanguageService, sortByNumber, comparison } from '@angular-cms/core';
+import { ContentType, TypeOfContent, LanguageService, sortByNumber, comparison } from '@typijs/core';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Params, Router, UrlSegment } from '@angular/router';

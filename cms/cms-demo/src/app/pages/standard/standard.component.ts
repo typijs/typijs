@@ -1,4 +1,4 @@
-import { CmsComponent, PageService } from '@angular-cms/core';
+import { CmsComponent, PageService } from '@typijs/core';
 import { Component } from '@angular/core';
 import { ScriptJsService } from '../../shared/scriptjs.service';
 import { StandardPage } from './standard.pagetype';

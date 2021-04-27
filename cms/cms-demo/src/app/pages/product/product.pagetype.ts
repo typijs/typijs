@@ -1,4 +1,4 @@
-import { CmsImage, PageType, Property, UIHint } from '@angular-cms/core';
+import { CmsImage, PageType, Property, UIHint } from '@typijs/core';
 import { StandardPage } from '../standard/standard.pagetype';
 import { ProductPartialComponent } from './product-partial.component';
 import { ProductComponent } from './product.component';

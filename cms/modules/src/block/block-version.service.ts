@@ -1,4 +1,4 @@
-import { BlockService, ContentTypeEnum, Content } from '@angular-cms/core';
+import { BlockService, ContentTypeEnum, Content } from '@typijs/core';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ContentVersionService } from '../content-version/content-version.service';

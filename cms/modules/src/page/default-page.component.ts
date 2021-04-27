@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SiteDefinition } from '@angular-cms/core';
+import { SiteDefinition } from '@typijs/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({

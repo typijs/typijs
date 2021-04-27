@@ -1,4 +1,4 @@
-import { CmsImage, PageData, Property, UIHint } from '@angular-cms/core';
+import { CmsImage, PageData, Property, UIHint } from '@typijs/core';
 
 export abstract class BasePage extends PageData {
     @Property({

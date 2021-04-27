@@ -1,4 +1,4 @@
-import { BlockData, BlockType, CmsImage, Property, UIHint } from '@angular-cms/core';
+import { BlockData, BlockType, CmsImage, Property, UIHint } from '@typijs/core';
 import { NewsletterComponent } from './newsletter.component';
 
 @BlockType({

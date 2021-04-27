@@ -1,4 +1,4 @@
-import { CmsProperty, MediaService, ContentTypeEnum } from '@angular-cms/core';
+import { CmsProperty, MediaService, ContentTypeEnum } from '@typijs/core';
 import { Component, ViewChild } from '@angular/core';
 import { QuillEditorComponent } from 'ngx-quill';
 import Quill from 'quill';

@@ -2,7 +2,7 @@ import { Component, ViewChild, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntil, distinctUntilKeyChanged, takeWhile } from 'rxjs/operators';
 
-import { Page, PageService } from '@angular-cms/core';
+import { Page, PageService } from '@typijs/core';
 import { TreeNode } from '../shared/tree/interfaces/tree-node';
 import { TreeComponent } from '../shared/tree/components/tree.component';
 import { TreeConfig } from '../shared/tree/interfaces/tree-config';

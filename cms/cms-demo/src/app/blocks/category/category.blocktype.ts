@@ -1,4 +1,4 @@
-import { BlockData, BlockType, CmsImage, Property, UIHint, CmsUrl } from '@angular-cms/core';
+import { BlockData, BlockType, CmsImage, Property, UIHint, CmsUrl } from '@typijs/core';
 import { CategoryComponent } from './category.component';
 
 @BlockType({

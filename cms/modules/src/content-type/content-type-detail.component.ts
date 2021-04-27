@@ -1,4 +1,4 @@
-import { ClassOf, ContentType, ContentTypeProperty, ContentTypeService, TypeOfContent, ContentTypeEnum } from '@angular-cms/core';
+import { ClassOf, ContentType, ContentTypeProperty, ContentTypeService, TypeOfContent, ContentTypeEnum } from '@typijs/core';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, UrlSegment } from '@angular/router';
 import { Observable, of } from 'rxjs';

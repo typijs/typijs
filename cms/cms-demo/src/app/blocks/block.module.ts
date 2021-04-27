@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
-import { AngularCms } from '@angular-cms/core';
+import { TypiJsModule } from '@typijs/core';
 import { ContactUsComponent } from './contact-us/contact-us.component';
 import { LinkListComponent } from './link-list/link-list.component';
 import { BestPriceComponent } from './best-price/best-price.component';
@@ -43,7 +43,7 @@ const BLOCKS_COMPONENT = [
     imports: [
         CommonModule,
         FormsModule,
-        AngularCms
+        TypiJsModule
     ],
     declarations: [
         ...BLOCKS_COMPONENT

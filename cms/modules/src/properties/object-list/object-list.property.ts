@@ -1,4 +1,4 @@
-import { ClassOf, CmsProperty } from '@angular-cms/core';
+import { ClassOf, CmsProperty } from '@typijs/core';
 import { Component, Input } from '@angular/core';
 @Component({
     selector: '[objectListProperty]',

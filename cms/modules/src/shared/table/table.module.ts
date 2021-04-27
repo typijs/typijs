@@ -1,4 +1,4 @@
-import { CoreModule } from '@angular-cms/core';
+import { CoreModule } from '@typijs/core';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FaIconLibrary, FontAwesomeModule } from '@fortawesome/angular-fontawesome';

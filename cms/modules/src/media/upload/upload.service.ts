@@ -1,4 +1,4 @@
-import { MediaService } from '@angular-cms/core';
+import { MediaService } from '@typijs/core';
 import { HttpEventType } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, forkJoin, Observable, of, Subject } from 'rxjs';

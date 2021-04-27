@@ -1,4 +1,4 @@
-import { ADMIN_ROUTE } from '@angular-cms/core';
+import { ADMIN_ROUTE } from '@typijs/core';
 import { Component, Inject } from '@angular/core';
 
 @Component({
