@@ -1,0 +1,57 @@
+title: "TypiJS"
+logo: "/assets/images/logo-small.png"
+description: A TypiJS documentation
+baseurl: "/typijs" # the subpath of your site, e.g. /blog
+url: "https://typijs.com" # the base hostname & protocol for your site, e.g. http://example.com
+
+remote_theme: pmarsceill/just-the-docs
+
+# Enable or disable the site search
+# Supports true (default) or false
+search_enabled: true
+search.heading_level: 4
+
+color_scheme: "dark"
+
+# Aux links for the upper right navigation
+aux_links:
+  "GitHub":
+    - "//github.com/typijs/typijs"
+
+# Makes Aux links open in a new tab. Default is false
+aux_links_new_tab: false
+
+# Footer "Edit this page on GitHub" link text
+gh_edit_link: true # show or hide edit this page link
+gh_edit_link_text: "Edit this page on GitHub"
+gh_edit_repository: "https://github.com/typijs/typijs" # the github URL for your repo
+gh_edit_branch: "main" # the branch that your docs is served from
+gh_edit_source: docs # the source that your files originate from
+gh_edit_view_mode: "tree" # "tree" or "edit" if you want the user to jump into the editor immediately
+
+# Back to top link
+back_to_top: true
+back_to_top_text: "Back to top"
+
+# Google Analytics Tracking (optional)
+# e.g, UA-1234567-89
+ga_tracking: G-29JTYJQVME
+ga_tracking_anonymize_ip: true # Use GDPR compliant Google Analytics settings (true/nil by default)
+
+plugins:
+  - jekyll-seo-tag
+
+kramdown:
+  syntax_highlighter_opts:
+    block:
+      line_numbers: false
+
+compress_html:
+  clippings: all
+  comments: all
+  endings: all
+  startings: []
+  blanklines: false
+  profile: false
+  # ignore:
+  #   envs: all
