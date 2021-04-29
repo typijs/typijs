@@ -15,11 +15,11 @@ export const config = {
         origin: process.env.ORIGIN || 'http://localhost:4200,http://localhost:4202'
     },
     mongdb: {
-        protocol: process.env.MONGO_DB_PROTOCOL || 'mongodb+srv', //'mongodb',
-        host: process.env.MONGO_DB_HOST || 'cluster0.6s8ha.azure.mongodb.net',//'localhost:27017',
-        name: process.env.MONGO_DB_NAME || 'vegefoods_v2', //angularcms
-        user: process.env.MONGO_DB_USER || 'dbAdmin',
-        password: process.env.MONGO_DB_PASSWORD || '02091945m'
+        protocol: process.env.MONGO_DB_PROTOCOL || 'mongodb', //'mongodb',
+        host: process.env.MONGO_DB_HOST || 'localhost:27017',//'localhost:27017',
+        name: process.env.MONGO_DB_NAME || 'vegefoods', //angularcms
+        user: process.env.MONGO_DB_USER || 'user',
+        password: process.env.MONGO_DB_PASSWORD || 'password'
     },
     jwt: {
         secret: process.env.JWT_SECRET || '1878B83DE0384DE08D3F69FE1C308D55',
