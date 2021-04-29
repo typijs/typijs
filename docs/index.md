@@ -12,7 +12,7 @@ permalink: /
 TypiJS is the CMS framework for building fully-featured SPA sites built on top modern stacks Angular, NodeJS and MongoDB with TypeScript
 {: .fs-6 .fw-300 }
 
-[Get started now](/installation){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 } [View it on GitHub](https://github.com/typijs/typijs){: .btn .fs-5 .mb-4 .mb-md-0 }
+[Get started now]({{ site.baseurl }}{% link installation.md %}){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 } [View it on GitHub](https://github.com/typijs/typijs){: .btn .fs-5 .mb-4 .mb-md-0 }
 
 ## ⭐️ Show Your Support
 Please give a ⭐️ if this project helped you!

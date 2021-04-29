@@ -1,5 +1,5 @@
 title: "TypiJS"
-logo: "/assets/images/logo-small.png"
+logo: "/assets/images/logo-with-text.png"
 description: A TypiJS documentation
 baseurl: "/typijs" # the subpath of your site, e.g. /blog
 url: "https://typijs.com" # the base hostname & protocol for your site, e.g. http://example.com
@@ -10,8 +10,6 @@ remote_theme: pmarsceill/just-the-docs
 # Supports true (default) or false
 search_enabled: true
 search.heading_level: 4
-
-color_scheme: "dark"
 
 # Aux links for the upper right navigation
 aux_links:
