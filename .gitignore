@@ -47,3 +47,5 @@ cms-examples/logs/
 cms-server/logs/
 cms-server/uploads/
 cms/cms-demo/prerender.html
+docs/.jekyll-cache/
+docs/_site/

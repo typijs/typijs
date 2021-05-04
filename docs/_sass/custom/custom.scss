@@ -51,6 +51,14 @@ a:not([class]):hover {
 
 }
 
+.search-input {
+    &:focus {
+        +.search-label .search-icon {
+            color: $yellow-400;
+        }
+    }
+}
+
 .nav-list {
     .nav-list-item {
 
