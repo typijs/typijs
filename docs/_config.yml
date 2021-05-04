@@ -3,7 +3,7 @@ logo: "/assets/images/logo-small.webp"
 logo_url: "https://typijs.com"
 description: A TypiJS documentation
 baseurl: "/typijs" # the subpath of your site, e.g. /blog
-url: "http://localhost:4200" # the base hostname & protocol for your site, e.g. http://example.com
+url: "https://typijs.com" # the base hostname & protocol for your site, e.g. http://example.com
 
 remote_theme: pmarsceill/just-the-docs
 
