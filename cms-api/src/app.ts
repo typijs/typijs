@@ -12,7 +12,7 @@ import { Container } from './injector';
 import { logger, LoggerProviders, loggingMiddleware } from './logging';
 import { AuthProviders } from "./modules/auth";
 import { BlockProviders } from './modules/block';
-import { LanguageGuard, LanguageProviders } from "./modules/language";
+import { LanguageProviders } from "./modules/language";
 import { MediaProviders, StorageProviders } from './modules/media';
 import { PageProviders } from './modules/page';
 import { SiteDefinitionProviders } from "./modules/site-definition";
