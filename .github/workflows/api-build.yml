@@ -1,4 +1,4 @@
-name: [cms-api] Check build on Pull requests
+name: Check CMS API build on Pull requests
 
 on: 
   pull_request:
@@ -12,7 +12,7 @@ jobs:
     defaults:
       run:
         working-directory: ./cms-api
-    
+        
     strategy:
       matrix:
         node-version: [10.x, 12.x, 14.x]

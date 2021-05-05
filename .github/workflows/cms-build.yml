@@ -1,4 +1,4 @@
-name: [cms] Check build on Pull requests
+name: Check CMS build on Pull requests
 
 on: 
   pull_request:
@@ -37,7 +37,7 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Build packages
         run: |
           npm run build:libs
