@@ -1,30 +1,29 @@
-name: [cms] Check build on Pull requests
+name: [cms-api] Check build on Pull requests
 
 on: 
   pull_request:
     paths:
-      - 'cms/core/**'
-      - 'cms/modules/**'
-      - 'cms/portal/**'
-      - 'cms/cms-demo/**'
-      - 'angular.json'
-      - 'package.json'
-      - 'tsconfig*'
+      - 'cms-api/**'
+      - '!cms-api/package-lock.json'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./cms
-
+        working-directory: ./cms-api
+    
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x, 14.x]
+    
     steps:
       - uses: actions/checkout@v2
 
       - name: Use Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: '12.x'
+          node-version: ${{ matrix.node-version }}
 
       - name: Cache Node.js modules
         uses: actions/cache@v2
@@ -40,5 +39,4 @@ jobs:
         
       - name: Build packages
         run: |
-          npm run build:libs
-          npm run build -- --prod
+          npm run build
