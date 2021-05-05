@@ -5,7 +5,7 @@
     "ng": "ng",
     "dev": "ng serve",
     "build": "ng build",
-    "build:libs": "ng build core && ng build modules && ng build portal",
+    "build:libs": "ng build core --prod && ng build modules --prod && ng build portal --prod",
     "build:ssr": "ng build && ng run cms-demo:server",
     "build:ssr:prod": "ng build --prod && ng run cms-demo:server",
     "start:ssr": "ts-node -P ./cms-demo/server.tsconfig.json ./cms-demo/server.ts",
