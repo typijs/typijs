@@ -40,9 +40,9 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          npm publish dist/core
-          npm publish dist/modules
-          npm publish dist/portal
+          npm publish dist/core --access public
+          npm publish dist/modules --access public
+          npm publish dist/portal --access public
 
   api-release:
     runs-on: ubuntu-latest
@@ -78,4 +78,4 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          npm publish dist
+          npm publish dist --access public
