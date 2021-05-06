@@ -19,6 +19,10 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           changelog: CHANGELOG.md
+      
+      - name: Print notes
+        run: |
+          echo "${{ join(fromJson(steps.generate_notes.outputs.notes).notes, '') }}"
         
       - name: Create release
         uses: actions/create-release@v1
@@ -30,3 +34,4 @@ jobs:
           draft: false
           prerelease: false
           body: ${{join(fromJson(steps.generate_notes.outputs.notes).notes, '')}}
+          
