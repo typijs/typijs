@@ -13,10 +13,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Extract release notes
-        id: extract-release-notes
-        uses: ffurrer2/extract-release-notes@v1
-
+      - name: Generate notes
+        id: generate_notes
+        uses: anmarkoulis/commitizen-changelog-reader@master
+        with:
+          tag_name: ${{ github.ref }}
+          changelog: CHANGELOG.md
+        
       - name: Create release
         uses: actions/create-release@v1
         env:
@@ -26,4 +29,4 @@ jobs:
           release_name: ${{ github.ref }}
           draft: false
           prerelease: false
-          body: ${{ steps.extract-release-notes.outputs.release_notes }}
+          body: ${{join(fromJson(steps.generate_notes.outputs.notes).notes, '')}}
