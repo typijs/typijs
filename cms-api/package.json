@@ -6,9 +6,10 @@
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && npm run copy",
     "watch": "tsc -w",
-    "serve": "node dist/app.js"
+    "serve": "node dist/app.js",
+    "copy": "cpx package.json dist && cpx README.md dist"
   },
   "author": "danghung1202@gmail.com",
   "dependencies": {
@@ -50,6 +51,7 @@
     "@types/multer": "^1.3.7",
     "@types/node": "^12.7.8",
     "@types/sharp": "^0.17.8",
+    "cpx": "^1.5.0",
     "nodemon": "^1.19.2",
     "ts-node": "^9.1.1",
     "typescript": "^4.1.5"
