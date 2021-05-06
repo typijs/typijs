@@ -7,6 +7,7 @@ on:
 
 jobs:
   cms-release:
+    name: Publish cms packages to NPM
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -46,6 +47,7 @@ jobs:
           npm publish dist/portal --access public
 
   api-release:
+    name: Publish cms-api package to NPM
     runs-on: ubuntu-latest
     defaults:
       run:

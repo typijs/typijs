@@ -6,8 +6,8 @@ on:
       - "v*"
 
 jobs:
-  build:
-    name: Create release
+  git-release:
+    name: Create Git Release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -34,4 +34,3 @@ jobs:
           draft: false
           prerelease: false
           body: ${{join(fromJson(steps.generate_notes.outputs.notes).notes, '')}}
-          
