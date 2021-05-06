@@ -1,0 +1,97 @@
+$yellow-400: #fedc49 !default;
+$grey-dk-400: #273742 !default;
+
+a {
+    color: $blue-100;
+}
+
+a:not([class]):hover {
+    background-image: linear-gradient($grey-dk-400 0%, $grey-dk-400 100%);
+}
+
+.side-bar {
+    background-color: $grey-dk-400;
+    background-attachment: fixed;
+    background-image: url(/typijs/assets/images/hero_bg.svg);
+    background-position: bottom center;
+    background-size: cover;
+
+    a {
+        color: $yellow-400;
+    }
+}
+
+.site-title:hover {
+    background-image: none;
+}
+
+.site-button {
+    font-size: larger;
+
+    .icon {
+        color: $yellow-400;
+    }
+
+    &:hover {
+        background-image: none;
+        background-color: $yellow-400;
+        color: $grey-dk-400 !important;
+
+        .icon {
+            color: $grey-dk-400;
+        }
+    }
+}
+
+.site-button:hover {
+    background-image: none;
+    background-color: $yellow-400;
+    color: $grey-dk-400 !important;
+
+
+}
+
+.search-input {
+    &:focus {
+        +.search-label .search-icon {
+            color: $yellow-400;
+        }
+    }
+}
+
+.nav-list {
+    .nav-list-item {
+
+        .nav-list-link {
+            color: $yellow-400;
+
+            &:hover,
+            &.active {
+                background-image: none;
+                background-color: $yellow-400;
+                color: $grey-dk-400 !important;
+                font-weight: bold;
+            }
+        }
+
+        .nav-list-expander {
+            color: $white !important;
+            font-weight: bold;
+
+            &:hover {
+                background-image: none;
+                background-color: $yellow-400;
+                color: $grey-dk-400 !important;
+            }
+        }
+
+        >.nav-list {
+            .nav-list-item {
+                .nav-list-link {
+                    color: $yellow-400;
+                }
+
+            }
+        }
+    }
+}

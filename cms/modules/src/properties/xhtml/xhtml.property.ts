@@ -3,9 +3,10 @@ import { CmsProperty, ContentTypeEnum, MediaService } from '@typijs/core';
 import { QuillEditorComponent } from 'ngx-quill';
 import Quill from 'quill';
 import { DropEvent } from '../../shared/drag-drop/drop-event.model';
-import './quill-inline-style';
+// TODO: Temp comment since this import is not working in prod build cms-demo
+// import './quill-inline-style';
 
-// Temp comment since this import is not working with --prod in runtime
+// TODO: Temp comment since this import is not working with --prod flag in runtime
 // quill Cannot import modules/imageResize. Are you sure it was registered?
 // import './quill-modules';
 
@@ -38,7 +39,7 @@ export class XHtmlProperty extends CmsProperty {
     modules: { [key: string]: any } = {};
     constructor(private mediaService: MediaService) {
         super();
-        // Temp comment since this import is not working with --prod in runtime
+        // Temp comment since this import is not working with --prod flag in runtime
         // quill Cannot import modules/imageResize. Are you sure it was registered?
         // this.modules = {
         //     imageResize: {},

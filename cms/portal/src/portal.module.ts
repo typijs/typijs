@@ -48,7 +48,7 @@ import { PortalRoutingModule } from './portal.routing';
         ReactiveFormsModule,
 
         FontAwesomeModule,
-        AngularSplitModule.forRoot(),
+        AngularSplitModule,
         TabsModule.forRoot(),
         BsDropdownModule.forRoot(),
         ButtonsModule.forRoot(),

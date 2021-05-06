@@ -1,0 +1,13 @@
+{%- if site.footer_content -%}
+<p class="text-small text-grey-dk-100 mb-0">{{ site.footer_content }}</p>
+{%- endif -%}
+
+{%- if site.logo_url -%}
+<script type="text/javascript">
+    var links = document.getElementsByClassName('site-title');
+    if (links.length > 0) {
+        var siteTitle = links[0];
+        siteTitle.setAttribute('href', "{{ site.logo_url }}");
+    }
+</script>
+{%- endif -%}
