@@ -5,6 +5,8 @@ on:
     paths:
       - 'cms-api/**'
       - '!cms-api/package-lock.json'
+    branches:
+      - main
 
 jobs:
   build:
