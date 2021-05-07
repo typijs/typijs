@@ -1,30 +1,25 @@
-name: Build Node Api package
+name: Deploy cms demo
 
 on: 
-  pull_request:
-    paths:
-      - 'cms-api/**'
-      - '!cms-api/package-lock.json'
+  push:
+    branches:
+      - 'deploy/**'
 
 jobs:
-  api-build:
-    name: Build Node Api package
+  cms-deploy:
+    name: Deploy Angular To Github Page
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./cms-api
-        
-    strategy:
-      matrix:
-        node-version: [10.x, 12.x, 14.x]
-    
+        working-directory: ./cms
+
     steps:
       - uses: actions/checkout@v2
 
       - name: Use Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '12.x'
 
       - name: Cache Node.js modules
         uses: actions/cache@v2
@@ -37,7 +32,16 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Build packages
         run: |
-          npm run build
+          npm run build:libs
+          npm run build -- --prod
+          npm run deploy -- --no-silent --name="danghung1202" --email=danghung1202@gmail.com
+
+  api-deploy:
+    name: Deploy Node Api To Azure
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./cms-api

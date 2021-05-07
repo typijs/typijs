@@ -1,4 +1,4 @@
-name: Publish packages to NPM
+name: Publish packages to Npm
 
 on: 
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   cms-release:
-    name: Publish cms packages to NPM
+    name: Publish Angular packages to Npm
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -47,7 +47,7 @@ jobs:
           npm publish dist/portal --access public
 
   api-release:
-    name: Publish cms-api package to NPM
+    name: Publish Node Api package to Npm
     runs-on: ubuntu-latest
     defaults:
       run:

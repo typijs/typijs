@@ -1,13 +1,13 @@
-name: Create Git Release
+name: Create git release
 
 on:
   push:
     tags:
-      - "v*"
+      - "*.*.*"
 
 jobs:
   git-release:
-    name: Create Git Release
+    name: Create git release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

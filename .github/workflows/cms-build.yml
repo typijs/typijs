@@ -1,4 +1,4 @@
-name: Build CMS packages on PRs
+name: Build Angular packages
 
 on: 
   pull_request:
@@ -12,7 +12,8 @@ on:
       - 'tsconfig*'
 
 jobs:
-  build:
+  cms-build:
+    name: Build Angular packages
     runs-on: ubuntu-latest
     defaults:
       run:
