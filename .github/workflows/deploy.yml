@@ -59,16 +59,16 @@ jobs:
       # - name: Install cpx packages
       #   run: npm ci
 
-      - name: Install dependencies
+      - name: Install dependencies in cms-api
         working-directory: ./cms-api
         run: npm ci
         
-      - name: Build packages
+      - name: Build packages in cms-api
         working-directory: ./cms-api
         run: |
           npm run build
       
-      - name: Install dependencies
+      - name: Install dependencies in cms-serer
         working-directory: ./cms-server
         run: npm ci
 
@@ -76,7 +76,7 @@ jobs:
       #   run: |
       #     npm run copy
         
-      - name: Build packages
+      - name: Build packages in cms-serer
         working-directory: ./cms-server
         run: |
           npm run build
