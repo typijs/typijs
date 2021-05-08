@@ -4,24 +4,60 @@ on:
   push:
     branches:
       - 'deploy/**'
+env:
+    NODE_VERSION: "12.x"
 
 jobs:
-  cms-deploy:
-    name: Deploy Angular To Github Page
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./cms
+  # cms-deploy:
+  #   name: Deploy Angular To Github Page
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: ./cms
 
+  #   steps:
+  #     - uses: actions/checkout@v2
+
+  #     - name: Use Node.js
+  #       uses: actions/setup-node@v1
+  #       with:
+  #         node-version: ${{ env.NODE_VERSION }}
+
+  #     - name: Cache Node.js modules
+  #       uses: actions/cache@v2
+  #       with:
+  #         path: ~/.npm 
+  #         key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+  #         restore-keys: |
+  #           ${{ runner.OS }}-node-
+  #           ${{ runner.OS }}-
+
+  #     - name: Install dependencies
+  #       run: npm ci
+
+  #     - name: Build packages
+  #       run: |
+  #         npm run build:libs
+  #         npm run build -- --prod
+  #         npm run deploy -- --no-silent --name="danghung1202" --email=danghung1202@gmail.com
+
+  api-deploy:
+    name: Deploy Node Api To Azure
+    runs-on: ubuntu-latest
+    # defaults:
+    #   run:
+    #     working-directory: ./cms-server
+        
     steps:
       - uses: actions/checkout@v2
 
-      - name: Use Node.js
+      - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v1
         with:
-          node-version: '12.x'
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Cache Node.js modules
+        working-directory: ./cms-api
         uses: actions/cache@v2
         with:
           path: ~/.npm 
@@ -31,25 +67,37 @@ jobs:
             ${{ runner.OS }}-
 
       - name: Install dependencies
-        run: npm ci
-
-      - name: Build packages
-        run: |
-          npm run build:libs
-          npm run build -- --prod
-          npm run deploy -- --no-silent --name="danghung1202" --email=danghung1202@gmail.com
-
-  api-deploy:
-    name: Deploy Node Api To Azure
-    runs-on: ubuntu-latest
-    defaults:
-      run:
         working-directory: ./cms-api
+        run: npm ci
         
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Use Node.js
-        uses: actions/setup-node@v1
+      - name: Build packages
+        working-directory: ./cms-api
+        run: |
+          npm run build
+      
+      - name: Cache Node.js modules
+        working-directory: ./cms-server
+        uses: actions/cache@v2
         with:
-          node-version: '12.x'
+          path: ~/.npm 
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+            ${{ runner.OS }}-
+
+      - name: Install dependencies
+        working-directory: ./cms-server
+        run: npm ci
+        
+      - name: Build packages
+        working-directory: ./cms-server
+        run: |
+          npm run build
+
+      - name: "Deploy to Azure WebApp"
+        working-directory: ./cms-server
+        uses: azure/webapps-deploy@v2
+        with:
+            app-name: typijs
+            publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+            package: '.'
