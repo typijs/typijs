@@ -68,7 +68,7 @@ jobs:
         run: |
           npm run build
       
-      - name: Install dependencies in cms-serer
+      - name: Install dependencies in cms-server
         working-directory: ./cms-server
         run: npm ci
 
@@ -76,7 +76,7 @@ jobs:
       #   run: |
       #     npm run copy
         
-      - name: Build packages in cms-serer
+      - name: Build packages in cms-server
         working-directory: ./cms-server
         run: |
           npm run build
