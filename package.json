@@ -7,7 +7,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "copy": "cpx cms-api/dist/**/* cms-server/node_modules/@typijs/api",
+    "copy": "cpx cms-api/dist/**/* cms-server/dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
