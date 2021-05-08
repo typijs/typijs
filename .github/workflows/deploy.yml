@@ -56,16 +56,6 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Cache Node.js modules
-        working-directory: ./cms-api
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm 
-          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.OS }}-node-
-            ${{ runner.OS }}-
-
       - name: Install dependencies
         working-directory: ./cms-api
         run: npm ci
@@ -75,16 +65,6 @@ jobs:
         run: |
           npm run build
       
-      - name: Cache Node.js modules
-        working-directory: ./cms-server
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm 
-          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.OS }}-node-
-            ${{ runner.OS }}-
-
       - name: Install dependencies
         working-directory: ./cms-server
         run: npm ci
