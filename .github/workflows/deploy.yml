@@ -75,9 +75,8 @@ jobs:
           npm run build
 
       - name: "Deploy to Azure WebApp"
-        working-directory: ./cms-server
         uses: azure/webapps-deploy@v2
         with:
             app-name: typijs
             publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-            package: '.'
+            package: './cms-server'
