@@ -16,12 +16,6 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@typijs/api": [
-        "../cms-api/dist"
-      ],
-      "@typijs/api/*": [
-        "../cms-api/dist/*"
-      ],
       "*": [
         "node_modules/*"
       ]
