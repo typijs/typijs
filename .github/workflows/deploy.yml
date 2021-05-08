@@ -56,8 +56,8 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Install cpx packages
-        run: npm ci
+      # - name: Install cpx packages
+      #   run: npm ci
 
       - name: Install dependencies
         working-directory: ./cms-api
@@ -72,9 +72,9 @@ jobs:
         working-directory: ./cms-server
         run: npm ci
 
-      - name: Copy packages
-        run: |
-          npm run copy
+      # - name: Copy packages
+      #   run: |
+      #     npm run copy
         
       - name: Build packages
         working-directory: ./cms-server
