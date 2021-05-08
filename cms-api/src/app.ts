@@ -92,6 +92,9 @@ export class CmsApp {
   private setRoutes(): void {
     const apiRouter = Container.get(CmsApiRouter);
     this.express.use('/api', apiRouter.router);
+    this.express.get('/', (req, res) => {
+      res.send('Api worked!')
+    })
   }
 
   private setErrorHandling(): void {

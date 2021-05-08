@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import * as sharp from "sharp";
+//import * as sharp from "sharp";
 import { ContentService } from "../content/content.service";
 import { IMediaVersionDocument, MediaVersionModel } from "./models/media-version.model";
 import { ImageContent, IMediaDocument, IMediaLanguageDocument, MediaModel } from "./models/media.model";
@@ -37,8 +37,8 @@ export class MediaService extends ContentService<IMediaDocument, IMediaLanguageD
         //If not execute resize image at fileResizedPath
         //create stream reader from fileResizedPath
         if (width || height) {
-            const output = await this.resizeImage(fileOriginalPath, fileResizedPath, width, height);
-            return output ? fs.createReadStream(fileResizedPath) : null;
+            //const output = await this.resizeImage(fileOriginalPath, fileResizedPath, width, height);
+            return false ? fs.createReadStream(fileResizedPath) : null;
         }
         return null;
     }
@@ -49,12 +49,12 @@ export class MediaService extends ContentService<IMediaDocument, IMediaLanguageD
             .catch(err => false)
     }
 
-    private resizeImage = (originalImagePath: string, resizedImagePath: string, width: number = 100, height: number = 100, options?: sharp.ResizeOptions): Promise<sharp.OutputInfo> => {
-        return sharp(originalImagePath)
-            .resize(width, height, options)
-            //.max()
-            .toFormat('jpeg')
-            .webp()
-            .toFile(resizedImagePath)
-    }
+    // private resizeImage = (originalImagePath: string, resizedImagePath: string, width: number = 100, height: number = 100, options?: sharp.ResizeOptions): Promise<sharp.OutputInfo> => {
+    //     return sharp(originalImagePath)
+    //         .resize(width, height, options)
+    //         //.max()
+    //         .toFormat('jpeg')
+    //         .webp()
+    //         .toFile(resizedImagePath)
+    // }
 }
