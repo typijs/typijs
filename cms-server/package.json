@@ -4,8 +4,8 @@
   "license": "MIT",
   "main": "dist/server.js",
   "scripts": {
-    "build": "npm run copy && tsc",
-    "copy": "cpx ../cms-api/dist/**/* node_modules/@typijs/api",
+    "build": "tsc",
+    "copy": "cpx cms-api/dist/**/* cms-server/node_modules/@typijs/api",
     "watch": "tsc -w",
     "preserve": "tsc -p ../cms-api",
     "serve": "node dist/server.js",
