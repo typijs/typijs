@@ -8,40 +8,42 @@ env:
     NODE_VERSION: "12.x"
 
 jobs:
-  # cms-deploy:
-  #   name: Deploy Angular To Github Page
-  #   runs-on: ubuntu-latest
-  #   defaults:
-  #     run:
-  #       working-directory: ./cms
+  cms-deploy:
+    if: "!contains(github.event.head_commit.message, 'skip cms')"
+    name: Deploy Angular To Github Page
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./cms
 
-  #   steps:
-  #     - uses: actions/checkout@v2
+    steps:
+      - uses: actions/checkout@v2
 
-  #     - name: Use Node.js
-  #       uses: actions/setup-node@v1
-  #       with:
-  #         node-version: ${{ env.NODE_VERSION }}
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ env.NODE_VERSION }}
 
-  #     - name: Cache Node.js modules
-  #       uses: actions/cache@v2
-  #       with:
-  #         path: ~/.npm 
-  #         key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
-  #         restore-keys: |
-  #           ${{ runner.OS }}-node-
-  #           ${{ runner.OS }}-
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm 
+          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-node-
+            ${{ runner.OS }}-
 
-  #     - name: Install dependencies
-  #       run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-  #     - name: Build packages
-  #       run: |
-  #         npm run build:libs
-  #         npm run build -- --prod
-  #         npm run deploy -- --no-silent --name="danghung1202" --email=danghung1202@gmail.com
+      - name: Build packages
+        run: |
+          npm run build:libs
+          npm run build -- --prod
+          npm run deploy -- --no-silent --cname=demo.typijs.com
 
   api-deploy:
+    if: "!contains(github.event.head_commit.message, 'skip api')"
     name: Deploy Node Api To Azure
     runs-on: ubuntu-latest
     # defaults:
@@ -56,9 +58,6 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      # - name: Install cpx packages
-      #   run: npm ci
-
       - name: Install dependencies in cms-api
         working-directory: ./cms-api
         run: npm ci
@@ -72,10 +71,6 @@ jobs:
         working-directory: ./cms-server
         run: npm ci
 
-      # - name: Copy packages
-      #   run: |
-      #     npm run copy
-        
       - name: Build packages in cms-server
         working-directory: ./cms-server
         run: |
