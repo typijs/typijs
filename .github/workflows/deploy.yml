@@ -40,7 +40,11 @@ jobs:
         run: |
           npm run build:libs
           npm run build -- --prod
-          npm run deploy -- --no-silent --cname=demo.typijs.com
+
+      - name: Deploy packages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: npm run deploy -- --no-silent --cname=demo.typijs.com
 
   api-deploy:
     if: "!contains(github.event.head_commit.message, 'skip api')"
@@ -73,8 +77,7 @@ jobs:
 
       - name: Build packages in cms-server
         working-directory: ./cms-server
-        run: |
-          npm run build
+        run: npm run build
 
       - name: "Deploy to Azure WebApp"
         uses: azure/webapps-deploy@v2
