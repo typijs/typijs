@@ -8,7 +8,6 @@
   "scripts": {
     "build": "tsc && npm run copy",
     "watch": "tsc -w",
-    "serve": "node dist/app.js",
     "copy": "cpx package.json dist && cpx README.md dist"
   },
   "author": "danghung1202@gmail.com",

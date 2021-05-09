@@ -4,12 +4,10 @@
   "license": "MIT",
   "main": "dist/server.js",
   "scripts": {
-    "build": "npm run copy && tsc",
-    "copy": "cpx ../cms-api/dist/**/* node_modules/@typijs/api",
+    "copy": "cpx \"../cms-api/dist/**/*\" \"node_modules/@typijs/api\"",
     "watch": "tsc -w",
-    "preserve": "tsc -p ../cms-api",
-    "serve": "node dist/server.js",
-    "start": "npm run serve",
+    "build": "npm run copy && tsc",
+    "start": "node dist/server.js",
     "predev": "tsc -p ../cms-api && tsc",
     "dev": "concurrently \"tsc -w -p ../cms-api\" \"set NODE_ENV=development && nodemon --inspect --watch ../cms-api/dist dist/server.js\"",
     "prod": "concurrently \"tsc -p server && set NODE_ENV=production && node dist/server.js\""
