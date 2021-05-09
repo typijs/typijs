@@ -1,6 +1,6 @@
 {
   "name": "@typijs/modules",
-  "version": "1.0.0",
+  "version": "1.0.0-beta.1",
   "dependencies": {
     "tslib": "^2.0.0"
   },
