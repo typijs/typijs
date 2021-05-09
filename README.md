@@ -1,8 +1,6 @@
-# Angular Cms
+# TypiJS
 
-The single app CMS based on Angular, Express, NodeJs and MongoDB.
-
-**Status: Working In Progress, not ready to use in production**
+The Angular CMS Framework for building fully-featured SPA sites powered by NodeJS and MongoDB with TypeScript.
 
 ## How it work?
 
