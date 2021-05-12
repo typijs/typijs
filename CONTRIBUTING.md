@@ -68,7 +68,7 @@ to restore from a dump directory to a local mongod instance running on port 2701
     
     1. Open first terminal, run `ng build core --watch` and waiting it finish then go to next step 
     2. Open second terminal, run `ng build module --watch` and waiting it finish then go to next step
-    3. Open first terminal, run `ng build portal --watch` and waiting it finish then go to next step
+    3. Open third terminal, run `ng build portal --watch` and waiting it finish then go to next step
 
 
 * Run in watch mode
