@@ -1,6 +1,8 @@
 {
   "name": "cms",
-  "version": "0.0.0",
+  "version": "1.0.0-beta.2",
+  "description": "The Angular CMS Framework for building fully-featured SPA sites powered by NodeJS and MongoDB with TypeScript",
+  "license": "MIT",
   "scripts": {
     "ng": "ng",
     "dev": "ng serve",
@@ -8,12 +10,36 @@
     "build:libs": "ng build core --prod && ng build modules --prod && ng build portal --prod",
     "build:ssr": "ng build && ng run cms-demo:server",
     "build:ssr:prod": "ng build --prod && ng run cms-demo:server",
-    "deploy": "ng deploy --repo=https://github.com/typijs/vegefoods.git --name=\"TypiJS Team\" --email=dev@typijs.com",
+    "deploy": "ng deploy --repo=https://github.com/typijs/vegefoods.git --name=\"TypiJS Team\" --email=team@typijs.com",
     "start:ssr": "ts-node -P ./cms-demo/server.tsconfig.json ./cms-demo/server.ts",
     "prerender": "ts-node -P ./cms-demo/server.tsconfig.json ./cms-demo/prerender.ts",
     "prerender:debug": "ts-node -P ./cms-demo/server.tsconfig.json --inspect ./cms-demo/prerender.ts",
     "tslint": "tslint -c tslint.json --project ./tsconfig.json",
     "tslint:fix": "tslint --fix -c tslint.json --project ./tsconfig.json"
+  },
+  "keywords": [
+    "cms",
+    "api",
+    "opensource",
+    "nodejs",
+    "mean stack",
+    "expressjs",
+    "angular",
+    "framework",
+    "typescript"
+  ],
+  "bugs": {
+    "url": "https://github.com/typijs/typijs/issues"
+  },
+  "homepage": "https://www.typijs.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/typijs/typijs"
+  },
+  "author": {
+    "name": "TypiJS Team",
+    "email": "contact@typijs.com",
+    "url": "https://github.com/typijs"
   },
   "private": true,
   "dependencies": {

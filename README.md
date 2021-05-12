@@ -210,7 +210,7 @@ Before you want to contribute the project, you need set up the local development
 
 ### Setup Npm Symlinks
 
-For running examples, we need set up the [symlinks](https://docs.npmjs.com/cli/link.html) between modules as below:
+For running examples, you need set up the [symlinks](https://docs.npmjs.com/cli/link.html) between modules as below:
 
 1. Go to `cms-api` folders and run command 
 ```

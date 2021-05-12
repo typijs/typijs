@@ -1,8 +1,8 @@
 {
   "name": "@typijs/api",
   "version": "1.0.0-beta.2",
+  "description": "This package provide the apis to manipulate the content data which stored in MongoDB",
   "license": "MIT",
-  "description": "",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
@@ -10,7 +10,27 @@
     "watch": "tsc -w",
     "copy": "cpx package.json dist && cpx README.md dist"
   },
-  "author": "danghung1202@gmail.com",
+  "keywords": [
+    "cms",
+    "api",
+    "opensource",
+    "nodejs",
+    "mean stack",
+    "expressjs"
+  ],
+  "bugs": {
+    "url": "https://github.com/typijs/typijs/issues"
+  },
+  "homepage": "https://www.typijs.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/typijs/typijs"
+  },
+  "author": {
+    "name": "TypiJS Team",
+    "email": "contact@typijs.com",
+    "url": "https://github.com/typijs"
+  },
   "dependencies": {
     "@hapi/joi": "^17.1.1",
     "app-root-path": "^2.1.0",
