@@ -20,9 +20,10 @@ jobs:
           tag_name: ${{ github.ref }}
           changelog: CHANGELOG.md
       
-      - name: Print notes
+      - name: Print changelog
         run: |
-          echo "${{ join(fromJson(steps.generate_notes.outputs.notes).notes, '') }}"
+          echo "tag_name: ${{ github.ref }}"
+          echo "changelog: ${{ join(fromJson(steps.generate_notes.outputs.notes).notes, '') }}"
         
       - name: Create release
         uses: actions/create-release@v1
