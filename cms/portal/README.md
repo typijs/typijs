@@ -1,24 +1,94 @@
-# Portal
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.2.13.
+<!-- PROJECT LOGO -->
+<br />
+<p align="center">
+  <a href="https://www.typijs.com">
+    <img src="https://raw.githubusercontent.com/typijs/typijs.github.io/main/assets/imgs/typijs-logo-with-text.png" alt="Logo">
+  </a>
 
-## Code scaffolding
+  <h3 align="center">TypiJS Portal Package</h3>
 
-Run `ng generate component component-name --project portal` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project portal`.
-> Note: Don't forget to add `--project portal` or else it will be added to the default project in your `angular.json` file. 
+  <p align="center">
+    The Portal package is part of TypiJS Framework
+    <br />
+    <a href="https://www.typijs.com"><strong>Explore the framework »</strong></a>
+    <br />
+    <br />
+    <a href="https://github.com/typijs/typijs/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/typijs/typijs/issues">Request Feature</a>
+  </p>
+</p>
 
-## Build
 
-Run `ng build portal` to build the project. The build artifacts will be stored in the `dist/` directory.
+<!-- ABOUT THE PROJECT -->
+## TypiJS
 
-## Publishing
+The Angular CMS Framework for building fully-featured SPA sites powered by NodeJS and MongoDB with TypeScript. 
 
-After building your library with `ng build portal`, go to the dist folder `cd dist/portal` and run `npm publish`.
+It includes 4 packages:
+* `@typijs/core` - provides the decorators, injection tokens, base classes to create content type
+* `@typijs/modules` - provides the plugged-in module such as Page tree, Block tree, Media..
+* `@typijs/portal` - provide the UI layout to access editor, admin
+* `@typijs/api` - provide the apis to manipulate the content data which stored in MongoDB
 
-## Running unit tests
+### Built With
 
-Run `ng test portal` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Build on top modern stacks with TypeScript
 
-## Further help
+* [Angular](https://angular.io)
+* [ExpressJS](https://expressjs.com)
+* [NodeJS](https://nodejs.org)
+* [MongoDB](https://www.mongodb.com)
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+## TypiJS Portal
+
+This package `@typijs/portal` built on Angular provides the layout component allow plug, register modules
+
+### Built with
+
+* Angular
+* TypeScript
+
+### Features
+
+* The clean, minimum editor/admin layout
+* Allow extend and plug modules
+
+<!-- GETTING STARTED -->
+## Getting Started
+
+To start the site build with TypiJS, following theses steps
+
+### Prerequisites
+
+* Angular 10.x or higher
+* Node 10.x or higher
+* Express 4.x or higher
+* Typescript 4.1.5
+* MongoDB latest
+
+### Quick start
+
+1. Clone the repo
+   ```sh
+   git clone https://github.com/typijs/typijs-starter.git
+   cd typijs-starter
+   npm install
+   npm start
+   ```
+2. Navigate to http://localhost:4200/typijs/register to start
+    
+<!-- LICENSE -->
+## License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
+
+<!-- CONTACT -->
+## Contact
+
+Email: contact@typijs.com
+
+Project Link: [https://github.com/typijs/typijs](https://github.com/typijs/typijs)
+

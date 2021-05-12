@@ -6,10 +6,10 @@
     <img src="https://raw.githubusercontent.com/typijs/typijs.github.io/main/assets/imgs/typijs-logo-with-text.png" alt="Logo">
   </a>
 
-  <h3 align="center">TypiJS Portal Package</h3>
+  <h3 align="center">TypiJS Angular Packages</h3>
 
   <p align="center">
-    The Portal package is part of TypiJS Framework
+    The Angular packages is part of TypiJS Framework
     <br />
     <a href="https://www.typijs.com"><strong>Explore the framework »</strong></a>
     <br />
@@ -40,20 +40,6 @@ Build on top modern stacks with TypeScript
 * [ExpressJS](https://expressjs.com)
 * [NodeJS](https://nodejs.org)
 * [MongoDB](https://www.mongodb.com)
-
-## TypiJS Portal
-
-This package `@typijs/portal` built on Angular provides the layout component allow plug, register modules
-
-### Built with
-
-* Angular
-* TypeScript
-
-### Features
-
-* The clean, minimum editor/admin layout
-* Allow extend and plug modules
 
 <!-- GETTING STARTED -->
 ## Getting Started
