@@ -1,6 +1,6 @@
 {
   "name": "@typijs/modules",
-  "version": "1.0.0",
+  "version": "1.0.0-beta.2",
   "dependencies": {
     "tslib": "^2.0.0"
   },
@@ -9,7 +9,7 @@
     "@angular/core": "^11.2.6",
     "@angular/router": "^11.2.6",
     "@angular/forms": "^11.2.6",
-    "@typijs/core": "^1.0.0",
+    "@typijs/core": "^1.0.0-beta.2",
     "@fortawesome/angular-fontawesome": "^0.8.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
