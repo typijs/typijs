@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import { TenantDatabases } from '../../db/database';
 import { cmsPage, IPageDocument } from '../page/models/page.model';
 import { IBaseDocument, IBaseModel, BaseSchema } from '../shared/base.model';
 
@@ -35,7 +36,7 @@ const HostDefinitionSchema = new mongoose.Schema({
     isHttps: { type: Boolean, required: false }
 }, { timestamps: true });
 
-const SiteDefinitionSchema = new mongoose.Schema<ISiteDefinitionDocument, ISiteDefinitionModel>({
+export const SiteDefinitionSchema = new mongoose.Schema<ISiteDefinitionDocument, ISiteDefinitionModel>({
     ...BaseSchema.obj,
     startPage: { type: mongoose.Schema.Types.ObjectId, ref: cmsPage, required: true, unique: true },
     name: { type: String, unique: true, trim: true, required: true, lowercase: true },

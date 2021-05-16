@@ -7,12 +7,12 @@ import { DocumentNotFoundException } from '../../error';
 import { BaseService } from '../shared/base.service';
 import { IUserDocument } from '../user/user.model';
 import { UserService } from '../user/user.service';
-import { AuthTokens, ITokenDocument, TokenModel, TokenPayload, TokenType } from './token.model';
+import { AuthTokens, cmsToken, ITokenDocument, TokenModel, TokenPayload, TokenSchema, TokenType } from './token.model';
 
 @Injectable()
 export class TokenService extends BaseService<ITokenDocument>{
     constructor(private userService: UserService) {
-        super(TokenModel);
+        super(TokenModel, cmsToken, TokenSchema);
     }
     /**
      * Verify token and return token doc (or throw an error if it is not valid)

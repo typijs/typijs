@@ -2,6 +2,31 @@ import * as dotenv from 'dotenv';
 import * as path from 'path';
 import { LogLevel, NodeEnv } from '../constants/enums';
 
+export type TenantDb = {
+    /**
+     * The db connection
+     */
+    dbConnection: string
+    /**
+     * The hosts can be connected to the db
+     */
+    hosts: string[]
+}
+
+export type MongoDbOptions = {
+    connection?: string;
+    tenantDbs?: TenantDb[];
+    user?: string;
+    password?: string
+    protocol: string
+    host: string
+    name: string
+}
+
+export type AppOptions = {
+
+}
+
 // Load environment variables from .env file, where API keys and passwords are configured
 // predefined: 'development', 'test', 'production'
 dotenv.config({
@@ -12,6 +37,7 @@ export const config = {
     app: {
         env: process.env.NODE_ENV || NodeEnv.Development,
         port: process.env.PORT || '3000',
+        multiTenant: JSON.parse(process.env.MULTI_TENANT) || false,
         origin: process.env.ORIGIN || 'http://localhost:4200,http://localhost:4202'
     },
     mongdb: {
@@ -20,6 +46,8 @@ export const config = {
         name: process.env.MONGO_DB_NAME || 'vegefoods', //angularcms
         user: process.env.MONGO_DB_USER || 'user',
         password: process.env.MONGO_DB_PASSWORD || 'password'
+        connection: process.env.MONGO_DB_CONNECTION || 'mongodb://localhost:27017/vegefoods_v2',
+        tenantDbs: JSON.parse(process.env.TENANT_DB) || [],
     },
     jwt: {
         secret: process.env.JWT_SECRET || '1878B83DE0384DE08D3F69FE1C308D55',
@@ -28,7 +56,7 @@ export const config = {
         resetPasswordExpirationMinutes: 10,
     },
     log: {
-        level: process.env.LOG_LEVEL || LogLevel.Error,
+        level: process.env.LOG_LEVEL || LogLevel.Info,
         folder: process.env.LOG_DIR || 'logs',
         keepLogsInDays: process.env.LOG_KEEP_IN_DAYS || '30',
     },

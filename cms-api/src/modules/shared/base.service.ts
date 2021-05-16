@@ -1,10 +1,13 @@
 import { FilterQuery, Query, UpdateQuery } from 'mongoose';
+import { config } from '../../config';
+import { TenantDatabases } from '../../db/database';
 import { DocumentNotFoundException } from '../../error';
 import { IBaseDocument, IBaseModel, QueryItem, QueryList, QueryOptions, PaginateOptions, QueryResult } from './base.model';
 
 export class BaseService<T extends IBaseDocument> {
+    constructor(private mongooseModel: IBaseModel<T>, private modelName?: string, private schema?: any) {
+    }
 
-    protected mongooseModel: IBaseModel<T>;
     private static get defaultOptions(): QueryOptions {
         return { lean: false };
     }
@@ -13,12 +16,12 @@ export class BaseService<T extends IBaseDocument> {
         return { limit: 1000, page: 1 }
     }
 
-    constructor(mongooseModel: IBaseModel<T>) {
-        this.mongooseModel = mongooseModel;
+    public get Model(): IBaseModel<T> {
+        return config.app.multiTenant ? this.TenantModel : this.mongooseModel;
     }
 
-    public get Model(): IBaseModel<T> {
-        return this.mongooseModel;
+    private get TenantModel(): any {
+        return TenantDatabases.getModelByTenant<T, any>(this.modelName, this.schema);
     }
 
     /**
@@ -26,7 +29,7 @@ export class BaseService<T extends IBaseDocument> {
      * @returns the new document which is an instance of mongoose Model
      */
     public createModel = (doc: Partial<T>): T => {
-        const modelInstance = new this.mongooseModel(doc);
+        const modelInstance = new this.Model(doc);
         return Object.assign(modelInstance, doc);
     }
 
@@ -38,7 +41,7 @@ export class BaseService<T extends IBaseDocument> {
      */
     public findById = (id: string, options?: QueryOptions): QueryItem<T> => {
         if (!id) id = null;
-        return this.mongooseModel.findById(id).setOptions(this.getQueryOptions(options));
+        return this.Model.findById(id).setOptions(this.getQueryOptions(options));
     }
 
     /**
@@ -48,7 +51,7 @@ export class BaseService<T extends IBaseDocument> {
      * @returns return the `QueryItem<T>` then need to call `exec()` to convert to `Promise<T>`
      */
     public findOne = (filter: FilterQuery<T>, options?: QueryOptions): QueryItem<T> => {
-        return this.mongooseModel.findOne(filter).setOptions(this.getQueryOptions(options));
+        return this.Model.findOne(filter).setOptions(this.getQueryOptions(options));
     }
 
     /**
@@ -58,7 +61,8 @@ export class BaseService<T extends IBaseDocument> {
      * @returns return the `QueryList<T>` then need to call `exec()` to convert to `Promise<T[]>`
      */
     public find = (filter: FilterQuery<T>, options?: QueryOptions): QueryList<T> => {
-        return this.mongooseModel.find(filter).setOptions(this.getQueryOptions(options));
+        //return this.mongooseModel.find(filter).setOptions(this.getQueryOptions(options));
+        return this.Model.find(filter).setOptions(this.getQueryOptions(options));
     }
 
     /**
@@ -75,9 +79,9 @@ export class BaseService<T extends IBaseDocument> {
      */
     public count = (filter: FilterQuery<T>): Promise<number> => {
         if (Object.keys(filter).length === 0 && filter.constructor === Object) {
-            return this.mongooseModel.estimatedDocumentCount().exec();
+            return this.Model.estimatedDocumentCount().exec();
         }
-        return this.mongooseModel.countDocuments(filter).exec()
+        return this.Model.countDocuments(filter).exec()
     }
 
     /**
@@ -85,7 +89,7 @@ export class BaseService<T extends IBaseDocument> {
      * @param options query option ex `{ lean: true }`
      */
     public exists = (filter: FilterQuery<T>): Promise<boolean> => {
-        return this.mongooseModel.exists(filter)
+        return this.Model.exists(filter)
     }
 
     /**
@@ -124,7 +128,7 @@ export class BaseService<T extends IBaseDocument> {
     }
 
     public insertMany = (docs: Partial<T>[]): Promise<T[]> => {
-        return this.mongooseModel.insertMany(docs as T[])
+        return this.Model.insertMany(docs as T[])
     }
 
     public updateById = async (id: string, doc: Partial<T>): Promise<T> => {
@@ -143,7 +147,7 @@ export class BaseService<T extends IBaseDocument> {
      * @returns 
      */
     public updateMany = (filter: FilterQuery<T>, updateQuery: UpdateQuery<T>): Query<any, T> => {
-        return this.mongooseModel.updateMany(filter, updateQuery)
+        return this.Model.updateMany(filter, updateQuery)
     }
 
     /**
@@ -159,7 +163,7 @@ export class BaseService<T extends IBaseDocument> {
     }
 
     public deleteMany = (filter: FilterQuery<T>): Query<any, T> => {
-        return this.mongooseModel.deleteMany(filter)
+        return this.Model.deleteMany(filter)
     }
 
     protected getPaginateOptions = (paginateOptions?: PaginateOptions): PaginateOptions => {
