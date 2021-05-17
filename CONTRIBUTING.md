@@ -18,17 +18,26 @@ For running in local, you need set up the [symlinks](https://docs.npmjs.com/cli/
 2. Go to `cms-server` folder and run commands
 
 ```
+    npm install
     npm link @typijs/api
 ```
 
 ### Run in Dev Mode
 
-1. First step, under `cms-server` folder, run the command
+1. Backup the DB: After the MongDb instance running, you can use the example data under the `resources/db/dump/vegefoods_v2` using the MongoDb command `mongorestore` to backup these collections
+
+For example, under the `resources/db` folder, run command line 
+
 ```
-    npm install
+mongorestore -d vegefoods_v2 dump/vegefoods_v2
+
+``` 
+to restore from a dump directory to a local mongod instance running on port 27017:
+
+2. First step, under `cms-server` folder, run the command
+```
     npm run dev
 ```
-> If you have the issue installing such as the `@typijs/api` package is not found, temporary remove it in package.json, run install command then add it again
 
 This command will run script to connect to mongo db, so make sure you have the correct path to your db.
 For example, you have the db path like as `C:/MongoDB/data/db`
@@ -37,17 +46,6 @@ For example, you have the db path like as `C:/MongoDB/data/db`
 ```
 
 > If you install the MongoDB and run it as the service in Window, you can skip this step
-
-2.  After the MongDb instance running, you can use the example data under the `resources/db/dump/vegefoods_v2` using the MongoDb command `mongorestore` to backup these collections
-
-For example, under the `resources/db` folder, run command line 
-
-```
-mongorestore  dump/
-
-``` 
-to restore from a dump directory to a local mongod instance running on port 27017:
-
 
 3. Final step, under `cms` folder, run the command sequentially
 
