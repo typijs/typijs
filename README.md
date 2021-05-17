@@ -124,14 +124,6 @@ Now when create the page with page type of `Home Page`, the `HomeComponent` is c
 
 So after we done all things above, how to we create a page. In Angular CMS, we have the admin/editor UI to manage all pages like this
 
-The Editor UI can be accessed via router: http://localhost:4200/cms/editor
-
-The Admin UI can be accessed via router: http://localhost:4200/cms/admin
-
-**Using the account: **
-
-`admin/12345678` or `editor/1234qwer!`
-
 ## How it run
 I created a GIF for demo purpose. It's just only 35MB (haha), so be patient for loading please.
 
@@ -210,7 +202,7 @@ Before you want to contribute the project, you need set up the local development
 
 ### Setup Npm Symlinks
 
-For running examples, you need set up the [symlinks](https://docs.npmjs.com/cli/link.html) between modules as below:
+For running in local, you need set up the [symlinks](https://docs.npmjs.com/cli/link.html) between modules as below:
 
 1. Go to `cms-api` folders and run command 
 ```
@@ -222,36 +214,34 @@ For running examples, you need set up the [symlinks](https://docs.npmjs.com/cli/
 2. Go to `cms-server` folder and run commands
 
 ```
+    npm install
     npm link @typijs/api
 ```
 
 ### Run in Dev Mode
 
-1. First step, under `cms-server` folder, run the command
-```
-    npm install
-    npm run dev
-```
-> If you have the issue installing such as the `@typijs/api` package is not found, temporary remove it in package.json, run install command then add it again
-
-This command will run script to connect to mongo db, so make sure you have the correct path to your db.
-For example, in my local, I have the db path like as `D:/ProgramData/MongoDB/data/db`
-```
-    mongod --dbpath D:/ProgramData/MongoDB/data/db
-```
-
-> If you install the MongoDB and run it as the service in Window, you can skip this step
-
-2.  After the MongDb instance running, you can use the example data under the resources/db/dump/angularcms using the MongoDb command `mongorestore` to backup these collections
+1. Backup the DB: After the MongDb instance running, you can use the example data under the `resources/db/dump/vegefoods_v2` using the MongoDb command `mongorestore` to backup these collections
 
 For example, under the `resources/db` folder, run command line 
 
 ```
-mongorestore  dump/
+mongorestore -d vegefoods_v2 dump/vegefoods_v2
 
 ``` 
 to restore from a dump directory to a local mongod instance running on port 27017:
 
+2. First step, under `cms-server` folder, run the command
+```
+    npm run dev
+```
+
+This command will run script to connect to mongo db, so make sure you have the correct path to your db.
+For example, you have the db path like as `C:/MongoDB/data/db`
+```
+    mongod --dbpath C:/MongoDB/data/db
+```
+
+> If you install the MongoDB and run it as the service in Window, you can skip this step
 
 3. Final step, under `cms` folder, run the command sequentially
 ```
@@ -262,6 +252,12 @@ to restore from a dump directory to a local mongod instance running on port 2701
     npm run dev
 ```
 > Make sure you installed Angular CLI with `--global`
+
+Now you can goto http://localhost:4200 to see the site.
+
+The admin site will be access via url: http://localhost:4200/typicms
+
+**Account: admin/1234qwer!**
 
 ### Run Angular Universal (SSR) in Dev mode
 

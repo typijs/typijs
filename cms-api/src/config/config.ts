@@ -17,9 +17,9 @@ export const config = {
     mongdb: {
         protocol: process.env.MONGO_DB_PROTOCOL || 'mongodb', //'mongodb',
         host: process.env.MONGO_DB_HOST || 'localhost:27017',//'localhost:27017',
-        name: process.env.MONGO_DB_NAME || 'vegefoods', //angularcms
-        user: process.env.MONGO_DB_USER || 'user',
-        password: process.env.MONGO_DB_PASSWORD || 'password'
+        name: process.env.MONGO_DB_NAME || 'vegefoods_v2', //angularcms
+        user: process.env.MONGO_DB_USER || '',
+        password: process.env.MONGO_DB_PASSWORD || ''
     },
     jwt: {
         secret: process.env.JWT_SECRET || '1878B83DE0384DE08D3F69FE1C308D55',
