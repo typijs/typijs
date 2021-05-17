@@ -74,6 +74,11 @@ For example, you have the db path like as `C:/MongoDB/data/db`
     npm run dev
   ```
 
+Now you can goto http://localhost:4200 to see the site.
+
+The admin site will be access via url: http://localhost:4200/typicms
+
+**Account: admin/1234qwer!**
 
 ## <a name="rules"></a> Coding Rules
 

@@ -124,14 +124,6 @@ Now when create the page with page type of `Home Page`, the `HomeComponent` is c
 
 So after we done all things above, how to we create a page. In Angular CMS, we have the admin/editor UI to manage all pages like this
 
-The Editor UI can be accessed via router: http://localhost:4200/cms/editor
-
-The Admin UI can be accessed via router: http://localhost:4200/cms/admin
-
-**Using the account: **
-
-`admin/12345678` or `editor/1234qwer!`
-
 ## How it run
 I created a GIF for demo purpose. It's just only 35MB (haha), so be patient for loading please.
 
@@ -260,6 +252,12 @@ For example, you have the db path like as `C:/MongoDB/data/db`
     npm run dev
 ```
 > Make sure you installed Angular CLI with `--global`
+
+Now you can goto http://localhost:4200 to see the site.
+
+The admin site will be access via url: http://localhost:4200/typicms
+
+**Account: admin/1234qwer!**
 
 ### Run Angular Universal (SSR) in Dev mode
 
