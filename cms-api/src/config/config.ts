@@ -36,8 +36,8 @@ dotenv.config({
 export const config = {
     app: {
         env: process.env.NODE_ENV || NodeEnv.Development,
-        port: process.env.PORT || '3000',
-        multiTenant: JSON.parse(process.env.MULTI_TENANT) || false,
+        port: process.env.PORT || '3030',
+        multiTenant: true,
         origin: process.env.ORIGIN || 'http://localhost:4200,http://localhost:4202'
     },
     mongdb: {
@@ -47,7 +47,16 @@ export const config = {
         user: process.env.MONGO_DB_USER || 'user',
         password: process.env.MONGO_DB_PASSWORD || 'password'
         connection: process.env.MONGO_DB_CONNECTION || 'mongodb://localhost:27017/vegefoods_v2',
-        tenantDbs: JSON.parse(process.env.TENANT_DB) || [],
+        tenantDbs:  [
+            {
+                dbConnection: "mongodb://localhost:27017/tenant_1",
+                hosts: ["localhost:3000"]
+            },
+            {
+                dbConnection: "mongodb://localhost:27017/tenant_2",
+                hosts: ["localhost:3030"]
+            }
+        ],
     },
     jwt: {
         secret: process.env.JWT_SECRET || '1878B83DE0384DE08D3F69FE1C308D55',

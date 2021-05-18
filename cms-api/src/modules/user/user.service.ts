@@ -2,12 +2,12 @@ import * as httpStatus from 'http-status';
 import { Roles } from '../../constants/roles';
 import { EmailDuplicateException, Exception } from '../../error/exceptions';
 import { BaseService } from "../shared/base.service";
-import { IUserDocument, UserModel } from "./user.model";
+import { cmsUser, IUserDocument, UserModel, UserSchema } from "./user.model";
 
 export class UserService extends BaseService<IUserDocument>{
 
     constructor() {
-        super(UserModel);
+        super(UserModel, cmsUser, UserSchema);
     }
 
     public createAdminUser = async (userDoc: Partial<IUserDocument>): Promise<IUserDocument> => {

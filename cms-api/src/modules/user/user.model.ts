@@ -18,7 +18,7 @@ export interface IUserDocument extends IUser, IBaseDocument {
 
 export interface IUserModel extends IBaseModel<IUserDocument> { }
 
-const UserSchema = new mongoose.Schema<IUserDocument, IUserModel>({
+export const UserSchema = new mongoose.Schema<IUserDocument, IUserModel>({
     ...BaseSchema.obj,
     firstName: { type: String, required: true, trim: true },
     lastName: { type: String, required: true, trim: true },

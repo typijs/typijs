@@ -17,21 +17,26 @@ import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
 import * as express from 'express';
-import { TypiJS } from '@typijs/api';
+import { CmsAppOptions, config, logger, loggingMiddleware, TypiJs } from '@typijs/api';
 
-export const ApplicationConfig: TypiJSConfig = {
-
+export const ApplicationConfig: CmsAppOptions = {
+    provides: [
+        //Default Angular Cms using disk storage to store the uploaded images.
+        //It also support cloud storage such as Imgur
+        //If you want to use Imgur as image storage, using this config as below
+        //{ provide: CmsStorageEngine, useClass: ImgurStorageEngine }
+    ]
 }
 
 export class ExpressServer {
     public express: express.Application;
-    public typiJs: TypiJS;
+    public typiJs: TypiJs;
 
     constructor() {
         this.express = express();
         //Init provider, init bindCurrentNamespace middleware for local storage
         // connect db
-        this.typiJs = new TypiJS(this.express, ApplicationConfig); 
+        this.typiJs = new TypiJs(this.express, ApplicationConfig);
 
         this.setMiddlewares();
         this.setRoutes();
@@ -73,6 +78,11 @@ export class ExpressServer {
     }
 
     private setErrorHandling(): void {
-        this.express.use(this.typiJs.errorHandler())
+        this.express.use(this.typiJs.errorHandler)
     }
 }
+
+const expressApp = new ExpressServer();
+expressApp.start()
+    .then(() => { console.log('Server started successfully!'); })
+    .catch((err) => { console.error(err); })

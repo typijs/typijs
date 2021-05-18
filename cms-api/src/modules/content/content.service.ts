@@ -17,9 +17,8 @@ import { isNil, isNilOrWhiteSpace } from '../../utils';
 export class ContentService<T extends IContentDocument, P extends IContentLanguageDocument, V extends IContentVersionDocument> extends FolderService<T, P> {
     protected contentVersionService: ContentVersionService<V>;
 
-    constructor(contentModel: IContentModel<T>, contentVersionModel: IContentVersionModel<V>) {
-        super(contentModel);
-        this.contentVersionService = new ContentVersionService<V>(contentVersionModel);
+    constructor(contentModel: IContentModel<T>, contentModelName?: string, contentSchema?: any) {
+        super(contentModel, contentModelName, contentSchema);
     }
 
     /**
