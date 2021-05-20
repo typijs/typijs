@@ -181,7 +181,7 @@ To start the site build with TypiJS, following theses steps
 * MongoDB latest
 
 ### Quick start
-
+### (Starter project is still work in progress)
 1. Clone the repo
    ```sh
    git clone https://github.com/typijs/typijs-starter.git
@@ -200,48 +200,43 @@ To start the site build with TypiJS, following theses steps
 
 Before you want to contribute the project, you need set up the local development environment
 
-### Setup Npm Symlinks
+### Setting up your local environment in dev mode
 
-For running in local, you need set up the [symlinks](https://docs.npmjs.com/cli/link.html) between modules as below:
+
+1. Load our example MongoDB database from the backup file
+
+```
+mongorestore -d vegefoods_v2 resources/db/dump/vegefoods_v2
+
+```
 
 1. Go to `cms-api` folders and run command 
 ```
     npm install
     npm link
     npm run build
-``` 
+```
 
 2. Go to `cms-server` folder and run commands
-
 ```
     npm install
-    npm link @typijs/api
 ```
-
-### Run in Dev Mode
-
-1. Backup the DB: After the MongDb instance running, you can use the example data under the `resources/db/dump/vegefoods_v2` using the MongoDb command `mongorestore` to backup these collections
-
-For example, under the `resources/db` folder, run command line 
-
+3. set up the [symlinks](https://docs.npmjs.com/cli/link.html) between modules as below:
 ```
-mongorestore -d vegefoods_v2 dump/vegefoods_v2
-
-``` 
-to restore from a dump directory to a local mongod instance running on port 27017:
-
-2. First step, under `cms-server` folder, run the command
+   npm link @typijs/api
+```
+4. Stay under `cms-server` folder, and run the command
 ```
     npm run dev
 ```
 
 This command will run script to connect to mongo db, so make sure you have the correct path to your db.
-For example, you have the db path like as `C:/MongoDB/data/db`
+For example, you have the db path like as `[MonogDB PATH]/data/db`
 ```
-    mongod --dbpath C:/MongoDB/data/db
+    mongod --dbpath [MongoDB PATH]/data/db
 ```
 
-> If you install the MongoDB and run it as the service in Window, you can skip this step
+> If you are running MongoDB as a service, you can skip this step
 
 3. Final step, under `cms` folder, run the command sequentially
 ```
@@ -255,9 +250,9 @@ For example, you have the db path like as `C:/MongoDB/data/db`
 
 Now you can goto http://localhost:4200 to see the site.
 
-The admin site will be access via url: http://localhost:4200/typicms
+Register an admin account on the admin site 
 
-**Account: admin/1234qwer!**
+url: http://localhost:4200/typicms/register
 
 ### Run Angular Universal (SSR) in Dev mode
 
