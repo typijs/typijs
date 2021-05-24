@@ -8,14 +8,14 @@ import { LanguageService } from '../language/language.service';
 import { IBaseDocument } from '../shared';
 import { BaseService } from "../shared/base.service";
 import { DuplicateHostNameException, DuplicateSiteNameException, DuplicateStartPageException, HostNameAlreadyUsedException, MultiplePrimaryHostException } from './site-definition.exception';
-import { IHostDefinitionDocument, ISiteDefinitionDocument, SiteDefinitionModel } from "./site-definition.model";
+import { IHostDefinitionDocument, ISiteDefinitionDocument, cmsSiteDefinition, SiteDefinitionSchema, SiteDefinitionModel } from "./site-definition.model";
 
 @Injectable()
 export class SiteDefinitionService extends BaseService<ISiteDefinitionDocument> {
 
     private static readonly PrefixCacheKey: string = 'SiteDefinition';
     constructor(private logger: Logger, private cacheService: CacheService, private languageService: LanguageService) {
-        super(SiteDefinitionModel);
+        super(SiteDefinitionModel, cmsSiteDefinition, SiteDefinitionSchema);
     }
 
     /**

@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import { TenantDatabases } from '../../db';
 import { IBaseDocument, IBaseModel } from '../shared/base.model';
 import { cmsUser } from '../user/user.model';
 
@@ -44,7 +45,7 @@ export interface IToken {
 export interface ITokenDocument extends IToken, IBaseDocument { }
 export interface ITokenModel extends IBaseModel<ITokenDocument> { }
 
-const TokenSchema = new mongoose.Schema<ITokenDocument, ITokenModel>(
+export const TokenSchema = new mongoose.Schema<ITokenDocument, ITokenModel>(
     {
         token: { type: String, required: true, index: true },
         user: { type: mongoose.SchemaTypes.ObjectId, ref: cmsUser, required: true },
