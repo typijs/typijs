@@ -9,8 +9,8 @@ export abstract class FolderService<T extends IContentDocument, P extends IConte
 
     protected readonly EMPTY_LANGUAGE: string = '0';
 
-    constructor(folderModel: IContentModel<T>) {
-        super(folderModel);
+    constructor(folderModel: IContentModel<T>, folderModelName?: string, folderSchema?: any) {
+        super(folderModel, folderModelName, folderSchema);
     }
 
     /**

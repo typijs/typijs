@@ -1,15 +1,19 @@
+import { Injectable } from "injection-js";
 import { ContentVersionService } from "../content/content-version.service";
 import { ContentService } from "../content/content.service";
-import { BlockVersionModel, IBlockVersionDocument } from "./models/block-version.model";
-import { BlockModel, IBlockDocument, IBlockLanguageDocument } from "./models/block.model";
+import { BlockVersionModel, BlockVersionSchema, IBlockVersionDocument } from "./models/block-version.model";
+import { BlockModel, BlockSchema, cmsBlock, cmsBlockVersion, IBlockDocument, IBlockLanguageDocument } from "./models/block.model";
 
 export class BlockVersionService extends ContentVersionService<IBlockVersionDocument> {
     constructor() {
-        super(BlockVersionModel);
+        super(BlockVersionModel, cmsBlockVersion, BlockVersionSchema);
     }
 }
+
+@Injectable()
 export class BlockService extends ContentService<IBlockDocument, IBlockLanguageDocument, IBlockVersionDocument> {
-    constructor() {
-        super(BlockModel, BlockVersionModel);
+    constructor(blockVersionService: BlockVersionService) {
+        super(BlockModel, cmsBlock, BlockSchema);
+        this.contentVersionService = blockVersionService;
     }
 }

@@ -5,7 +5,7 @@ import * as cors from 'cors';
 import * as express from 'express';
 import { Provider } from 'injection-js';
 import { CacheInjectorProviders } from "./caching";
-import { config } from './config/config';
+import { config, TenantDb } from './config/config';
 import { Database } from './db/database';
 import { bindCurrentNamespace, setCurrentTenantId } from './db/storage';
 import { errorMiddleware } from './error';
@@ -31,8 +31,11 @@ export type CmsAppOptions = {
 export class TypiJs {
   constructor(private express: express.Application, appOptions: CmsAppOptions = {}) {
     this.setProviders(appOptions.provides);
-    this.setDatabaseConnection(appOptions.mongodbConnection);
-    if (appOptions.multiTenant) this.setNamespace();
+    if (config.app.multiTenant) {
+      this.setNamespace()
+    } else {
+      this.setDatabaseConnection(config.mongdb.connection);
+    };
   }
 
   get router(): express.Router {
@@ -163,8 +166,6 @@ export class CmsApp {
   }
 
   private setErrorHandling(): void {
-    //add middleware to convert all errors to AppError class
-    this.express.use(errorMiddleware.errorConverter());
     //handler for all errors
     this.express.use(errorMiddleware.errorHandler());
   }

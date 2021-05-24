@@ -23,7 +23,7 @@ export interface ILanguageBranch {
 export interface ILanguageBranchDocument extends ILanguageBranch, IBaseDocument { }
 export interface ILanguageBranchModel extends IBaseModel<ILanguageBranchDocument> { }
 
-const LanguageBranchSchema = new mongoose.Schema<ILanguageBranchDocument, ILanguageBranchModel>({
+export const LanguageBranchSchema = new mongoose.Schema<ILanguageBranchDocument, ILanguageBranchModel>({
     ...BaseSchema.obj,
     language: { type: String, unique: true, trim: true, lowercase: true },
     name: { type: String, required: true, trim: true },
