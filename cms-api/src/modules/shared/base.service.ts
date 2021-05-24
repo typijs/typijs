@@ -1,5 +1,5 @@
 import { FilterQuery, Query, UpdateQuery } from 'mongoose';
-import { config } from '../../config';
+import { ConfigManager } from '../../config';
 import { TenantDatabases } from "../../db/tenant-database";
 import { DocumentNotFoundException } from '../../error';
 import { IBaseDocument, IBaseModel, QueryItem, QueryList, QueryOptions, PaginateOptions, QueryResult } from './base.model';
@@ -17,7 +17,7 @@ export class BaseService<T extends IBaseDocument> {
     }
 
     public get Model(): IBaseModel<T> {
-        return config.app.multiTenant ? this.TenantModel : this.mongooseModel;
+        return ConfigManager.getConfig().mongdb.multiTenant ? this.TenantModel : this.mongooseModel;
     }
 
     private get TenantModel(): any {

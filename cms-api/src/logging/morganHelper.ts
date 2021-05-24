@@ -1,5 +1,6 @@
+import { Logger } from ".";
+import { Container } from "../injector";
 import { nameOfFactory } from "../utils/nameOf";
-import { logger } from "./logger";
 
 export enum MorganLogFormat {
     Combined = "combined",
@@ -43,16 +44,15 @@ export function morganJsonFormat(tokens, req, res) {
     return `{${jsonBody}}`;
 }
 
-class MorganStream {
+export class MorganStream {
+    private logger: Logger = Container.get(Logger);
     write(message: string) {
         const messageObj: MorganToken = JSON.parse(message);
 
         const httpStatus = messageObj.status;
         const errorMessage = `${messageObj.method} ${messageObj.url} - ${httpStatus} - ${messageObj.responseTime} - ${messageObj.contentLength}`;
         if (httpStatus < 400) {
-            logger.info(errorMessage);
+            this.logger.info(errorMessage);
         }
     }
 }
-
-export const morganStream = new MorganStream();

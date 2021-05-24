@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { Injectable } from 'injection-js';
+import { ConfigManager } from './config';
 
 import { AuthRouter } from './modules/auth/auth.route';
 import { BlockRouter } from './modules/block/block.route';
@@ -39,6 +40,12 @@ export class CmsApiRouter {
         appRouter.use('/auth', this.authRouter.router);
         // Language
         appRouter.use('/language', this.langRouter.router);
+        // env
+        appRouter.get('/env', function (req, res) {
+            res.send({
+                env: ConfigManager.getEnv()
+            })
+        })
         return appRouter;
     }
 }

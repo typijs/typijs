@@ -1,8 +1,8 @@
 import * as morgan from 'morgan';
 
-import { config } from '../config/config';
+import { ConfigManager } from '../config';
 import { LogLevel } from '../constants/enums';
-import { morganJsonFormat, MorganLogFormat, morganStream } from './morganHelper';
+import { morganJsonFormat, MorganLogFormat, MorganStream } from './morganHelper';
 
 /**
  * Create a new morgan logger middleware
@@ -11,8 +11,8 @@ import { morganJsonFormat, MorganLogFormat, morganStream } from './morganHelper'
 export function loggingMiddleware() {
 
     let morganMiddleware;
-
-    switch (config.log.level) {
+    const morganStream = new MorganStream();
+    switch (ConfigManager.getConfig().log.level) {
         //Log all requests to winston
         case LogLevel.Debug: {
             morganMiddleware = morgan(morganJsonFormat, {

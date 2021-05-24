@@ -1,5 +1,6 @@
 import { performance } from "perf_hooks";
-import { logger } from "./logger";
+import { Container } from "../injector";
+import { Logger } from "./logger";
 
 export type ParametersAsStringBuilder = (args: any[]) => string;
 export type ProfilerOptions = {
@@ -42,6 +43,7 @@ export function Profiler(options?: ProfilerOptions) {
         // Redefine the method to this new method who will call the original method
         // Use the function's this context instead of the value of this when log is called (no arrow function)
         descriptor.value = async function (...args: any[]) {
+            const logger = Container.get(Logger)
             const parameters = parametersAsString instanceof Function ? parametersAsString(args) : parametersAsString;
             const startTime = performance.now();
 
