@@ -1,6 +1,8 @@
 import { createNamespace } from 'continuation-local-storage';
 
-const namespaceName = 'request';
+const namespaceName: string = 'request';
+const storageKey: string = 'tenantId';
+
 const ns = createNamespace(namespaceName);
 
 export function bindCurrentNamespace(req, res, next) {
@@ -13,9 +15,9 @@ export function bindCurrentNamespace(req, res, next) {
 }
 
 export function setCurrentTenantId(tenantId) {
-    return ns.set('tenantId', tenantId);
+    return ns.set(storageKey, tenantId);
 }
 
 export function getCurrentTenantId() {
-    return ns.get('tenantId');
+    return ns.get(storageKey);
 }

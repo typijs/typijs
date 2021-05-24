@@ -1,6 +1,6 @@
 import { FilterQuery, Query, UpdateQuery } from 'mongoose';
 import { config } from '../../config';
-import { TenantDatabases } from '../../db/database';
+import { TenantDatabases } from "../../db/tenant-database";
 import { DocumentNotFoundException } from '../../error';
 import { IBaseDocument, IBaseModel, QueryItem, QueryList, QueryOptions, PaginateOptions, QueryResult } from './base.model';
 
