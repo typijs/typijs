@@ -210,22 +210,22 @@ mongorestore -d vegefoods_v2 resources/db/dump/vegefoods_v2
 
 ```
 
-1. Go to `cms-api` folders and run command 
+2. Go to `cms-api` folders and run command 
 ```
     npm install
     npm link
     npm run build
 ```
 
-2. Go to `cms-server` folder and run commands
+3. Go to `cms-server` folder and run commands
 ```
     npm install
 ```
-3. set up the [symlinks](https://docs.npmjs.com/cli/link.html) between modules as below:
+4. set up the [symlinks](https://docs.npmjs.com/cli/link.html) between modules as below:
 ```
    npm link @typijs/api
 ```
-4. Stay under `cms-server` folder, and run the command
+5. Stay under `cms-server` folder, and run the command
 ```
     npm run dev
 ```
@@ -238,7 +238,7 @@ For example, you have the db path like as `[MonogDB PATH]/data/db`
 
 > If you are running MongoDB as a service, you can skip this step
 
-3. Final step, under `cms` folder, run the command sequentially
+6. Final step, under `cms` folder, run the command sequentially
 ```
     npm install
     ng build core
