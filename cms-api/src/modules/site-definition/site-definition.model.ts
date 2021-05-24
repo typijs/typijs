@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import { TenantDatabases } from '../../db/database';
+import { TenantDatabases } from "../../db/tenant-database";
 import { cmsPage, IPageDocument } from '../page/models/page.model';
 import { IBaseDocument, IBaseModel, BaseSchema } from '../shared/base.model';
 
