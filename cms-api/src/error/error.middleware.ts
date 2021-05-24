@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 import * as httpStatus from 'http-status';
 
-import { config } from '../config/config';
+import { ConfigManager } from '../config';
 import { NodeEnv } from '../constants/enums';
-import { logger } from '../logging';
+import { Container } from '../injector';
+import { Logger } from '../logging';
 import { ApiError } from './ApiError';
 
 export class ErrorMiddleware {
@@ -17,12 +18,12 @@ export class ErrorMiddleware {
         const apiError = new ApiError(statusCode, message, error.stack);
 
         const formattedMessage = `${statusCode} - ${message} - ${req.originalUrl} - ${req.method} - ${req.ip}`;
-        logger.error(formattedMessage, apiError);
+        Container.get(Logger).error(formattedMessage, apiError);
 
         const response = {
             statusCode,
             message,
-            ...(config.app.env === NodeEnv.Development && { stack: apiError.stack })
+            ...(ConfigManager.getEnv() === NodeEnv.Development && { stack: apiError.stack })
         }
 
         res.status(statusCode).send(response);

@@ -1,7 +1,7 @@
 import { Request } from "express";
 import { Injectable } from "injection-js";
 import * as jwt from 'jsonwebtoken';
-import { config } from '../../config/config';
+import { ConfigManager } from '../../config';
 import { UnauthorizedException } from "../../error";
 import { IUserDocument } from "../user/user.model";
 import { UserService } from "../user/user.service";
@@ -73,7 +73,7 @@ export class AuthService {
         }
 
         try {
-            const tokenPayload = jwt.verify(token, config.jwt.secret) as TokenPayload;
+            const tokenPayload = jwt.verify(token, ConfigManager.getConfig().jwt.secret) as TokenPayload;
             const { sub, username, roles } = tokenPayload;
             req['user'] = { id: sub, username, roles };
             return true;

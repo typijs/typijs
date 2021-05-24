@@ -1,6 +1,6 @@
 import { AxiosRequestConfig } from 'axios';
 import * as FormData from 'form-data';
-import { config } from '../config';
+import { ConfigManager, ImgurConfig } from '../config';
 import { HttpClient } from './HttpClient';
 
 export type ImgurApiResponse = {
@@ -54,17 +54,10 @@ export type UploadResponse = ImgurApiResponse & {
     }
 };
 
-export type ImgurConfig = {
-    baseUrl: string
-    clientId: string
-    clientSecret: string
-    refreshToken: string
-    accessToken: string
-}
-
 export class ImgurClient extends HttpClient {
-    public constructor(private readonly imgurConfig: ImgurConfig) {
-        super(imgurConfig.baseUrl);
+    private readonly imgurConfig: ImgurConfig = ConfigManager.getConfig().imgur;
+    public constructor() {
+        super(ConfigManager.getConfig().imgur.baseUrl);
         this.initAuthorizationRequestInterceptor();
     }
 
@@ -101,12 +94,3 @@ export class ImgurClient extends HttpClient {
         );
     };
 }
-
-
-export const imgurClient = new ImgurClient({
-    baseUrl: config.imgur.baseUrl,
-    clientId: config.imgur.clientId,
-    clientSecret: config.imgur.clientSecret,
-    refreshToken: config.imgur.refreshToken,
-    accessToken: config.imgur.accessToken
-})

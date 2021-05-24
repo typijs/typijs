@@ -2,7 +2,7 @@ import { Injectable } from 'injection-js';
 import * as jwt from 'jsonwebtoken';
 import * as moment from 'moment';
 
-import { config } from '../../config/config';
+import { ConfigManager, JwtConfig } from '../../config';
 import { DocumentNotFoundException } from '../../error';
 import { BaseService } from '../shared/base.service';
 import { IUserDocument } from '../user/user.model';
@@ -11,6 +11,8 @@ import { AuthTokens, cmsToken, ITokenDocument, TokenModel, TokenPayload, TokenSc
 
 @Injectable()
 export class TokenService extends BaseService<ITokenDocument>{
+    private jwtConfig: JwtConfig = ConfigManager.getConfig().jwt;
+
     constructor(private userService: UserService) {
         super(TokenModel, cmsToken, TokenSchema);
     }
@@ -21,7 +23,7 @@ export class TokenService extends BaseService<ITokenDocument>{
      * @returns {Promise<Token>}
      */
     public verifyToken = async (token: string, type: TokenType): Promise<ITokenDocument> => {
-        const payload: TokenPayload = jwt.verify(token, config.jwt.secret) as TokenPayload;
+        const payload: TokenPayload = jwt.verify(token, this.jwtConfig.secret) as TokenPayload;
         const tokenDoc = await this.findOne({ token, type, user: payload.sub, blacklisted: false });
         if (!tokenDoc) {
             throw new DocumentNotFoundException(token, `Token ${token} is not found`);
@@ -35,10 +37,10 @@ export class TokenService extends BaseService<ITokenDocument>{
      * @returns {Promise<Object>}
      */
     public generateAuthTokens = async (user: IUserDocument): Promise<AuthTokens> => {
-        const accessTokenExpires = moment().add(config.jwt.accessExpirationMinutes, 'minutes');
+        const accessTokenExpires = moment().add(this.jwtConfig.accessExpirationMinutes, 'minutes');
         const accessToken = this.generateToken(user, accessTokenExpires);
 
-        const refreshTokenExpires = moment().add(config.jwt.refreshExpirationDays, 'days');
+        const refreshTokenExpires = moment().add(this.jwtConfig.refreshExpirationDays, 'days');
         const refreshToken = this.generateToken(user, refreshTokenExpires);
         await this.saveToken(refreshToken, user.id, refreshTokenExpires, 'refresh');
 
@@ -64,7 +66,7 @@ export class TokenService extends BaseService<ITokenDocument>{
         if (!user) {
             throw new DocumentNotFoundException(email, `No users found with this email ${email}`);
         }
-        const expiry = moment().add(config.jwt.resetPasswordExpirationMinutes, 'minutes');
+        const expiry = moment().add(this.jwtConfig.resetPasswordExpirationMinutes, 'minutes');
         const resetPasswordToken = this.generateToken(user, expiry);
         await this.saveToken(resetPasswordToken, user.id, expiry, 'resetPassword');
         return resetPasswordToken;
@@ -77,7 +79,7 @@ export class TokenService extends BaseService<ITokenDocument>{
      * @param {string} [secret]
      * @returns {string}
      */
-    private generateToken = (user: IUserDocument, expiry: moment.Moment, secret: jwt.Secret = config.jwt.secret): string => {
+    private generateToken = (user: IUserDocument, expiry: moment.Moment, secret: jwt.Secret = this.jwtConfig.secret): string => {
         const payload: TokenPayload = {
             sub: user.id,
             iat: moment().unix(),
