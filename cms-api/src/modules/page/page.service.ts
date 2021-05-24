@@ -11,20 +11,21 @@ import { ContentService } from '../content/content.service';
 import { VersionStatus } from "../content/version-status";
 import { LanguageService } from '../language';
 import { SiteDefinitionService } from '../site-definition/site-definition.service';
-import { IPageVersionDocument, PageVersionModel } from "./models/page-version.model";
-import { IPageDocument, IPageLanguageDocument, PageModel } from "./models/page.model";
+import { IPageVersionDocument, PageVersionModel, PageVersionSchema } from "./models/page-version.model";
+import { cmsPage, cmsPageVersion, IPageDocument, IPageLanguageDocument, PageModel, PageSchema } from "./models/page.model";
 
 export class PageVersionService extends ContentVersionService<IPageVersionDocument> {
     constructor() {
-        super(PageVersionModel);
+        super(PageVersionModel, cmsPageVersion, PageVersionSchema);
     }
 }
 
 @Injectable()
 export class PageService extends ContentService<IPageDocument, IPageLanguageDocument, IPageVersionDocument> {
     private static readonly PrefixCacheKey: string = 'Page';
-    constructor(private siteDefinitionService: SiteDefinitionService, private languageService: LanguageService, private cacheService: CacheService) {
-        super(PageModel, PageVersionModel);
+    constructor(private siteDefinitionService: SiteDefinitionService, private languageService: LanguageService, pageVersionService: PageVersionService) {
+        super(PageModel, cmsPage, PageSchema);
+        this.contentVersionService = pageVersionService;
     }
 
     /**

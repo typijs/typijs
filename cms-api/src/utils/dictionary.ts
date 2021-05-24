@@ -12,4 +12,4 @@ type ArrayDictionary<T> = { [key: string]: T[] };
  * let userEntity: Dictionary<User>; // {[key: string]: User}
  * ```
  */
-export type Dictionary<T> = T extends [] ? ArrayDictionary<T[number]> : ObjectDictionary<T>;
+export type Dictionary<T> = T extends [] ? ArrayDictionary<T[]> : ObjectDictionary<T>;

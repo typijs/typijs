@@ -1,15 +1,25 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as sharp from "sharp";
+import { Injectable } from "injection-js";
+import { ContentVersionService } from '../content/content-version.service';
 import { ContentService } from "../content/content.service";
-import { IMediaVersionDocument, MediaVersionModel } from "./models/media-version.model";
-import { ImageContent, IMediaDocument, IMediaLanguageDocument, MediaModel } from "./models/media.model";
+import { IMediaVersionDocument, MediaVersionModel, MediaVersionSchema } from "./models/media-version.model";
+import { cmsMedia, cmsMediaVersion, ImageContent, IMediaDocument, IMediaLanguageDocument, MediaModel, MediaSchema } from "./models/media.model";
 import { UPLOAD_PATH } from './storage';
 
+export class MediaVersionService extends ContentVersionService<IMediaVersionDocument> {
+    constructor() {
+        super(MediaVersionModel, cmsMediaVersion, MediaVersionSchema);
+    }
+}
+
+@Injectable()
 export class MediaService extends ContentService<IMediaDocument, IMediaLanguageDocument, IMediaVersionDocument> {
 
-    constructor() {
-        super(MediaModel, MediaVersionModel);
+    constructor(mediaVersionService: MediaVersionService) {
+        super(MediaModel, cmsMedia, MediaSchema);
+        this.contentVersionService = mediaVersionService;
     }
 
     public createReadMediaStream = async (fileId: string, fileName: string, width?: number, height?: number): Promise<fs.ReadStream> => {

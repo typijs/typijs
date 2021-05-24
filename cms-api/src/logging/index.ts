@@ -1,7 +1,7 @@
 import { Provider } from 'injection-js';
-import { Logger, logger } from './logger';
+import { Logger } from './logger';
 import { loggingMiddleware } from './logging.middleware';
 
 const LoggerProviders: Provider[] = [Logger];
-export { Logger, loggingMiddleware, logger, LoggerProviders }
+export { Logger, loggingMiddleware, LoggerProviders }
 export * from './profiler.decorator';

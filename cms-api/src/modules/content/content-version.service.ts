@@ -4,6 +4,7 @@ import { IContentVersionDocument } from './content.model';
 import { VersionStatus } from "./version-status";
 
 export class ContentVersionService<V extends IContentVersionDocument> extends BaseService<V> {
+
     /**
      * Create new version of content
      * @param version 

@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { Injectable } from "injection-js";
 import { CacheService, Cache } from "../../caching";
 import { BaseService } from "../shared/base.service";
-import { ILanguageBranchDocument, LanguageBranchModel } from './language.model';
+import { cmsLanguageBranch, ILanguageBranchDocument, LanguageBranchModel, LanguageBranchSchema } from './language.model';
 
 @Injectable()
 export class LanguageService extends BaseService<ILanguageBranchDocument> {
@@ -12,7 +12,7 @@ export class LanguageService extends BaseService<ILanguageBranchDocument> {
     public readonly EMPTY_LANGUAGE: string = '0';
     private static readonly PrefixCacheKey: string = 'LanguageBranch';
     constructor(private cacheService: CacheService) {
-        super(LanguageBranchModel);
+        super(LanguageBranchModel, cmsLanguageBranch, LanguageBranchSchema);
     }
 
     /**

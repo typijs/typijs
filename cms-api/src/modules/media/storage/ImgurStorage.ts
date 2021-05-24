@@ -3,7 +3,8 @@ import { Request } from "express";
 import * as mongoose from 'mongoose';
 import { Stream } from "stream";
 
-import { imgurClient } from '../../../http/ImgurClient';
+import { ImgurClient } from '../../../http/ImgurClient';
+import { Container } from "../../../injector";
 import { CmsStorageEngine } from "./BaseStorage";
 
 export interface MulterInFile extends Express.Multer.File {
@@ -30,10 +31,12 @@ const getImgurThumbnail = (link: string): string => {
 }
 
 export class ImgurStorageEngine extends CmsStorageEngine {
+
     async _handleFile(req: Request, file: MulterInFile, callback: (error?: any, info?: Partial<MulterOutFile>) => void) {
         //collect all the data from a stream into a single buffer.
         file.stream.pipe(concat({ encoding: 'buffer' }, function (buffer) {
-            const encoded = buffer.toString('base64')
+            const encoded = buffer.toString('base64');
+            const imgurClient = Container.get(ImgurClient);
             imgurClient.uploadImage(encoded)
                 .then(function (response) {
                     const { id, title, description, type, deletehash, name, link } = response.data;
