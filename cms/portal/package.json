@@ -1,6 +1,6 @@
 {
   "name": "@typijs/portal",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "dependencies": {
     "tslib": "^2.0.0"
   },
@@ -9,8 +9,8 @@
     "@angular/core": "^11.2.6",
     "@angular/router": "^11.2.6",
     "@angular/forms": "^11.2.6",
-    "@typijs/core": "^1.0.0-beta.2",
-    "@typijs/modules": "^1.0.0-beta.2",
+    "@typijs/core": "^1.0.0-beta.3",
+    "@typijs/modules": "^1.0.0-beta.3",
     "@fortawesome/angular-fontawesome": "^0.8.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
