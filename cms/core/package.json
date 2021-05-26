@@ -1,6 +1,33 @@
 {
   "name": "@typijs/core",
   "version": "1.0.0-beta.3",
+  "description": "The Angular CMS Framework for building fully-featured SPA sites powered by NodeJS and MongoDB with TypeScript",
+  "license": "MIT",
+  "keywords": [
+    "cms",
+    "api",
+    "opensource",
+    "nodejs",
+    "mean stack",
+    "expressjs",
+    "angular",
+    "framework",
+    "typescript"
+  ],
+  "bugs": {
+    "url": "https://github.com/typijs/typijs/issues"
+  },
+  "homepage": "https://www.typijs.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/typijs/typijs"
+  },
+  "author": {
+    "name": "TypiJS Team",
+    "email": "contact@typijs.com",
+    "url": "https://github.com/typijs"
+  },
+  "private": true,
   "dependencies": {
     "tslib": "^2.0.0"
   },
