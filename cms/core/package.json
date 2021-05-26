@@ -27,7 +27,6 @@
     "email": "contact@typijs.com",
     "url": "https://github.com/typijs"
   },
-  "private": true,
   "dependencies": {
     "tslib": "^2.0.0"
   },
