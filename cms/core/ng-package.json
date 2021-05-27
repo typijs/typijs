@@ -4,7 +4,12 @@
   "lib": {
     "entryFile": "src/public-api.ts",
     "umdModuleIds": {
-      "@nguniversal/express-engine/tokens" : "ExpressEngineTokens"
+      "@nguniversal/express-engine/tokens": "ExpressEngineTokens"
     }
-  }
+  },
+  "allowedNonPeerDependencies": [
+    "@angular/platform-server",
+    "@nguniversal/express-engine",
+    "reflect-metadata"
+  ]
 }

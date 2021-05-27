@@ -1,10 +1,9 @@
-import { TypiJsModule, AuthModule, PAGE_AFTER_INIT } from '@typijs/core';
-import { DOCUMENT } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ApplicationRef, NgModule, RendererFactory2 } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TransferHttpCacheModule } from '@nguniversal/common';
+import { TypiJsModule } from '@typijs/core';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -43,7 +42,6 @@ export function pageAfterViewInit(rendererFactory: RendererFactory2, document: D
             adminRoute: '/typicms',
             configFilePath: '/assets/config/config-dev.json'
         }),
-        AuthModule,
         AppRoutingModule,
         PagesModule,
         BlocksModule

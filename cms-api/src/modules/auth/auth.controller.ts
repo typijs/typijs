@@ -9,12 +9,17 @@ import { TokenService } from './token.service';
 import { TokenDto } from './token.model';
 import { LanguageService } from '../language/language.service';
 import { ILanguageBranchDocument } from '../language/language.model';
+import { CacheService } from '../../caching';
 
 @Injectable()
 export class AuthController {
 
     private readonly refreshTokenCookie: string = 'refreshToken';
-    constructor(private authService: AuthService, private userService: UserService, private tokenService: TokenService, private languageService: LanguageService) { }
+    constructor(private authService: AuthService, 
+        private userService: UserService, 
+        private tokenService: TokenService, 
+        private languageService: LanguageService,
+        private cacheService: CacheService) { }
 
     public canSetupAdmin = async (req: express.Request, res: express.Response) => {
         const admin = await this.userService.getAdminUser();
@@ -45,6 +50,8 @@ export class AuthController {
             }
             await this.languageService.addLanguage(defaultLanguageDoc, admin._id.toString());
         }
+        // step 4: clear all cache in first time setup
+        this.cacheService.clearAll();
 
         res.status(httpStatus.OK).json(admin);
     }

@@ -19,5 +19,15 @@
       "quill": "Quill",
       "quill-image-resize-module": "QuillImageResizeModule"
     }
-  }
+  },
+  "allowedNonPeerDependencies": [
+    "@fortawesome/angular-fontawesome",
+    "@fortawesome/fontawesome-svg-core",
+    "@fortawesome/free-solid-svg-icons",
+    "@typijs/core",
+    "bootstrap",
+    "ngx-bootstrap",
+    "ngx-quill",
+    "quill"
+  ]
 }

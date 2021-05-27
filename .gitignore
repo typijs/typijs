@@ -42,8 +42,6 @@ testem.log
 .DS_Store
 Thumbs.db
 .vscode/
-cms-examples/uploads/
-cms-examples/logs/
 cms-server/logs/
 cms-server/uploads/
 cms/cms-demo/prerender.html

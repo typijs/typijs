@@ -1,8 +1,8 @@
-import { TypiJsModule } from '@typijs/core';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { TypiJsModule } from '@typijs/core';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { HeroBannerComponent } from '../shared/hero-banner/hero-banner.component';
 import { ArticleComponent } from './article/article.component';

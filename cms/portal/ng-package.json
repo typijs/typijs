@@ -8,5 +8,15 @@
       "@typijs/modules": "AngularCmsModules",
       "ngx-quill": "NgxQuill"
     }
-  }
+  },
+  "allowedNonPeerDependencies": [
+    "@fortawesome/angular-fontawesome",
+    "@fortawesome/fontawesome-svg-core",
+    "@fortawesome/free-solid-svg-icons",
+    "@typijs/core",
+    "@typijs/modules",
+    "bootstrap",
+    "ngx-bootstrap",
+    "angular-split"
+  ]
 }
