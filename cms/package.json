@@ -1,6 +1,6 @@
 {
   "name": "cms",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.5",
   "description": "The Angular CMS Framework for building fully-featured SPA sites powered by NodeJS and MongoDB with TypeScript",
   "license": "MIT",
   "scripts": {

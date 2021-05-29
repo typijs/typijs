@@ -1,6 +1,6 @@
 {
   "name": "@typijs/api",
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.5",
   "description": "This package provide the apis to manipulate the content data which stored in MongoDB",
   "license": "MIT",
   "main": "dist/index.js",
