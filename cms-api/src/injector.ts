@@ -17,7 +17,7 @@ export class CmsInjector {
 }
 
 export class Container {
-    public static readonly globalInstance: CmsInjector = new CmsInjector();
+    private static readonly globalInstance: CmsInjector = new CmsInjector();
 
     static get<T>(token: Type<T> | InjectionToken<T>, notFoundValue?: T): T {
         return this.globalInstance.get(token, notFoundValue);

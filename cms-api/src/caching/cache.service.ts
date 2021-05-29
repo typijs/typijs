@@ -1,8 +1,9 @@
 import 'reflect-metadata';
 import { Injectable } from "injection-js";
 import { CacheProvider } from "./cache.provider";
-import { ParamNullException } from '../error/exceptions/ParamNullException';
+import { ParamNullException } from '../error';
 import { isNilOrWhiteSpace } from '../utils';
+import { TenantContext } from '../request-context';
 
 @Injectable()
 export class CacheService {
@@ -24,6 +25,8 @@ export class CacheService {
      * @returns return `Promise` of item's value. Need use with `then()` or `await` to get value
      */
     public get = async <T = unknown>(cacheKey: string, cacheMissCallback?: () => Promise<T>, ttl?: number): Promise<T> => {
+
+        cacheKey = this.getCacheKeyWithPrefixTenant(cacheKey);
         let value = this.cache.get(cacheKey)
         if (value) return value;
 
@@ -44,6 +47,7 @@ export class CacheService {
      * @returns Return the item's value
      */
     public getSync = <T = unknown>(cacheKey: string, cacheMissCallback?: () => T, ttl?: number): T => {
+        cacheKey = this.getCacheKeyWithPrefixTenant(cacheKey);
         let value = this.cache.get(cacheKey)
         if (value) return value;
 
@@ -63,16 +67,23 @@ export class CacheService {
      * @param [ttl] (default: `0`) The time to live in second. `0` = unlimited
      */
     public set = (cacheKey: string, value: any, ttl?: number) => {
+        cacheKey = this.getCacheKeyWithPrefixTenant(cacheKey);
         this.cache.set(cacheKey, value, ttl);
     }
 
     public delete = (cacheKeys: string | string[]) => {
+        if (cacheKeys instanceof Array) {
+            cacheKeys.forEach(key => key = this.getCacheKeyWithPrefixTenant(key));
+        } else {
+            cacheKeys = this.getCacheKeyWithPrefixTenant(cacheKeys);
+        }
         this.cache.delete(cacheKeys);
     }
 
-    public deleteStartWith = (keyStartStr: string = '') => {
+    public deleteStartWith = (keyStartStr: string) => {
         if (!keyStartStr) return;
 
+        keyStartStr = this.getCacheKeyWithPrefixTenant(keyStartStr);
         const keys = this.cache.keys();
         for (const key of keys) {
             if (key.indexOf(keyStartStr) === 0) {
@@ -85,4 +96,13 @@ export class CacheService {
         this.cache.clearAll();
     }
 
+    public getAll = () => {
+        const keys = this.cache.keys();
+        return keys.map(key => ({ key, value: this.cache.get(key) }))
+    }
+
+    private getCacheKeyWithPrefixTenant(cacheKey: string): string {
+        const tenant = TenantContext.getCurrentTenantId();
+        return isNilOrWhiteSpace(tenant) ? cacheKey : `${tenant}:${cacheKey}`;
+    }
 }

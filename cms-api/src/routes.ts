@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { Injectable } from 'injection-js';
+import { CacheService } from './caching';
 import { ConfigManager } from './config';
 
 import { AuthRouter } from './modules/auth/auth.route';
@@ -13,6 +14,7 @@ import { UserRouter } from './modules/user/user.route';
 @Injectable()
 export class CmsApiRouter {
     constructor(
+        private cacheService: CacheService,
         private pageRouter: PageRouter,
         private blockRouter: BlockRouter,
         private mediaRouter: MediaRouter,
@@ -45,6 +47,11 @@ export class CmsApiRouter {
             res.send({
                 env: ConfigManager.getEnv()
             })
+        })
+
+        // env
+        appRouter.get('/caches', (req, res) => {
+            res.send(this.cacheService.getAll())
         })
         return appRouter;
     }

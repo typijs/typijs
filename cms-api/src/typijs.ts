@@ -2,7 +2,7 @@ import * as express from 'express';
 import { Provider } from 'injection-js';
 import { CacheInjectorProviders } from "./caching";
 import { ConfigManager, TypiJsConfig } from './config';
-import { Database, TenantDatabases, bindCurrentNamespace, setCurrentTenantId } from './db';
+import { Database, TenantDatabases } from './db';
 import { errorMiddleware } from './error';
 import { EventInjectorProviders } from "./event";
 import { HttpClientProviders } from './http';
@@ -15,6 +15,7 @@ import { MediaProviders, StorageProviders } from './modules/media';
 import { PageProviders } from './modules/page';
 import { SiteDefinitionProviders } from "./modules/site-definition";
 import { UserProviders } from "./modules/user";
+import { RequestContext, TenantContext } from './request-context';
 import { CmsApiRouter } from './routes';
 
 export class TypiJs {
@@ -63,20 +64,29 @@ export class TypiJs {
   private setDatabaseConnection() {
     const config = ConfigManager.getConfig()
     if (config.mongdb.multiTenant) {
-      this.setNamespace()
-      TenantDatabases.setTenantDbsConfig(config.mongdb.tenantConnects, config.mongdb.tenantHosts);
+      this.setRequestContext();
+      this.setTenantContext()
+      this.setTenantDbsConfig(config);
     } else {
       Database.connect(config.mongdb.connection);
     };
   }
 
-  private setNamespace(): void {
-    this.express.use(bindCurrentNamespace)
+  private setRequestContext() {
+    this.express.use(RequestContext.middleware)
+  }
+
+  private setTenantContext(): void {
     this.express.use((req, res, next) => {
-      const host: string = req.get('host') //return hostname + port: ex localhost:3000
-      setCurrentTenantId(host);
+      //get hostname + port: ex localhost:3000
+      const host: string = req.get('host')
+      TenantContext.setCurrentTenantId(host);
       next();
     })
+  }
+
+  private setTenantDbsConfig(config) {
+    TenantDatabases.setTenantDbsConfig(config.mongdb.tenantConnects, config.mongdb.tenantHosts);
   }
 
   private setLoggingMiddleware(): void {

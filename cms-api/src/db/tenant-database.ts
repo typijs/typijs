@@ -1,8 +1,8 @@
 import * as mongoose from 'mongoose';
 import { Logger } from '../logging';
 import { ConfigManager } from '../config';
-import { getCurrentTenantId } from './local-storage';
 import { Container } from '../injector';
+import { TenantContext } from '../request-context';
 
 export type TenantDb = {
     /**
@@ -33,7 +33,7 @@ export class TenantDatabases {
     }
 
     static getModelByTenant<D extends mongoose.Document<any>, M extends mongoose.Model<any>>(modelName: string, schema) {
-        const tenantId = getCurrentTenantId();
+        const tenantId = TenantContext.getCurrentTenantId();
         const tenantDb = this.getTenantDb(tenantId, modelName, schema);
         // Get the model which be created already
         return tenantDb.model<D, M>(modelName);
@@ -72,6 +72,7 @@ export class TenantDatabases {
                 logger.info(`Connected to MongoDB on ${connection}`);
             })
             .catch(err => {
+                console.log(`Could not connect to the database ${connection}. Exiting Now...`);
                 logger.error(`Could not connect to the database. Exiting Now...`, err);
             });
 

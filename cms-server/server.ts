@@ -8,15 +8,14 @@ import { config } from './config';
 
 export class ExpressServer {
     public express: express.Application;
-    public typiJs: TypiJs;
 
     constructor() {
         this.express = express();
-        this.typiJs = new TypiJs(this.express, config);
+        this.setDefaultMiddlewares();
 
-        this.setMiddlewares();
-        this.setRoutes();
-        this.setErrorHandling();
+        const typiJs = new TypiJs(this.express, config);
+        this.setRoutes(typiJs);
+        this.setErrorHandling(typiJs);
     }
 
     public start(): Promise<any> {
@@ -31,7 +30,7 @@ export class ExpressServer {
         });
     }
 
-    private setMiddlewares(): void {
+    private setDefaultMiddlewares(): void {
 
         //enable CORS - Cross Origin Resource Sharing
         //https://expressjs.com/en/resources/middleware/cors.html
@@ -47,12 +46,12 @@ export class ExpressServer {
         //this.express.use(helmet());
     }
 
-    private setRoutes(): void {
-        this.express.use('/api', this.typiJs.apiRouter);
+    private setRoutes(typiJs: TypiJs): void {
+        this.express.use('/api', typiJs.apiRouter);
     }
 
-    private setErrorHandling(): void {
-        this.express.use(this.typiJs.errorHandler)
+    private setErrorHandling(typiJs: TypiJs): void {
+        this.express.use(typiJs.errorHandler)
     }
 }
 
