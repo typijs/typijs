@@ -181,7 +181,6 @@ To start the site build with TypiJS, following theses steps
 * MongoDB latest
 
 ### Quick start
-### (Starter project is still work in progress)
 1. Clone the repo
    ```sh
    git clone https://github.com/typijs/typijs-starter.git
