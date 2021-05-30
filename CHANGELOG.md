@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.0.0-beta.6 (2021-05-30)
+
+### Changed
+- Fix bug schema is not register in multi tenant mode
+- Fix bug unable delete cache in multi tenant mode
+- Update git action
+- Change default admin router from typicms-> typijs in cms-demo
+
 ## v1.0.0-beta.5 (2021-05-29)
 
 ### Added
