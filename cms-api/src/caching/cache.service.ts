@@ -87,7 +87,7 @@ export class CacheService {
         const keys = this.cache.keys();
         for (const key of keys) {
             if (key.indexOf(keyStartStr) === 0) {
-                this.delete(key);
+                this.cache.delete(key);
             }
         }
     }
