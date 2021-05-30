@@ -6,22 +6,13 @@ import { IBaseDocument, IBaseModel, QueryItem, QueryList, QueryOptions, Paginate
 
 export class BaseService<T extends IBaseDocument> {
     constructor(private mongooseModel: IBaseModel<T>, private modelName?: string, private schema?: any) {
-    }
-
-    private static get defaultOptions(): QueryOptions {
-        return { lean: false };
-    }
-
-    private static get defaultPaginateOptions(): PaginateOptions {
-        return { limit: 1000, page: 1 }
+        if (ConfigManager.getConfig().mongdb.multiTenant && modelName && schema) {
+            TenantDatabases.preCreateModel(modelName, schema);
+        }
     }
 
     public get Model(): IBaseModel<T> {
         return ConfigManager.getConfig().mongdb.multiTenant ? this.TenantModel : this.mongooseModel;
-    }
-
-    private get TenantModel(): any {
-        return TenantDatabases.getModelByTenant<T, any>(this.modelName, this.schema);
     }
 
     /**
@@ -172,5 +163,17 @@ export class BaseService<T extends IBaseDocument> {
 
     private getQueryOptions = (options?: QueryOptions): QueryOptions => {
         return { ...BaseService.defaultOptions, ...(options || {}), };
+    }
+
+    private get TenantModel(): any {
+        return TenantDatabases.getModelByTenant<T, any>(this.modelName, this.schema);
+    }
+
+    private static get defaultOptions(): QueryOptions {
+        return { lean: false };
+    }
+
+    private static get defaultPaginateOptions(): PaginateOptions {
+        return { limit: 1000, page: 1 }
     }
 }

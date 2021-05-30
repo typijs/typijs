@@ -9,7 +9,7 @@ import { slugify } from '../../utils';
 import { ValidateBody, ValidateParams } from '../../validation/validate.decorator';
 import { ContentVersionService } from '../content/content-version.service';
 import { ContentController } from '../content/content.controller';
-import { MediaService } from './media.service';
+import { MediaService, MediaVersionService } from './media.service';
 import { IMediaVersionDocument, MediaVersionModel } from './models/media-version.model';
 import {
     FileContent,
@@ -23,8 +23,8 @@ import { Multer } from './multer';
 @Injectable()
 export class MediaController extends ContentController<IMediaDocument, IMediaLanguageDocument, IMediaVersionDocument> {
 
-    constructor(private mediaService: MediaService, private multer: Multer) {
-        super(mediaService, new ContentVersionService<IMediaVersionDocument>(MediaVersionModel));
+    constructor(private mediaService: MediaService, mediaVersionService: MediaVersionService, private multer: Multer) {
+        super(mediaService, mediaVersionService);
     }
 
     @ValidateParams({

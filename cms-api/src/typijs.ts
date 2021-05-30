@@ -21,8 +21,9 @@ import { CmsApiRouter } from './routes';
 export class TypiJs {
   constructor(private express: express.Application, appConfig?: TypiJsConfig) {
     this.setConfig(appConfig);
-    this.setProviders(appConfig.provides);
+    this.setSystemProvider();
     this.setDatabaseConnection();
+    this.setAppProviders(appConfig.provides);
     this.setLoggingMiddleware();
   }
 
@@ -39,12 +40,19 @@ export class TypiJs {
     ConfigManager.setConfig(config);
   }
 
-  private setProviders(providers: Provider[]) {
-    let appProviders = [
+  private setSystemProvider() {
+    let systemProviders = [
       ...LoggerProviders,
-      ...HttpClientProviders,
-      ...EventInjectorProviders,
       ...CacheInjectorProviders,
+      ...EventInjectorProviders,
+      ...HttpClientProviders
+    ];
+
+    Container.set(systemProviders);
+  }
+
+  private setAppProviders(customProviders: Provider[]) {
+    let appProviders = [
       ...LanguageProviders,
       ...StorageProviders,
       ...UserProviders,
@@ -55,19 +63,22 @@ export class TypiJs {
       ...PageProviders,
       CmsApiRouter
     ];
-    if (providers) {
-      appProviders = [...appProviders, ...providers];
+    if (customProviders) {
+      appProviders = [...appProviders, ...customProviders];
     }
     Container.set(appProviders);
   }
 
   private setDatabaseConnection() {
-    const config = ConfigManager.getConfig()
+    const config = ConfigManager.getConfig();
+
     if (config.mongdb.multiTenant) {
       this.setRequestContext();
-      this.setTenantContext()
-      this.setTenantDbsConfig(config);
+      this.setTenantContext();
+      // Multi tenant mode using multi connections to MongoDB
+      TenantDatabases.connect(config.mongdb.tenantConnects, config.mongdb.tenantHosts);
     } else {
+      // Single mode using the default mongoose connection
       Database.connect(config.mongdb.connection);
     };
   }
@@ -83,10 +94,6 @@ export class TypiJs {
       TenantContext.setCurrentTenantId(host);
       next();
     })
-  }
-
-  private setTenantDbsConfig(config) {
-    TenantDatabases.setTenantDbsConfig(config.mongdb.tenantConnects, config.mongdb.tenantHosts);
   }
 
   private setLoggingMiddleware(): void {

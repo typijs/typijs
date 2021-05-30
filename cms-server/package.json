@@ -11,7 +11,7 @@
     "copy-lib": "cpx \"../cms-api/dist/**/*\" \"node_modules/@typijs/api\"",
     "copy-env": "cpx \"*.env\" \"dist\"",
     "serve": "node dist/server.js",
-    "start": "pm2-runtime start ecosystem.config.js --env production",
+    "start": "node dist/server.js",
     "watch-ts": "tsc -w",
     "watch-lib": "tsc -w -p ../cms-api",
     "watch-node": "nodemon --inspect --watch ../cms-api/dist --watch dist dist/server.js",

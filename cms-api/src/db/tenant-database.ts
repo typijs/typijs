@@ -3,32 +3,29 @@ import { Logger } from '../logging';
 import { ConfigManager } from '../config';
 import { Container } from '../injector';
 import { TenantContext } from '../request-context';
-
-export type TenantDb = {
-    /**
-     * The db connection
-     */
-    dbConnection: string
-    /**
-     * The hosts can be connected to the db
-     */
-    hosts: string[]
-}
+import { Dictionary } from '../utils/dictionary';
 
 export class TenantDatabases {
-    private static tenantDbs: TenantDb[] = [];
     private static multiTenantPool = {};
+    private static hostDictinary: Dictionary<string> = {};
 
-    static setTenantDbsConfig(tenantConnects: string, tenantHosts: string) {
-        const connections = tenantConnects.split('|');
+    static connect(tenantMongoDbConns: string, tenantHosts: string): void {
+        const connections = tenantMongoDbConns.split('|');
         const hostGroups = tenantHosts.split('|')
 
-        connections.forEach((connect, index) => {
+        connections.forEach((mongoDbConn, index) => {
             const hostGroup = index < hostGroups.length ? hostGroups[index] : '';
-            this.tenantDbs.push({
-                dbConnection: connect,
-                hosts: hostGroup.split(',')
-            })
+
+            const hosts = hostGroup.split(',');
+            hosts.forEach(host => this.hostDictinary[host] = mongoDbConn)
+
+            this.multiTenantPool[mongoDbConn] = this.connectToMongoDb(mongoDbConn);
+        })
+    }
+
+    static preCreateModel(modelName: string, schema): void {
+        Object.keys(this.hostDictinary).forEach(host => {
+            this.getTenantDb(host, modelName, schema);
         })
     }
 
@@ -39,14 +36,10 @@ export class TenantDatabases {
         return tenantDb.model<D, M>(modelName);
     };
 
-    private static getConnectionByTenantId(tenantId: string): string {
-        const matchDb = this.tenantDbs.find(x => x.hosts.includes(tenantId));
-        return matchDb?.dbConnection;
-    };
-
     private static getTenantDb(tenantId: string, modelName: string, schema): typeof mongoose {
         // Check connections lookup
-        const mCon = this.multiTenantPool[tenantId];
+        const connection = this.hostDictinary[tenantId];
+        const mCon = this.multiTenantPool[connection];
         if (mCon) {
             if (!mCon.modelSchemas[modelName]) {
                 mCon.model(modelName, schema);
@@ -54,9 +47,8 @@ export class TenantDatabases {
             return mCon;
         }
 
-        const connection = this.getConnectionByTenantId(tenantId);
         const mongooseInstance = this.connectToMongoDb(connection);
-        this.multiTenantPool[tenantId] = mongooseInstance;
+        this.multiTenantPool[connection] = mongooseInstance;
         // Create the model from schema
         mongooseInstance.model(modelName, schema);
         return mongooseInstance;
