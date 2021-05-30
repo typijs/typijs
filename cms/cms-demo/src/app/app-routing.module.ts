@@ -5,7 +5,7 @@ import { LayoutComponent } from './shared/layout/layout.component';
 
 const routes: Routes = [
     {
-        path: 'typicms',
+        path: 'typijs',
         loadChildren: () => import('./portal/portal.module').then(m => m.PortalModule)
     },
     {

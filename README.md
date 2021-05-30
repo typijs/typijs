@@ -252,7 +252,7 @@ Now you can goto http://localhost:4200 to see the site.
 
 Register an admin account on the admin site 
 
-url: http://localhost:4200/typicms/register
+url: http://localhost:4200/typijs/register
 
 ### Run Angular Universal (SSR) in Dev mode
 

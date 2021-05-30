@@ -83,7 +83,7 @@ For example, you have the db path like as `C:/MongoDB/data/db`
 
 Now you can goto http://localhost:4200 to see the site.
 
-The admin site will be access via url: http://localhost:4200/typicms
+The admin site will be access via url: http://localhost:4200/typijs
 
 **Account: admin/1234qwer!**
 

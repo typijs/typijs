@@ -39,7 +39,7 @@ export function pageAfterViewInit(rendererFactory: RendererFactory2, document: D
         HttpClientModule,
         BsDropdownModule.forRoot(),
         TypiJsModule.forRoot({
-            adminRoute: '/typicms',
+            adminRoute: '/typijs',
             configFilePath: '/assets/config/config-dev.json'
         }),
         AppRoutingModule,
