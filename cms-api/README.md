@@ -78,10 +78,19 @@ To start the site build with TypiJS, following theses steps
    ```sh
    git clone https://github.com/typijs/typijs-starter.git
    cd typijs-starter
-   npm install
-   npm start
    ```
-2. Navigate to http://localhost:4200/typijs/register to start
+2. Under `server` folder run script
+    ```sh
+    npm install
+    npm run dev
+    ```
+3. Under `client` folder run script
+    ```sh
+    npm install
+    npm start
+    ```
+4. Navigate to http://localhost:4200/typijs/register to create admin user
+5. See how setup site at video https://www.youtube.com/watch?v=PBKFrZ5Qq1Y
     
 <!-- LICENSE -->
 ## License
