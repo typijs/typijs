@@ -42,7 +42,7 @@
     "form-data": "^3.0.0",
     "http-status": "^1.4.2",
     "injection-js": "^2.3.0",
-    "jsonwebtoken": "^8.3.0",
+    "jsonwebtoken": "^9.0.0",
     "mime-types": "^2.1.18",
     "moment": "^2.26.0",
     "mongoose": "^5.11.17",
