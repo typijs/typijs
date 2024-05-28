@@ -1,0 +1,12 @@
+cms-api/node_modules
+cms-api/dist
+cms-api/npm-debug.log
+cms-server/node_modules
+cms-server/dist
+cms-server/npm-debug.log
+cms-server/Dockerfile
+
+cms/node_modules
+cms/dist
+cms/npm-debug.log
+cms/Dockerfile

@@ -1,0 +1,21 @@
+version: "3"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./cms-server/Dockerfile
+    container_name: typijs-api
+    # volumes:
+    #   - ./cms-api:/app/cms-api
+    #   - ./cms-server:/app/cms-server
+    ports:
+      - "3000:3000"
+
+  client:
+    build:
+      context: .
+      dockerfile: ./cms/Dockerfile
+    container_name: typijs-client
+    ports:
+      - "4200:4200" 

@@ -174,7 +174,7 @@ To start the site build with TypiJS, following theses steps
 
 ### Prerequisites
 
-* Angular 10.x or higher
+* Angular 10.x or 11.x
 * Node 10.x or higher
 * Express 4.x or higher
 * Typescript 4.1.5
@@ -207,6 +207,20 @@ To start the site build with TypiJS, following theses steps
 ## How to contribute
 
 Before you want to contribute the project, you need set up the local development environment
+
+### Setting update local environment via docker
+
+1. Build docker image for typijs server
+
+Under the root folder, run this command to build the docker image for Apis
+
+```
+docker-compose build
+docker-compose up
+
+```
+
+Now you can goto http://localhost:4200 to see the site.
 
 ### Setting up your local environment in dev mode
 
